@@ -23,6 +23,14 @@ export const LESSON_2_SECTION_MAPPING: { [key: string]: string } = {
 };
 
 /**
+ * Lesson 3 uses a different approach with a prediction exercise
+ * The single section is called 'prediction'
+ */
+export const LESSON_3_SECTION_MAPPING: { [key: string]: string } = {
+  'prediction': 'prediction'
+};
+
+/**
  * Gets the section ID from an example ID using the lesson's mapping
  * @param exampleId - The ID of the example or challenge
  * @param lessonMapping - The mapping object for the current lesson

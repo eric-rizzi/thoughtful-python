@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3: Function Output Prediction - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header>
+    <div class="container">
+      <h1>Learn Python in the Browser</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="lesson_1.html">Lesson 1: Basics</a></li>
+          <li><a href="lesson_2.html">Lesson 2: Functions</a></li>
+          <li><a href="lesson_3.html" class="active">Lesson 3: Output Prediction</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="lesson-wrapper">
+      <h2>Lesson 3: Predicting Function Output</h2>
+      
+      <div class="explanation-box">
+        <h3>Understanding Function Behavior</h3>
+        <p>Being able to predict how a function behaves is a crucial skill for programmers. In this exercise, you'll analyze a function and predict its output for different inputs without running the code.</p>
+      </div>
+      
+      <div class="code-display-container">
+        <h3>Function: Find the Largest of Three Numbers</h3>
+        <pre class="code-display"><code>def find_largest(a, b, c):
+    """Find the largest of three numbers"""
+    if a >= b and a >= c:
+        return a
+    elif b >= a and b >= c:
+        return b
+    else:
+        return c</code></pre>
+      </div>
+      
+      <div class="prediction-section">
+        <h3>Predict the Output</h3>
+        <p>For each set of inputs below, predict what the function will return. Type your answer in the "Output" column.</p>
+        
+        <div class="table-container">
+          <table id="prediction-table">
+            <thead>
+              <tr>
+                <th>a</th>
+                <th>b</th>
+                <th>c</th>
+                <th>Your Prediction</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-expected="5">
+                <td>5</td>
+                <td>3</td>
+                <td>1</td>
+                <td><input type="text" class="prediction-input" data-row="0" /></td>
+                <td class="status-cell"><span class="status-indicator"></span></td>
+              </tr>
+              <tr data-expected="7">
+                <td>2</td>
+                <td>7</td>
+                <td>5</td>
+                <td><input type="text" class="prediction-input" data-row="1" /></td>
+                <td class="status-cell"><span class="status-indicator"></span></td>
+              </tr>
+              <tr data-expected="9">
+                <td>3</td>
+                <td>3</td>
+                <td>9</td>
+                <td><input type="text" class="prediction-input" data-row="2" /></td>
+                <td class="status-cell"><span class="status-indicator"></span></td>
+              </tr>
+              <tr data-expected="8">
+                <td>8</td>
+                <td>8</td>
+                <td>4</td>
+                <td><input type="text" class="prediction-input" data-row="3" /></td>
+                <td class="status-cell"><span class="status-indicator"></span></td>
+              </tr>
+              <tr data-expected="10">
+                <td>10</td>
+                <td>10</td>
+                <td>10</td>
+                <td><input type="text" class="prediction-input" data-row="4" /></td>
+                <td class="status-cell"><span class="status-indicator"></span></td>
+              </tr>
+              <tr data-expected="-1">
+                <td>-1</td>
+                <td>-3</td>
+                <td>-5</td>
+                <td><input type="text" class="prediction-input" data-row="5" /></td>
+                <td class="status-cell"><span class="status-indicator"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="feedback-container">
+          <p id="completion-message" class="hidden">
+            Great job! You've correctly predicted all the function outputs. This shows you understand how the function evaluates different inputs.
+          </p>
+        </div>
+      </div>
+      
+      <div class="explanation-box">
+        <h3>Understanding the Logic</h3>
+        <p>The <code>find_largest</code> function works by:</p>
+        <ol>
+          <li>Comparing <code>a</code> with both <code>b</code> and <code>c</code>. If <code>a</code> is greater than or equal to both, it returns <code>a</code>.</li>
+          <li>If the first condition fails, it checks if <code>b</code> is greater than or equal to both <code>a</code> and <code>c</code>. If true, it returns <code>b</code>.</li>
+          <li>If neither condition is true, it returns <code>c</code>.</li>
+        </ol>
+        <p>This function has some interesting edge cases. What happens when two or all three numbers are equal?</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+</body>
+</html>
