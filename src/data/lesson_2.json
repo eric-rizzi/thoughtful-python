@@ -3,6 +3,11 @@
   "description": "Learn how to create and use functions in Python, with a focus on converting temperatures between Celsius and Fahrenheit.",
   "sections": [
     {
+      "id": "introduction",
+      "title": "Introduction",
+      "content": "In this lesson, you'll learn how to create and use functions in Python. Functions allow us to organize code into reusable blocks that perform specific tasks."
+    },
+    {
       "id": "functions",
       "title": "Python Functions",
       "content": "Functions are defined using the def keyword, followed by the function name and parentheses. Any parameters the function takes are placed inside the parentheses.",
@@ -24,7 +29,7 @@
     {
       "id": "temperature",
       "title": "Temperature Conversion",
-      "content": "One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures. To convert from Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32",
+      "content": "One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures.\n\nTo convert from Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32\n\nWhere F is the temperature in Fahrenheit and C is the temperature in Celsius.",
       "examples": [
         {
           "id": "temp-conversion",
@@ -37,12 +42,12 @@
     {
       "id": "challenge",
       "title": "Coding Challenge: Temperature Converter",
-      "content": "Now it's your turn! Create a function called celsius_to_fahrenheit that takes a temperature in Celsius as input, converts it to Fahrenheit using the formula F = (C × 9/5) + 32, and returns the Fahrenheit temperature as a number.",
+      "content": "Now it's your turn! Create a function called celsius_to_fahrenheit that:\n- Takes a temperature in Celsius as input\n- Converts it to Fahrenheit using the formula: F = (C × 9/5) + 32\n- Returns the Fahrenheit temperature as a number",
       "examples": [
         {
           "id": "challenge",
-          "title": "Your Solution",
-          "description": "Implement the celsius_to_fahrenheit function below. When you're ready, click 'Test Solution' to check your work.",
+          "title": "Your Task",
+          "description": "Implement the celsius_to_fahrenheit function below:",
           "code": "def celsius_to_fahrenheit(celsius):\n    # Write your function here\n    pass  # Delete this line and add your code\n\n# You can test your function with different values here\nprint(celsius_to_fahrenheit(0))  # Should print 32.0\nprint(celsius_to_fahrenheit(100))  # Should print 212.0",
           "testCases": [
             { "input": 0, "expected": 32, "description": "Freezing point of water (0°C)" },
@@ -55,6 +60,11 @@
           ]
         }
       ]
+    },
+    {
+      "id": "testing",
+      "title": "Understanding Testing",
+      "content": "Testing is a crucial part of software development. When you click the \"Test Solution\" button, our system will run your function with various inputs and check if the outputs match the expected results.\n\nThe test cases include:\n- Standard temperatures (freezing point, boiling point)\n- Body temperature\n- Negative temperatures\n- Edge cases\n\nYour function should handle all these cases correctly to pass the tests."
     }
   ]
 }
