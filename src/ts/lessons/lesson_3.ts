@@ -1,4 +1,5 @@
-// lesson_3.ts - Handles the interactive elements for Lesson 3: Output Prediction
+// lesson_3.ts - Updated with sidebar and header completion tracking
+import { pythonRunner } from '../pyodide';
 import '../../css/main.css';
 import '../../css/lessons.css';
 import '../../css/challenges.css';
@@ -20,6 +21,7 @@ class Lesson3Controller {
   private isInitialized: boolean = false;
   private completedRows: number = 0;
   private totalRows: number = 0;
+  private lessonId = 'lesson_3';
 
   constructor() {
     // Wait for DOM to be fully loaded before setting up event handlers
@@ -64,7 +66,10 @@ class Lesson3Controller {
     // Load saved answers if available
     this.loadSavedAnswers();
     
-    // Check for existing completion status
+    // Update sidebar to show completion status
+    this.updateSidebarCompletions();
+    
+    // Check if lesson is already complete
     this.checkAllSectionsCompleted();
     
     // Mark as initialized
@@ -167,7 +172,7 @@ class Lesson3Controller {
   private markLessonAsCompleted(): void {
     try {
       // Save to localStorage that this lesson is completed
-      const storageKey = 'python_lesson_3_completed';
+      const storageKey = `python_${this.lessonId}_completed`;
       const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
       
       // Add prediction section if not already completed
@@ -175,54 +180,14 @@ class Lesson3Controller {
         completedSections.push('prediction');
         localStorage.setItem(storageKey, JSON.stringify(completedSections));
         
-        // Dispatch custom event to notify that progress has been updated
-        window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
-          detail: { lessonId: 'lesson_3', sectionName: 'prediction' }
-        }));
+        // Update sidebar to show completion
+        this.updateSidebarCompletions();
         
-        // Check if all required sections for this lesson are completed
+        // Check if all sections are now completed and update navigation
         this.checkAllSectionsCompleted();
       }
     } catch (error) {
       console.error('Error saving lesson completion status:', error);
-    }
-  }
-  
-  /**
-   * Checks if all sections in the lesson are completed and updates the navigation
-   */
-  private checkAllSectionsCompleted(): void {
-    try {
-      // Get completed sections from localStorage
-      const storageKey = `python_lesson_3_completed`;
-      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      
-      // Required sections for this lesson - only one section for lesson 3
-      const requiredSections = ['prediction'];
-      
-      // Check if all required sections are completed
-      const allCompleted = requiredSections.every(section => 
-        completedSections.includes(section)
-      );
-      
-      console.log('Lesson 3 completion check:', {
-        completedSections,
-        requiredSections,
-        allCompleted
-      });
-      
-      if (allCompleted) {
-        // Mark the lesson as completed in navigation
-        const navItem = document.querySelector('nav li a[href="lesson_3.html"]')?.parentElement;
-        if (navItem) {
-          navItem.classList.add('nav-completed');
-          console.log('Added nav-completed class to Lesson 3 nav item');
-        } else {
-          console.warn('Could not find Lesson 3 nav item');
-        }
-      }
-    } catch (error) {
-      console.error('Error checking lesson completion:', error);
     }
   }
 
@@ -267,6 +232,70 @@ class Lesson3Controller {
       
     } catch (error) {
       console.error('Error loading saved answers:', error);
+    }
+  }
+  
+  /**
+   * Updates the sidebar to show which sections are completed
+   */
+  private updateSidebarCompletions(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // For lesson 3, there's only one section - prediction
+      if (completedSections.includes('prediction')) {
+        // Find the sidebar item for prediction
+        const sidebarItems = document.querySelectorAll('.lesson-sidebar li');
+        
+        // Mark all items as completed since this is a single-section lesson
+        sidebarItems.forEach(item => {
+          if (!item.classList.contains('completed')) {
+            item.classList.add('completed');
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error updating sidebar completions:', error);
+    }
+  }
+
+  /**
+   * Checks if all sections in the lesson are completed and updates the navigation
+   */
+  private checkAllSectionsCompleted(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson - only one
+      const requiredSections = ['prediction'];
+      
+      // Check if all required sections are completed
+      const allCompleted = requiredSections.every(section => 
+        completedSections.includes(section)
+      );
+      
+      console.log(`${this.lessonId} completion check:`, {
+        completedSections,
+        requiredSections,
+        allCompleted
+      });
+      
+      if (allCompleted) {
+        // Mark the lesson as completed in navigation
+        const navItem = document.querySelector(`nav li a[href="${this.lessonId}.html"]`)?.parentElement;
+        if (navItem) {
+          navItem.classList.add('nav-completed');
+          console.log(`Added nav-completed class to ${this.lessonId} nav item`);
+        } else {
+          console.warn(`Could not find ${this.lessonId} nav item`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking lesson completion:', error);
     }
   }
 }
