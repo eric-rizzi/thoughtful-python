@@ -68,7 +68,9 @@ export abstract class DynamicLessonController {
       'Information': ['id', 'title', 'content'],
       'Observation': ['id', 'title', 'content', 'examples'],
       'Testing': ['id', 'title', 'content', 'examples'],
-      'Prediction': ['id', 'title', 'content', 'functionDisplay', 'predictionTable']
+      'Prediction': ['id', 'title', 'content', 'functionDisplay', 'predictionTable'],
+      'MultipleChoice': ['id', 'title', 'content', 'options', 'correctAnswer', 'feedback'],
+      'MultiSelection': ['id', 'title', 'content', 'options', 'correctAnswers', 'feedback']
     };
     
     // Validate each section
@@ -104,6 +106,31 @@ export abstract class DynamicLessonController {
       if (kind === 'Prediction' && section.predictionTable) {
         if (!section.predictionTable.rows || !section.predictionTable.rows.length) {
           throw new Error(`Section '${section.title}' of kind 'Prediction' must have a predictionTable with rows`);
+        }
+      }
+      
+      // If it's a MultipleChoice kind, validate the options and correctAnswer
+      if (kind === 'MultipleChoice') {
+        if (!section.options || !section.options.length) {
+          throw new Error(`Section '${section.title}' of kind 'MultipleChoice' must have options`);
+        }
+        if (section.correctAnswer === undefined || section.correctAnswer < 0 || section.correctAnswer >= section.options.length) {
+          throw new Error(`Section '${section.title}' of kind 'MultipleChoice' has an invalid correctAnswer: ${section.correctAnswer}`);
+        }
+      }
+      
+      // If it's a MultiSelection kind, validate the options and correctAnswers
+      if (kind === 'MultiSelection') {
+        if (!section.options || !section.options.length) {
+          throw new Error(`Section '${section.title}' of kind 'MultiSelection' must have options`);
+        }
+        if (!section.correctAnswers || !section.correctAnswers.length) {
+          throw new Error(`Section '${section.title}' of kind 'MultiSelection' must have correctAnswers`);
+        }
+        for (const answer of section.correctAnswers) {
+          if (answer < 0 || answer >= section.options.length) {
+            throw new Error(`Section '${section.title}' of kind 'MultiSelection' has an invalid correctAnswer: ${answer}`);
+          }
         }
       }
     });
@@ -152,6 +179,12 @@ export abstract class DynamicLessonController {
       case 'Prediction':
         this.renderPredictionSection(section, container);
         break;
+      case 'MultipleChoice':
+        this.renderMultipleChoiceSection(section, container);
+        break;
+      case 'MultiSelection':
+        this.renderMultiSelectionSection(section, container);
+        break;
       case 'Testing':
       case 'Observation':
       case 'Information':
@@ -159,6 +192,26 @@ export abstract class DynamicLessonController {
         this.renderStandardSection(section, container);
         break;
     }
+  }
+  
+  /**
+   * Render a MultipleChoice section
+   * This is a placeholder that should be overridden by QuizLessonController
+   */
+  protected renderMultipleChoiceSection(section: LessonSection, container: HTMLElement): void {
+    // By default, just render as a standard section
+    // This will be overridden by QuizLessonController
+    this.renderStandardSection(section, container);
+  }
+  
+  /**
+   * Render a MultiSelection section
+   * This is a placeholder that should be overridden by QuizLessonController
+   */
+  protected renderMultiSelectionSection(section: LessonSection, container: HTMLElement): void {
+    // By default, just render as a standard section
+    // This will be overridden by QuizLessonController
+    this.renderStandardSection(section, container);
   }
   
   /**
