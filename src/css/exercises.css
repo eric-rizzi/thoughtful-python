@@ -1,0 +1,324 @@
+/* exercises.css - Styles for different types of interactive exercises */
+
+/* 
+ * 1. CODE EDITOR EXERCISES
+ */
+/* Code editor container */
+.code-editor-container {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.code-header {
+  background-color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Run button */
+.run-button {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.run-button:hover {
+  background-color: #306998;
+}
+
+.run-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* CodeMirror styling */
+.CodeMirror {
+  height: auto !important;
+  min-height: 100px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Fallback if CodeMirror is not loaded */
+.code-editor {
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  border: none;
+  background-color: #f8f8f8;
+  white-space: pre;
+  tab-size: 4;
+}
+
+/* Code display for viewing (not editing) */
+.code-display {
+  background-color: #f8f8f8;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffd43b;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+/*
+ * 2. CHALLENGE EXERCISES
+ */
+/* Challenge container */
+.challenge-container {
+  background-color: #f7f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid #e1e4e8;
+}
+
+.challenge-container h4 {
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Test button */
+.test-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.test-button:hover {
+  background-color: #218838;
+}
+
+.test-button:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+/* Test results */
+.test-result {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.test-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #28a745;
+}
+
+.test-success h4 {
+  color: #155724;
+  margin-top: 0;
+}
+
+.test-failure {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #ffc107;
+}
+
+.test-failure h4 {
+  color: #856404;
+  margin-top: 0;
+}
+
+.test-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #dc3545;
+}
+
+.test-error h4 {
+  color: #721c24;
+  margin-top: 0;
+}
+
+.test-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.test-results-table th,
+.test-results-table td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  text-align: left;
+}
+
+.test-results-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.test-passed {
+  background-color: #f0fff4;
+}
+
+.test-failed {
+  background-color: #fff5f5;
+}
+
+.error {
+  color: #dc3545;
+  font-style: italic;
+}
+
+/*
+ * 3. PREDICTION EXERCISES
+ */
+/* Prediction section */
+.prediction-section {
+  margin: 2rem 0;
+}
+
+.explanation-box {
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid #4b8bbe;
+}
+
+.code-display-container {
+  margin: 2rem 0;
+}
+
+/* Prediction table */
+.table-container {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+#prediction-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+#prediction-table th, 
+#prediction-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+#prediction-table th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+#prediction-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.prediction-input {
+  width: 80px;
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.status-cell {
+  width: 80px;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+/* Status indicator states */
+.correct {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  position: relative;
+}
+
+.correct::after {
+  content: "✓";
+  position: absolute;
+  color: #155724;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.incorrect {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  position: relative;
+}
+
+.incorrect::after {
+  content: "✗";
+  position: absolute;
+  color: #721c24;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Feedback container */
+.feedback-container {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+#completion-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Row highlighting */
+tr.correct-row {
+  background-color: rgba(212, 237, 218, 0.2) !important;
+}
+
+tr.incorrect-row {
+  background-color: rgba(248, 215, 218, 0.1) !important;
+}

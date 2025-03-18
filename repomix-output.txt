@@ -1,0 +1,4094 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+src/
+  css/
+    challenges.css
+    lesson_3.css
+    lesson_4.css
+    lessons.css
+    main.css
+  data/
+    lesson_1.json
+    lesson_2.json
+    lesson_3.json
+    lesson_4.json
+  pages/
+    index.html
+    lesson_1.html
+    lesson_2.html
+    lesson_3.html
+    lesson_4.html
+  python/
+    example.py
+  ts/
+    controllers/
+      code-lesson-controller.ts
+      dynamic-lesson-controller.ts
+      prediction-lesson-controller.ts
+    lessons/
+      lesson_1.ts
+      lesson_2.ts
+      lesson_3.ts
+      lesson_4.ts
+    utils/
+      editor-utils.ts
+      html-components.ts
+      html-loader.ts
+      lesson-loader.ts
+      lesson-progress-tracker.ts
+      progress-utils.ts
+      pyodide-utils.ts
+      section-mappings.ts
+      test-display-utils.ts
+    main.ts
+    pyodide.ts
+.gitignore
+package.json
+tsconfig.json
+webpack.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/css/lesson_3.css">
+/* Styles for Lesson 3: Function Prediction */
+
+.lesson-wrapper {
+  max-width: 800px;
+  margin: 2rem auto;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.explanation-box {
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid #4b8bbe;
+}
+
+.code-display-container {
+  margin: 2rem 0;
+}
+
+.code-display {
+  background-color: #f8f8f8;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffd43b;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.prediction-section {
+  margin: 2rem 0;
+}
+
+.table-container {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+#prediction-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+#prediction-table th, 
+#prediction-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+#prediction-table th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+#prediction-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.prediction-input {
+  width: 80px;
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.status-cell {
+  width: 80px;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+/* Status indicator states */
+.correct {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  position: relative;
+}
+
+.correct::after {
+  content: "✓";
+  position: absolute;
+  color: #155724;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.incorrect {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  position: relative;
+}
+
+.incorrect::after {
+  content: "✗";
+  position: absolute;
+  color: #721c24;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+.feedback-container {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+#completion-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Row highlighting */
+tr.correct-row {
+  background-color: rgba(212, 237, 218, 0.2) !important;
+}
+
+tr.incorrect-row {
+  background-color: rgba(248, 215, 218, 0.1) !important;
+}
+</file>
+
+<file path="src/css/lesson_4.css">
+/* Styles for dynamic lesson page */
+
+/* Loading states */
+.loading-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: #4b8bbe;
+  animation: spin 1s linear infinite;
+  margin-top: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.sidebar-loading {
+  color: #666;
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+/* Section styles */
+.lesson-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.lesson-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-title {
+  color: #306998;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.section-content {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Example styles */
+.example {
+  margin-bottom: 2rem;
+}
+
+.example:last-child {
+  margin-bottom: 0;
+}
+
+.example-title {
+  color: #306998;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+}
+
+.example-description {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* JSON load error */
+.load-error {
+  padding: 1.5rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.load-error h3 {
+  margin-bottom: 0.5rem;
+  color: #721c24;
+}
+
+.load-error pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+/* Completed section indicator in sidebar */
+#sidebar-sections li.completed a {
+  color: #28a745;
+  font-weight: 500;
+}
+
+#sidebar-sections li.completed::before {
+  content: "✓";
+  color: #28a745;
+  font-weight: bold;
+  margin-right: 5px;
+  display: inline-block;
+}
+</file>
+
+<file path="src/data/lesson_1.json">
+{
+  "title": "Lesson 1: Python Basics",
+  "description": "Welcome to your first Python lesson! In this lesson, you'll learn the fundamentals of Python programming.",
+  "sections": [
+    {
+      "id": "print-function",
+      "title": "The Print Function",
+      "content": "The print() function displays output to the console. It's one of the most basic and frequently used functions in Python.",
+      "examples": [
+        {
+          "id": "hello-world",
+          "title": "Hello World",
+          "description": "Let's start with the classic 'Hello, World!' example:",
+          "code": "print(\"Hello, World!\")\nprint(\"Welcome to Python in the browser!\")"
+        }
+      ]
+    },
+    {
+      "id": "comments",
+      "title": "Comments",
+      "content": "Comments help you document your code. Python ignores anything after a # symbol.",
+      "examples": [
+        {
+          "id": "comments",
+          "title": "Using Comments",
+          "description": "Comments are used to explain code and make your programs more readable:",
+          "code": "# This is a comment\nprint(\"This code is executed\") # This is an inline comment\n\n# The following line is not executed\n# print(\"This won't be printed\")"
+        }
+      ]
+    },
+    {
+      "id": "basic-math",
+      "title": "Basic Math Operations",
+      "content": "Python can perform arithmetic operations like addition, subtraction, multiplication, and division.",
+      "examples": [
+        {
+          "id": "math",
+          "title": "Math Operations",
+          "description": "Try these basic mathematical operations:",
+          "code": "print(\"Addition:\", 5 + 3)\nprint(\"Subtraction:\", 10 - 4)\nprint(\"Multiplication:\", 6 * 7)\nprint(\"Division:\", 20 / 4)\nprint(\"Integer Division:\", 20 // 3)\nprint(\"Remainder (Modulo):\", 20 % 3)\nprint(\"Exponentiation:\", 2 ** 3)"
+        }
+      ]
+    },
+    {
+      "id": "exercises",
+      "title": "Exercises",
+      "content": "Try solving these exercises to practice what you've learned.",
+      "examples": [
+        {
+          "id": "exercise1",
+          "title": "Print your name",
+          "description": "Write a program that prints your name and a greeting.",
+          "code": "# Write your code here\n# Example: print(\"Hello, my name is Alex!\")"
+        }
+      ]
+    }
+  ]
+}
+</file>
+
+<file path="src/data/lesson_2.json">
+{
+  "title": "Lesson 2: Functions and Temperature Conversion",
+  "description": "Learn how to create and use functions in Python, with a focus on converting temperatures between Celsius and Fahrenheit.",
+  "sections": [
+    {
+      "id": "functions",
+      "title": "Python Functions",
+      "content": "Functions are defined using the def keyword, followed by the function name and parentheses. Any parameters the function takes are placed inside the parentheses.",
+      "examples": [
+        {
+          "id": "function-basic",
+          "title": "Basic Function",
+          "description": "Here's a simple function that greets a person by name.",
+          "code": "def greet(name):\n    \"\"\"This function greets the person passed in as a parameter\"\"\"\n    return f\"Hello, {name}!\"\n\n# Call the function\nmessage = greet(\"Alice\")\nprint(message)\n\n# Call it again with a different name\nprint(greet(\"Bob\"))"
+        },
+        {
+          "id": "function-params",
+          "title": "Parameters and Return Values",
+          "description": "Functions can take input parameters and return values using the return statement.",
+          "code": "def add_numbers(a, b):\n    \"\"\"This function adds two numbers and returns the result\"\"\"\n    sum = a + b\n    return sum\n\n# Call the function and store the result\nresult = add_numbers(5, 3)\nprint(f\"5 + 3 = {result}\")\n\n# We can use the function directly in expressions\nprint(f\"10 + 20 = {add_numbers(10, 20)}\")\nprint(f\"Result × 2 = {add_numbers(5, 3) * 2}\")"
+        }
+      ]
+    },
+    {
+      "id": "temperature",
+      "title": "Temperature Conversion",
+      "content": "One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures. To convert from Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32",
+      "examples": [
+        {
+          "id": "temp-conversion",
+          "title": "Converting Celsius to Fahrenheit",
+          "description": "This function converts a temperature from Celsius to Fahrenheit using the formula F = (C × 9/5) + 32.",
+          "code": "def celsius_to_fahrenheit(celsius):\n    \"\"\"Convert Celsius temperature to Fahrenheit\"\"\"\n    fahrenheit = (celsius * 9/5) + 32\n    return fahrenheit\n\n# Test the function with some values\nfreezing_c = 0\nfreezing_f = celsius_to_fahrenheit(freezing_c)\nprint(f\"{freezing_c}°C is {freezing_f}°F\")\n\nbody_temp_c = 37\nbody_temp_f = celsius_to_fahrenheit(body_temp_c)\nprint(f\"{body_temp_c}°C is {body_temp_f}°F\")\n\nboiling_c = 100\nboiling_f = celsius_to_fahrenheit(boiling_c)\nprint(f\"{boiling_c}°C is {boiling_f}°F\")"
+        }
+      ]
+    },
+    {
+      "id": "challenge",
+      "title": "Coding Challenge: Temperature Converter",
+      "content": "Now it's your turn! Create a function called celsius_to_fahrenheit that takes a temperature in Celsius as input, converts it to Fahrenheit using the formula F = (C × 9/5) + 32, and returns the Fahrenheit temperature as a number.",
+      "examples": [
+        {
+          "id": "challenge",
+          "title": "Your Solution",
+          "description": "Implement the celsius_to_fahrenheit function below. When you're ready, click 'Test Solution' to check your work.",
+          "code": "def celsius_to_fahrenheit(celsius):\n    # Write your function here\n    pass  # Delete this line and add your code\n\n# You can test your function with different values here\nprint(celsius_to_fahrenheit(0))  # Should print 32.0\nprint(celsius_to_fahrenheit(100))  # Should print 212.0",
+          "testCases": [
+            { "input": 0, "expected": 32, "description": "Freezing point of water (0°C)" },
+            { "input": 100, "expected": 212, "description": "Boiling point of water (100°C)" },
+            { "input": 37, "expected": 98.6, "description": "Human body temperature (37°C)" },
+            { "input": -40, "expected": -40, "description": "Equal point (-40°C)" },
+            { "input": 25, "expected": 77, "description": "Room temperature (25°C)" },
+            { "input": -10, "expected": 14, "description": "Cold winter day (-10°C)" },
+            { "input": 42, "expected": 107.6, "description": "Hot day (42°C)" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</file>
+
+<file path="src/data/lesson_3.json">
+{
+  "title": "Lesson 3: Predicting Function Output",
+  "description": "Practice predicting how functions will behave with different inputs without running code, an essential skill for effective programming.",
+  "sections": [
+    {
+      "id": "understanding",
+      "title": "Understanding Function Behavior",
+      "content": "Being able to predict how a function behaves is a crucial skill for programmers. In this exercise, you'll analyze a function and predict its output for different inputs without running the code."
+    },
+    {
+      "id": "prediction",
+      "title": "Predict the Output",
+      "content": "For each set of inputs below, predict what the function will return. Type your answer in the \"Output\" column.",
+      "functionDisplay": {
+        "title": "Function: Find the Largest of Three Numbers",
+        "code": "def find_largest(a, b, c):\n    \"\"\"Find the largest of three numbers\"\"\"\n    if a >= b and a >= c:\n        return a\n    elif b >= a and b >= c:\n        return b\n    else:\n        return c"
+      },
+      "predictionTable": {
+        "columns": ["a", "b", "c", "Your Prediction", "Status"],
+        "rows": [
+          {
+            "inputs": [5, 3, 1],
+            "expected": 5,
+            "description": "First number is largest"
+          },
+          {
+            "inputs": [2, 7, 5],
+            "expected": 7,
+            "description": "Second number is largest"
+          },
+          {
+            "inputs": [3, 3, 9],
+            "expected": 9,
+            "description": "Third number is largest"
+          },
+          {
+            "inputs": [8, 8, 4],
+            "expected": 8,
+            "description": "First and second numbers are equal and largest"
+          },
+          {
+            "inputs": [10, 10, 10],
+            "expected": 10,
+            "description": "All numbers are equal"
+          },
+          {
+            "inputs": [-1, -3, -5],
+            "expected": -1,
+            "description": "All negative numbers"
+          }
+        ]
+      },
+      "completionMessage": "Great job! You've correctly predicted all the function outputs. This shows you understand how the function evaluates different inputs."
+    },
+    {
+      "id": "explanation",
+      "title": "Understanding the Logic",
+      "content": "The find_largest function works by:\n1. Comparing a with both b and c. If a is greater than or equal to both, it returns a.\n2. If the first condition fails, it checks if b is greater than or equal to both a and c. If true, it returns b.\n3. If neither condition is true, it returns c.\n\nThis function has some interesting edge cases. What happens when two or all three numbers are equal? The function will return the first number in the comparison that satisfies the condition."
+    }
+  ]
+}
+</file>
+
+<file path="src/data/lesson_4.json">
+{
+  "title": "Lesson 4: Data Structures",
+  "description": "Learn about the main data structures in Python: lists, tuples, dictionaries, and sets.",
+  "sections": [
+    {
+      "id": "python-lists",
+      "title": "Python Lists",
+      "content": "Lists are ordered collections of items that can be of different types. Lists are mutable, which means they can be changed after creation.",
+      "examples": [
+        {
+          "id": "lists-creation",
+          "title": "Creating Lists",
+          "description": "Lists in Python can be created using square brackets. Items are separated by commas.",
+          "code": "# Creating a list\nnumbers = [1, 2, 3, 4, 5]\nprint(numbers)\n\n# List with mixed data types\nmixed_list = [1, 'hello', 3.14, True]\nprint(mixed_list)\n\n# Empty list\nempty_list = []\nprint(empty_list)\n\n# Creating a list using the list() constructor\nconverted_list = list('Python')\nprint(converted_list)"
+        },
+        {
+          "id": "lists-access",
+          "title": "Accessing List Elements",
+          "description": "You can access list elements using their index. Python uses zero-based indexing, so the first element is at index 0.",
+          "code": "fruits = ['apple', 'banana', 'cherry', 'orange', 'kiwi']\n\n# Access individual elements\nprint(fruits[0])  # First element\nprint(fruits[2])  # Third element\n\n# Negative indexing (counting from the end)\nprint(fruits[-1])  # Last element\nprint(fruits[-2])  # Second-to-last element\n\n# Slicing (getting a range of elements)\nprint(fruits[1:3])    # Elements from index 1 to 2\nprint(fruits[:3])     # Elements from start to index 2\nprint(fruits[2:])     # Elements from index 2 to end\nprint(fruits[-3:-1])  # Negative slicing"
+        }
+      ]
+    },
+    {
+      "id": "python-dictionaries",
+      "title": "Python Dictionaries",
+      "content": "Dictionaries are collections of key-value pairs. They are unordered, mutable, and indexed by keys instead of positions.",
+      "examples": [
+        {
+          "id": "dict-creation",
+          "title": "Creating Dictionaries",
+          "description": "Dictionaries use curly braces with key-value pairs separated by colons.",
+          "code": "# Creating a dictionary\nperson = {\n    'name': 'John',\n    'age': 30,\n    'city': 'New York'\n}\nprint(person)\n\n# Empty dictionary\nempty_dict = {}\nprint(empty_dict)\n\n# Using dict() constructor\nuser = dict(username='john123', email='john@example.com', active=True)\nprint(user)"
+        },
+        {
+          "id": "dict-access",
+          "title": "Accessing Dictionary Elements",
+          "description": "You can access dictionary values using their keys.",
+          "code": "person = {\n    'name': 'John',\n    'age': 30,\n    'city': 'New York'\n}\n\n# Access values using keys\nprint(person['name'])\nprint(person['age'])\n\n# Using the get() method (safer if key might not exist)\nprint(person.get('city'))\nprint(person.get('country'))         # Returns None\nprint(person.get('country', 'USA'))  # Returns default value\n\n# Check if a key exists\nif 'name' in person:\n    print('Name exists in the dictionary')"
+        }
+      ]
+    },
+    {
+      "id": "python-sets",
+      "title": "Python Sets",
+      "content": "Sets are unordered collections of unique elements. They are useful for membership testing and eliminating duplicate entries.",
+      "examples": [
+        {
+          "id": "set-creation",
+          "title": "Creating Sets",
+          "description": "Sets use curly braces, but without key-value pairs, just comma-separated values.",
+          "code": "# Creating a set\nfruits = {'apple', 'banana', 'cherry'}\nprint(fruits)\n\n# Creating a set from a list (removes duplicates)\nnumbers = set([1, 2, 2, 3, 3, 3, 4])\nprint(numbers)\n\n# Empty set (can't use {}, as that makes an empty dictionary)\nempty_set = set()\nprint(empty_set)"
+        },
+        {
+          "id": "set-operations",
+          "title": "Set Operations",
+          "description": "Sets support mathematical operations like union, intersection, and difference.",
+          "code": "set1 = {1, 2, 3, 4, 5}\nset2 = {4, 5, 6, 7, 8}\n\n# Union (all elements from both sets)\nprint(set1 | set2)  # or set1.union(set2)\n\n# Intersection (elements in both sets)\nprint(set1 & set2)  # or set1.intersection(set2)\n\n# Difference (elements in set1 but not in set2)\nprint(set1 - set2)  # or set1.difference(set2)\n\n# Symmetric difference (elements in either set, but not in both)\nprint(set1 ^ set2)  # or set1.symmetric_difference(set2)"
+        }
+      ]
+    }
+  ]
+}
+</file>
+
+<file path="src/pages/lesson_4.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Lesson - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+  
+  <!-- Add CodeMirror for code editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header></header>
+
+  <main class="container lesson-container">
+    <!-- Sidebar will be dynamically generated -->
+    <aside class="lesson-sidebar" id="lesson-sidebar">
+      <h3>In This Lesson</h3>
+      <ul id="sidebar-sections">
+        <!-- Sections will be loaded from JSON -->
+        <li class="sidebar-loading">Loading lesson content...</li>
+      </ul>
+    </aside>
+
+    <!-- Content will be dynamically generated -->
+    <div class="lesson-content" id="lesson-content">
+      <div class="loading-message">
+        <p>Loading lesson content...</p>
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+  
+  <!-- This div will be used by Pyodide to indicate loading status -->
+  <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+  
+  <!-- Templates for dynamic content generation -->
+  <template id="section-template">
+    <section class="lesson-section">
+      <h2 class="section-title"></h2>
+      <div class="section-content"></div>
+      <div class="examples-container"></div>
+    </section>
+  </template>
+  
+  <template id="example-template">
+    <div class="example">
+      <h3 class="example-title"></h3>
+      <p class="example-description"></p>
+      <div class="code-editor-container">
+        <div class="code-header">
+          <span class="example-header-title"></span>
+          <button class="run-button">Run</button>
+        </div>
+        <textarea class="code-editor"></textarea>
+        <div class="code-output"></div>
+      </div>
+    </div>
+  </template>
+</body>
+</html>
+</file>
+
+<file path="src/python/example.py">
+print("hello")
+</file>
+
+<file path="src/ts/controllers/code-lesson-controller.ts">
+/**
+ * Base class for lessons that include runnable code examples
+ */
+import { pythonRunner } from '../pyodide';
+import { DynamicLessonController } from './dynamic-lesson-controller';
+import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
+import { runPythonCode, escapeHTML } from '../utils/pyodide-utils';
+import { markSectionCompleted } from '../utils/progress-utils';
+
+export abstract class CodeLessonController extends DynamicLessonController {
+  protected codeEditors: Map<string, any> = new Map();
+  
+  /**
+   * Initialize the Python environment for code execution
+   */
+  protected async initializeLesson(): Promise<void> {
+    try {
+      await pythonRunner.initialize();
+      console.log(`Python environment ready for ${this.lessonId}`);
+    } catch (error) {
+      console.error('Failed to initialize Python environment:', error);
+      this.showError('Failed to load Python environment. Please refresh the page and try again.');
+    }
+  }
+  
+  /**
+   * Set up code editors and event handlers after rendering
+   */
+  protected afterRender(): void {
+    // Initialize code editors after rendering
+    this.codeEditors = initializeCodeEditors();
+    
+    // Add event listeners to run buttons
+    const runButtons = document.querySelectorAll('.run-button');
+    runButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.handleRunButtonClick(button as HTMLElement);
+      });
+    });
+  }
+  
+  /**
+   * Handle the run button click event for code examples
+   */
+  protected async handleRunButtonClick(button: HTMLElement): Promise<void> {
+    const exampleId = button.getAttribute('data-example-id');
+    if (!exampleId) {
+      console.error('Run button is missing data-example-id attribute');
+      return;
+    }
+    
+    const editorId = `${exampleId}-editor`;
+    const outputElement = document.getElementById(`${exampleId}-output`);
+    
+    if (!outputElement) {
+      console.error(`Could not find output element for example: ${exampleId}`);
+      return;
+    }
+    
+    // Get code from the editor
+    const code = getCodeFromEditor(editorId, this.codeEditors);
+    if (!code) return;
+    
+    // Clear previous output
+    outputElement.innerHTML = '';
+    
+    // Update button state to loading
+    updateButtonState(button, true);
+    
+    try {
+      // Run the Python code
+      const result = await runPythonCode(code);
+      
+      // Display the output
+      if (result.trim()) {
+        outputElement.innerHTML = `<pre class="output-text">${escapeHTML(result)}</pre>`;
+      } else {
+        outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
+      }
+      
+      // Mark this section as completed
+      const sectionId = this.getSectionIdFromExampleId(exampleId);
+      if (sectionId) {
+        markSectionCompleted(sectionId, this.lessonId);
+        this.updateSidebarCompletions();
+        
+        // Check if all sections are now completed
+        this.checkAllSectionsCompleted();
+      }
+    } catch (error: any) {
+      outputElement.innerHTML = `<pre class="output-error">Error: ${escapeHTML(error.toString())}</pre>`;
+    } finally {
+      // Restore button state
+      updateButtonState(button, false);
+    }
+  }
+  
+  /**
+   * Get the section ID corresponding to an example ID
+   */
+  protected getSectionIdFromExampleId(exampleId: string): string | null {
+    return this.lessonMapping[exampleId] || null;
+  }
+  
+  /**
+   * Show an error message
+   */
+  protected showError(message: string): void {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.prepend(errorDiv);
+  }
+}
+</file>
+
+<file path="src/ts/controllers/dynamic-lesson-controller.ts">
+/**
+ * Base class for dynamic lesson controllers that load from JSON
+ */
+import { escapeHTML } from '../utils/pyodide-utils';
+import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
+import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
+
+export abstract class DynamicLessonController {
+  protected lesson: Lesson | null = null;
+  protected isInitialized: boolean = false;
+  protected lessonMapping: { [key: string]: string } = {};
+  
+  constructor(protected lessonId: string) {
+    // Initialize the lesson controller
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.initialize());
+    } else {
+      // DOM already loaded, initialize immediately
+      this.initialize();
+    }
+  }
+
+  protected async initialize(): Promise<void> {
+    if (this.isInitialized) return;
+    
+    try {
+      // Load lesson data from JSON
+      this.lesson = await loadLesson(this.lessonId);
+      
+      // Generate section to example mapping
+      this.lessonMapping = getLessonMapping(this.lesson);
+      
+      // Initialize lesson-specific data
+      await this.initializeLesson();
+      
+      // Render the lesson content
+      this.renderLesson();
+      
+      // Load completion status
+      loadCompletionFromStorage(this.lessonId);
+      
+      // Update sidebar to show completed sections
+      this.updateSidebarCompletions();
+      
+      // Check if all sections are completed
+      this.checkAllSectionsCompleted();
+      
+      // Mark as initialized
+      this.isInitialized = true;
+      console.log(`${this.lessonId} controller initialized`);
+    } catch (error) {
+      console.error(`Failed to initialize ${this.lessonId}:`, error);
+      this.showLoadError(error);
+    }
+  }
+
+  /**
+   * Renders the entire lesson, including sidebar and content
+   */
+  protected renderLesson(): void {
+    if (!this.lesson) return;
+    
+    // Render the sidebar navigation
+    this.renderSidebar();
+    
+    // Clear loading message
+    const contentContainer = document.getElementById('lesson-content');
+    if (contentContainer) {
+      contentContainer.innerHTML = '';
+      
+      // Add lesson title and description
+      const titleElement = document.createElement('h2');
+      titleElement.textContent = this.lesson.title;
+      contentContainer.appendChild(titleElement);
+      
+      const descriptionElement = document.createElement('p');
+      descriptionElement.textContent = this.lesson.description;
+      contentContainer.appendChild(descriptionElement);
+      
+      // Render each section
+      this.lesson.sections.forEach(section => {
+        this.renderSection(section, contentContainer);
+      });
+    }
+    
+    // Do any lesson-specific setup after rendering
+    this.afterRender();
+  }
+  
+  /**
+   * Renders the sidebar navigation
+   */
+  protected renderSidebar(): void {
+    if (!this.lesson) return;
+    
+    const sidebarContainer = document.getElementById('sidebar-sections');
+    if (sidebarContainer) {
+      sidebarContainer.innerHTML = '';
+      
+      // Create sidebar items for each section
+      this.lesson.sections.forEach(section => {
+        const listItem = document.createElement('li');
+        listItem.setAttribute('data-section-id', section.id);
+        
+        // Check if this section is completed
+        const storageKey = `python_${this.lessonId}_completed`;
+        const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (completedSections.includes(section.id)) {
+          listItem.classList.add('completed');
+        }
+        
+        const link = document.createElement('a');
+        link.href = `#${section.id}`;
+        link.textContent = section.title;
+        
+        listItem.appendChild(link);
+        sidebarContainer.appendChild(listItem);
+      });
+    }
+  }
+  
+  /**
+   * Render a standard section (can be overridden by subclasses)
+   */
+  protected renderSection(section: LessonSection, container: HTMLElement): void {
+    // Use template to create section
+    const template = document.getElementById('section-template') as HTMLTemplateElement;
+    if (!template) return;
+    
+    const sectionElement = template.content.cloneNode(true) as DocumentFragment;
+    const sectionContainer = sectionElement.querySelector('.lesson-section') as HTMLElement;
+    if (!sectionContainer) return;
+    
+    // Set section ID and title
+    sectionContainer.id = section.id;
+    const titleElement = sectionContainer.querySelector('.section-title') as HTMLElement;
+    if (titleElement) {
+      titleElement.textContent = section.title;
+    }
+    
+    // Set section content - handle newlines in content
+    const contentElement = sectionContainer.querySelector('.section-content') as HTMLElement;
+    if (contentElement) {
+      // Convert newlines to <br> tags for better formatting
+      const formattedContent = section.content.replace(/\n(\d+)\.\s/g, '<br>$1. ');
+      contentElement.innerHTML = formattedContent;
+    }
+    
+    // Render examples if present
+    const examplesContainer = sectionContainer.querySelector('.examples-container') as HTMLElement;
+    if (examplesContainer && section.examples && section.examples.length > 0) {
+      section.examples.forEach(example => {
+        this.renderExample(example, examplesContainer);
+      });
+    }
+    
+    container.appendChild(sectionContainer);
+  }
+  
+  /**
+   * Render an example with code editor (can be overridden by subclasses)
+   */
+  protected renderExample(example: LessonExample, container: HTMLElement): void {
+    // Use template to create example
+    const template = document.getElementById('example-template') as HTMLTemplateElement;
+    if (!template) return;
+    
+    const exampleElement = template.content.cloneNode(true) as DocumentFragment;
+    const exampleContainer = exampleElement.querySelector('.example') as HTMLElement;
+    if (!exampleContainer) return;
+    
+    // Set example title and description
+    const titleElement = exampleContainer.querySelector('.example-title') as HTMLElement;
+    if (titleElement) {
+      titleElement.textContent = example.title;
+    }
+    
+    const descriptionElement = exampleContainer.querySelector('.example-description') as HTMLElement;
+    if (descriptionElement) {
+      descriptionElement.textContent = example.description;
+    }
+    
+    // Set up code editor
+    const codeEditor = exampleContainer.querySelector('.code-editor') as HTMLTextAreaElement;
+    if (codeEditor) {
+      codeEditor.id = `${example.id}-editor`;
+      codeEditor.value = example.code;
+    }
+    
+    // Set up run button
+    const runButton = exampleContainer.querySelector('.run-button') as HTMLButtonElement;
+    if (runButton) {
+      runButton.setAttribute('data-example-id', example.id);
+    }
+    
+    // Set up output container
+    const outputContainer = exampleContainer.querySelector('.code-output') as HTMLElement;
+    if (outputContainer) {
+      outputContainer.id = `${example.id}-output`;
+    }
+    
+    // Set header title
+    const headerTitle = exampleContainer.querySelector('.example-header-title') as HTMLElement;
+    if (headerTitle) {
+      headerTitle.textContent = example.title;
+    }
+    
+    container.appendChild(exampleContainer);
+  }
+  
+  /**
+   * Updates the sidebar to show which sections are completed
+   */
+  protected updateSidebarCompletions(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Mark completed sections in sidebar
+      completedSections.forEach((sectionId: string) => {
+        const sidebarItem = document.querySelector(`#sidebar-sections li[data-section-id="${sectionId}"]`);
+        if (sidebarItem && !sidebarItem.classList.contains('completed')) {
+          sidebarItem.classList.add('completed');
+        }
+      });
+    } catch (error) {
+      console.error('Error updating sidebar completions:', error);
+    }
+  }
+
+  /**
+   * Checks if all required sections are completed and updates the navigation
+   */
+  protected checkAllSectionsCompleted(): void {
+    if (!this.lesson) return;
+    
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson
+      const requiredSections = getRequiredSections(this.lesson);
+      
+      // Check if all required sections are completed
+      const allCompleted = requiredSections.length > 0 && 
+        requiredSections.every(section => completedSections.includes(section));
+      
+      console.log(`${this.lessonId} completion check:`, {
+        completedSections,
+        requiredSections,
+        allCompleted
+      });
+      
+      if (allCompleted) {
+        // Mark the lesson as completed in navigation
+        const navItem = document.querySelector(`nav li a[href="${this.lessonId}.html"]`)?.parentElement;
+        if (navItem) {
+          navItem.classList.add('nav-completed');
+          console.log(`Added nav-completed class to ${this.lessonId} nav item`);
+        } else {
+          console.warn(`Could not find ${this.lessonId} nav item`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking lesson completion:', error);
+    }
+  }
+  
+  /**
+   * Display an error when loading fails
+   */
+  protected showLoadError(error: any): void {
+    const contentContainer = document.getElementById('lesson-content');
+    if (contentContainer) {
+      contentContainer.innerHTML = `
+        <div class="load-error">
+          <h3>Failed to Load Lesson</h3>
+          <p>We couldn't load the lesson content. Please try refreshing the page.</p>
+          <pre>${escapeHTML(error.toString())}</pre>
+        </div>
+      `;
+    }
+    
+    const sidebarContainer = document.getElementById('sidebar-sections');
+    if (sidebarContainer) {
+      sidebarContainer.innerHTML = `
+        <li class="sidebar-error">Error loading lesson content</li>
+      `;
+    }
+  }
+  
+  /**
+   * These methods must be implemented by subclasses
+   */
+  protected abstract initializeLesson(): Promise<void>;
+  protected abstract afterRender(): void;
+}
+</file>
+
+<file path="src/ts/controllers/prediction-lesson-controller.ts">
+/**
+ * Base class for prediction-style lessons
+ */
+import { DynamicLessonController } from '../controllers/dynamic-lesson-controller';
+import { markSectionCompleted } from '../utils/progress-utils';
+import { LessonSection } from '../utils/lesson-loader';
+
+export interface PredictionTableRow {
+  inputs: number[];
+  expected: number;
+  description: string;
+  userAnswer?: string;
+  isCorrect?: boolean | null;
+}
+
+export interface PredictionTable {
+  columns: string[];
+  rows: PredictionTableRow[];
+}
+
+export interface FunctionDisplay {
+  title: string;
+  code: string;
+}
+
+export interface PredictionSection extends LessonSection {
+  functionDisplay?: FunctionDisplay;
+  predictionTable?: PredictionTable;
+  completionMessage?: string;
+}
+
+export abstract class PredictionLessonController extends DynamicLessonController {
+  protected predictionRows: PredictionTableRow[] = [];
+  protected completedRows: number = 0;
+  protected totalRows: number = 0;
+  protected predictionSectionId: string | null = null;
+  
+  /**
+   * Initialize the prediction data
+   */
+  protected async initializeLesson(): Promise<void> {
+    // Find the prediction section
+    const predictionSection = this.lesson?.sections.find(section => 
+      section.id === 'prediction' || (section as PredictionSection).predictionTable !== undefined
+    ) as PredictionSection | undefined;
+    
+    if (predictionSection) {
+      this.predictionSectionId = predictionSection.id;
+      
+      // Initialize the prediction data
+      if (predictionSection.predictionTable) {
+        this.predictionRows = [...predictionSection.predictionTable.rows];
+        this.totalRows = this.predictionRows.length;
+      }
+    }
+  }
+  
+  /**
+   * Handle after-render setup for prediction tables
+   */
+  protected afterRender(): void {
+    // Add event listeners to prediction inputs
+    const predictionInputs = document.querySelectorAll('.prediction-input');
+    predictionInputs.forEach(input => {
+      input.addEventListener('input', () => {
+        this.handlePredictionInput(input as HTMLInputElement);
+      });
+      
+      // Also trigger on blur to check answers when user clicks away
+      input.addEventListener('blur', () => {
+        this.handlePredictionInput(input as HTMLInputElement);
+      });
+    });
+    
+    // Load saved answers
+    this.loadSavedAnswers();
+  }
+  
+  /**
+   * Override renderSection to handle prediction sections
+   */
+  protected renderSection(section: LessonSection, container: HTMLElement): void {
+    // Check if this is a prediction section
+    if (section.id === this.predictionSectionId && (section as PredictionSection).predictionTable) {
+      this.renderPredictionSection(section as PredictionSection, container);
+    } else {
+      // Use the parent class's standard section renderer
+      super.renderSection(section, container);
+    }
+  }
+  
+  /**
+   * Render a prediction section with function display and prediction table
+   */
+  protected renderPredictionSection(section: PredictionSection, container: HTMLElement): void {
+    // First render as a standard section to get the base structure
+    super.renderSection(section, container);
+    
+    // Find the section container we just added
+    const sectionContainer = document.getElementById(section.id);
+    if (!sectionContainer || !section.predictionTable || !section.functionDisplay) return;
+    
+    // Use template to create prediction content
+    const template = document.getElementById('prediction-template') as HTMLTemplateElement;
+    if (!template) return;
+    
+    const predictionElement = template.content.cloneNode(true) as DocumentFragment;
+    const predictionContainer = predictionElement.querySelector('.prediction-section') as HTMLElement;
+    if (!predictionContainer) return;
+    
+    // Set function display
+    const functionTitle = predictionContainer.querySelector('.function-title') as HTMLElement;
+    const functionCode = predictionContainer.querySelector('.code-display code') as HTMLElement;
+    
+    if (functionTitle && functionCode && section.functionDisplay) {
+      functionTitle.textContent = section.functionDisplay.title;
+      functionCode.textContent = section.functionDisplay.code;
+    }
+    
+    // Set up prediction table
+    const tableHead = predictionContainer.querySelector('thead tr') as HTMLElement;
+    const tableBody = predictionContainer.querySelector('tbody') as HTMLElement;
+    
+    if (tableHead && tableBody && section.predictionTable) {
+      // Create table headers
+      section.predictionTable.columns.forEach(column => {
+        const th = document.createElement('th');
+        th.textContent = column;
+        tableHead.appendChild(th);
+      });
+      
+      // Create table rows
+      section.predictionTable.rows.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-expected', row.expected.toString());
+        
+        // Add input columns
+        row.inputs.forEach(input => {
+          const td = document.createElement('td');
+          td.textContent = input.toString();
+          tr.appendChild(td);
+        });
+        
+        // Add prediction input column
+        const inputTd = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'prediction-input';
+        input.setAttribute('data-row', index.toString());
+        inputTd.appendChild(input);
+        tr.appendChild(inputTd);
+        
+        // Add status column
+        const statusTd = document.createElement('td');
+        statusTd.className = 'status-cell';
+        const statusSpan = document.createElement('span');
+        statusSpan.className = 'status-indicator';
+        statusTd.appendChild(statusSpan);
+        tr.appendChild(statusTd);
+        
+        tableBody.appendChild(tr);
+      });
+    }
+    
+    // Set completion message
+    const completionMessage = predictionContainer.querySelector('#completion-message') as HTMLElement;
+    if (completionMessage && section.completionMessage) {
+      completionMessage.textContent = section.completionMessage;
+    }
+    
+    // Add to section container
+    sectionContainer.appendChild(predictionContainer);
+  }
+  
+  /**
+   * Handle user input in prediction table
+   */
+  protected handlePredictionInput(input: HTMLInputElement): void {
+    const rowIndex = parseInt(input.getAttribute('data-row') || '0');
+    const userAnswer = input.value.trim();
+    
+    // Update the row data
+    if (rowIndex >= 0 && rowIndex < this.predictionRows.length) {
+      this.predictionRows[rowIndex].userAnswer = userAnswer;
+      
+      // Check if answer is correct
+      const expectedAnswer = this.predictionRows[rowIndex].expected;
+      const isCorrect = parseInt(userAnswer) === expectedAnswer;
+      this.predictionRows[rowIndex].isCorrect = userAnswer === '' ? null : isCorrect;
+      
+      // Update UI to reflect correctness
+      this.updateRowStatus(rowIndex, isCorrect, userAnswer === '');
+      
+      // Update completion status
+      this.updateCompletionStatus();
+      
+      // Save answers to localStorage
+      this.saveAnswers();
+    }
+  }
+  
+  /**
+   * Update row status in the UI
+   */
+  protected updateRowStatus(rowIndex: number, isCorrect: boolean, isEmpty: boolean): void {
+    const tableRows = document.querySelectorAll('#prediction-table tbody tr');
+    if (rowIndex >= tableRows.length) return;
+    
+    const row = tableRows[rowIndex];
+    const statusIndicator = row.querySelector('.status-indicator');
+    
+    if (!statusIndicator) return;
+    
+    // Remove existing classes
+    statusIndicator.classList.remove('correct', 'incorrect');
+    row.classList.remove('correct-row', 'incorrect-row');
+    
+    if (isEmpty) {
+      // If empty, don't show any indicator
+      return;
+    }
+    
+    if (isCorrect) {
+      statusIndicator.classList.add('correct');
+      row.classList.add('correct-row');
+    } else {
+      statusIndicator.classList.add('incorrect');
+      row.classList.add('incorrect-row');
+    }
+  }
+  
+  /**
+   * Check if all predictions are correct and update completion status
+   */
+  protected updateCompletionStatus(): void {
+    // Count completed rows
+    this.completedRows = this.predictionRows.filter(row => row.isCorrect === true).length;
+    
+    // Check if all rows are completed
+    const allCompleted = this.completedRows === this.totalRows;
+    
+    // Show completion message if all rows are correct
+    const completionMessage = document.getElementById('completion-message');
+    if (completionMessage) {
+      if (allCompleted) {
+        completionMessage.classList.remove('hidden');
+        this.markSectionAsCompleted();
+      } else {
+        completionMessage.classList.add('hidden');
+      }
+    }
+    
+    console.log(`Completion status: ${this.completedRows}/${this.totalRows}`);
+  }
+  
+  /**
+   * Mark the prediction section as completed
+   */
+  protected markSectionAsCompleted(): void {
+    if (!this.predictionSectionId) return;
+    
+    try {
+      // Mark the prediction section as completed
+      markSectionCompleted(this.predictionSectionId, this.lessonId);
+      
+      // Update sidebar to show completion
+      this.updateSidebarCompletions();
+      
+      // Check if all sections are now completed and update navigation
+      this.checkAllSectionsCompleted();
+    } catch (error) {
+      console.error('Error saving section completion status:', error);
+    }
+  }
+  
+  /**
+   * Save prediction answers to localStorage
+   */
+  protected saveAnswers(): void {
+    try {
+      localStorage.setItem(`${this.lessonId}_answers`, JSON.stringify(this.predictionRows));
+    } catch (error) {
+      console.error('Error saving answers:', error);
+    }
+  }
+  
+  /**
+   * Load saved answers from localStorage
+   */
+  protected loadSavedAnswers(): void {
+    try {
+      const savedAnswers = localStorage.getItem(`${this.lessonId}_answers`);
+      if (!savedAnswers) return;
+      
+      const savedRows = JSON.parse(savedAnswers) as PredictionTableRow[];
+      
+      // Update our data model
+      savedRows.forEach((savedRow, index) => {
+        if (index >= this.predictionRows.length) return;
+        
+        this.predictionRows[index].userAnswer = savedRow.userAnswer;
+        this.predictionRows[index].isCorrect = savedRow.isCorrect;
+      });
+      
+      // Update the UI
+      const inputs = document.querySelectorAll('.prediction-input');
+      inputs.forEach((input, index) => {
+        if (index >= savedRows.length) return;
+        
+        // Set the input value
+        (input as HTMLInputElement).value = savedRows[index].userAnswer || '';
+        
+        // Update the status
+        this.updateRowStatus(
+          index, 
+          savedRows[index].isCorrect === true, 
+          !savedRows[index].userAnswer
+        );
+      });
+      
+      // Update completion status
+      this.updateCompletionStatus();
+      
+    } catch (error) {
+      console.error('Error loading saved answers:', error);
+    }
+  }
+}
+</file>
+
+<file path="src/ts/utils/editor-utils.ts">
+/**
+ * Utility functions for working with code editors in the lessons
+ */
+
+declare global {
+  interface Window {
+    CodeMirror: any;
+  }
+}
+
+/**
+ * Initializes code editors on the page
+ * @returns Map of editor ID to CodeMirror editor instance
+ */
+export function initializeCodeEditors(): Map<string, any> {
+  const codeEditors = new Map<string, any>();
+  
+  // Find all code editor elements
+  const editorElements = document.querySelectorAll('.code-editor');
+  
+  editorElements.forEach(element => {
+    const id = element.id;
+    
+    if (!id) {
+      console.warn('Code editor element is missing an ID attribute');
+      return;
+    }
+    
+    try {
+      // Check if CodeMirror is available
+      if (window.CodeMirror) {
+        const editor = window.CodeMirror.fromTextArea(element as HTMLTextAreaElement, {
+          mode: 'python',
+          theme: 'default',
+          lineNumbers: true,
+          indentUnit: 4,
+          tabSize: 4,
+          indentWithTabs: false,
+          lineWrapping: true,
+          extraKeys: {
+            Tab: (cm: any) => {
+              if (cm.somethingSelected()) {
+                cm.indentSelection('add');
+              } else {
+                cm.replaceSelection('    ', 'end');
+              }
+            }
+          }
+        });
+        
+        codeEditors.set(id, editor);
+      } else {
+        console.warn('CodeMirror not available, falling back to basic textarea');
+      }
+    } catch (error) {
+      console.error(`Failed to initialize code editor ${id}:`, error);
+    }
+  });
+  
+  return codeEditors;
+}
+
+/**
+ * Gets code from an editor by ID
+ * @param editorId - The ID of the editor element
+ * @param codeEditors - Map of editor instances
+ * @returns The code from the editor or null if not found
+ */
+export function getCodeFromEditor(editorId: string, codeEditors: Map<string, any>): string | null {
+  const cmEditor = codeEditors.get(editorId);
+  
+  if (cmEditor) {
+    // Using CodeMirror
+    return cmEditor.getValue();
+  } else {
+    // Fallback to regular textarea
+    const editorElement = document.getElementById(editorId) as HTMLTextAreaElement;
+    if (!editorElement) {
+      console.error(`Could not find editor element: ${editorId}`);
+      return null;
+    }
+    return editorElement.value;
+  }
+}
+
+/**
+ * Updates button state during code execution
+ * @param button - The button element
+ * @param isLoading - Whether the button should show loading state
+ * @param loadingText - Text to display while loading (default: "Running...")
+ */
+export function updateButtonState(
+  button: HTMLElement, 
+  isLoading: boolean, 
+  loadingText: string = 'Running...'
+): void {
+  if (isLoading) {
+    button.setAttribute('disabled', 'true');
+    button.dataset.originalText = button.textContent || '';
+    button.textContent = loadingText;
+  } else {
+    button.removeAttribute('disabled');
+    button.textContent = button.dataset.originalText || button.textContent || '';
+  }
+}
+</file>
+
+<file path="src/ts/utils/pyodide-utils.ts">
+/**
+ * Utility functions for working with Python code execution and testing in the browser
+ */
+
+import { pythonRunner } from '../pyodide';
+
+/**
+ * Runs Python code and returns the output
+ * @param code - The Python code to execute
+ * @returns Promise with the execution result or error message
+ */
+export async function runPythonCode(code: string): Promise<string> {
+  try {
+    return await pythonRunner.runCode(code);
+  } catch (error: any) {
+    return `Error: ${error.toString()}`;
+  }
+}
+
+/**
+ * Formats and escapes HTML output text
+ * @param str - The string to escape
+ * @returns Safe HTML string with entities escaped
+ */
+export function escapeHTML(str: string): string {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Generates test code for a Python function
+ * @param userCode - The user's Python code containing the function to test
+ * @param functionName - The name of the function to test
+ * @param testCases - Array of test cases to run
+ * @returns Python code string that will test the function
+ */
+export function generateTestCode(
+  userCode: string, 
+  functionName: string, 
+  testCases: Array<{ input: any, expected: any, description: string }>
+): string {
+  return `
+# First, execute the user's code in its own context
+${userCode}
+
+# Now perform our tests with a clean stdout
+import math
+import sys
+import json
+import io
+
+# Save the user-defined function to test
+user_function = ${functionName}
+
+# Create a clean testing environment
+def run_tests():
+    # Redirect stdout to capture only our test results
+    original_stdout = sys.stdout
+    test_output = io.StringIO()
+    sys.stdout = test_output
+    
+    try:
+        test_results = []
+
+        test_cases = ${JSON.stringify(testCases)}
+
+        for test in test_cases:
+            inp = test["input"]
+            exp = test["expected"]
+            description = test["description"]
+            
+            # Run user function
+            try:
+                result = user_function(inp)
+                # Check if result is close enough (accounting for floating point precision)
+                is_correct = math.isclose(result, exp, rel_tol=1e-2)
+                
+                test_results.append({
+                    "input": inp,
+                    "expected": exp,
+                    "actual": result,
+                    "passed": is_correct,
+                    "description": description
+                })
+            except Exception as e:
+                test_results.append({
+                    "input": inp,
+                    "expected": exp,
+                    "actual": str(e),
+                    "passed": False,
+                    "description": description,
+                    "error": True
+                })
+        
+        return test_results
+    except Exception as e:
+        return {"test_error": str(e)}
+    finally:
+        # Restore original stdout
+        sys.stdout = original_stdout
+
+# Run the tests and collect results
+test_results = run_tests()
+
+# Output test results in a clear, separate format
+print("===PYTHON_TEST_RESULTS_JSON===")
+print(json.dumps(test_results))
+print("===END_PYTHON_TEST_RESULTS_JSON===")
+`;
+}
+
+/**
+ * Parses test results from Python output
+ * @param result - The output string from Python test execution
+ * @returns Parsed test results as an array or throws an error
+ */
+export function parseTestResults(result: string): any[] {
+  // Extract the test results using regex
+  const resultsMatch = result.match(/===PYTHON_TEST_RESULTS_JSON===\s*([\s\S]*?)\s*===END_PYTHON_TEST_RESULTS_JSON===/);
+  
+  if (resultsMatch && resultsMatch[1]) {
+    const jsonStr = resultsMatch[1].trim();
+    const parsedResults = JSON.parse(jsonStr);
+    
+    // Check if we got a test error
+    if (parsedResults.test_error) {
+      throw new Error(`Test framework error: ${parsedResults.test_error}`);
+    }
+    
+    return parsedResults;
+  }
+  
+  console.error('No test results found in output:', result);
+  throw new Error('Could not find test results in output');
+}
+</file>
+
+<file path="src/ts/utils/test-display-utils.ts">
+/**
+ * Utility functions for displaying test results in the UI
+ */
+
+import { escapeHTML } from './pyodide-utils';
+
+/**
+ * Displays test results in a container element
+ * @param results - Array of test results to display
+ * @param containerElement - DOM element to contain the results
+ * @returns boolean indicating if all tests passed
+ */
+export function displayTestResults(results: any[], containerElement: HTMLElement): boolean {
+  // Count passed tests
+  const passedCount = results.filter(r => r.passed).length;
+  const totalCount = results.length;
+  const allPassed = passedCount === totalCount;
+  
+  let html = '';
+  
+  if (allPassed) {
+    // All tests passed
+    html = `
+      <div class="test-success">
+        <h4>🎉 Great job!</h4>
+        <p>Your function passed all ${totalCount} tests!</p>
+        <p>You've successfully implemented the Celsius to Fahrenheit conversion function.</p>
+      </div>`;
+  } else {
+    // Find the first failed test
+    const firstFailedTest = results.find(r => !r.passed);
+    
+    if (firstFailedTest) {
+      // Show only the first failed test
+      html = `
+        <div class="test-failure">
+          <h4>Almost there!</h4>
+          <p>Your function passed ${passedCount} out of ${totalCount} tests.</p>
+          <h5>First Failed Test:</h5>
+          <table class="test-results-table">
+            <thead>
+              <tr>
+                <th>Test Case</th>
+                <th>Input</th>
+                <th>Expected</th>
+                <th>Your Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="test-failed">
+                <td>${escapeHTML(firstFailedTest.description)}</td>
+                <td>${firstFailedTest.input}°C</td>
+                <td>${firstFailedTest.expected}°F</td>
+                <td>${firstFailedTest.error ? '<span class="error">Error</span>' : firstFailedTest.actual}°F</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Fix this issue and try again!</p>
+        </div>`;
+    } else {
+      // This should not happen but handle it just in case
+      html = `
+        <div class="test-failure">
+          <h4>Something went wrong</h4>
+          <p>Could not find a failed test, but not all tests passed.</p>
+        </div>`;
+    }
+  }
+  
+  containerElement.innerHTML = html;
+  return allPassed;
+}
+
+/**
+ * Displays an error message in the test results container
+ * @param error - The error object or message
+ * @param containerElement - DOM element to contain the error
+ */
+export function displayTestError(error: any, containerElement: HTMLElement): void {
+  containerElement.innerHTML = `
+    <div class="test-error">
+      <h4>Error</h4>
+      <p>There was an error running your code:</p>
+      <pre>${escapeHTML(error.toString())}</pre>
+      <p>Please fix the errors in your code and try again.</p>
+    </div>`;
+}
+</file>
+
+<file path=".gitignore">
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Compiled output
+/dist
+/build
+/out
+
+# TypeScript incremental compilation cache
+*.tsbuildinfo
+
+# Coverage directory
+/coverage
+
+# Testing
+/coverage
+/.nyc_output
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Cache
+.npm
+.eslintcache
+.stylelintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# IDE specific files
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Python cache files (just in case)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Package files
+*.tgz
+.yarn-integrity
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Webpack stats
+stats.json
+
+# Generated by MacOS
+.DS_Store
+
+# Generated by Windows
+Thumbs.db
+ehthumbs.db
+
+# Debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+</file>
+
+<file path="src/css/challenges.css">
+/* Progress tracking and sidebar checkmarks */
+.lesson-sidebar li {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.lesson-sidebar li.completed::before {
+  content: "✓";
+  color: #28a745;
+  font-weight: bold;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.lesson-sidebar a.completed {
+  color: #28a745;
+  font-weight: 500;
+}
+
+/* Progress storage notification */
+.progress-saved {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.progress-saved.fade-out {
+  opacity: 0;
+}/* Challenge-specific styles for interactive coding lessons */
+
+/* Info box styles */
+.info-box {
+  background-color: #eef6ff;
+  border-left: 4px solid #4b8bbe;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.info-box h4 {
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.info-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* Challenge container */
+.challenge-container {
+  background-color: #f7f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid #e1e4e8;
+}
+
+.challenge-container h4 {
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Test buttons */
+.test-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.test-button:hover {
+  background-color: #218838;
+}
+
+.test-button:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+/* Test results */
+.test-result {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.test-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #28a745;
+}
+
+.test-success h4 {
+  color: #155724;
+  margin-top: 0;
+}
+
+.test-failure {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #ffc107;
+}
+
+.test-failure h4 {
+  color: #856404;
+  margin-top: 0;
+}
+
+.test-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #dc3545;
+}
+
+.test-error h4 {
+  color: #721c24;
+  margin-top: 0;
+}
+
+.test-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.test-results-table th,
+.test-results-table td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  text-align: left;
+}
+
+.test-results-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.test-passed {
+  background-color: #f0fff4;
+}
+
+.test-failed {
+  background-color: #fff5f5;
+}
+
+.error {
+  color: #dc3545;
+  font-style: italic;
+}
+</file>
+
+<file path="src/css/lessons.css">
+/* Lesson page layout */
+.lesson-container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 2rem;
+}
+
+.lesson-sidebar {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.lesson-sidebar h3 {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
+}
+
+.lesson-sidebar ul {
+  list-style: none;
+}
+
+.lesson-sidebar li {
+  margin-bottom: 0.5rem;
+}
+
+.lesson-sidebar a {
+  color: #306998;
+  text-decoration: none;
+  transition: color 0.3s;
+  display: block;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.lesson-sidebar a:hover {
+  background-color: #f0f0f0;
+  color: #ffd43b;
+}
+
+.lesson-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.lesson-content section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.lesson-content section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Code editor styles */
+.code-editor-container {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.code-header {
+  background-color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.run-button {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.run-button:hover {
+  background-color: #306998;
+}
+
+.run-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Code editor styles */
+.code-editor-container {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.code-header {
+  background-color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.run-button {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.run-button:hover {
+  background-color: #306998;
+}
+
+.run-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* CodeMirror styling */
+.CodeMirror {
+  height: auto !important;
+  min-height: 100px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Fallback if CodeMirror is not loaded */
+.code-editor {
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  border: none;
+  background-color: #f8f8f8;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.code-output {
+  padding: 1rem;
+  background-color: #2e3440;
+  color: #d8dee9;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.code-output:empty {
+  display: none;
+}
+
+.output-text {
+  margin: 0;
+  color: #d8dee9;
+}
+
+.output-error {
+  margin: 0;
+  color: #ff7c7c;
+}
+
+.output-empty {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Exercise styles */
+.exercise-container {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.exercise-container h4 {
+  color: #306998;
+  margin-bottom: 0.5rem;
+}
+
+/* Error message */
+.error-message {
+  background-color: #ffeded;
+  border-left: 4px solid #ff5252;
+  color: #d32f2f;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffd43b;
+  color: #333;
+  text-align: center;
+  padding: 0.5rem;
+  z-index: 1000;
+  display: none;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .lesson-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .lesson-sidebar {
+    position: static;
+    margin-bottom: 2rem;
+  }
+}
+</file>
+
+<file path="src/ts/utils/lesson-loader.ts">
+/**
+ * Utility for loading lesson data from JSON
+ */
+
+export interface LessonExample {
+  id: string;
+  title: string;
+  description: string;
+  code: string;
+}
+
+export interface LessonSection {
+  id: string;
+  title: string;
+  content: string;
+  examples?: LessonExample[];
+  // Additional properties can be added by specific lesson types
+  [key: string]: any;
+}
+
+export interface Lesson {
+  title: string;
+  description: string;
+  sections: LessonSection[];
+}
+
+/**
+ * Loads a lesson from a JSON file
+ * @param lessonId - The lesson identifier (e.g., "lesson_4")
+ * @returns Promise resolving to the lesson data
+ */
+export async function loadLesson(lessonId: string): Promise<Lesson> {
+  try {
+    // Fetch the lesson JSON file
+    const response = await fetch(`/data/${lessonId}.json`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to load lesson data: ${response.status} ${response.statusText}`);
+    }
+    
+    const lessonData: Lesson = await response.json();
+    return lessonData;
+  } catch (error) {
+    console.error(`Error loading lesson ${lessonId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Gets a mapping of example IDs to section IDs for a lesson
+ * @param lesson - The lesson data
+ * @returns Object mapping example IDs to their section IDs
+ */
+export function getLessonMapping(lesson: Lesson): { [key: string]: string } {
+  const mapping: { [key: string]: string } = {};
+  
+  lesson.sections.forEach(section => {
+    // Check if the section has examples
+    if (section.examples && section.examples.length > 0) {
+      section.examples.forEach(example => {
+        mapping[example.id] = section.id;
+      });
+    } else {
+      // For lessons without examples (like prediction lessons)
+      // map the section ID to itself
+      mapping[section.id] = section.id;
+    }
+  });
+  
+  return mapping;
+}
+
+/**
+ * Gets all required section IDs for a lesson to be considered complete
+ * @param lesson - The lesson data
+ * @returns Array of section IDs
+ */
+export function getRequiredSections(lesson: Lesson): string[] {
+  // For prediction-style lessons, we might need only specific sections
+  // For now, return all section IDs
+  return lesson.sections.map(section => section.id);
+}
+</file>
+
+<file path="src/ts/utils/progress-utils.ts">
+/**
+ * Utility functions for tracking and displaying user progress in lessons
+ */
+
+/**
+ * Marks a sidebar section as completed
+ * @param sectionName - The ID of the section to mark as completed
+ * @param lessonId - The lesson identifier (e.g., "lesson_1")
+ */
+export function markSectionCompleted(sectionName: string, lessonId: string): void {
+  // Find the sidebar link for this section
+  const sidebarLink = document.querySelector(`.lesson-sidebar a[href="#${sectionName}"]`);
+  if (!sidebarLink) {
+    console.warn(`Could not find sidebar link for section: ${sectionName}`);
+    return;
+  }
+  
+  // Add completed class to parent li element
+  const parentLi = sidebarLink.parentElement;
+  if (parentLi && !parentLi.classList.contains('completed')) {
+    parentLi.classList.add('completed');
+    
+    // Show temporary notification
+    showProgressSavedNotification();
+    
+    // Store completion in localStorage
+    saveCompletionToStorage(sectionName, lessonId);
+  }
+}
+
+/**
+ * Shows a temporary notification that progress was saved
+ */
+export function showProgressSavedNotification(): void {
+  // Check if notification already exists
+  let notification = document.querySelector('.progress-saved');
+  
+  if (!notification) {
+    // Create new notification
+    notification = document.createElement('div');
+    notification.className = 'progress-saved';
+    notification.textContent = 'Progress saved ✓';
+    
+    // Add to sidebar
+    const sidebar = document.querySelector('.lesson-sidebar');
+    if (sidebar) {
+      sidebar.appendChild(notification);
+    }
+  } else {
+    // Reset animation if notification exists
+    notification.classList.remove('fade-out');
+    // Force reflow - need to cast to HTMLElement to access offsetWidth
+    (notification as HTMLElement).offsetWidth;
+  }
+  
+  // Fade out after 2 seconds
+  setTimeout(() => {
+    notification?.classList.add('fade-out');
+  }, 2000);
+}
+
+/**
+ * Saves section completion status to localStorage
+ * @param sectionName - The section name/ID to save
+ * @param lessonId - The lesson identifier
+ */
+export function saveCompletionToStorage(sectionName: string, lessonId: string): void {
+  try {
+    // Get existing completed sections
+    const storageKey = `python_${lessonId}_completed`;
+    const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    
+    // Add this section if not already included
+    if (!completedSections.includes(sectionName)) {
+      completedSections.push(sectionName);
+      localStorage.setItem(storageKey, JSON.stringify(completedSections));
+      
+      // Dispatch a custom event to notify that progress has been updated
+      window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
+        detail: { lessonId, sectionName }
+      }));
+    }
+  } catch (error) {
+    console.warn('Failed to save progress to localStorage:', error);
+  }
+}
+
+/**
+ * Loads completion status from localStorage and updates UI
+ * @param lessonId - The lesson identifier
+ */
+export function loadCompletionFromStorage(lessonId: string): void {
+  try {
+    const storageKey = `python_${lessonId}_completed`;
+    const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    
+    // Mark each completed section
+    completedSections.forEach((sectionName: string) => {
+      const sidebarLink = document.querySelector(`.lesson-sidebar a[href="#${sectionName}"]`);
+      if (sidebarLink && sidebarLink.parentElement) {
+        sidebarLink.parentElement.classList.add('completed');
+      }
+    });
+  } catch (error) {
+    console.warn('Failed to load progress from localStorage:', error);
+  }
+}
+</file>
+
+<file path="src/ts/pyodide.ts">
+// pyodide.ts - Handles Python code execution in the browser
+import type { PyodideInterface } from 'pyodide';
+
+// Define a type for the global loadPyodide function that will be loaded from CDN
+declare global {
+  interface Window {
+    loadPyodide: (config: any) => Promise<PyodideInterface>;
+  }
+}
+
+class PythonRunner {
+  private pyodide: PyodideInterface | null = null;
+  private isLoading: boolean = false;
+  private loadPromise: Promise<PyodideInterface> | null = null;
+
+  // Initialize Pyodide
+  async initialize(): Promise<PyodideInterface> {
+    if (this.pyodide) {
+      return this.pyodide;
+    }
+
+    if (this.loadPromise) {
+      return this.loadPromise;
+    }
+
+    this.isLoading = true;
+    this.showLoadingIndicator();
+
+    // Load Pyodide script if it hasn't been loaded yet
+    if (typeof window.loadPyodide !== 'function') {
+      await this.loadPyodideScript();
+    }
+
+    this.loadPromise = window.loadPyodide({
+      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
+    });
+
+    try {
+      this.pyodide = await this.loadPromise;
+      this.isLoading = false;
+      this.hideLoadingIndicator();
+      console.log("Pyodide loaded successfully");
+      return this.pyodide;
+    } catch (error) {
+      this.isLoading = false;
+      this.hideLoadingIndicator();
+      console.error("Failed to load Pyodide:", error);
+      throw error;
+    }
+  }
+
+  // Load the Pyodide script from CDN
+  private loadPyodideScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Pyodide script'));
+      document.head.appendChild(script);
+    });
+  }
+
+  // Run Python code and return the output
+  async runCode(code: string): Promise<string> {
+    try {
+      const pyodide = await this.initialize();
+      
+      // Capture stdout
+      let output = '';
+      
+      // Set stdout to capture output
+      pyodide.setStdout({
+        batched: (text: string) => {
+          output += text;
+        }
+      });
+      
+      // Run the code
+      await pyodide.runPythonAsync(code);
+      return output;
+    } catch (error: any) {
+      return `Error: ${error.message}`;
+    }
+  }
+
+  private showLoadingIndicator(): void {
+    const loadingElement = document.getElementById('pyodide-loading');
+    if (loadingElement) {
+      loadingElement.style.display = 'block';
+    }
+  }
+
+  private hideLoadingIndicator(): void {
+    const loadingElement = document.getElementById('pyodide-loading');
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
+  }
+}
+
+// Singleton instance
+export const pythonRunner = new PythonRunner();
+</file>
+
+<file path="package.json">
+{
+  "name": "python-browser-lessons",
+  "version": "1.0.0",
+  "description": "A client-side website for running Python in the browser",
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "serve": "http-server ./dist -c-1",
+    "lint": "eslint src/ts/**/*.ts",
+    "format": "prettier --write \"src/**/*.{ts,html,css}\"",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@types/pyodide": "^0.25.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.9.1",
+    "eslint": "^8.56.0",
+    "html-webpack-plugin": "^5.6.0",
+    "http-server": "^14.1.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "mini-css-extract-plugin": "^2.7.7",
+    "prettier": "^3.2.4",
+    "style-loader": "^3.3.4",
+    "ts-jest": "^29.1.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "./dist/js",
+    "rootDir": "./src/ts",
+    "resolveJsonModule": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/ts/**/*.ts", "src/ts/utils"],
+  "exclude": ["node_modules", "dist"]
+}
+</file>
+
+<file path="src/pages/index.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python in the Browser - Learn Programming</title>
+  <!-- CSS is injected by webpack -->
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header></header>
+
+  <main class="container">
+    <section class="welcome">
+      <h2>Welcome to Interactive Python Learning</h2>
+      <p>This platform allows you to learn Python programming directly in your browser - no installation required!</p>
+      
+      <div class="features">
+        <div class="feature-card">
+          <h3>Interactive Code Editor</h3>
+          <p>Write and execute Python code directly in your browser.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Step-by-Step Lessons</h3>
+          <p>Learn programming concepts through guided exercises.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Instant Feedback</h3>
+          <p>See your code results immediately as you type.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="getting-started">
+      <h2>Getting Started</h2>
+      <p>Choose a lesson from the navigation menu to begin your Python learning journey!</p>
+      
+      <div class="lesson-cards">
+        <a href="lesson_1.html" class="lesson-card">
+          <h3>Lesson 1: Python Basics</h3>
+          <p>Learn about printing, basic data types, and simple operations.</p>
+        </a>
+        <a href="lesson_2.html" class="lesson-card">
+          <h3>Lesson 2: Functions & Temperature Conversion</h3>
+          <p>Create reusable code blocks and build a temperature converter.</p>
+        </a>
+        <a href="lesson_3.html" class="lesson-card">
+          <h3>Lesson 3: Control Flow</h3>
+          <p>Master if statements, loops, and conditional logic.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+</body>
+</html>
+</file>
+
+<file path="src/ts/utils/html-components.ts">
+/**
+ * Utility functions for generating common HTML components across lessons
+ */
+
+/**
+ * Generates the common header HTML with navigation
+ * @param currentPage - The ID of the current page (e.g., 'lesson_1', 'lesson_2')
+ * @returns HTML string for the header
+ */
+export function generateHeader(currentPage: string): string {
+  return `
+  <header>
+    <div class="container">
+      <h1>Learn Python in the Browser</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>
+          <li><a href="lesson_1.html" ${currentPage === 'lesson_1' ? 'class="active"' : ''}>Lesson 1: Basics</a></li>
+          <li><a href="lesson_2.html" ${currentPage === 'lesson_2' ? 'class="active"' : ''}>Lesson 2: Functions</a></li>
+          <li><a href="lesson_3.html" ${currentPage === 'lesson_3' ? 'class="active"' : ''}>Lesson 3: Control Flow</a></li>
+          <li><a href="lesson_4.html" ${currentPage === 'lesson_4' ? 'class="active"' : ''}>Lesson 4: Dynamic Content</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>`;
+}
+
+/**
+ * Generates the common footer HTML
+ * @returns HTML string for the footer
+ */
+export function generateFooter(): string {
+  const currentYear = new Date().getFullYear();
+  return `
+  <footer>
+    <div class="container">
+      <p>&copy; ${currentYear} Python Browser Lessons</p>
+    </div>
+  </footer>`;
+}
+
+/**
+ * Generates common head content for all pages
+ * @param title - The page title
+ * @returns HTML string for the head content
+ */
+export function generateHeadContent(title: string): string {
+  return `
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+  
+  <!-- Add CodeMirror for code editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>`;
+}
+
+export function showError(message: string): void {
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error-message';
+  errorDiv.textContent = message;
+  document.body.prepend(errorDiv);
+}
+</file>
+
+<file path="src/ts/utils/html-loader.ts">
+/**
+ * Utility for dynamically loading HTML components
+ */
+import { generateHeader, generateFooter } from './html-components';
+import { initializeLessonProgressTracker } from './lesson-progress-tracker';
+
+/**
+ * Injects common HTML components into the page
+ * @param currentPage - The ID of the current page
+ */
+export function injectCommonComponents(currentPage: string): void {
+  // Replace the header
+  const headerPlaceholder = document.querySelector('header');
+  if (headerPlaceholder) {
+    headerPlaceholder.outerHTML = generateHeader(currentPage);
+  }
+
+  // Replace the footer
+  const footerPlaceholder = document.querySelector('footer');
+  if (footerPlaceholder) {
+    footerPlaceholder.outerHTML = generateFooter();
+  }
+  
+  // Initialize the lesson progress tracker AFTER header is injected
+  // This ensures navigation elements exist when we try to update them
+  setTimeout(() => {
+    initializeLessonProgressTracker();
+  }, 0);
+}
+
+/**
+ * Initializes the page layout by injecting all common components
+ * @param currentPage - The ID of the current page
+ */
+export function initializePageLayout(currentPage: string): void {
+  // Wait for DOM to be fully loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      injectCommonComponents(currentPage);
+    });
+  } else {
+    // DOM already loaded
+    injectCommonComponents(currentPage);
+  }
+}
+</file>
+
+<file path="src/ts/utils/section-mappings.ts">
+/**
+ * Mappings between example IDs and sidebar section IDs for each lesson
+ */
+
+/**
+ * Maps example IDs to their corresponding section IDs in lesson 1
+ */
+export const LESSON_1_SECTION_MAPPING: { [key: string]: string } = {
+  'hello-world': 'print-function',
+  'comments': 'comments',
+  'math': 'basic-math',
+  'exercise1': 'exercises'
+};
+
+/**
+ * Maps example IDs to their corresponding section IDs in lesson 2
+ */
+export const LESSON_2_SECTION_MAPPING: { [key: string]: string } = {
+  'function-basic': 'functions',
+  'function-params': 'functions',
+  'temp-conversion': 'temperature',
+  'challenge': 'challenge'
+};
+
+/**
+ * Lesson 3 uses a different approach with a prediction exercise
+ * The single section is called 'prediction'
+ */
+export const LESSON_3_SECTION_MAPPING: { [key: string]: string } = {
+  'prediction': 'prediction'
+};
+
+/**
+ * Lesson 4 mapping is dynamically generated from the JSON data
+ * See lesson-loader.ts and lesson_4.ts for implementation
+ */
+export const LESSON_4_SECTION_MAPPING: { [key: string]: string } = {};
+
+/**
+ * Gets the section ID from an example ID using the lesson's mapping
+ * @param exampleId - The ID of the example or challenge
+ * @param lessonMapping - The mapping object for the current lesson
+ * @returns The corresponding section ID or the example ID if not found
+ */
+export function getSectionIdFromExampleId(
+  exampleId: string, 
+  lessonMapping: { [key: string]: string }
+): string {
+  return lessonMapping[exampleId] || exampleId;
+}
+</file>
+
+<file path="src/css/main.css">
+.code-output {
+  padding: 1rem;
+  background-color: #2e3440;
+  color: #d8dee9;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  border-top: 1px solid #ddd;
+}
+
+.code-output:empty {
+  padding: 0;
+  min-height: 0;
+}
+
+.output-text {
+  margin: 0;
+  color: #d8dee9;
+}
+
+.output-error {
+  margin: 0;
+  color: #ff7c7c;
+}
+
+.output-empty {
+  color: #aaa;
+  font-style: italic;
+}/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header styles */
+header {
+  background-color: #4b8bbe;
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+}
+
+nav ul li.nav-completed a::after {
+  content: "✓";
+  display: inline-block;
+  margin-left: 5px;
+  color: #28a745;
+  font-weight: bold;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}
+
+/* Lesson completion in navigation */
+.lesson-nav-item {
+  position: relative;
+}
+
+.lesson-nav-item.nav-completed::before {
+  content: "✓";
+  color: #ffd43b;
+  font-weight: bold;
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Main content styles */
+main {
+  padding: 2rem 0;
+}
+
+section {
+  margin-bottom: 3rem;
+}
+
+h2 {
+  color: #306998;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+h3 {
+  color: #306998;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* Feature cards */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Lesson cards */
+.lesson-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.lesson-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  border-left: 4px solid #4b8bbe;
+}
+
+.lesson-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-left-color: #ffd43b;
+}
+
+.lesson-card h3 {
+  color: #306998;
+  margin-bottom: 0.5rem;
+}
+
+/* Footer styles */
+footer {
+  background-color: #306998;
+  color: white;
+  padding: 1.5rem 0;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffd43b;
+  color: #333;
+  text-align: center;
+  padding: 0.5rem;
+  z-index: 1000;
+  display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .features, .lesson-cards {
+    grid-template-columns: 1fr;
+  }
+}
+</file>
+
+<file path="src/pages/lesson_3.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3: Output Prediction - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header></header>
+
+  <main class="container lesson-container">
+    <!-- Sidebar will be dynamically generated -->
+    <aside class="lesson-sidebar" id="lesson-sidebar">
+      <h3>In This Lesson</h3>
+      <ul id="sidebar-sections">
+        <!-- Sections will be loaded from JSON -->
+        <li class="sidebar-loading">Loading lesson content...</li>
+      </ul>
+    </aside>
+
+    <!-- Content will be dynamically generated -->
+    <div class="lesson-content" id="lesson-content">
+      <div class="loading-message">
+        <p>Loading lesson content...</p>
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+  
+  <!-- Templates for dynamic content generation -->
+  <template id="section-template">
+    <section class="lesson-section">
+      <h2 class="section-title"></h2>
+      <div class="section-content"></div>
+    </section>
+  </template>
+  
+  <template id="prediction-template">
+    <div class="prediction-section">
+      <div class="code-display-container">
+        <h4 class="function-title"></h4>
+        <pre class="code-display"><code></code></pre>
+      </div>
+      
+      <div class="table-container">
+        <table id="prediction-table">
+          <thead>
+            <tr></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      
+      <div class="feedback-container">
+        <p id="completion-message" class="hidden"></p>
+      </div>
+    </div>
+  </template>
+</body>
+</html>
+</file>
+
+<file path="src/ts/lessons/lesson_4.ts">
+// lesson_4.ts - Refactored to use the base controller classes
+import '../../css/main.css';
+import '../../css/lessons.css';
+import '../../css/challenges.css';
+import '../../css/lesson_4.css';
+
+import { CodeLessonController } from '../controllers/code-lesson-controller';
+
+class Lesson4Controller extends CodeLessonController {
+  constructor() {
+    super('lesson_4');
+  }
+  
+  // All core functionality is inherited from the base classes
+}
+
+// Create and export the controller instance
+const lesson4Controller = new Lesson4Controller();
+export default lesson4Controller;
+</file>
+
+<file path="src/ts/utils/lesson-progress-tracker.ts">
+/**
+ * Utility for tracking overall lesson completion status
+ */
+
+// Define the necessary sections for each lesson to be considered complete
+const REQUIRED_SECTIONS: { [key: string]: string[] } = {
+  'lesson_1': ['print-function', 'comments', 'basic-math', 'exercises'],
+  'lesson_2': ['functions', 'temperature', 'challenge'],
+  'lesson_3': ['prediction'],
+  'lesson_4': [] // This will be populated dynamically from the JSON data
+};
+
+/**
+ * Checks if a lesson is completely finished
+ * @param lessonId - The lesson identifier (e.g., "lesson_1")
+ * @returns boolean indicating if all required sections are completed
+ */
+export function isLessonComplete(lessonId: string): boolean {
+  try {
+    const storageKey = `python_${lessonId}_completed`;
+    const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    
+    // Get the required sections for this lesson
+    const requiredSections = REQUIRED_SECTIONS[lessonId] || [];
+    
+    // If no sections are defined, lesson is not completable
+    if (requiredSections.length === 0) {
+      return false;
+    }
+    
+    // Check if all required sections are completed
+    return requiredSections.every(section => completedSections.includes(section));
+  } catch (error) {
+    console.warn(`Failed to check lesson completion status for ${lessonId}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Updates the lesson completion status in the navigation
+ */
+export function updateLessonCompletionStatus(): void {
+  // Check each lesson
+  for (const lessonId of Object.keys(REQUIRED_SECTIONS)) {
+    const isComplete = isLessonComplete(lessonId);
+    
+    // Find the nav link for this lesson
+    const navLink = document.querySelector(`nav li a[href="${lessonId}.html"]`);
+    if (navLink) {
+      const parentLi = navLink.parentElement;
+      
+      if (isComplete) {
+        // Add completed class to the li element
+        if (parentLi && !parentLi.classList.contains('nav-completed')) {
+          parentLi.classList.add('nav-completed');
+          console.log(`Added nav-completed class to ${lessonId} nav item`);
+        }
+      } else {
+        // Remove completed class if not complete (in case user cleared progress)
+        if (parentLi && parentLi.classList.contains('nav-completed')) {
+          parentLi.classList.remove('nav-completed');
+          console.log(`Removed nav-completed class from ${lessonId} nav item`);
+        }
+      }
+    } else {
+      console.warn(`Could not find nav item for lesson: ${lessonId}`);
+    }
+  }
+}
+
+/**
+ * Modified initializeLessonProgressTracker function
+ */
+export function initializeLessonProgressTracker(): void {
+  // Update status immediately
+  updateLessonCompletionStatus();
+  
+  // Listen for custom events from lesson controllers
+  window.addEventListener('lessonProgressUpdated', () => {
+    console.log('Progress update event received, updating navigation');
+    updateLessonCompletionStatus();
+  });
+  
+  // Also listen for storage events (useful for multi-tab scenarios)
+  window.addEventListener('storage', (event) => {
+    if (event.key && event.key.startsWith('python_') && event.key.endsWith('_completed')) {
+      console.log('Storage event detected, updating navigation');
+      updateLessonCompletionStatus();
+    }
+  });
+}
+</file>
+
+<file path="webpack.config.js">
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const fs = require('fs');
+
+// Get all HTML files from src/pages
+const pagesDir = path.resolve(__dirname, 'src/pages');
+const pages = fs.readdirSync(pagesDir).filter(file => file.endsWith('.html'));
+
+// Create an HTML plugin for each page
+const htmlPlugins = pages.map(page => {
+  // Extract the base name without extension
+  const baseName = page.replace('.html', '');
+  
+  // Map the HTML filename to corresponding JS entry point
+  // This handles both lesson1.html and lesson_1.html patterns
+  const jsEntryPoint = baseName.includes('_') ? baseName : baseName.replace(/(\d+)$/, '_$1');
+  
+  return new HtmlWebpackPlugin({
+    template: path.resolve(pagesDir, page),
+    filename: page,
+    chunks: [jsEntryPoint, 'main'],
+    minify: {
+      collapseWhitespace: true,
+      removeComments: true,
+      removeRedundantAttributes: true,
+    },
+  });
+});
+
+// Dynamic entry points based on TS files in src/ts/lessons
+const lessonsDir = path.resolve(__dirname, 'src/ts/lessons');
+const entryPoints = {
+  main: './src/ts/main.ts',
+};
+
+if (fs.existsSync(lessonsDir)) {
+  fs.readdirSync(lessonsDir)
+    .filter(file => file.endsWith('.ts'))
+    .forEach(file => {
+      // Use the exact filename (without extension) as the entry point name
+      const name = file.replace('.ts', '');
+      entryPoints[name] = `./src/ts/lessons/${file}`;
+    });
+}
+
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+  
+  return {
+    entry: entryPoints,
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'js/[name].[contenthash].js',
+      clean: true,
+    },
+    devtool: isProduction ? 'source-map' : 'inline-source-map',
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.css$/,
+          use: [
+            MiniCssExtractPlugin.loader, // Always use MiniCssExtractPlugin loader
+            'css-loader',
+          ],
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.ts', '.js'],
+      fallback: {
+        // Provide browser-compatible alternatives for Node.js modules
+        "fs": false,
+        "path": false,
+        "os": false,
+        "crypto": false,
+        "stream": false,
+        "http": false,
+        "https": false,
+        "zlib": false,
+        "util": false,
+        "buffer": false,
+        "url": false,
+        "assert": false,
+        // For node-fetch specifically
+        "node-fetch": false
+      }
+    },
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: 'css/[name].[contenthash].css',
+      }),
+      new CopyPlugin({
+        patterns: [
+          { 
+            from: 'src/python', 
+            to: 'python' 
+          },
+          { 
+            from: 'src/data', 
+            to: 'data',
+            noErrorOnMissing: true
+          },
+          { 
+            from: 'public', 
+            to: '.',
+            noErrorOnMissing: true
+          },
+        ],
+      }),
+      ...htmlPlugins,
+    ],
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
+      compress: true,
+      port: 9000,
+      hot: true,
+      open: true,
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true,
+          },
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+            priority: -10
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
+        }
+      },
+    },
+  };
+};
+</file>
+
+<file path="src/pages/lesson_1.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1: Python Basics - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+  
+  <!-- Add CodeMirror for code editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header>
+  </header>
+
+  <main class="container lesson-container">
+    <!-- Sidebar will be dynamically generated -->
+    <aside class="lesson-sidebar" id="lesson-sidebar">
+      <h3>In This Lesson</h3>
+      <ul id="sidebar-sections">
+        <!-- Sections will be loaded from JSON -->
+        <li class="sidebar-loading">Loading lesson content...</li>
+      </ul>
+    </aside>
+
+    <!-- Content will be dynamically generated -->
+    <div class="lesson-content" id="lesson-content">
+      <div class="loading-message">
+        <p>Loading lesson content...</p>
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+  
+  <!-- This div will be used by Pyodide to indicate loading status -->
+  <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+  
+  <!-- Templates for dynamic content generation -->
+  <template id="section-template">
+    <section class="lesson-section">
+      <h2 class="section-title"></h2>
+      <div class="section-content"></div>
+      <div class="examples-container"></div>
+    </section>
+  </template>
+  
+  <template id="example-template">
+    <div class="example">
+      <h3 class="example-title"></h3>
+      <p class="example-description"></p>
+      <div class="code-editor-container">
+        <div class="code-header">
+          <span class="example-header-title"></span>
+          <button class="run-button">Run</button>
+        </div>
+        <textarea class="code-editor"></textarea>
+        <div class="code-output"></div>
+      </div>
+    </div>
+  </template>
+</body>
+</html>
+</file>
+
+<file path="src/pages/lesson_2.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 2: Functions - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+  <!-- Note: main.css, lessons.css, and challenges.css are imported via lesson_2.ts -->
+  
+  <!-- Add CodeMirror for code editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header></header>
+
+  <main class="container lesson-container">
+    <aside class="lesson-sidebar">
+      <h3>In This Lesson</h3>
+      <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#functions">Python Functions</a></li>
+        <li><a href="#temperature">Temperature Conversion</a></li>
+        <li><a href="#challenge">Coding Challenge</a></li>
+        <li><a href="#testing">Testing Your Solution</a></li>
+      </ul>
+    </aside>
+
+    <div class="lesson-content">
+      <h2>Lesson 2: Functions and Temperature Conversion</h2>
+      
+      <section id="introduction">
+        <h3>Introduction</h3>
+        <p>In this lesson, you'll learn how to create and use functions in Python. Functions allow us to organize code into reusable blocks that perform specific tasks.</p>
+      </section>
+
+      <section id="functions">
+        <h3>Python Functions</h3>
+        <p>Functions are defined using the <code>def</code> keyword, followed by the function name and parentheses. Any parameters the function takes are placed inside the parentheses.</p>
+        
+        <div class="code-editor-container">
+          <div class="code-header">
+            <span>Example: Basic Function</span>
+            <button class="run-button" data-example-id="function-basic">Run</button>
+          </div>
+          <textarea class="code-editor" id="function-basic-editor">def greet(name):
+    """This function greets the person passed in as a parameter"""
+    return f"Hello, {name}!"
+
+# Call the function
+message = greet("Alice")
+print(message)
+
+# Call it again with a different name
+print(greet("Bob"))</textarea>
+          <div class="code-output" id="function-basic-output"></div>
+        </div>
+        
+        <h4>Function Parameters and Return Values</h4>
+        <p>Functions can take input parameters and return values using the <code>return</code> statement.</p>
+        
+        <div class="code-editor-container">
+          <div class="code-header">
+            <span>Example: Parameters and Return Values</span>
+            <button class="run-button" data-example-id="function-params">Run</button>
+          </div>
+          <textarea class="code-editor" id="function-params-editor">def add_numbers(a, b):
+    """This function adds two numbers and returns the result"""
+    sum = a + b
+    return sum
+
+# Call the function and store the result
+result = add_numbers(5, 3)
+print(f"5 + 3 = {result}")
+
+# We can use the function directly in expressions
+print(f"10 + 20 = {add_numbers(10, 20)}")
+print(f"Result × 2 = {add_numbers(5, 3) * 2}")</textarea>
+          <div class="code-output" id="function-params-output"></div>
+        </div>
+      </section>
+
+      <section id="temperature">
+        <h3>Temperature Conversion</h3>
+        <p>One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures.</p>
+        
+        <div class="info-box">
+          <h4>Temperature Conversion Formula</h4>
+          <p>To convert from Celsius to Fahrenheit, use the formula:</p>
+          <p><code>F = (C × 9/5) + 32</code></p>
+          <p>Where <code>F</code> is the temperature in Fahrenheit and <code>C</code> is the temperature in Celsius.</p>
+        </div>
+        
+        <div class="code-editor-container">
+          <div class="code-header">
+            <span>Example: Converting Celsius to Fahrenheit</span>
+            <button class="run-button" data-example-id="temp-conversion">Run</button>
+          </div>
+          <textarea class="code-editor" id="temp-conversion-editor">def celsius_to_fahrenheit(celsius):
+    """Convert Celsius temperature to Fahrenheit"""
+    fahrenheit = (celsius * 9/5) + 32
+    return fahrenheit
+
+# Test the function with some values
+freezing_c = 0
+freezing_f = celsius_to_fahrenheit(freezing_c)
+print(f"{freezing_c}°C is {freezing_f}°F")
+
+body_temp_c = 37
+body_temp_f = celsius_to_fahrenheit(body_temp_c)
+print(f"{body_temp_c}°C is {body_temp_f}°F")
+
+boiling_c = 100
+boiling_f = celsius_to_fahrenheit(boiling_c)
+print(f"{boiling_c}°C is {boiling_f}°F")</textarea>
+          <div class="code-output" id="temp-conversion-output"></div>
+        </div>
+      </section>
+
+      <section id="challenge">
+        <h3>Coding Challenge: Temperature Converter</h3>
+        <p>Now it's your turn! Create a function called <code>celsius_to_fahrenheit</code> that:</p>
+        <ul>
+          <li>Takes a temperature in Celsius as input</li>
+          <li>Converts it to Fahrenheit using the formula: <code>F = (C × 9/5) + 32</code></li>
+          <li>Returns the Fahrenheit temperature as a number</li>
+        </ul>
+        
+        <div class="challenge-container">
+          <h4>Your Task</h4>
+          <p>Implement the <code>celsius_to_fahrenheit</code> function below:</p>
+          
+          <div class="code-editor-container">
+            <div class="code-header">
+              <span>Your Solution:</span>
+              <button class="run-button" data-example-id="challenge">Run</button>
+              <button class="test-button" data-example-id="challenge">Test Solution</button>
+            </div>
+            <textarea class="code-editor" id="challenge-editor">def celsius_to_fahrenheit(celsius):
+    # Write your function here
+    pass  # Delete this line and add your code
+
+# You can test your function with different values here
+print(celsius_to_fahrenheit(0))  # Should print 32.0
+print(celsius_to_fahrenheit(100))  # Should print 212.0
+</textarea>
+            <div class="code-output" id="challenge-output"></div>
+            <div class="test-result" id="challenge-test-result"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testing">
+        <h3>Understanding Testing</h3>
+        <p>Testing is a crucial part of software development. When you click the "Test Solution" button, our system will run your function with various inputs and check if the outputs match the expected results.</p>
+        
+        <p>The test cases include:</p>
+        <ul>
+          <li>Standard temperatures (freezing point, boiling point)</li>
+          <li>Body temperature</li>
+          <li>Negative temperatures</li>
+          <li>Edge cases</li>
+        </ul>
+        
+        <p>Your function should handle all these cases correctly to pass the tests.</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+  
+  <!-- This div will be used by Pyodide to indicate loading status -->
+  <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+</body>
+</html>
+</file>
+
+<file path="src/ts/lessons/lesson_2.ts">
+// lesson_2.ts - Updated with completion tracking for sidebar and header
+import { pythonRunner } from '../pyodide';
+import '../../css/main.css';       // Base styles first
+import '../../css/lessons.css';    // Lesson-specific styles second
+import '../../css/challenges.css'; // Challenge-specific styles last
+
+// Import utility functions
+import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
+import { runPythonCode, escapeHTML, generateTestCode, parseTestResults } from '../utils/pyodide-utils';
+import { displayTestResults, displayTestError } from '../utils/test-display-utils';
+import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
+import { LESSON_2_SECTION_MAPPING, getSectionIdFromExampleId } from '../utils/section-mappings';
+
+interface TestCase {
+  input: number;
+  expected: number;
+  description: string;
+}
+
+class Lesson2Controller {
+  private runButtons: NodeListOf<Element> = document.querySelectorAll('.run-button');
+  private testButtons: NodeListOf<Element> = document.querySelectorAll('.test-button');
+  private codeEditors: Map<string, any> = new Map();
+  private isInitialized: boolean = false;
+  private lessonId = 'lesson_2';
+  
+  // Test cases for the temperature conversion function
+  private testCases: TestCase[] = [
+    { input: 0, expected: 32, description: "Freezing point of water (0°C)" },
+    { input: 100, expected: 212, description: "Boiling point of water (100°C)" },
+    { input: 37, expected: 98.6, description: "Human body temperature (37°C)" },
+    { input: -40, expected: -40, description: "Equal point (-40°C)" },
+    { input: 25, expected: 77, description: "Room temperature (25°C)" },
+    { input: -10, expected: 14, description: "Cold winter day (-10°C)" },
+    { input: 42, expected: 107.6, description: "Hot day (42°C)" }
+  ];
+
+  constructor() {
+    // Initialize Pyodide in the background as soon as possible
+    this.initializePyodide();
+    
+    // Wait for DOM to be fully loaded before setting up event handlers
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.initialize());
+    } else {
+      // DOM already loaded, initialize immediately
+      this.initialize();
+    }
+  }
+
+  private async initializePyodide(): Promise<void> {
+    try {
+      await pythonRunner.initialize();
+      console.log('Python environment ready for Lesson 2');
+    } catch (error) {
+      console.error('Failed to initialize Python environment:', error);
+      this.showError('Failed to load Python environment. Please refresh the page and try again.');
+    }
+  }
+
+  private initialize(): void {
+    if (this.isInitialized) return;
+    
+    // Get all buttons
+    this.runButtons = document.querySelectorAll('.run-button');
+    this.testButtons = document.querySelectorAll('.test-button');
+    
+    // Initialize code editors
+    this.codeEditors = initializeCodeEditors();
+    
+    // Add click event listeners to run buttons
+    this.runButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.handleRunButtonClick(button as HTMLElement);
+      });
+    });
+    
+    // Add click event listeners to test buttons
+    this.testButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.handleTestButtonClick(button as HTMLElement);
+      });
+    });
+    
+    // Load completion status from localStorage
+    loadCompletionFromStorage(this.lessonId);
+    
+    // Update sidebar to show completed sections
+    this.updateSidebarCompletions();
+    
+    // Check if all sections are completed and update navigation
+    this.checkAllSectionsCompleted();
+    
+    // Mark as initialized
+    this.isInitialized = true;
+    console.log('Lesson 2 controller initialized');
+  }
+
+  private async handleRunButtonClick(button: HTMLElement): Promise<void> {
+    const exampleId = button.dataset.exampleId;
+    if (!exampleId) {
+      console.error('Run button is missing data-example-id attribute');
+      return;
+    }
+    
+    const editorId = `${exampleId}-editor`;
+    const outputElement = document.getElementById(`${exampleId}-output`);
+    
+    if (!outputElement) {
+      console.error(`Could not find output element for example: ${exampleId}`);
+      return;
+    }
+    
+    // Get code from the editor
+    const code = getCodeFromEditor(editorId, this.codeEditors);
+    if (!code) return;
+    
+    // Clear previous output
+    outputElement.innerHTML = '';
+    
+    // Update button state to loading
+    updateButtonState(button, true);
+    
+    try {
+      // Run the Python code
+      const result = await runPythonCode(code);
+      
+      // Display the output
+      if (result.trim()) {
+        outputElement.innerHTML = `<pre class="output-text">${escapeHTML(result)}</pre>`;
+      } else {
+        outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
+      }
+      
+      // Mark this section as completed
+      const sectionId = getSectionIdFromExampleId(exampleId, LESSON_2_SECTION_MAPPING);
+      markSectionCompleted(sectionId, this.lessonId);
+      
+      // Update sidebar to show this section as completed
+      this.updateSidebarCompletions();
+      
+      // Check if all sections are now completed
+      this.checkAllSectionsCompleted();
+    } catch (error: any) {
+      outputElement.innerHTML = `<pre class="output-error">Error: ${escapeHTML(error.toString())}</pre>`;
+    } finally {
+      // Restore button state
+      updateButtonState(button, false);
+    }
+  }
+
+  private async handleTestButtonClick(button: HTMLElement): Promise<void> {
+    const exampleId = button.dataset.exampleId;
+    if (!exampleId) {
+      console.error('Test button is missing data-example-id attribute');
+      return;
+    }
+    
+    const editorId = `${exampleId}-editor`;
+    const testResultElement = document.getElementById(`${exampleId}-test-result`);
+    
+    if (!testResultElement) {
+      console.error(`Could not find test result element for example: ${exampleId}`);
+      return;
+    }
+    
+    // Get code from the editor
+    const userCode = getCodeFromEditor(editorId, this.codeEditors);
+    if (!userCode) return;
+    
+    // Update button state to loading
+    updateButtonState(button, true, 'Testing...');
+    
+    try {
+      // Generate and run test code
+      const testCode = generateTestCode(userCode, 'celsius_to_fahrenheit', this.testCases);
+      const result = await pythonRunner.runCode(testCode);
+      
+      // Parse test results
+      const testResults = parseTestResults(result);
+      
+      // Display test results
+      const allPassed = displayTestResults(testResults, testResultElement);
+      
+      // If all tests passed, mark the challenge as completed
+      if (allPassed) {
+        const sectionId = getSectionIdFromExampleId(exampleId, LESSON_2_SECTION_MAPPING);
+        markSectionCompleted(sectionId, this.lessonId);
+        
+        // Update sidebar to show this section as completed
+        this.updateSidebarCompletions();
+        
+        // Check if all sections are now completed
+        this.checkAllSectionsCompleted();
+      }
+    } catch (error: any) {
+      displayTestError(error, testResultElement);
+    } finally {
+      // Restore button state
+      updateButtonState(button, false);
+    }
+  }
+  
+  /**
+   * Updates the sidebar to show which sections are completed
+   */
+  private updateSidebarCompletions(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson
+      const requiredSections = ['functions', 'temperature', 'challenge'];
+      
+      // Add completed class to sidebar items
+      requiredSections.forEach(sectionId => {
+        if (completedSections.includes(sectionId)) {
+          // Find corresponding sidebar item
+          const sidebarItem = document.querySelector(`.lesson-sidebar a[href="#${sectionId}"]`)?.parentElement;
+          if (sidebarItem && !sidebarItem.classList.contains('completed')) {
+            sidebarItem.classList.add('completed');
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error updating sidebar completions:', error);
+    }
+  }
+
+  /**
+   * Checks if all sections in the lesson are completed and updates the navigation
+   */
+  private checkAllSectionsCompleted(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson
+      const requiredSections = ['functions', 'temperature', 'challenge'];
+      
+      // Check if all required sections are completed
+      const allCompleted = requiredSections.every(section => 
+        completedSections.includes(section)
+      );
+      
+      console.log(`${this.lessonId} completion check:`, {
+        completedSections,
+        requiredSections,
+        allCompleted
+      });
+      
+      if (allCompleted) {
+        // Mark the lesson as completed in navigation
+        const navItem = document.querySelector(`nav li a[href="${this.lessonId}.html"]`)?.parentElement;
+        if (navItem) {
+          navItem.classList.add('nav-completed');
+          console.log(`Added nav-completed class to ${this.lessonId} nav item`);
+        } else {
+          console.warn(`Could not find ${this.lessonId} nav item`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking lesson completion:', error);
+    }
+  }
+
+  private showError(message: string): void {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.prepend(errorDiv);
+  }
+}
+
+// Create and export the controller instance
+const lesson2Controller = new Lesson2Controller();
+export default lesson2Controller;
+</file>
+
+<file path="src/ts/lessons/lesson_3.ts">
+// lesson_3.ts - Refactored to use the base controller classes
+import '../../css/main.css';
+import '../../css/lessons.css';
+import '../../css/challenges.css';
+import '../../css/lesson_3.css';
+import '../../css/lesson_4.css';
+
+import { PredictionLessonController } from '../controllers/prediction-lesson-controller';
+
+class Lesson3Controller extends PredictionLessonController {
+  constructor() {
+    super('lesson_3');
+  }
+  
+  // All core functionality is inherited from the base classes
+}
+
+// Create and export the controller instance
+const lesson3Controller = new Lesson3Controller();
+export default lesson3Controller;
+</file>
+
+<file path="src/ts/main.ts">
+// main.ts - Modified to fix CSS import order
+// Import CSS files in the correct order
+import '../css/main.css';       // Base styles first
+import '../css/lessons.css';    // Lesson-specific styles second
+import '../css/challenges.css'; // Challenge-specific styles last
+
+// Import utility for page layout
+import { initializePageLayout } from './utils/html-loader';
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Python in the Browser application initialized');
+  
+  // Determine current page from URL
+  const currentPath = window.location.pathname;
+  let currentPage = 'index';
+  
+  if (currentPath.includes('lesson_1')) {
+    currentPage = 'lesson_1';
+  } else if (currentPath.includes('lesson_2')) {
+    currentPage = 'lesson_2';
+  } else if (currentPath.includes('lesson_3')) {
+    currentPage = 'lesson_3';
+  } else if (currentPath.includes('lesson_4')) {
+    currentPage = 'lesson_4';
+  }
+  
+  // Initialize common page components
+  initializePageLayout(currentPage);
+});
+</file>
+
+<file path="src/ts/lessons/lesson_1.ts">
+// lesson_1.ts - Refactored to use the base controller classes
+import '../../css/main.css';
+import '../../css/lessons.css';
+import '../../css/challenges.css';
+import '../../css/lesson_4.css';
+
+import { CodeLessonController } from '../controllers/code-lesson-controller';
+
+class Lesson1Controller extends CodeLessonController {
+  constructor() {
+    super('lesson_1');
+  }
+  
+  // All core functionality is inherited from the base classes
+}
+
+// Create and export the controller instance
+const lesson1Controller = new Lesson1Controller();
+export default lesson1Controller;
+</file>
+
+</files>

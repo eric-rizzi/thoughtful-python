@@ -1,8 +1,7 @@
 // lesson_1.ts - Refactored to use the base controller classes
-import '../../css/main.css';
+import '../../css/base.css';
 import '../../css/lessons.css';
-import '../../css/challenges.css';
-import '../../css/lesson_4.css';
+import '../../css/exercises.css';
 
 import { CodeLessonController } from '../controllers/code-lesson-controller';
 

@@ -1,8 +1,6 @@
 // main.ts - Modified to fix CSS import order
 // Import CSS files in the correct order
-import '../css/main.css';       // Base styles first
-import '../css/lessons.css';    // Lesson-specific styles second
-import '../css/challenges.css'; // Challenge-specific styles last
+import '../css/base.css';       // Base styles first
 
 // Import utility for page layout
 import { initializePageLayout } from './utils/html-loader';

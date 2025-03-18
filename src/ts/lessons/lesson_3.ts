@@ -1,9 +1,7 @@
 // lesson_3.ts - Refactored to use the base controller classes
-import '../../css/main.css';
+import '../../css/base.css';
 import '../../css/lessons.css';
-import '../../css/challenges.css';
-import '../../css/lesson_3.css';
-import '../../css/lesson_4.css';
+import '../../css/exercises.css';
 
 import { PredictionLessonController } from '../controllers/prediction-lesson-controller';
 

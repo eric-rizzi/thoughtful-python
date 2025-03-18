@@ -1,8 +1,8 @@
 // lesson_2.ts - Updated with completion tracking for sidebar and header
 import { pythonRunner } from '../pyodide';
-import '../../css/main.css';       // Base styles first
-import '../../css/lessons.css';    // Lesson-specific styles second
-import '../../css/challenges.css'; // Challenge-specific styles last
+import '../../css/base.css';
+import '../../css/lessons.css';
+import '../../css/exercises.css';
 
 // Import utility functions
 import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
