@@ -3,9 +3,9 @@
  */
 import { pythonRunner } from '../pyodide';
 import { DynamicLessonController } from './dynamic-lesson-controller';
-import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from './editor-utils';
-import { runPythonCode, escapeHTML } from './pyodide-utils';
-import { markSectionCompleted } from './progress-utils';
+import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
+import { runPythonCode, escapeHTML } from '../utils/pyodide-utils';
+import { markSectionCompleted } from '../utils/progress-utils';
 
 export abstract class CodeLessonController extends DynamicLessonController {
   protected codeEditors: Map<string, any> = new Map();

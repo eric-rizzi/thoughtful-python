@@ -5,7 +5,7 @@ import '../../css/challenges.css';
 import '../../css/lesson_3.css';
 import '../../css/lesson_4.css';
 
-import { PredictionLessonController } from '../utils/prediction-lesson-controller';
+import { PredictionLessonController } from '../controllers/prediction-lesson-controller';
 
 class Lesson3Controller extends PredictionLessonController {
   constructor() {

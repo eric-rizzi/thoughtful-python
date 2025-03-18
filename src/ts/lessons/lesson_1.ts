@@ -4,7 +4,7 @@ import '../../css/lessons.css';
 import '../../css/challenges.css';
 import '../../css/lesson_4.css';
 
-import { CodeLessonController } from '../utils/code-lesson-controller';
+import { CodeLessonController } from '../controllers/code-lesson-controller';
 
 class Lesson1Controller extends CodeLessonController {
   constructor() {

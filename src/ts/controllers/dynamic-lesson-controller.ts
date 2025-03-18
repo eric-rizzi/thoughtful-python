@@ -1,9 +1,9 @@
 /**
  * Base class for dynamic lesson controllers that load from JSON
  */
-import { escapeHTML } from './pyodide-utils';
-import { markSectionCompleted, loadCompletionFromStorage } from './progress-utils';
-import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from './lesson-loader';
+import { escapeHTML } from '../utils/pyodide-utils';
+import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
+import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
 
 export abstract class DynamicLessonController {
   protected lesson: Lesson | null = null;

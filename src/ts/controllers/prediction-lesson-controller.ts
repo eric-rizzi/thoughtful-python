@@ -1,9 +1,9 @@
 /**
  * Base class for prediction-style lessons
  */
-import { DynamicLessonController } from './dynamic-lesson-controller';
-import { markSectionCompleted } from './progress-utils';
-import { LessonSection } from './lesson-loader';
+import { DynamicLessonController } from '../controllers/dynamic-lesson-controller';
+import { markSectionCompleted } from '../utils/progress-utils';
+import { LessonSection } from '../utils/lesson-loader';
 
 export interface PredictionTableRow {
   inputs: number[];
