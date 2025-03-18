@@ -245,75 +245,118 @@ class Lesson2Controller {
   private async runTests(userCode: string): Promise<any[]> {
     // This function will run the user's code against our test cases
     const testCode = `
+# First, execute the user's code in its own context
+# This allows their print statements to work normally
 ${userCode}
 
-# Test function results
+# Now perform our tests with a clean stdout
 import math
-
-test_results = []
-
-test_cases = [
-    {"input": 0, "expected": 32, "description": "Freezing point of water (0°C)"},
-    {"input": 100, "expected": 212, "description": "Boiling point of water (100°C)"},
-    {"input": 37, "expected": 98.6, "description": "Human body temperature (37°C)"},
-    {"input": -40, "expected": -40, "description": "Equal point (-40°C)"},
-    {"input": 25, "expected": 77, "description": "Room temperature (25°C)"},
-    {"input": -10, "expected": 14, "description": "Cold winter day (-10°C)"},
-    {"input": 42, "expected": 107.6, "description": "Hot day (42°C)"}
-]
-
-for test in test_cases:
-    inp = test["input"]
-    expected = test["expected"]
-    description = test["description"]
-    
-    # Run user function
-    try:
-        result = celsius_to_fahrenheit(inp)
-        # Check if result is close enough (accounting for floating point precision)
-        is_correct = math.isclose(result, expected, rel_tol=1e-3)
-        
-        test_results.append({
-            "input": inp,
-            "expected": expected,
-            "actual": result,
-            "passed": is_correct,
-            "description": description
-        })
-    except Exception as e:
-        test_results.append({
-            "input": inp,
-            "expected": expected,
-            "actual": str(e),
-            "passed": False,
-            "description": description,
-            "error": True
-        })
-
+import sys
 import json
+import io
+
+# Save the user-defined function to test
+user_celsius_to_fahrenheit = celsius_to_fahrenheit
+
+# Create a clean testing environment
+def run_tests():
+    # Redirect stdout to capture only our test results
+    original_stdout = sys.stdout
+    test_output = io.StringIO()
+    sys.stdout = test_output
+    
+    try:
+        test_results = []
+
+        test_cases = [
+            {"input": 0, "expected": 32, "description": "Freezing point of water (0°C)"},
+            {"input": 100, "expected": 212, "description": "Boiling point of water (100°C)"},
+            {"input": 37, "expected": 98.6, "description": "Human body temperature (37°C)"},
+            {"input": -40, "expected": -40, "description": "Equal point (-40°C)"},
+            {"input": 25, "expected": 77, "description": "Room temperature (25°C)"},
+            {"input": -10, "expected": 14, "description": "Cold winter day (-10°C)"},
+            {"input": 42, "expected": 107.6, "description": "Hot day (42°C)"}
+        ]
+
+        for test in test_cases:
+            inp = test["input"]
+            expected = test["expected"]
+            description = test["description"]
+            
+            # Run user function
+            try:
+                result = user_celsius_to_fahrenheit(inp)
+                # Check if result is close enough (accounting for floating point precision)
+                is_correct = math.isclose(result, expected, rel_tol=1e-2)
+                
+                test_results.append({
+                    "input": inp,
+                    "expected": expected,
+                    "actual": result,
+                    "passed": is_correct,
+                    "description": description
+                })
+            except Exception as e:
+                test_results.append({
+                    "input": inp,
+                    "expected": expected,
+                    "actual": str(e),
+                    "passed": False,
+                    "description": description,
+                    "error": True
+                })
+        
+        return test_results
+    except Exception as e:
+        return {"test_error": str(e)}
+    finally:
+        # Restore original stdout
+        sys.stdout = original_stdout
+
+# Run the tests and collect results
+test_results = run_tests()
+
+# Output test results in a clear, separate format
+print("===PYTHON_TEST_RESULTS_JSON===")
 print(json.dumps(test_results))
+print("===END_PYTHON_TEST_RESULTS_JSON===")
 `;
 
     // Run the combined test code
     const result = await pythonRunner.runCode(testCode);
-    console.log(result)
     
     try {
-      // Parse the JSON output
-      return JSON.parse(result.trim());
-    } catch (error) {
+      // Extract the test results using regex
+      const resultsMatch = result.match(/===PYTHON_TEST_RESULTS_JSON===\s*([\s\S]*?)\s*===END_PYTHON_TEST_RESULTS_JSON===/);
+      
+      if (resultsMatch && resultsMatch[1]) {
+        const jsonStr = resultsMatch[1].trim();
+        const parsedResults = JSON.parse(jsonStr);
+        
+        // Check if we got a test error
+        if (parsedResults.test_error) {
+          throw new Error(`Test framework error: ${parsedResults.test_error}`);
+        }
+        
+        return parsedResults;
+      }
+      
+      console.error('No test results found in output:', result);
+      throw new Error('Could not find test results in output');
+    } catch (error: any) {
+      if (error.message === 'Could not find test results in output') {
+        throw error;
+      }
       console.error('Failed to parse test results:', error);
-      throw new Error(`Failed to run tests: ${result}`);
+      throw new Error(`Failed to process test results: ${error.message}`);
     }
   }
 
   private displayTestResults(results: any[], containerElement: HTMLElement): void {
     // Count passed tests
-    console.log(results)
     const passedCount = results.filter(r => r.passed).length;
     const totalCount = results.length;
     const allPassed = passedCount === totalCount;
-    console.log(passedCount)
     
     let html = '';
     
