@@ -2,6 +2,9 @@
 import { pythonRunner } from '../pyodide';
 import '../../css/main.css';
 import '../../css/lessons.css';
+import '../../css/challenges.css';
+import { getSectionIdFromExampleId, LESSON_1_SECTION_MAPPING } from '../utils.ts/section-mappings';
+import { loadCompletionFromStorage, markSectionCompleted } from '../utils.ts/progress-utils';
 
 declare global {
   interface Window {
@@ -60,6 +63,9 @@ class Lesson1Controller {
         this.handleRunButtonClick(button as HTMLElement);
       });
     });
+    
+    // Load completion status from localStorage
+    loadCompletionFromStorage('lesson_1');
     
     // Mark as initialized
     this.isInitialized = true;
@@ -160,6 +166,10 @@ class Lesson1Controller {
       } else {
         outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
       }
+      
+      // Mark this section as completed
+      const sectionId = getSectionIdFromExampleId(exampleId, LESSON_1_SECTION_MAPPING);
+      markSectionCompleted(sectionId, exampleId);
     } catch (error: any) {
       outputElement.innerHTML = `<pre class="output-error">Error: ${this.escapeHTML(error.toString())}</pre>`;
     } finally {
@@ -168,7 +178,7 @@ class Lesson1Controller {
       button.textContent = originalText;
     }
   }
-
+  
   private escapeHTML(str: string): string {
     return str
       .replace(/&/g, '&amp;')

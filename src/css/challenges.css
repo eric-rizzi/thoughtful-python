@@ -1,4 +1,38 @@
-/* Challenge-specific styles for interactive coding lessons */
+/* Progress tracking and sidebar checkmarks */
+.lesson-sidebar li {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.lesson-sidebar li.completed::before {
+  content: "✓";
+  color: #28a745;
+  font-weight: bold;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.lesson-sidebar a.completed {
+  color: #28a745;
+  font-weight: 500;
+}
+
+/* Progress storage notification */
+.progress-saved {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.progress-saved.fade-out {
+  opacity: 0;
+}/* Challenge-specific styles for interactive coding lessons */
 
 /* Info box styles */
 .info-box {
