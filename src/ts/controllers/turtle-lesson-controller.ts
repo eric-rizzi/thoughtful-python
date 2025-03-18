@@ -624,6 +624,11 @@ export abstract class TurtleLessonController extends DynamicLessonController {
       
       // Run the code with the specific canvas ID
       const pyodide = (window as any).pyodide;
+      const indentedCode = code.split('\n').map(line => {
+        // Only add indentation to non-empty lines
+        return line.trim() ? '  ' + line : line;
+      }).join('\n');
+      
       const modifiedCode = `
 # Redirect output to our buffer
 import sys
@@ -632,7 +637,7 @@ console.buffer = StringIO()
 
 # Run user code with the specific canvas ID
 try:
-  ${code}
+  ${indentedCode}
   
   # Return paths for validation
   paths = None

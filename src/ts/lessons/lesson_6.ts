@@ -1,7 +1,7 @@
 // lesson_6.ts - Turtle Graphics Challenge
-import '../css/base.css';
-import '../css/lessons.css';
-import '../css/exercises.css';
+import '../../css/base.css';
+import '../../css/lessons.css';
+import '../../css/exercises.css';
 
 import { TurtleLessonController } from '../controllers/turtle-lesson-controller';
 
