@@ -87,6 +87,21 @@ nav a.active {
   font-weight: 600;
 }
 
+/* Lesson completion in navigation */
+.lesson-nav-item {
+  position: relative;
+}
+
+.lesson-nav-item.nav-completed::before {
+  content: "✓";
+  color: #ffd43b;
+  font-weight: bold;
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 /* Main content styles */
 main {
   padding: 2rem 0;

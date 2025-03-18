@@ -2,6 +2,7 @@
  * Utility for dynamically loading HTML components
  */
 import { generateHeader, generateFooter } from './html-components';
+import { initializeLessonProgressTracker } from './lesson-progress-tracker';
 
 /**
  * Injects common HTML components into the page
@@ -19,6 +20,15 @@ export function injectCommonComponents(currentPage: string): void {
   if (footerPlaceholder) {
     footerPlaceholder.outerHTML = generateFooter();
   }
+  
+  // Initialize the lesson progress tracker
+  initializeLessonProgressTracker();
+  
+  // Set up event listener for progress updates
+  window.addEventListener('lessonProgressUpdated', () => {
+    // Update lesson completion status in the navigation
+    initializeLessonProgressTracker();
+  });
 }
 
 /**

@@ -1,14 +1,14 @@
-// lesson_2.ts - Handles the interactive elements for Lesson 2
+// lesson_2.ts - Simplified version focused only on the challenge
 import { pythonRunner } from '../pyodide';
 import '../../css/main.css';
-import '../../css/lessons.css';
 import '../../css/challenges.css';
+import '../../css/lesson_2_simplified.css';
 
-declare global {
-  interface Window {
-    CodeMirror: any;
-  }
-}
+// Import utility functions
+import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
+import { escapeHTML, generateTestCode, parseTestResults } from '../utils/pyodide-utils';
+import { displayTestResults, displayTestError } from '../utils/test-display-utils';
+import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
 
 interface TestCase {
   input: number;
@@ -16,9 +16,9 @@ interface TestCase {
   description: string;
 }
 
-class Lesson2Controller {
-  private runButtons: NodeListOf<Element> = document.querySelectorAll('.run-button');
-  private testButtons: NodeListOf<Element> = document.querySelectorAll('.test-button');
+class Lesson2SimplifiedController {
+  private runButton: HTMLElement | null = null;
+  private testButton: HTMLElement | null = null;
   private codeEditors: Map<string, any> = new Map();
   private isInitialized: boolean = false;
   
@@ -49,7 +49,7 @@ class Lesson2Controller {
   private async initializePyodide(): Promise<void> {
     try {
       await pythonRunner.initialize();
-      console.log('Python environment ready for Lesson 2');
+      console.log('Python environment ready for Temperature Conversion Challenge');
     } catch (error) {
       console.error('Failed to initialize Python environment:', error);
       this.showError('Failed to load Python environment. Please refresh the page and try again.');
@@ -59,104 +59,57 @@ class Lesson2Controller {
   private initialize(): void {
     if (this.isInitialized) return;
     
-    // Get all buttons
-    this.runButtons = document.querySelectorAll('.run-button');
-    this.testButtons = document.querySelectorAll('.test-button');
+    // Get buttons
+    this.runButton = document.querySelector('.run-button') as HTMLElement;
+    this.testButton = document.querySelector('.test-button') as HTMLElement;
     
-    // Initialize code editors
-    this.initializeCodeEditors();
-    
-    // Add click event listeners to run buttons
-    this.runButtons.forEach(button => {
-      button.addEventListener('click', (event) => {
-        event.preventDefault();
-        this.handleRunButtonClick(button as HTMLElement);
-      });
-    });
-    
-    // Add click event listeners to test buttons
-    this.testButtons.forEach(button => {
-      button.addEventListener('click', (event) => {
-        event.preventDefault();
-        this.handleTestButtonClick(button as HTMLElement);
-      });
-    });
-    
-    // Mark as initialized
-    this.isInitialized = true;
-    console.log('Lesson 2 controller initialized');
-  }
-
-  private initializeCodeEditors(): void {
-    // Find all code editor elements
-    const editorElements = document.querySelectorAll('.code-editor');
-    
-    editorElements.forEach(element => {
-      const id = element.id;
-      
-      if (!id) {
-        console.warn('Code editor element is missing an ID attribute');
-        return;
-      }
-      
-      try {
-        // Check if CodeMirror is available
-        if (window.CodeMirror) {
-          const editor = window.CodeMirror.fromTextArea(element as HTMLTextAreaElement, {
-            mode: 'python',
-            theme: 'default',
-            lineNumbers: true,
-            indentUnit: 4,
-            tabSize: 4,
-            indentWithTabs: false,
-            lineWrapping: true,
-            extraKeys: {
-              Tab: (cm: any) => {
-                if (cm.somethingSelected()) {
-                  cm.indentSelection('add');
-                } else {
-                  cm.replaceSelection('    ', 'end');
-                }
-              }
-            }
-          });
-          
-          this.codeEditors.set(id, editor);
-        } else {
-          console.warn('CodeMirror not available, falling back to basic textarea');
-        }
-      } catch (error) {
-        console.error(`Failed to initialize code editor ${id}:`, error);
-      }
-    });
-  }
-
-  private async handleRunButtonClick(button: HTMLElement): Promise<void> {
-    const exampleId = button.dataset.exampleId;
-    if (!exampleId) {
-      console.error('Run button is missing data-example-id attribute');
+    if (!this.runButton || !this.testButton) {
+      console.error('Could not find run or test buttons');
       return;
     }
     
-    const editorId = `${exampleId}-editor`;
-    const outputElement = document.getElementById(`${exampleId}-output`);
+    // Initialize code editors
+    this.codeEditors = initializeCodeEditors();
+    
+    // Add click event listeners to buttons
+    this.runButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.handleRunButtonClick();
+    });
+    
+    this.testButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.handleTestButtonClick();
+    });
+    
+    // Load completion status from localStorage
+    loadCompletionFromStorage('lesson_2');
+    
+    // Mark as initialized
+    this.isInitialized = true;
+    console.log('Temperature Conversion Challenge initialized');
+  }
+
+  private async handleRunButtonClick(): Promise<void> {
+    if (!this.runButton) return;
+    
+    const editorId = 'challenge-editor';
+    const outputElement = document.getElementById('challenge-output');
     
     if (!outputElement) {
-      console.error(`Could not find output element for example: ${exampleId}`);
+      console.error('Could not find output element');
       return;
     }
     
     // Get code from the editor
-    const code = this.getCodeFromEditor(editorId);
+    const code = getCodeFromEditor(editorId, this.codeEditors);
     if (!code) return;
     
     // Clear previous output
     outputElement.innerHTML = '';
     
-    // Disable button and show loading state
-    button.setAttribute('disabled', 'true');
-    const originalText = button.textContent;
-    button.textContent = 'Running...';
+    // Update button state to loading
+    updateButtonState(this.runButton, true);
     
     try {
       // Run the Python code
@@ -164,261 +117,57 @@ class Lesson2Controller {
       
       // Display the output
       if (result.trim()) {
-        outputElement.innerHTML = `<pre class="output-text">${this.escapeHTML(result)}</pre>`;
+        outputElement.innerHTML = `<pre class="output-text">${escapeHTML(result)}</pre>`;
       } else {
         outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
       }
     } catch (error: any) {
-      outputElement.innerHTML = `<pre class="output-error">Error: ${this.escapeHTML(error.toString())}</pre>`;
+      outputElement.innerHTML = `<pre class="output-error">Error: ${escapeHTML(error.toString())}</pre>`;
     } finally {
-      // Re-enable the button
-      button.removeAttribute('disabled');
-      button.textContent = originalText;
+      // Restore button state
+      updateButtonState(this.runButton, false);
     }
   }
 
-  private async handleTestButtonClick(button: HTMLElement): Promise<void> {
-    const exampleId = button.dataset.exampleId;
-    if (!exampleId) {
-      console.error('Test button is missing data-example-id attribute');
-      return;
-    }
+  private async handleTestButtonClick(): Promise<void> {
+    if (!this.testButton) return;
     
-    const editorId = `${exampleId}-editor`;
-    const testResultElement = document.getElementById(`${exampleId}-test-result`);
+    const editorId = 'challenge-editor';
+    const testResultElement = document.getElementById('challenge-test-result');
     
     if (!testResultElement) {
-      console.error(`Could not find test result element for example: ${exampleId}`);
+      console.error('Could not find test result element');
       return;
     }
     
     // Get code from the editor
-    const userCode = this.getCodeFromEditor(editorId);
+    const userCode = getCodeFromEditor(editorId, this.codeEditors);
     if (!userCode) return;
     
-    // Disable button and show loading state
-    button.setAttribute('disabled', 'true');
-    const originalText = button.textContent || 'Test Solution';
-    button.textContent = 'Testing...';
+    // Update button state to loading
+    updateButtonState(this.testButton, true, 'Testing...');
     
     try {
-      // Run tests against the user's function
-      const testResults = await this.runTests(userCode);
+      // Generate and run test code
+      const testCode = generateTestCode(userCode, 'celsius_to_fahrenheit', this.testCases);
+      const result = await pythonRunner.runCode(testCode);
+      
+      // Parse test results
+      const testResults = parseTestResults(result);
       
       // Display test results
-      this.displayTestResults(testResults, testResultElement);
+      const allPassed = displayTestResults(testResults, testResultElement);
+      
+      // If all tests passed, mark the challenge as completed
+      if (allPassed) {
+        markSectionCompleted('challenge', 'lesson_2');
+      }
     } catch (error: any) {
-      testResultElement.innerHTML = `
-        <div class="test-error">
-          <h4>Error</h4>
-          <p>There was an error running your code:</p>
-          <pre>${this.escapeHTML(error.toString())}</pre>
-          <p>Please fix the errors in your code and try again.</p>
-        </div>`;
+      displayTestError(error, testResultElement);
     } finally {
-      // Re-enable the button - ensure the button is always re-enabled
-      button.removeAttribute('disabled');
-      button.textContent = originalText;
+      // Restore button state
+      updateButtonState(this.testButton, false);
     }
-  }
-
-  private getCodeFromEditor(editorId: string): string | null {
-    let code;
-    const cmEditor = this.codeEditors.get(editorId);
-    
-    if (cmEditor) {
-      // Using CodeMirror
-      code = cmEditor.getValue();
-    } else {
-      // Fallback to regular textarea
-      const editorElement = document.getElementById(editorId) as HTMLTextAreaElement;
-      if (!editorElement) {
-        console.error(`Could not find editor element: ${editorId}`);
-        return null;
-      }
-      code = editorElement.value;
-    }
-    
-    return code;
-  }
-
-  private async runTests(userCode: string): Promise<any[]> {
-    // This function will run the user's code against our test cases
-    const testCode = `
-# First, execute the user's code in its own context
-# This allows their print statements to work normally
-${userCode}
-
-# Now perform our tests with a clean stdout
-import math
-import sys
-import json
-import io
-
-# Save the user-defined function to test
-user_celsius_to_fahrenheit = celsius_to_fahrenheit
-
-# Create a clean testing environment
-def run_tests():
-    # Redirect stdout to capture only our test results
-    original_stdout = sys.stdout
-    test_output = io.StringIO()
-    sys.stdout = test_output
-    
-    try:
-        test_results = []
-
-        test_cases = [
-            {"input": 0, "expected": 32, "description": "Freezing point of water (0°C)"},
-            {"input": 100, "expected": 212, "description": "Boiling point of water (100°C)"},
-            {"input": 37, "expected": 98.6, "description": "Human body temperature (37°C)"},
-            {"input": -40, "expected": -40, "description": "Equal point (-40°C)"},
-            {"input": 25, "expected": 77, "description": "Room temperature (25°C)"},
-            {"input": -10, "expected": 14, "description": "Cold winter day (-10°C)"},
-            {"input": 42, "expected": 107.6, "description": "Hot day (42°C)"}
-        ]
-
-        for test in test_cases:
-            inp = test["input"]
-            expected = test["expected"]
-            description = test["description"]
-            
-            # Run user function
-            try:
-                result = user_celsius_to_fahrenheit(inp)
-                # Check if result is close enough (accounting for floating point precision)
-                is_correct = math.isclose(result, expected, rel_tol=1e-2)
-                
-                test_results.append({
-                    "input": inp,
-                    "expected": expected,
-                    "actual": result,
-                    "passed": is_correct,
-                    "description": description
-                })
-            except Exception as e:
-                test_results.append({
-                    "input": inp,
-                    "expected": expected,
-                    "actual": str(e),
-                    "passed": False,
-                    "description": description,
-                    "error": True
-                })
-        
-        return test_results
-    except Exception as e:
-        return {"test_error": str(e)}
-    finally:
-        # Restore original stdout
-        sys.stdout = original_stdout
-
-# Run the tests and collect results
-test_results = run_tests()
-
-# Output test results in a clear, separate format
-print("===PYTHON_TEST_RESULTS_JSON===")
-print(json.dumps(test_results))
-print("===END_PYTHON_TEST_RESULTS_JSON===")
-`;
-
-    // Run the combined test code
-    const result = await pythonRunner.runCode(testCode);
-    
-    try {
-      // Extract the test results using regex
-      const resultsMatch = result.match(/===PYTHON_TEST_RESULTS_JSON===\s*([\s\S]*?)\s*===END_PYTHON_TEST_RESULTS_JSON===/);
-      
-      if (resultsMatch && resultsMatch[1]) {
-        const jsonStr = resultsMatch[1].trim();
-        const parsedResults = JSON.parse(jsonStr);
-        
-        // Check if we got a test error
-        if (parsedResults.test_error) {
-          throw new Error(`Test framework error: ${parsedResults.test_error}`);
-        }
-        
-        return parsedResults;
-      }
-      
-      console.error('No test results found in output:', result);
-      throw new Error('Could not find test results in output');
-    } catch (error: any) {
-      if (error.message === 'Could not find test results in output') {
-        throw error;
-      }
-      console.error('Failed to parse test results:', error);
-      throw new Error(`Failed to process test results: ${error.message}`);
-    }
-  }
-
-  private displayTestResults(results: any[], containerElement: HTMLElement): void {
-    // Count passed tests
-    const passedCount = results.filter(r => r.passed).length;
-    const totalCount = results.length;
-    const allPassed = passedCount === totalCount;
-    
-    let html = '';
-    
-    if (allPassed) {
-      // All tests passed
-      html = `
-        <div class="test-success">
-          <h4>🎉 Great job!</h4>
-          <p>Your function passed all ${totalCount} tests!</p>
-          <p>You've successfully implemented the Celsius to Fahrenheit conversion function.</p>
-        </div>`;
-    } else {
-      // Find the first failed test
-      const firstFailedTest = results.find(r => !r.passed);
-      
-      if (firstFailedTest) {
-        // Show only the first failed test
-        html = `
-          <div class="test-failure">
-            <h4>Almost there!</h4>
-            <p>Your function passed ${passedCount} out of ${totalCount} tests.</p>
-            <h5>First Failed Test:</h5>
-            <table class="test-results-table">
-              <thead>
-                <tr>
-                  <th>Test Case</th>
-                  <th>Input</th>
-                  <th>Expected</th>
-                  <th>Your Result</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="test-failed">
-                  <td>${this.escapeHTML(firstFailedTest.description)}</td>
-                  <td>${firstFailedTest.input}°C</td>
-                  <td>${firstFailedTest.expected}°F</td>
-                  <td>${firstFailedTest.error ? '<span class="error">Error</span>' : firstFailedTest.actual}°F</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>Fix this issue and try again!</p>
-          </div>`;
-      } else {
-        // This should not happen but handle it just in case
-        html = `
-          <div class="test-failure">
-            <h4>Something went wrong</h4>
-            <p>Could not find a failed test, but not all tests passed.</p>
-          </div>`;
-      }
-    }
-    
-    containerElement.innerHTML = html;
-  }
-
-  private escapeHTML(str: string): string {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
   }
 
   private showError(message: string): void {
@@ -430,5 +179,5 @@ print("===END_PYTHON_TEST_RESULTS_JSON===")
 }
 
 // Create and export the controller instance
-const lesson2Controller = new Lesson2Controller();
+const lesson2Controller = new Lesson2SimplifiedController();
 export default lesson2Controller;

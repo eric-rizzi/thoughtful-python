@@ -74,6 +74,11 @@ export function saveCompletionToStorage(sectionName: string, lessonId: string): 
     if (!completedSections.includes(sectionName)) {
       completedSections.push(sectionName);
       localStorage.setItem(storageKey, JSON.stringify(completedSections));
+      
+      // Dispatch a custom event to notify that progress has been updated
+      window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
+        detail: { lessonId, sectionName }
+      }));
     }
   } catch (error) {
     console.warn('Failed to save progress to localStorage:', error);

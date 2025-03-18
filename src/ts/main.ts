@@ -1,7 +1,8 @@
-// main.ts - Main entry point for the application
-import '../css/main.css';
-import '../css/lessons.css';
-import '../css/challenges.css';
+// main.ts - Modified to fix CSS import order
+// Import CSS files in the correct order
+import '../css/main.css';       // Base styles first
+import '../css/lessons.css';    // Lesson-specific styles second
+import '../css/challenges.css'; // Challenge-specific styles last
 
 // Import utility for page layout
 import { initializePageLayout } from './utils/html-loader';

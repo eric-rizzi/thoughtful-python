@@ -124,6 +124,12 @@ module.exports = (env, argv) => {
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true,
+          },
           vendors: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
