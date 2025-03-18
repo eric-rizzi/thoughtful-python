@@ -13,7 +13,9 @@ export interface LessonSection {
   id: string;
   title: string;
   content: string;
-  examples: LessonExample[];
+  examples?: LessonExample[];
+  // Additional properties can be added by specific lesson types
+  [key: string]: any;
 }
 
 export interface Lesson {
@@ -53,9 +55,16 @@ export function getLessonMapping(lesson: Lesson): { [key: string]: string } {
   const mapping: { [key: string]: string } = {};
   
   lesson.sections.forEach(section => {
-    section.examples.forEach(example => {
-      mapping[example.id] = section.id;
-    });
+    // Check if the section has examples
+    if (section.examples && section.examples.length > 0) {
+      section.examples.forEach(example => {
+        mapping[example.id] = section.id;
+      });
+    } else {
+      // For lessons without examples (like prediction lessons)
+      // map the section ID to itself
+      mapping[section.id] = section.id;
+    }
   });
   
   return mapping;
@@ -67,5 +76,7 @@ export function getLessonMapping(lesson: Lesson): { [key: string]: string } {
  * @returns Array of section IDs
  */
 export function getRequiredSections(lesson: Lesson): string[] {
+  // For prediction-style lessons, we might need only specific sections
+  // For now, return all section IDs
   return lesson.sections.map(section => section.id);
 }

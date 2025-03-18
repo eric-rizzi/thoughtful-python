@@ -178,7 +178,7 @@ class Lesson4Controller {
     
     // Render examples
     const examplesContainer = sectionContainer.querySelector('.examples-container') as HTMLElement;
-    if (examplesContainer && section.examples.length > 0) {
+    if (examplesContainer && section.examples && section.examples.length > 0) {
       section.examples.forEach(example => {
         this.renderExample(example, examplesContainer);
       });
