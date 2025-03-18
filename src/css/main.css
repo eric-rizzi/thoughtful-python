@@ -70,6 +70,14 @@ nav ul {
   gap: 1.5rem;
 }
 
+nav ul li.nav-completed a::after {
+  content: "✓";
+  display: inline-block;
+  margin-left: 5px;
+  color: #28a745;
+  font-weight: bold;
+}
+
 nav a {
   color: white;
   text-decoration: none;

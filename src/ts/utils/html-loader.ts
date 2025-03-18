@@ -21,14 +21,11 @@ export function injectCommonComponents(currentPage: string): void {
     footerPlaceholder.outerHTML = generateFooter();
   }
   
-  // Initialize the lesson progress tracker
-  initializeLessonProgressTracker();
-  
-  // Set up event listener for progress updates
-  window.addEventListener('lessonProgressUpdated', () => {
-    // Update lesson completion status in the navigation
+  // Initialize the lesson progress tracker AFTER header is injected
+  // This ensures navigation elements exist when we try to update them
+  setTimeout(() => {
     initializeLessonProgressTracker();
-  });
+  }, 0);
 }
 
 /**

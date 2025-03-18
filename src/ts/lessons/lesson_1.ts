@@ -5,6 +5,9 @@ import '../../css/lessons.css';
 import '../../css/challenges.css';
 import { getSectionIdFromExampleId, LESSON_1_SECTION_MAPPING } from '../utils/section-mappings';
 import { loadCompletionFromStorage, markSectionCompleted } from '../utils/progress-utils';
+import { getCodeFromEditor, initializeCodeEditors, updateButtonState } from '../utils/editor-utils';
+import { escapeHTML, runPythonCode } from '../utils/pyodide-utils';
+import { showError } from '../utils/html-components';
 
 declare global {
   interface Window {
@@ -36,7 +39,7 @@ class Lesson1Controller {
       console.log('Python environment ready for Lesson 1');
     } catch (error) {
       console.error('Failed to initialize Python environment:', error);
-      this.showError('Failed to load Python environment. Please refresh the page and try again.');
+      showError('Failed to load Python environment. Please refresh the page and try again.');
     }
   }
 
@@ -54,7 +57,7 @@ class Lesson1Controller {
     console.log(`Found ${this.runButtons.length} code examples in Lesson 1`);
     
     // Initialize code editors
-    this.initializeCodeEditors();
+    this.codeEditors = initializeCodeEditors();
     
     // Add click event listeners to all run buttons
     this.runButtons.forEach(button => {
@@ -66,6 +69,9 @@ class Lesson1Controller {
     
     // Load completion status from localStorage
     loadCompletionFromStorage('lesson_1');
+    
+    // Check if all sections are completed and update navigation
+    this.checkAllSectionsCompleted();
     
     // Mark as initialized
     this.isInitialized = true;
@@ -132,67 +138,73 @@ class Lesson1Controller {
     }
     
     // Get code from the editor
-    let code;
-    const cmEditor = this.codeEditors.get(editorId);
-    
-    if (cmEditor) {
-      // Using CodeMirror
-      code = cmEditor.getValue();
-    } else {
-      // Fallback to regular textarea
-      const editorElement = document.getElementById(editorId) as HTMLTextAreaElement;
-      if (!editorElement) {
-        console.error(`Could not find editor element for example: ${exampleId}`);
-        return;
-      }
-      code = editorElement.value;
-    }
+    const code = getCodeFromEditor(editorId, this.codeEditors);
+    if (!code) return;
     
     // Clear previous output
     outputElement.innerHTML = '';
     
-    // Disable button and show loading state
-    button.setAttribute('disabled', 'true');
-    const originalText = button.textContent;
-    button.textContent = 'Running...';
+    // Update button state to loading
+    updateButtonState(button, true);
     
     try {
       // Run the Python code
-      const result = await pythonRunner.runCode(code);
+      const result = await runPythonCode(code);
       
       // Display the output
       if (result.trim()) {
-        outputElement.innerHTML = `<pre class="output-text">${this.escapeHTML(result)}</pre>`;
+        outputElement.innerHTML = `<pre class="output-text">${escapeHTML(result)}</pre>`;
       } else {
         outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
       }
       
       // Mark this section as completed
       const sectionId = getSectionIdFromExampleId(exampleId, LESSON_1_SECTION_MAPPING);
-      markSectionCompleted(sectionId, exampleId);
+      markSectionCompleted(sectionId, 'lesson_1');
+      
+      // Check if all sections are now completed
+      this.checkAllSectionsCompleted();
     } catch (error: any) {
-      outputElement.innerHTML = `<pre class="output-error">Error: ${this.escapeHTML(error.toString())}</pre>`;
+      outputElement.innerHTML = `<pre class="output-error">Error: ${escapeHTML(error.toString())}</pre>`;
     } finally {
-      // Re-enable the button
-      button.removeAttribute('disabled');
-      button.textContent = originalText;
+      // Restore button state
+      updateButtonState(button, false);
     }
   }
   
-  private escapeHTML(str: string): string {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  private showError(message: string): void {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    document.body.prepend(errorDiv);
+  /**
+   * Checks if all sections in the lesson are completed and updates the navigation
+   */
+  private checkAllSectionsCompleted(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_lesson_1_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson
+      const requiredSections = ['print-function', 'comments', 'basic-math', 'exercises'];
+      
+      // Check if all required sections are completed
+      const allCompleted = requiredSections.every(section => 
+        completedSections.includes(section)
+      );
+      
+      console.log('Lesson 1 completion check:', {
+        completedSections,
+        requiredSections,
+        allCompleted
+      });
+      
+      if (allCompleted) {
+        // Instead of manually updating the nav item, dispatch the event
+        // that the progress tracker is listening for
+        window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
+          detail: { lessonId: 'lesson_1' }
+        }));
+      }
+    } catch (error) {
+      console.error('Error checking lesson completion:', error);
+    }
   }
 }
 

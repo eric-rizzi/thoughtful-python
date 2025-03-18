@@ -46,27 +46,44 @@ export function updateLessonCompletionStatus(): void {
     // Find the nav link for this lesson
     const navLink = document.querySelector(`nav li a[href="${lessonId}.html"]`);
     if (navLink) {
+      const parentLi = navLink.parentElement;
+      
       if (isComplete) {
         // Add completed class to the li element
-        const parentLi = navLink.parentElement;
         if (parentLi && !parentLi.classList.contains('nav-completed')) {
           parentLi.classList.add('nav-completed');
+          console.log(`Added nav-completed class to ${lessonId} nav item`);
+        }
+      } else {
+        // Remove completed class if not complete (in case user cleared progress)
+        if (parentLi && parentLi.classList.contains('nav-completed')) {
+          parentLi.classList.remove('nav-completed');
+          console.log(`Removed nav-completed class from ${lessonId} nav item`);
         }
       }
+    } else {
+      console.warn(`Could not find nav item for lesson: ${lessonId}`);
     }
   }
 }
 
 /**
- * Initializes the lesson progress tracker
- * This should be called when the DOM is ready
+ * Modified initializeLessonProgressTracker function
  */
 export function initializeLessonProgressTracker(): void {
+  // Update status immediately
   updateLessonCompletionStatus();
   
-  // Listen for storage events to update when progress changes
+  // Listen for custom events from lesson controllers
+  window.addEventListener('lessonProgressUpdated', () => {
+    console.log('Progress update event received, updating navigation');
+    updateLessonCompletionStatus();
+  });
+  
+  // Also listen for storage events (useful for multi-tab scenarios)
   window.addEventListener('storage', (event) => {
     if (event.key && event.key.startsWith('python_') && event.key.endsWith('_completed')) {
+      console.log('Storage event detected, updating navigation');
       updateLessonCompletionStatus();
     }
   });

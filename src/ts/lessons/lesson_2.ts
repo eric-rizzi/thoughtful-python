@@ -6,9 +6,11 @@ import '../../css/lesson_2_simplified.css';
 
 // Import utility functions
 import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
-import { escapeHTML, generateTestCode, parseTestResults } from '../utils/pyodide-utils';
+import { escapeHTML, generateTestCode, parseTestResults, runPythonCode } from '../utils/pyodide-utils';
 import { displayTestResults, displayTestError } from '../utils/test-display-utils';
 import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
+import { getSectionIdFromExampleId, LESSON_2_SECTION_MAPPING } from '../utils/section-mappings';
+import { showError } from '../utils/html-components';
 
 interface TestCase {
   input: number;
@@ -52,7 +54,7 @@ class Lesson2SimplifiedController {
       console.log('Python environment ready for Temperature Conversion Challenge');
     } catch (error) {
       console.error('Failed to initialize Python environment:', error);
-      this.showError('Failed to load Python environment. Please refresh the page and try again.');
+      showError('Failed to load Python environment. Please refresh the page and try again.');
     }
   }
 
@@ -74,7 +76,7 @@ class Lesson2SimplifiedController {
     // Add click event listeners to buttons
     this.runButton.addEventListener('click', (event) => {
       event.preventDefault();
-      this.handleRunButtonClick();
+      this.handleRunButtonClick(this.runButton as HTMLElement);
     });
     
     this.testButton.addEventListener('click', (event) => {
@@ -85,19 +87,26 @@ class Lesson2SimplifiedController {
     // Load completion status from localStorage
     loadCompletionFromStorage('lesson_2');
     
+    // Check if all sections are completed and update navigation
+    this.checkAllSectionsCompleted();
+    
     // Mark as initialized
     this.isInitialized = true;
-    console.log('Temperature Conversion Challenge initialized');
+    console.log('Lesson 2 controller initialized');
   }
 
-  private async handleRunButtonClick(): Promise<void> {
-    if (!this.runButton) return;
+  private async handleRunButtonClick(button: HTMLElement): Promise<void> {
+    const exampleId = button.dataset.exampleId;
+    if (!exampleId) {
+      console.error('Run button is missing data-example-id attribute');
+      return;
+    }
     
-    const editorId = 'challenge-editor';
-    const outputElement = document.getElementById('challenge-output');
+    const editorId = `${exampleId}-editor`;
+    const outputElement = document.getElementById(`${exampleId}-output`);
     
     if (!outputElement) {
-      console.error('Could not find output element');
+      console.error(`Could not find output element for example: ${exampleId}`);
       return;
     }
     
@@ -109,11 +118,11 @@ class Lesson2SimplifiedController {
     outputElement.innerHTML = '';
     
     // Update button state to loading
-    updateButtonState(this.runButton, true);
+    updateButtonState(button, true);
     
     try {
       // Run the Python code
-      const result = await pythonRunner.runCode(code);
+      const result = await runPythonCode(code);
       
       // Display the output
       if (result.trim()) {
@@ -121,11 +130,18 @@ class Lesson2SimplifiedController {
       } else {
         outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
       }
+      
+      // Mark this section as completed
+      const sectionId = getSectionIdFromExampleId(exampleId, LESSON_2_SECTION_MAPPING);
+      markSectionCompleted(sectionId, 'lesson_2');
+      
+      // Check if all sections are now completed
+      this.checkAllSectionsCompleted();
     } catch (error: any) {
       outputElement.innerHTML = `<pre class="output-error">Error: ${escapeHTML(error.toString())}</pre>`;
     } finally {
       // Restore button state
-      updateButtonState(this.runButton, false);
+      updateButtonState(button, false);
     }
   }
 
@@ -170,11 +186,42 @@ class Lesson2SimplifiedController {
     }
   }
 
-  private showError(message: string): void {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    document.body.prepend(errorDiv);
+  /**
+     * Checks if all sections in the lesson are completed and updates the navigation
+     */
+  private checkAllSectionsCompleted(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_lesson_2_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson
+      const requiredSections = ['functions', 'temperature', 'challenge'];
+      
+      // Check if all required sections are completed
+      const allCompleted = requiredSections.every(section => 
+        completedSections.includes(section)
+      );
+      
+      console.log('Lesson 2 completion check:', {
+        completedSections,
+        requiredSections,
+        allCompleted
+      });
+      
+      if (allCompleted) {
+        // Mark the lesson as completed in navigation
+        const navItem = document.querySelector('nav li a[href="lesson_2.html"]')?.parentElement;
+        if (navItem) {
+          navItem.classList.add('nav-completed');
+          console.log('Added nav-completed class to Lesson 2 nav item');
+        } else {
+          console.warn('Could not find Lesson 2 nav item');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking lesson completion:', error);
+    }
   }
 }
 
