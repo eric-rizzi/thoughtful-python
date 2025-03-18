@@ -1,4 +1,36 @@
-/* Reset and base styles */
+.code-output {
+  padding: 1rem;
+  background-color: #2e3440;
+  color: #d8dee9;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 40px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  border-top: 1px solid #ddd;
+}
+
+.code-output:empty {
+  padding: 0;
+  min-height: 0;
+}
+
+.output-text {
+  margin: 0;
+  color: #d8dee9;
+}
+
+.output-error {
+  margin: 0;
+  color: #ff7c7c;
+}
+
+.output-empty {
+  color: #aaa;
+  font-style: italic;
+}/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;

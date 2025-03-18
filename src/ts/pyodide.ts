@@ -1,6 +1,12 @@
 // pyodide.ts - Handles Python code execution in the browser
-import { loadPyodide } from 'pyodide';
 import type { PyodideInterface } from 'pyodide';
+
+// Define a type for the global loadPyodide function that will be loaded from CDN
+declare global {
+  interface Window {
+    loadPyodide: (config: any) => Promise<PyodideInterface>;
+  }
+}
 
 class PythonRunner {
   private pyodide: PyodideInterface | null = null;
@@ -20,7 +26,12 @@ class PythonRunner {
     this.isLoading = true;
     this.showLoadingIndicator();
 
-    this.loadPromise = loadPyodide({
+    // Load Pyodide script if it hasn't been loaded yet
+    if (typeof window.loadPyodide !== 'function') {
+      await this.loadPyodideScript();
+    }
+
+    this.loadPromise = window.loadPyodide({
       indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
     });
 
@@ -38,6 +49,18 @@ class PythonRunner {
     }
   }
 
+  // Load the Pyodide script from CDN
+  private loadPyodideScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Pyodide script'));
+      document.head.appendChild(script);
+    });
+  }
+
   // Run Python code and return the output
   async runCode(code: string): Promise<string> {
     try {
@@ -45,6 +68,8 @@ class PythonRunner {
       
       // Capture stdout
       let output = '';
+      
+      // Set stdout to capture output
       pyodide.setStdout({
         batched: (text: string) => {
           output += text;

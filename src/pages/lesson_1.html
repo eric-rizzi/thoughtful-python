@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lesson 1: Python Basics - Python in the Browser</title>
   <!-- CSS is injected by webpack -->
+  
+  <!-- Add CodeMirror for code editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
 </head>
 <body>
   <header>
@@ -50,8 +55,8 @@
             <span>Example: Hello World</span>
             <button class="run-button" data-example-id="hello-world">Run</button>
           </div>
-          <div class="code-editor" id="hello-world-editor">print("Hello, World!")
-print("Welcome to Python in the browser!")</div>
+          <textarea class="code-editor" id="hello-world-editor">print("Hello, World!")
+print("Welcome to Python in the browser!")</textarea>
           <div class="code-output" id="hello-world-output"></div>
         </div>
       </section>
@@ -65,11 +70,11 @@ print("Welcome to Python in the browser!")</div>
             <span>Example: Comments</span>
             <button class="run-button" data-example-id="comments">Run</button>
           </div>
-          <div class="code-editor" id="comments-editor"># This is a comment
+          <textarea class="code-editor" id="comments-editor"># This is a comment
 print("This code is executed") # This is an inline comment
 
 # The following line is not executed
-# print("This won't be printed")</div>
+# print("This won't be printed")</textarea>
           <div class="code-output" id="comments-output"></div>
         </div>
       </section>
@@ -83,13 +88,13 @@ print("This code is executed") # This is an inline comment
             <span>Example: Math Operations</span>
             <button class="run-button" data-example-id="math">Run</button>
           </div>
-          <div class="code-editor" id="math-editor">print("Addition:", 5 + 3)
+          <textarea class="code-editor" id="math-editor">print("Addition:", 5 + 3)
 print("Subtraction:", 10 - 4)
 print("Multiplication:", 6 * 7)
 print("Division:", 20 / 4)
 print("Integer Division:", 20 // 3)
 print("Remainder (Modulo):", 20 % 3)
-print("Exponentiation:", 2 ** 3)</div>
+print("Exponentiation:", 2 ** 3)</textarea>
           <div class="code-output" id="math-output"></div>
         </div>
       </section>
@@ -107,8 +112,8 @@ print("Exponentiation:", 2 ** 3)</div>
               <span>Your Solution:</span>
               <button class="run-button" data-example-id="exercise1">Run</button>
             </div>
-            <div class="code-editor" id="exercise1-editor"># Write your code here
-# Example: print("Hello, my name is Alex!")</div>
+            <textarea class="code-editor" id="exercise1-editor"># Write your code here
+# Example: print("Hello, my name is Alex!")</textarea>
             <div class="code-output" id="exercise1-output"></div>
           </div>
         </div>

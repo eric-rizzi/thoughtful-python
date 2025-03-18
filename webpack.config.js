@@ -66,7 +66,7 @@ module.exports = (env, argv) => {
         {
           test: /\.css$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            MiniCssExtractPlugin.loader, // Always use MiniCssExtractPlugin loader
             'css-loader',
           ],
         },
@@ -74,6 +74,23 @@ module.exports = (env, argv) => {
     },
     resolve: {
       extensions: ['.ts', '.js'],
+      fallback: {
+        // Provide browser-compatible alternatives for Node.js modules
+        "fs": false,
+        "path": false,
+        "os": false,
+        "crypto": false,
+        "stream": false,
+        "http": false,
+        "https": false,
+        "zlib": false,
+        "util": false,
+        "buffer": false,
+        "url": false,
+        "assert": false,
+        // For node-fetch specifically
+        "node-fetch": false
+      }
     },
     plugins: [
       new MiniCssExtractPlugin({
@@ -106,7 +123,19 @@ module.exports = (env, argv) => {
     optimization: {
       splitChunks: {
         chunks: 'all',
-        name: 'vendors',
+        cacheGroups: {
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+            priority: -10
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
+        }
       },
     },
   };

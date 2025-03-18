@@ -99,15 +99,65 @@
   cursor: not-allowed;
 }
 
+/* Code editor styles */
+.code-editor-container {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.code-header {
+  background-color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.run-button {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.run-button:hover {
+  background-color: #306998;
+}
+
+.run-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* CodeMirror styling */
+.CodeMirror {
+  height: auto !important;
+  min-height: 100px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Fallback if CodeMirror is not loaded */
 .code-editor {
+  width: 100%;
+  min-height: 100px;
   padding: 1rem;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
+  resize: vertical;
+  border: none;
   background-color: #f8f8f8;
-  overflow-x: auto;
   white-space: pre;
-  min-height: 100px;
+  tab-size: 4;
 }
 
 .code-output {

@@ -3,8 +3,15 @@ import { pythonRunner } from '../pyodide';
 import '../../css/main.css';
 import '../../css/lessons.css';
 
+declare global {
+  interface Window {
+    CodeMirror: any;
+  }
+}
+
 class Lesson1Controller {
   private runButtons: NodeListOf<Element> = document.querySelectorAll('.run-button');
+  private codeEditors: Map<string, any> = new Map();
   private isInitialized: boolean = false;
 
   constructor() {
@@ -43,6 +50,9 @@ class Lesson1Controller {
     
     console.log(`Found ${this.runButtons.length} code examples in Lesson 1`);
     
+    // Initialize code editors
+    this.initializeCodeEditors();
+    
     // Add click event listeners to all run buttons
     this.runButtons.forEach(button => {
       button.addEventListener('click', (event) => {
@@ -56,6 +66,50 @@ class Lesson1Controller {
     console.log('Lesson 1 controller initialized');
   }
 
+  private initializeCodeEditors(): void {
+    // Find all code editor elements
+    const editorElements = document.querySelectorAll('.code-editor');
+    
+    editorElements.forEach(element => {
+      const id = element.id;
+      
+      if (!id) {
+        console.warn('Code editor element is missing an ID attribute');
+        return;
+      }
+      
+      try {
+        // Check if CodeMirror is available
+        if (window.CodeMirror) {
+          const editor = window.CodeMirror.fromTextArea(element as HTMLTextAreaElement, {
+            mode: 'python',
+            theme: 'default',
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            extraKeys: {
+              Tab: (cm: any) => {
+                if (cm.somethingSelected()) {
+                  cm.indentSelection('add');
+                } else {
+                  cm.replaceSelection('    ', 'end');
+                }
+              }
+            }
+          });
+          
+          this.codeEditors.set(id, editor);
+        } else {
+          console.warn('CodeMirror not available, falling back to basic textarea');
+        }
+      } catch (error) {
+        console.error(`Failed to initialize code editor ${id}:`, error);
+      }
+    });
+  }
+
   private async handleRunButtonClick(button: HTMLElement): Promise<void> {
     const exampleId = button.dataset.exampleId;
     if (!exampleId) {
@@ -63,16 +117,30 @@ class Lesson1Controller {
       return;
     }
     
-    const editorElement = document.getElementById(`${exampleId}-editor`);
+    const editorId = `${exampleId}-editor`;
     const outputElement = document.getElementById(`${exampleId}-output`);
     
-    if (!editorElement || !outputElement) {
-      console.error(`Could not find editor or output elements for example: ${exampleId}`);
+    if (!outputElement) {
+      console.error(`Could not find output element for example: ${exampleId}`);
       return;
     }
     
     // Get code from the editor
-    const code = editorElement.textContent || '';
+    let code;
+    const cmEditor = this.codeEditors.get(editorId);
+    
+    if (cmEditor) {
+      // Using CodeMirror
+      code = cmEditor.getValue();
+    } else {
+      // Fallback to regular textarea
+      const editorElement = document.getElementById(editorId) as HTMLTextAreaElement;
+      if (!editorElement) {
+        console.error(`Could not find editor element for example: ${exampleId}`);
+        return;
+      }
+      code = editorElement.value;
+    }
     
     // Clear previous output
     outputElement.innerHTML = '';
