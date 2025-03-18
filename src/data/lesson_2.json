@@ -3,11 +3,13 @@
   "description": "Learn how to create and use functions in Python, with a focus on converting temperatures between Celsius and Fahrenheit.",
   "sections": [
     {
+      "kind": "Information",
       "id": "introduction",
       "title": "Introduction",
       "content": "In this lesson, you'll learn how to create and use functions in Python. Functions allow us to organize code into reusable blocks that perform specific tasks."
     },
     {
+      "kind": "Information",
       "id": "functions",
       "title": "Python Functions",
       "content": "Functions are defined using the def keyword, followed by the function name and parentheses. Any parameters the function takes are placed inside the parentheses.",
@@ -27,6 +29,7 @@
       ]
     },
     {
+      "kind": "Information",
       "id": "temperature",
       "title": "Temperature Conversion",
       "content": "One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures.\n\nTo convert from Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32\n\nWhere F is the temperature in Fahrenheit and C is the temperature in Celsius.",
@@ -40,6 +43,7 @@
       ]
     },
     {
+      "kind": "Testing",
       "id": "challenge",
       "title": "Coding Challenge: Temperature Converter",
       "content": "Now it's your turn! Create a function called celsius_to_fahrenheit that:\n- Takes a temperature in Celsius as input\n- Converts it to Fahrenheit using the formula: F = (C × 9/5) + 32\n- Returns the Fahrenheit temperature as a number",
@@ -62,6 +66,7 @@
       ]
     },
     {
+      "kind": "Information",
       "id": "testing",
       "title": "Understanding Testing",
       "content": "Testing is a crucial part of software development. When you click the \"Test Solution\" button, our system will run your function with various inputs and check if the outputs match the expected results.\n\nThe test cases include:\n- Standard temperatures (freezing point, boiling point)\n- Body temperature\n- Negative temperatures\n- Edge cases\n\nYour function should handle all these cases correctly to pass the tests."

@@ -24,8 +24,9 @@ export interface FunctionDisplay {
 }
 
 export interface PredictionSection extends LessonSection {
-  functionDisplay?: FunctionDisplay;
-  predictionTable?: PredictionTable;
+  kind: 'Prediction';
+  functionDisplay: FunctionDisplay;
+  predictionTable: PredictionTable;
   completionMessage?: string;
 }
 
@@ -39,9 +40,9 @@ export abstract class PredictionLessonController extends DynamicLessonController
    * Initialize the prediction data
    */
   protected async initializeLesson(): Promise<void> {
-    // Find the prediction section
+    // Find the prediction section (kind = 'Prediction')
     const predictionSection = this.lesson?.sections.find(section => 
-      section.id === 'prediction' || (section as PredictionSection).predictionTable !== undefined
+      section.kind === 'Prediction'
     ) as PredictionSection | undefined;
     
     if (predictionSection) {
@@ -77,15 +78,14 @@ export abstract class PredictionLessonController extends DynamicLessonController
   }
   
   /**
-   * Override renderSection to handle prediction sections
+   * Override renderSectionByKind to use the specific prediction renderer
    */
-  protected renderSection(section: LessonSection, container: HTMLElement): void {
-    // Check if this is a prediction section
-    if (section.id === this.predictionSectionId && (section as PredictionSection).predictionTable) {
+  protected renderSectionByKind(section: LessonSection, container: HTMLElement): void {
+    if (section.kind === 'Prediction') {
       this.renderPredictionSection(section as PredictionSection, container);
     } else {
-      // Use the parent class's standard section renderer
-      super.renderSection(section, container);
+      // For all other kinds, use the parent class's standard section renderer
+      this.renderStandardSection(section, container);
     }
   }
   
@@ -94,11 +94,11 @@ export abstract class PredictionLessonController extends DynamicLessonController
    */
   protected renderPredictionSection(section: PredictionSection, container: HTMLElement): void {
     // First render as a standard section to get the base structure
-    super.renderSection(section, container);
+    super.renderStandardSection(section, container);
     
     // Find the section container we just added
     const sectionContainer = document.getElementById(section.id);
-    if (!sectionContainer || !section.predictionTable || !section.functionDisplay) return;
+    if (!sectionContainer) return;
     
     // Use template to create prediction content
     const template = document.getElementById('prediction-template') as HTMLTemplateElement;

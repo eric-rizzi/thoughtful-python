@@ -3,11 +3,13 @@
   "description": "Practice predicting how functions will behave with different inputs without running code, an essential skill for effective programming.",
   "sections": [
     {
+      "kind": "Information",
       "id": "understanding",
       "title": "Understanding Function Behavior",
       "content": "Being able to predict how a function behaves is a crucial skill for programmers. In this exercise, you'll analyze a function and predict its output for different inputs without running the code."
     },
     {
+      "kind": "Prediction",
       "id": "prediction",
       "title": "Predict the Output",
       "content": "For each set of inputs below, predict what the function will return. Type your answer in the \"Output\" column.",
@@ -53,6 +55,7 @@
       "completionMessage": "Great job! You've correctly predicted all the function outputs. This shows you understand how the function evaluates different inputs."
     },
     {
+      "kind": "Information",
       "id": "explanation",
       "title": "Understanding the Logic",
       "content": "The find_largest function works by:\n1. Comparing a with both b and c. If a is greater than or equal to both, it returns a.\n2. If the first condition fails, it checks if b is greater than or equal to both a and c. If true, it returns b.\n3. If neither condition is true, it returns c.\n\nThis function has some interesting edge cases. What happens when two or all three numbers are equal? The function will return the first number in the comparison that satisfies the condition."

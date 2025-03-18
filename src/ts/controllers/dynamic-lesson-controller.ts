@@ -27,6 +27,9 @@ export abstract class DynamicLessonController {
       // Load lesson data from JSON
       this.lesson = await loadLesson(this.lessonId);
       
+      // Validate section kinds
+      this.validateSectionKinds();
+      
       // Generate section to example mapping
       this.lessonMapping = getLessonMapping(this.lesson);
       
@@ -55,6 +58,60 @@ export abstract class DynamicLessonController {
   }
 
   /**
+   * Validates that each section has the required properties based on its kind
+   */
+  protected validateSectionKinds(): void {
+    if (!this.lesson) return;
+    
+    // Define required properties for each kind
+    const requiredProperties: { [kind: string]: string[] } = {
+      'Information': ['id', 'title', 'content'],
+      'Observation': ['id', 'title', 'content', 'examples'],
+      'Testing': ['id', 'title', 'content', 'examples'],
+      'Prediction': ['id', 'title', 'content', 'functionDisplay', 'predictionTable']
+    };
+    
+    // Validate each section
+    this.lesson.sections.forEach((section, index) => {
+      const kind = section.kind;
+      
+      // Check if kind is present
+      if (!kind) {
+        throw new Error(`Section ${index} in lesson ${this.lessonId} is missing 'kind' property`);
+      }
+      
+      // Check if kind is valid
+      if (!requiredProperties[kind]) {
+        throw new Error(`Section ${index} in lesson ${this.lessonId} has invalid kind: ${kind}`);
+      }
+      
+      // Check if all required properties exist
+      for (const prop of requiredProperties[kind]) {
+        if (!(prop in section)) {
+          throw new Error(`Section '${section.title}' of kind '${kind}' is missing required property: ${prop}`);
+        }
+      }
+      
+      // If it's a Testing kind, validate the examples have testCases
+      if (kind === 'Testing' && section.examples) {
+        const hasTestCases = section.examples.some(example => example.testCases && example.testCases.length > 0);
+        if (!hasTestCases) {
+          throw new Error(`Section '${section.title}' of kind 'Testing' must have at least one example with testCases`);
+        }
+      }
+      
+      // If it's a Prediction kind, validate the predictionTable has rows
+      if (kind === 'Prediction' && section.predictionTable) {
+        if (!section.predictionTable.rows || !section.predictionTable.rows.length) {
+          throw new Error(`Section '${section.title}' of kind 'Prediction' must have a predictionTable with rows`);
+        }
+      }
+    });
+    
+    console.log(`All sections in lesson ${this.lessonId} passed validation`);
+  }
+
+  /**
    * Renders the entire lesson, including sidebar and content
    */
   protected renderLesson(): void {
@@ -77,14 +134,31 @@ export abstract class DynamicLessonController {
       descriptionElement.textContent = this.lesson.description;
       contentContainer.appendChild(descriptionElement);
       
-      // Render each section
+      // Render each section based on its kind
       this.lesson.sections.forEach(section => {
-        this.renderSection(section, contentContainer);
+        this.renderSectionByKind(section, contentContainer);
       });
     }
     
     // Do any lesson-specific setup after rendering
     this.afterRender();
+  }
+
+  /**
+   * Renders a section based on its kind
+   */
+  protected renderSectionByKind(section: LessonSection, container: HTMLElement): void {
+    switch (section.kind) {
+      case 'Prediction':
+        this.renderPredictionSection(section, container);
+        break;
+      case 'Testing':
+      case 'Observation':
+      case 'Information':
+      default:
+        this.renderStandardSection(section, container);
+        break;
+    }
   }
   
   /**
@@ -120,9 +194,9 @@ export abstract class DynamicLessonController {
   }
   
   /**
-   * Render a standard section (can be overridden by subclasses)
+   * Render a standard section (Information, Observation, Testing)
    */
-  protected renderSection(section: LessonSection, container: HTMLElement): void {
+  protected renderStandardSection(section: LessonSection, container: HTMLElement): void {
     // Use template to create section
     const template = document.getElementById('section-template') as HTMLTemplateElement;
     if (!template) return;
@@ -155,6 +229,16 @@ export abstract class DynamicLessonController {
     }
     
     container.appendChild(sectionContainer);
+  }
+  
+  /**
+   * Render a Prediction section
+   * This is a placeholder that should be overridden by PredictionLessonController
+   */
+  protected renderPredictionSection(section: LessonSection, container: HTMLElement): void {
+    // By default, just render as a standard section
+    // This will be overridden by PredictionLessonController
+    this.renderStandardSection(section, container);
   }
   
   /**

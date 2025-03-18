@@ -3,6 +3,7 @@
   "description": "Welcome to your first Python lesson! In this lesson, you'll learn the fundamentals of Python programming.",
   "sections": [
     {
+      "kind": "Information",
       "id": "print-function",
       "title": "The Print Function",
       "content": "The print() function displays output to the console. It's one of the most basic and frequently used functions in Python.",
@@ -16,6 +17,7 @@
       ]
     },
     {
+      "kind": "Information",
       "id": "comments",
       "title": "Comments",
       "content": "Comments help you document your code. Python ignores anything after a # symbol.",
@@ -29,6 +31,7 @@
       ]
     },
     {
+      "kind": "Information",
       "id": "basic-math",
       "title": "Basic Math Operations",
       "content": "Python can perform arithmetic operations like addition, subtraction, multiplication, and division.",
@@ -42,6 +45,7 @@
       ]
     },
     {
+      "kind": "Observation",
       "id": "exercises",
       "title": "Exercises",
       "content": "Try solving these exercises to practice what you've learned.",

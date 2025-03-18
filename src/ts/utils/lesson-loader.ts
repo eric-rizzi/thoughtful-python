@@ -7,14 +7,33 @@ export interface LessonExample {
   title: string;
   description: string;
   code: string;
+  testCases?: Array<{
+    input: any;
+    expected: any;
+    description: string;
+  }>;
 }
 
 export interface LessonSection {
+  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction';
   id: string;
   title: string;
   content: string;
   examples?: LessonExample[];
-  // Additional properties can be added by specific lesson types
+  // Additional properties for different kinds of sections
+  functionDisplay?: {
+    title: string;
+    code: string;
+  };
+  predictionTable?: {
+    columns: string[];
+    rows: Array<{
+      inputs: number[];
+      expected: number;
+      description: string;
+    }>;
+  };
+  completionMessage?: string;
   [key: string]: any;
 }
 
@@ -61,7 +80,7 @@ export function getLessonMapping(lesson: Lesson): { [key: string]: string } {
         mapping[example.id] = section.id;
       });
     } else {
-      // For lessons without examples (like prediction lessons)
+      // For lessons without examples (or for Prediction sections)
       // map the section ID to itself
       mapping[section.id] = section.id;
     }
@@ -76,7 +95,26 @@ export function getLessonMapping(lesson: Lesson): { [key: string]: string } {
  * @returns Array of section IDs
  */
 export function getRequiredSections(lesson: Lesson): string[] {
-  // For prediction-style lessons, we might need only specific sections
-  // For now, return all section IDs
-  return lesson.sections.map(section => section.id);
+  // For certain kinds of sections, we might have different completion requirements
+  const requiredSections: string[] = [];
+  
+  lesson.sections.forEach(section => {
+    switch(section.kind) {
+      case 'Testing':
+      case 'Prediction':
+      case 'Observation':
+        // These kinds of sections require interaction to complete
+        requiredSections.push(section.id);
+        break;
+      case 'Information':
+        // Information sections are optional for completion
+        // They can be marked as completed by viewing them, but aren't required
+        break;
+      default:
+        // For any other kind, include it by default
+        requiredSections.push(section.id);
+    }
+  });
+  
+  return requiredSections;
 }
