@@ -283,7 +283,7 @@ export abstract class TurtleLessonController extends DynamicLessonController {
           def pendown(self):
               self.pen_down = True
               self.current_segment_start = (self.x, self.y)
-          
+  
           def pencolor(self, color):
               self.pen_color = color
           
@@ -412,11 +412,59 @@ export abstract class TurtleLessonController extends DynamicLessonController {
           def get_path_segments(self):
               """Return the path segments for validation"""
               return self.path_segments
-      
+
+          # [other methods remain the same...]
+            
+      # Create a non-async wrapper for students
+      class StudentTurtle:
+          def __init__(self, canvas_id=None):
+              self._turtle = AnimatedTurtle(canvas_id)
+              self._last_task = asyncio.Future()
+              self._last_task.set_result(None)  # Initialize with a completed future
+              
+          def _sequence_task(self, coro):
+              """Create a task that runs after the previous task completes"""
+              # Create a new task dependent on the previous one
+              new_task = asyncio.ensure_future(
+                  self._chain_coroutine(self._last_task, coro)
+              )
+              # Update the last task
+              self._last_task = new_task
+              return new_task
+          
+          async def _chain_coroutine(self, future, coro):
+              """Chain a coroutine to run after a future completes"""
+              # Wait for the previous task to complete
+              await future
+              # Run the actual coroutine
+              return await coro
+              
+          def forward(self, distance):
+              return self._sequence_task(self._turtle.forward(distance))
+              
+          def backward(self, distance):
+              return self._sequence_task(self._turtle.backward(distance))
+              
+          def right(self, angle):
+              return self._sequence_task(self._turtle.right(angle))
+              
+          def left(self, angle):
+              return self._sequence_task(self._turtle.left(angle))
+              
+          def penup(self):
+              self._turtle.penup()
+              
+          def pendown(self):
+              self._turtle.pendown()
+              
+          def get_path_segments(self):
+              return self._turtle.path_segments
+
+
       # Create the animated_turtle module
       class AnimatedTurtleModule:
           def __init__(self):
-              self.Turtle = AnimatedTurtle
+              self.Turtle = StudentTurtle
               
               # Provide simple help documentation
               self.__doc__ = """
@@ -430,12 +478,10 @@ export abstract class TurtleLessonController extends DynamicLessonController {
                 from animated_turtle import Turtle
                 
                 t = Turtle()           # Create a new turtle
-                await t.forward(100)   # Move forward 100 pixels
-                await t.right(90)      # Turn right 90 degrees
-                t.pencolor("red")      # Change pen color to red
+                t.forward(100)         # Move forward 100 pixels
+                t.right(90)            # Turn right 90 degrees
                 t.penup()              # Lift the pen (stop drawing)
                 t.pendown()            # Lower the pen (resume drawing)
-                await t.goto(x, y)     # Move to coordinates (x,y)
               """
       
       # Add the module to sys.modules
@@ -515,7 +561,7 @@ export abstract class TurtleLessonController extends DynamicLessonController {
       const commandsList = document.createElement('ul');
       section.turtleCommands.forEach(cmd => {
         const cmdItem = document.createElement('li');
-        cmdItem.innerHTML = `<code>await t.${cmd.name}</code> - ${cmd.description}`;
+        cmdItem.innerHTML = `<code>t.${cmd.name}</code> - ${cmd.description}`;
         commandsList.appendChild(cmdItem);
       });
       
@@ -635,16 +681,22 @@ import sys
 sys.stdout = console
 console.buffer = StringIO()
 
-# Run user code with the specific canvas ID
+# Add asyncio support
+import asyncio
+
 try:
   ${indentedCode}
+  
+  # Give animations time to complete
+  await asyncio.sleep(2)
   
   # Return paths for validation
   paths = None
   try:
     if 't' in locals():
       paths = t.get_path_segments()
-  except:
+  except Exception as e:
+    print(f"Error getting path segments: {str(e)}")
     pass
   
   paths
