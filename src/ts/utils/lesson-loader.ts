@@ -15,7 +15,7 @@ export interface LessonExample {
 }
 
 export interface LessonSection {
-  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction' | 'MultipleChoice' | 'MultiSelection';
+  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction' | 'MultipleChoice' | 'MultiSelection' | 'Turtle';
   id: string;
   title: string;
   content: string;
@@ -38,7 +38,22 @@ export interface LessonSection {
   correctAnswer?: number;
   // Properties for multi-selection questions
   correctAnswers?: number[];
-  // Feedback for quiz questions
+  // Properties for turtle challenges
+  instructions?: string;
+  initialCode?: string;
+  turtleCommands?: Array<{
+    name: string;
+    description: string;
+  }>;
+  validationCriteria?: {
+    type: string;
+    shape?: string;
+    width?: number;
+    height?: number;
+    sideLength?: number;
+    [key: string]: any;
+  };
+  // Feedback for quiz and turtle sections
   feedback?: {
     correct: string;
     incorrect: string;
@@ -115,6 +130,7 @@ export function getRequiredSections(lesson: Lesson): string[] {
       case 'Observation':
       case 'MultipleChoice':
       case 'MultiSelection':
+      case 'Turtle':
         // These kinds of sections require interaction to complete
         requiredSections.push(section.id);
         break;

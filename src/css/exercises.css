@@ -414,3 +414,206 @@ tr.incorrect-row {
 .multi-selection .quiz-option input[type="checkbox"] {
   transform: scale(1.2);
 }
+
+/*
+ * 5. TURTLE CHALLENGE EXERCISES
+ */
+/* Turtle challenge container */
+.turtle-challenge-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid #e1e4e8;
+}
+
+/* Turtle instructions */
+.turtle-instructions {
+  margin-bottom: 1.5rem;
+}
+
+.turtle-instructions h4 {
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Turtle commands reference */
+.turtle-commands-reference {
+  background-color: #f0f4f8;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.turtle-commands-reference h4 {
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.turtle-commands-reference ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.turtle-commands-reference li {
+  margin-bottom: 0.3rem;
+}
+
+.turtle-commands-reference code {
+  background-color: #e1e8ed;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Turtle code editor */
+.turtle-code-editor-container {
+  margin-bottom: 1.5rem;
+}
+
+.turtle-editor-header {
+  margin-bottom: 0.5rem;
+}
+
+.turtle-editor-header h4 {
+  color: #306998;
+  margin: 0;
+}
+
+.turtle-code-editor {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  white-space: pre;
+  tab-size: 4;
+  margin-bottom: 0.5rem;
+}
+
+/* Turtle buttons */
+.turtle-buttons-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.turtle-run-button {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.turtle-run-button:hover {
+  background-color: #306998;
+}
+
+.turtle-validate-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.turtle-validate-button:hover {
+  background-color: #218838;
+}
+
+/* Turtle canvas container */
+.turtle-canvas-container {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 300px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Turtle output */
+.turtle-output {
+  width: 100%;
+  padding: 1rem;
+  background-color: #2e3440;
+  color: #d8dee9;
+  font-family: 'Courier New', monospace;
+  margin-top: 1rem;
+}
+
+.turtle-output h4 {
+  color: #8fbcbb;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.turtle-output pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Turtle error */
+.turtle-error {
+  width: 100%;
+  padding: 1rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+/* Turtle feedback */
+.turtle-feedback {
+  padding: 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.correct-feedback {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.incorrect-feedback {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+/* Pyodide status */
+.pyodide-status {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #ffd43b;
+  color: #333;
+  text-align: center;
+  z-index: 1000;
+}
+
+/* Completed section styling */
+.completed-section {
+  border-left: 4px solid #28a745 !important;
+}

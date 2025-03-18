@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage = 'lesson_4';
   } else if (currentPath.includes('lesson_5')) {
     currentPage = 'lesson_5';
+  } else if (currentPath.includes('lesson_6')) {
+    currentPage = 'lesson_6';
   }
   
   // Initialize common page components

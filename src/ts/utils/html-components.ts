@@ -20,6 +20,7 @@ export function generateHeader(currentPage: string): string {
           <li><a href="lesson_3.html" ${currentPage === 'lesson_3' ? 'class="active"' : ''}>Lesson 3: Control Flow</a></li>
           <li><a href="lesson_4.html" ${currentPage === 'lesson_4' ? 'class="active"' : ''}>Lesson 4: Data Structures</a></li>
           <li><a href="lesson_5.html" ${currentPage === 'lesson_5' ? 'class="active"' : ''}>Lesson 5: Python Quiz</a></li>
+          <li><a href="lesson_6.html" ${currentPage === 'lesson_6' ? 'class="active"' : ''}>Lesson 6: Turtles!</a></li>
         </ul>
       </nav>
     </div>

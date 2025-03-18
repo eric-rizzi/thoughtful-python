@@ -70,7 +70,8 @@ export abstract class DynamicLessonController {
       'Testing': ['id', 'title', 'content', 'examples'],
       'Prediction': ['id', 'title', 'content', 'functionDisplay', 'predictionTable'],
       'MultipleChoice': ['id', 'title', 'content', 'options', 'correctAnswer', 'feedback'],
-      'MultiSelection': ['id', 'title', 'content', 'options', 'correctAnswers', 'feedback']
+      'MultiSelection': ['id', 'title', 'content', 'options', 'correctAnswers', 'feedback'],
+      'Turtle': ['id', 'title', 'content', 'instructions', 'initialCode', 'validationCriteria', 'feedback']
     };
     
     // Validate each section
@@ -133,6 +134,25 @@ export abstract class DynamicLessonController {
           }
         }
       }
+      
+      // If it's a Turtle kind, validate the validationCriteria
+      if (kind === 'Turtle') {
+        if (!section.validationCriteria || !section.validationCriteria.type) {
+          throw new Error(`Section '${section.title}' of kind 'Turtle' must have validationCriteria with a type property`);
+        }
+        if (section.validationCriteria.type === 'shape') {
+          if (!section.validationCriteria.shape) {
+            throw new Error(`Section '${section.title}' of kind 'Turtle' with type 'shape' must specify a shape`);
+          }
+          if (section.validationCriteria.shape === 'rectangle' && 
+              (!section.validationCriteria.width || !section.validationCriteria.height)) {
+            throw new Error(`Section '${section.title}' of kind 'Turtle' with shape 'rectangle' must specify width and height`);
+          }
+          if (section.validationCriteria.shape === 'octagon' && !section.validationCriteria.sideLength) {
+            throw new Error(`Section '${section.title}' of kind 'Turtle' with shape 'octagon' must specify sideLength`);
+          }
+        }
+      }
     });
     
     console.log(`All sections in lesson ${this.lessonId} passed validation`);
@@ -185,6 +205,9 @@ export abstract class DynamicLessonController {
       case 'MultiSelection':
         this.renderMultiSelectionSection(section, container);
         break;
+      case 'Turtle':
+        this.renderTurtleSection(section, container);
+        break;
       case 'Testing':
       case 'Observation':
       case 'Information':
@@ -211,6 +234,16 @@ export abstract class DynamicLessonController {
   protected renderMultiSelectionSection(section: LessonSection, container: HTMLElement): void {
     // By default, just render as a standard section
     // This will be overridden by QuizLessonController
+    this.renderStandardSection(section, container);
+  }
+  
+  /**
+   * Render a Turtle section
+   * This is a placeholder that should be overridden by TurtleLessonController
+   */
+  protected renderTurtleSection(section: LessonSection, container: HTMLElement): void {
+    // By default, just render as a standard section
+    // This will be overridden by TurtleLessonController
     this.renderStandardSection(section, container);
   }
   
