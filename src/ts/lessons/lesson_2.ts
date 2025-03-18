@@ -1,16 +1,15 @@
-// lesson_2.ts - Simplified version focused only on the challenge
+// lesson_2.ts - Updated with completion tracking for sidebar and header
 import { pythonRunner } from '../pyodide';
-import '../../css/main.css';
-import '../../css/challenges.css';
-import '../../css/lesson_2_simplified.css';
+import '../../css/main.css';       // Base styles first
+import '../../css/lessons.css';    // Lesson-specific styles second
+import '../../css/challenges.css'; // Challenge-specific styles last
 
 // Import utility functions
 import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
-import { escapeHTML, generateTestCode, parseTestResults, runPythonCode } from '../utils/pyodide-utils';
+import { runPythonCode, escapeHTML, generateTestCode, parseTestResults } from '../utils/pyodide-utils';
 import { displayTestResults, displayTestError } from '../utils/test-display-utils';
 import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
-import { getSectionIdFromExampleId, LESSON_2_SECTION_MAPPING } from '../utils/section-mappings';
-import { showError } from '../utils/html-components';
+import { LESSON_2_SECTION_MAPPING, getSectionIdFromExampleId } from '../utils/section-mappings';
 
 interface TestCase {
   input: number;
@@ -18,11 +17,12 @@ interface TestCase {
   description: string;
 }
 
-class Lesson2SimplifiedController {
-  private runButton: HTMLElement | null = null;
-  private testButton: HTMLElement | null = null;
+class Lesson2Controller {
+  private runButtons: NodeListOf<Element> = document.querySelectorAll('.run-button');
+  private testButtons: NodeListOf<Element> = document.querySelectorAll('.test-button');
   private codeEditors: Map<string, any> = new Map();
   private isInitialized: boolean = false;
+  private lessonId = 'lesson_2';
   
   // Test cases for the temperature conversion function
   private testCases: TestCase[] = [
@@ -51,41 +51,44 @@ class Lesson2SimplifiedController {
   private async initializePyodide(): Promise<void> {
     try {
       await pythonRunner.initialize();
-      console.log('Python environment ready for Temperature Conversion Challenge');
+      console.log('Python environment ready for Lesson 2');
     } catch (error) {
       console.error('Failed to initialize Python environment:', error);
-      showError('Failed to load Python environment. Please refresh the page and try again.');
+      this.showError('Failed to load Python environment. Please refresh the page and try again.');
     }
   }
 
   private initialize(): void {
     if (this.isInitialized) return;
     
-    // Get buttons
-    this.runButton = document.querySelector('.run-button') as HTMLElement;
-    this.testButton = document.querySelector('.test-button') as HTMLElement;
-    
-    if (!this.runButton || !this.testButton) {
-      console.error('Could not find run or test buttons');
-      return;
-    }
+    // Get all buttons
+    this.runButtons = document.querySelectorAll('.run-button');
+    this.testButtons = document.querySelectorAll('.test-button');
     
     // Initialize code editors
     this.codeEditors = initializeCodeEditors();
     
-    // Add click event listeners to buttons
-    this.runButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      this.handleRunButtonClick(this.runButton as HTMLElement);
+    // Add click event listeners to run buttons
+    this.runButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.handleRunButtonClick(button as HTMLElement);
+      });
     });
     
-    this.testButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      this.handleTestButtonClick();
+    // Add click event listeners to test buttons
+    this.testButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.handleTestButtonClick(button as HTMLElement);
+      });
     });
     
     // Load completion status from localStorage
-    loadCompletionFromStorage('lesson_2');
+    loadCompletionFromStorage(this.lessonId);
+    
+    // Update sidebar to show completed sections
+    this.updateSidebarCompletions();
     
     // Check if all sections are completed and update navigation
     this.checkAllSectionsCompleted();
@@ -133,7 +136,10 @@ class Lesson2SimplifiedController {
       
       // Mark this section as completed
       const sectionId = getSectionIdFromExampleId(exampleId, LESSON_2_SECTION_MAPPING);
-      markSectionCompleted(sectionId, 'lesson_2');
+      markSectionCompleted(sectionId, this.lessonId);
+      
+      // Update sidebar to show this section as completed
+      this.updateSidebarCompletions();
       
       // Check if all sections are now completed
       this.checkAllSectionsCompleted();
@@ -145,14 +151,18 @@ class Lesson2SimplifiedController {
     }
   }
 
-  private async handleTestButtonClick(): Promise<void> {
-    if (!this.testButton) return;
+  private async handleTestButtonClick(button: HTMLElement): Promise<void> {
+    const exampleId = button.dataset.exampleId;
+    if (!exampleId) {
+      console.error('Test button is missing data-example-id attribute');
+      return;
+    }
     
-    const editorId = 'challenge-editor';
-    const testResultElement = document.getElementById('challenge-test-result');
+    const editorId = `${exampleId}-editor`;
+    const testResultElement = document.getElementById(`${exampleId}-test-result`);
     
     if (!testResultElement) {
-      console.error('Could not find test result element');
+      console.error(`Could not find test result element for example: ${exampleId}`);
       return;
     }
     
@@ -161,7 +171,7 @@ class Lesson2SimplifiedController {
     if (!userCode) return;
     
     // Update button state to loading
-    updateButtonState(this.testButton, true, 'Testing...');
+    updateButtonState(button, true, 'Testing...');
     
     try {
       // Generate and run test code
@@ -176,23 +186,57 @@ class Lesson2SimplifiedController {
       
       // If all tests passed, mark the challenge as completed
       if (allPassed) {
-        markSectionCompleted('challenge', 'lesson_2');
+        const sectionId = getSectionIdFromExampleId(exampleId, LESSON_2_SECTION_MAPPING);
+        markSectionCompleted(sectionId, this.lessonId);
+        
+        // Update sidebar to show this section as completed
+        this.updateSidebarCompletions();
+        
+        // Check if all sections are now completed
+        this.checkAllSectionsCompleted();
       }
     } catch (error: any) {
       displayTestError(error, testResultElement);
     } finally {
       // Restore button state
-      updateButtonState(this.testButton, false);
+      updateButtonState(button, false);
+    }
+  }
+  
+  /**
+   * Updates the sidebar to show which sections are completed
+   */
+  private updateSidebarCompletions(): void {
+    try {
+      // Get completed sections from localStorage
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Required sections for this lesson
+      const requiredSections = ['functions', 'temperature', 'challenge'];
+      
+      // Add completed class to sidebar items
+      requiredSections.forEach(sectionId => {
+        if (completedSections.includes(sectionId)) {
+          // Find corresponding sidebar item
+          const sidebarItem = document.querySelector(`.lesson-sidebar a[href="#${sectionId}"]`)?.parentElement;
+          if (sidebarItem && !sidebarItem.classList.contains('completed')) {
+            sidebarItem.classList.add('completed');
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error updating sidebar completions:', error);
     }
   }
 
   /**
-     * Checks if all sections in the lesson are completed and updates the navigation
-     */
+   * Checks if all sections in the lesson are completed and updates the navigation
+   */
   private checkAllSectionsCompleted(): void {
     try {
       // Get completed sections from localStorage
-      const storageKey = `python_lesson_2_completed`;
+      const storageKey = `python_${this.lessonId}_completed`;
       const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
       
       // Required sections for this lesson
@@ -203,7 +247,7 @@ class Lesson2SimplifiedController {
         completedSections.includes(section)
       );
       
-      console.log('Lesson 2 completion check:', {
+      console.log(`${this.lessonId} completion check:`, {
         completedSections,
         requiredSections,
         allCompleted
@@ -211,20 +255,27 @@ class Lesson2SimplifiedController {
       
       if (allCompleted) {
         // Mark the lesson as completed in navigation
-        const navItem = document.querySelector('nav li a[href="lesson_2.html"]')?.parentElement;
+        const navItem = document.querySelector(`nav li a[href="${this.lessonId}.html"]`)?.parentElement;
         if (navItem) {
           navItem.classList.add('nav-completed');
-          console.log('Added nav-completed class to Lesson 2 nav item');
+          console.log(`Added nav-completed class to ${this.lessonId} nav item`);
         } else {
-          console.warn('Could not find Lesson 2 nav item');
+          console.warn(`Could not find ${this.lessonId} nav item`);
         }
       }
     } catch (error) {
       console.error('Error checking lesson completion:', error);
     }
   }
+
+  private showError(message: string): void {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.prepend(errorDiv);
+  }
 }
 
 // Create and export the controller instance
-const lesson2Controller = new Lesson2SimplifiedController();
+const lesson2Controller = new Lesson2Controller();
 export default lesson2Controller;
