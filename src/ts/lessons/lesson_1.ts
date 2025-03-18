@@ -3,8 +3,8 @@ import { pythonRunner } from '../pyodide';
 import '../../css/main.css';
 import '../../css/lessons.css';
 import '../../css/challenges.css';
-import { getSectionIdFromExampleId, LESSON_1_SECTION_MAPPING } from '../utils.ts/section-mappings';
-import { loadCompletionFromStorage, markSectionCompleted } from '../utils.ts/progress-utils';
+import { getSectionIdFromExampleId, LESSON_1_SECTION_MAPPING } from '../utils/section-mappings';
+import { loadCompletionFromStorage, markSectionCompleted } from '../utils/progress-utils';
 
 declare global {
   interface Window {
