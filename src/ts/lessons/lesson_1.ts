@@ -1,35 +1,62 @@
-// lesson_1.ts - Handles the interactive elements for Lesson 1
+// lesson_1.ts - Dynamic version using JSON data
 import { pythonRunner } from '../pyodide';
 import '../../css/main.css';
 import '../../css/lessons.css';
 import '../../css/challenges.css';
-import { getSectionIdFromExampleId, LESSON_1_SECTION_MAPPING } from '../utils/section-mappings';
-import { loadCompletionFromStorage, markSectionCompleted } from '../utils/progress-utils';
-import { getCodeFromEditor, initializeCodeEditors, updateButtonState } from '../utils/editor-utils';
-import { escapeHTML, runPythonCode } from '../utils/pyodide-utils';
-import { showError } from '../utils/html-components';
+import '../../css/lesson_4.css'; // Reusing the dynamic lesson styles
 
-declare global {
-  interface Window {
-    CodeMirror: any;
-  }
-}
+// Import utilities
+import { initializeCodeEditors, getCodeFromEditor, updateButtonState } from '../utils/editor-utils';
+import { escapeHTML, runPythonCode } from '../utils/pyodide-utils';
+import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
+import { LESSON_1_SECTION_MAPPING } from '../utils/section-mappings';
+import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
 
 class Lesson1Controller {
-  private runButtons: NodeListOf<Element> = document.querySelectorAll('.run-button');
+  private lessonId = 'lesson_1';
+  private lesson: Lesson | null = null;
   private codeEditors: Map<string, any> = new Map();
   private isInitialized: boolean = false;
+  private lessonMapping: { [key: string]: string } = {};
 
   constructor() {
-    // Initialize Pyodide in the background as soon as possible
-    this.initializePyodide();
-    
-    // Wait for DOM to be fully loaded before setting up event handlers
+    // Initialize the lesson controller
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.initialize());
     } else {
       // DOM already loaded, initialize immediately
       this.initialize();
+    }
+  }
+
+  private async initialize(): Promise<void> {
+    if (this.isInitialized) return;
+    
+    try {
+      // Load lesson data from JSON
+      this.lesson = await loadLesson(this.lessonId);
+      
+      // Generate section to example mapping
+      this.lessonMapping = getLessonMapping(this.lesson);
+      
+      // Update the global LESSON_1_SECTION_MAPPING
+      Object.assign(LESSON_1_SECTION_MAPPING, this.lessonMapping);
+      
+      // Render the lesson content
+      this.renderLesson();
+      
+      // Initialize Pyodide
+      this.initializePyodide();
+      
+      // Load completion status
+      loadCompletionFromStorage(this.lessonId);
+      
+      // Mark as initialized
+      this.isInitialized = true;
+      console.log(`${this.lessonId} controller initialized`);
+    } catch (error) {
+      console.error(`Failed to initialize ${this.lessonId}:`, error);
+      this.showLoadError(error);
     }
   }
 
@@ -39,91 +66,164 @@ class Lesson1Controller {
       console.log('Python environment ready for Lesson 1');
     } catch (error) {
       console.error('Failed to initialize Python environment:', error);
-      showError('Failed to load Python environment. Please refresh the page and try again.');
+      this.showError('Failed to load Python environment. Please refresh the page and try again.');
     }
   }
 
-  private initialize(): void {
-    if (this.isInitialized) return;
+  private renderLesson(): void {
+    if (!this.lesson) return;
     
-    // Get all run buttons
-    this.runButtons = document.querySelectorAll('.run-button');
+    // Render the sidebar navigation
+    this.renderSidebar();
     
-    if (this.runButtons.length === 0) {
-      console.warn('No run buttons found in Lesson 1');
-      return;
+    // Clear loading message
+    const contentContainer = document.getElementById('lesson-content');
+    if (contentContainer) {
+      contentContainer.innerHTML = '';
+      
+      // Add lesson title and description
+      const titleElement = document.createElement('h2');
+      titleElement.textContent = this.lesson.title;
+      contentContainer.appendChild(titleElement);
+      
+      const descriptionElement = document.createElement('p');
+      descriptionElement.textContent = this.lesson.description;
+      contentContainer.appendChild(descriptionElement);
+      
+      // Render each section
+      this.lesson.sections.forEach(section => {
+        this.renderSection(section, contentContainer);
+      });
     }
     
-    console.log(`Found ${this.runButtons.length} code examples in Lesson 1`);
-    
-    // Initialize code editors
+    // Initialize code editors after rendering
     this.codeEditors = initializeCodeEditors();
     
-    // Add click event listeners to all run buttons
-    this.runButtons.forEach(button => {
+    // Add event listeners to run buttons
+    const runButtons = document.querySelectorAll('.run-button');
+    runButtons.forEach(button => {
       button.addEventListener('click', (event) => {
         event.preventDefault();
         this.handleRunButtonClick(button as HTMLElement);
       });
     });
     
-    // Load completion status from localStorage
-    loadCompletionFromStorage('lesson_1');
-    
-    // Check if all sections are completed and update navigation
+    // Check for completed sections
     this.checkAllSectionsCompleted();
-    
-    // Mark as initialized
-    this.isInitialized = true;
-    console.log('Lesson 1 controller initialized');
   }
 
-  private initializeCodeEditors(): void {
-    // Find all code editor elements
-    const editorElements = document.querySelectorAll('.code-editor');
+  private renderSidebar(): void {
+    if (!this.lesson) return;
     
-    editorElements.forEach(element => {
-      const id = element.id;
+    const sidebarContainer = document.getElementById('sidebar-sections');
+    if (sidebarContainer) {
+      sidebarContainer.innerHTML = '';
       
-      if (!id) {
-        console.warn('Code editor element is missing an ID attribute');
-        return;
-      }
-      
-      try {
-        // Check if CodeMirror is available
-        if (window.CodeMirror) {
-          const editor = window.CodeMirror.fromTextArea(element as HTMLTextAreaElement, {
-            mode: 'python',
-            theme: 'default',
-            lineNumbers: true,
-            indentUnit: 4,
-            tabSize: 4,
-            indentWithTabs: false,
-            lineWrapping: true,
-            extraKeys: {
-              Tab: (cm: any) => {
-                if (cm.somethingSelected()) {
-                  cm.indentSelection('add');
-                } else {
-                  cm.replaceSelection('    ', 'end');
-                }
-              }
-            }
-          });
-          
-          this.codeEditors.set(id, editor);
-        } else {
-          console.warn('CodeMirror not available, falling back to basic textarea');
+      // Create sidebar items for each section
+      this.lesson.sections.forEach(section => {
+        const listItem = document.createElement('li');
+        listItem.setAttribute('data-section-id', section.id);
+        
+        // Check if this section is completed
+        const storageKey = `python_${this.lessonId}_completed`;
+        const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        if (completedSections.includes(section.id)) {
+          listItem.classList.add('completed');
         }
-      } catch (error) {
-        console.error(`Failed to initialize code editor ${id}:`, error);
-      }
-    });
+        
+        const link = document.createElement('a');
+        link.href = `#${section.id}`;
+        link.textContent = section.title;
+        
+        listItem.appendChild(link);
+        sidebarContainer.appendChild(listItem);
+      });
+    }
+  }
+
+  private renderSection(section: LessonSection, container: HTMLElement): void {
+    // Use template to create section
+    const template = document.getElementById('section-template') as HTMLTemplateElement;
+    if (!template) return;
+    
+    const sectionElement = template.content.cloneNode(true) as DocumentFragment;
+    const sectionContainer = sectionElement.querySelector('.lesson-section') as HTMLElement;
+    if (!sectionContainer) return;
+    
+    // Set section ID and title
+    sectionContainer.id = section.id;
+    const titleElement = sectionContainer.querySelector('.section-title') as HTMLElement;
+    if (titleElement) {
+      titleElement.textContent = section.title;
+    }
+    
+    // Set section content
+    const contentElement = sectionContainer.querySelector('.section-content') as HTMLElement;
+    if (contentElement) {
+      contentElement.textContent = section.content;
+    }
+    
+    // Render examples
+    const examplesContainer = sectionContainer.querySelector('.examples-container') as HTMLElement;
+    if (examplesContainer && section.examples.length > 0) {
+      section.examples.forEach(example => {
+        this.renderExample(example, examplesContainer);
+      });
+    }
+    
+    container.appendChild(sectionContainer);
+  }
+
+  private renderExample(example: LessonExample, container: HTMLElement): void {
+    // Use template to create example
+    const template = document.getElementById('example-template') as HTMLTemplateElement;
+    if (!template) return;
+    
+    const exampleElement = template.content.cloneNode(true) as DocumentFragment;
+    const exampleContainer = exampleElement.querySelector('.example') as HTMLElement;
+    if (!exampleContainer) return;
+    
+    // Set example title and description
+    const titleElement = exampleContainer.querySelector('.example-title') as HTMLElement;
+    if (titleElement) {
+      titleElement.textContent = example.title;
+    }
+    
+    const descriptionElement = exampleContainer.querySelector('.example-description') as HTMLElement;
+    if (descriptionElement) {
+      descriptionElement.textContent = example.description;
+    }
+    
+    // Set up code editor
+    const codeEditor = exampleContainer.querySelector('.code-editor') as HTMLTextAreaElement;
+    if (codeEditor) {
+      codeEditor.id = `${example.id}-editor`;
+      codeEditor.value = example.code;
+    }
+    
+    // Set up run button
+    const runButton = exampleContainer.querySelector('.run-button') as HTMLButtonElement;
+    if (runButton) {
+      runButton.setAttribute('data-example-id', example.id);
+    }
+    
+    // Set up output container
+    const outputContainer = exampleContainer.querySelector('.code-output') as HTMLElement;
+    if (outputContainer) {
+      outputContainer.id = `${example.id}-output`;
+    }
+    
+    // Set header title
+    const headerTitle = exampleContainer.querySelector('.example-header-title') as HTMLElement;
+    if (headerTitle) {
+      headerTitle.textContent = example.title;
+    }
+    
+    container.appendChild(exampleContainer);
   }
 
   private async handleRunButtonClick(button: HTMLElement): Promise<void> {
-    const exampleId = button.dataset.exampleId;
+    const exampleId = button.getAttribute('data-example-id');
     if (!exampleId) {
       console.error('Run button is missing data-example-id attribute');
       return;
@@ -158,12 +258,15 @@ class Lesson1Controller {
         outputElement.innerHTML = '<p class="output-empty">Code executed successfully with no output.</p>';
       }
       
-      // Mark this section as completed
-      const sectionId = getSectionIdFromExampleId(exampleId, LESSON_1_SECTION_MAPPING);
-      markSectionCompleted(sectionId, 'lesson_1');
-      
-      // Check if all sections are now completed
-      this.checkAllSectionsCompleted();
+      // Mark the section as completed
+      const sectionId = this.getSectionIdFromExampleId(exampleId);
+      if (sectionId) {
+        markSectionCompleted(sectionId, this.lessonId);
+        this.updateSidebarCompletion(sectionId);
+        
+        // Check if all sections are now completed
+        this.checkAllSectionsCompleted();
+      }
     } catch (error: any) {
       outputElement.innerHTML = `<pre class="output-error">Error: ${escapeHTML(error.toString())}</pre>`;
     } finally {
@@ -171,40 +274,83 @@ class Lesson1Controller {
       updateButtonState(button, false);
     }
   }
-  
+
+  private getSectionIdFromExampleId(exampleId: string): string | null {
+    return this.lessonMapping[exampleId] || null;
+  }
+
+  private updateSidebarCompletion(sectionId: string): void {
+    const sidebarItem = document.querySelector(`#sidebar-sections li[data-section-id="${sectionId}"]`);
+    if (sidebarItem) {
+      sidebarItem.classList.add('completed');
+    }
+  }
+
   /**
    * Checks if all sections in the lesson are completed and updates the navigation
    */
   private checkAllSectionsCompleted(): void {
+    if (!this.lesson) return;
+    
     try {
       // Get completed sections from localStorage
-      const storageKey = `python_lesson_1_completed`;
+      const storageKey = `python_${this.lessonId}_completed`;
       const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
       
       // Required sections for this lesson
-      const requiredSections = ['print-function', 'comments', 'basic-math', 'exercises'];
+      const requiredSections = getRequiredSections(this.lesson);
       
       // Check if all required sections are completed
       const allCompleted = requiredSections.every(section => 
         completedSections.includes(section)
       );
       
-      console.log('Lesson 1 completion check:', {
+      console.log(`${this.lessonId} completion check:`, {
         completedSections,
         requiredSections,
         allCompleted
       });
       
       if (allCompleted) {
-        // Instead of manually updating the nav item, dispatch the event
-        // that the progress tracker is listening for
-        window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
-          detail: { lessonId: 'lesson_1' }
-        }));
+        // Mark the lesson as completed in navigation
+        const navItem = document.querySelector(`nav li a[href="${this.lessonId}.html"]`)?.parentElement;
+        if (navItem) {
+          navItem.classList.add('nav-completed');
+          console.log(`Added nav-completed class to ${this.lessonId} nav item`);
+        } else {
+          console.warn(`Could not find ${this.lessonId} nav item`);
+        }
       }
     } catch (error) {
       console.error('Error checking lesson completion:', error);
     }
+  }
+
+  private showLoadError(error: any): void {
+    const contentContainer = document.getElementById('lesson-content');
+    if (contentContainer) {
+      contentContainer.innerHTML = `
+        <div class="load-error">
+          <h3>Failed to Load Lesson</h3>
+          <p>We couldn't load the lesson content. Please try refreshing the page.</p>
+          <pre>${escapeHTML(error.toString())}</pre>
+        </div>
+      `;
+    }
+    
+    const sidebarContainer = document.getElementById('sidebar-sections');
+    if (sidebarContainer) {
+      sidebarContainer.innerHTML = `
+        <li class="sidebar-error">Error loading lesson content</li>
+      `;
+    }
+  }
+
+  private showError(message: string): void {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.prepend(errorDiv);
   }
 }
 

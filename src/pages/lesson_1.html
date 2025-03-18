@@ -13,100 +13,25 @@
 </head>
 <body>
   <!-- HEADER (Common across lessons) -->
-  <header></header>
+  <header>
+  </header>
 
   <main class="container lesson-container">
-    <aside class="lesson-sidebar">
+    <!-- Sidebar will be dynamically generated -->
+    <aside class="lesson-sidebar" id="lesson-sidebar">
       <h3>In This Lesson</h3>
-      <ul>
-        <li><a href="#introduction">Introduction</a></li>
-        <li><a href="#print-function">The Print Function</a></li>
-        <li><a href="#comments">Comments</a></li>
-        <li><a href="#basic-math">Basic Math Operations</a></li>
-        <li><a href="#exercises">Exercises</a></li>
+      <ul id="sidebar-sections">
+        <!-- Sections will be loaded from JSON -->
+        <li class="sidebar-loading">Loading lesson content...</li>
       </ul>
     </aside>
 
-    <div class="lesson-content">
-      <h2>Lesson 1: Python Basics</h2>
-      
-      <section id="introduction">
-        <h3>Introduction</h3>
-        <p>Welcome to your first Python lesson! In this lesson, you'll learn the fundamentals of Python programming.</p>
-      </section>
-
-      <section id="print-function">
-        <h3>The Print Function</h3>
-        <p>The <code>print()</code> function displays output to the console. Try it out:</p>
-        
-        <div class="code-editor-container">
-          <div class="code-header">
-            <span>Example: Hello World</span>
-            <button class="run-button" data-example-id="hello-world">Run</button>
-          </div>
-          <textarea class="code-editor" id="hello-world-editor">print("Hello, World!")
-print("Welcome to Python in the browser!")</textarea>
-          <div class="code-output" id="hello-world-output"></div>
-        </div>
-      </section>
-
-      <section id="comments">
-        <h3>Comments</h3>
-        <p>Comments help you document your code. Python ignores anything after a <code>#</code> symbol.</p>
-        
-        <div class="code-editor-container">
-          <div class="code-header">
-            <span>Example: Comments</span>
-            <button class="run-button" data-example-id="comments">Run</button>
-          </div>
-          <textarea class="code-editor" id="comments-editor"># This is a comment
-print("This code is executed") # This is an inline comment
-
-# The following line is not executed
-# print("This won't be printed")</textarea>
-          <div class="code-output" id="comments-output"></div>
-        </div>
-      </section>
-
-      <section id="basic-math">
-        <h3>Basic Math Operations</h3>
-        <p>Python can perform arithmetic operations like addition, subtraction, multiplication, and division.</p>
-        
-        <div class="code-editor-container">
-          <div class="code-header">
-            <span>Example: Math Operations</span>
-            <button class="run-button" data-example-id="math">Run</button>
-          </div>
-          <textarea class="code-editor" id="math-editor">print("Addition:", 5 + 3)
-print("Subtraction:", 10 - 4)
-print("Multiplication:", 6 * 7)
-print("Division:", 20 / 4)
-print("Integer Division:", 20 // 3)
-print("Remainder (Modulo):", 20 % 3)
-print("Exponentiation:", 2 ** 3)</textarea>
-          <div class="code-output" id="math-output"></div>
-        </div>
-      </section>
-
-      <section id="exercises">
-        <h3>Exercises</h3>
-        <p>Try solving these exercises to practice what you've learned:</p>
-        
-        <div class="exercise-container">
-          <h4>Exercise 1: Print your name</h4>
-          <p>Write a program that prints your name and a greeting.</p>
-          
-          <div class="code-editor-container">
-            <div class="code-header">
-              <span>Your Solution:</span>
-              <button class="run-button" data-example-id="exercise1">Run</button>
-            </div>
-            <textarea class="code-editor" id="exercise1-editor"># Write your code here
-# Example: print("Hello, my name is Alex!")</textarea>
-            <div class="code-output" id="exercise1-output"></div>
-          </div>
-        </div>
-      </section>
+    <!-- Content will be dynamically generated -->
+    <div class="lesson-content" id="lesson-content">
+      <div class="loading-message">
+        <p>Loading lesson content...</p>
+        <div class="spinner"></div>
+      </div>
     </div>
   </main>
 
@@ -119,5 +44,29 @@ print("Exponentiation:", 2 ** 3)</textarea>
   
   <!-- This div will be used by Pyodide to indicate loading status -->
   <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+  
+  <!-- Templates for dynamic content generation -->
+  <template id="section-template">
+    <section class="lesson-section">
+      <h2 class="section-title"></h2>
+      <div class="section-content"></div>
+      <div class="examples-container"></div>
+    </section>
+  </template>
+  
+  <template id="example-template">
+    <div class="example">
+      <h3 class="example-title"></h3>
+      <p class="example-description"></p>
+      <div class="code-editor-container">
+        <div class="code-header">
+          <span class="example-header-title"></span>
+          <button class="run-button">Run</button>
+        </div>
+        <textarea class="code-editor"></textarea>
+        <div class="code-output"></div>
+      </div>
+    </div>
+  </template>
 </body>
 </html>
