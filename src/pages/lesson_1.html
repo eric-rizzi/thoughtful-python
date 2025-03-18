@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1: Python Basics - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Learn Python in the Browser</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="lesson_1.html" class="active">Lesson 1: Basics</a></li>
+          <li><a href="lesson_2.html">Lesson 2: Variables</a></li>
+          <li><a href="lesson_3.html">Lesson 3: Control Flow</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container lesson-container">
+    <aside class="lesson-sidebar">
+      <h3>In This Lesson</h3>
+      <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#print-function">The Print Function</a></li>
+        <li><a href="#comments">Comments</a></li>
+        <li><a href="#basic-math">Basic Math Operations</a></li>
+        <li><a href="#exercises">Exercises</a></li>
+      </ul>
+    </aside>
+
+    <div class="lesson-content">
+      <h2>Lesson 1: Python Basics</h2>
+      
+      <section id="introduction">
+        <h3>Introduction</h3>
+        <p>Welcome to your first Python lesson! In this lesson, you'll learn the fundamentals of Python programming.</p>
+      </section>
+
+      <section id="print-function">
+        <h3>The Print Function</h3>
+        <p>The <code>print()</code> function displays output to the console. Try it out:</p>
+        
+        <div class="code-editor-container">
+          <div class="code-header">
+            <span>Example: Hello World</span>
+            <button class="run-button" data-example-id="hello-world">Run</button>
+          </div>
+          <div class="code-editor" id="hello-world-editor">print("Hello, World!")
+print("Welcome to Python in the browser!")</div>
+          <div class="code-output" id="hello-world-output"></div>
+        </div>
+      </section>
+
+      <section id="comments">
+        <h3>Comments</h3>
+        <p>Comments help you document your code. Python ignores anything after a <code>#</code> symbol.</p>
+        
+        <div class="code-editor-container">
+          <div class="code-header">
+            <span>Example: Comments</span>
+            <button class="run-button" data-example-id="comments">Run</button>
+          </div>
+          <div class="code-editor" id="comments-editor"># This is a comment
+print("This code is executed") # This is an inline comment
+
+# The following line is not executed
+# print("This won't be printed")</div>
+          <div class="code-output" id="comments-output"></div>
+        </div>
+      </section>
+
+      <section id="basic-math">
+        <h3>Basic Math Operations</h3>
+        <p>Python can perform arithmetic operations like addition, subtraction, multiplication, and division.</p>
+        
+        <div class="code-editor-container">
+          <div class="code-header">
+            <span>Example: Math Operations</span>
+            <button class="run-button" data-example-id="math">Run</button>
+          </div>
+          <div class="code-editor" id="math-editor">print("Addition:", 5 + 3)
+print("Subtraction:", 10 - 4)
+print("Multiplication:", 6 * 7)
+print("Division:", 20 / 4)
+print("Integer Division:", 20 // 3)
+print("Remainder (Modulo):", 20 % 3)
+print("Exponentiation:", 2 ** 3)</div>
+          <div class="code-output" id="math-output"></div>
+        </div>
+      </section>
+
+      <section id="exercises">
+        <h3>Exercises</h3>
+        <p>Try solving these exercises to practice what you've learned:</p>
+        
+        <div class="exercise-container">
+          <h4>Exercise 1: Print your name</h4>
+          <p>Write a program that prints your name and a greeting.</p>
+          
+          <div class="code-editor-container">
+            <div class="code-header">
+              <span>Your Solution:</span>
+              <button class="run-button" data-example-id="exercise1">Run</button>
+            </div>
+            <div class="code-editor" id="exercise1-editor"># Write your code here
+# Example: print("Hello, my name is Alex!")</div>
+            <div class="code-output" id="exercise1-output"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+  
+  <!-- This div will be used by Pyodide to indicate loading status -->
+  <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+</body>
+</html>

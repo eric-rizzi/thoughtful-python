@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
+      "label": "serve",
+      "type": "shell",
+      "command": "npm run serve",
+      "group": "none",
+      "problemMatcher": []
+    }
+  ]
+}

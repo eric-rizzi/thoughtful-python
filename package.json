@@ -1,0 +1,33 @@
+{
+  "name": "python-browser-lessons",
+  "version": "1.0.0",
+  "description": "A client-side website for running Python in the browser",
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "serve": "http-server ./dist -c-1",
+    "lint": "eslint src/ts/**/*.ts",
+    "format": "prettier --write \"src/**/*.{ts,html,css}\""
+  },
+  "dependencies": {
+    "pyodide": "^0.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.9.1",
+    "eslint": "^8.56.0",
+    "html-webpack-plugin": "^5.6.0",
+    "http-server": "^14.1.1",
+    "mini-css-extract-plugin": "^2.7.7",
+    "prettier": "^3.2.4",
+    "style-loader": "^3.3.4",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
