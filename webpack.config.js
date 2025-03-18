@@ -103,6 +103,11 @@ module.exports = (env, argv) => {
             to: 'python' 
           },
           { 
+            from: 'src/data', 
+            to: 'data',
+            noErrorOnMissing: true
+          },
+          { 
             from: 'public', 
             to: '.',
             noErrorOnMissing: true

@@ -31,6 +31,12 @@ export const LESSON_3_SECTION_MAPPING: { [key: string]: string } = {
 };
 
 /**
+ * Lesson 4 mapping is dynamically generated from the JSON data
+ * See lesson-loader.ts and lesson_4.ts for implementation
+ */
+export const LESSON_4_SECTION_MAPPING: { [key: string]: string } = {};
+
+/**
  * Gets the section ID from an example ID using the lesson's mapping
  * @param exampleId - The ID of the example or challenge
  * @param lessonMapping - The mapping object for the current lesson

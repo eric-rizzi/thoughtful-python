@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Lesson - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+  
+  <!-- Add CodeMirror for code editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+</head>
+<body>
+  <!-- HEADER (Common across lessons) -->
+  <header></header>
+
+  <main class="container lesson-container">
+    <!-- Sidebar will be dynamically generated -->
+    <aside class="lesson-sidebar" id="lesson-sidebar">
+      <h3>In This Lesson</h3>
+      <ul id="sidebar-sections">
+        <!-- Sections will be loaded from JSON -->
+        <li class="sidebar-loading">Loading lesson content...</li>
+      </ul>
+    </aside>
+
+    <!-- Content will be dynamically generated -->
+    <div class="lesson-content" id="lesson-content">
+      <div class="loading-message">
+        <p>Loading lesson content...</p>
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (Common across lessons) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+  
+  <!-- This div will be used by Pyodide to indicate loading status -->
+  <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+  
+  <!-- Templates for dynamic content generation -->
+  <template id="section-template">
+    <section class="lesson-section">
+      <h2 class="section-title"></h2>
+      <div class="section-content"></div>
+      <div class="examples-container"></div>
+    </section>
+  </template>
+  
+  <template id="example-template">
+    <div class="example">
+      <h3 class="example-title"></h3>
+      <p class="example-description"></p>
+      <div class="code-editor-container">
+        <div class="code-header">
+          <span class="example-header-title"></span>
+          <button class="run-button">Run</button>
+        </div>
+        <textarea class="code-editor"></textarea>
+        <div class="code-output"></div>
+      </div>
+    </div>
+  </template>
+</body>
+</html>

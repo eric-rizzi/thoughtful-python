@@ -7,6 +7,7 @@ const REQUIRED_SECTIONS: { [key: string]: string[] } = {
   'lesson_1': ['print-function', 'comments', 'basic-math', 'exercises'],
   'lesson_2': ['functions', 'temperature', 'challenge'],
   'lesson_3': ['prediction'],
+  'lesson_4': [] // This will be populated dynamically from the JSON data
 };
 
 /**
