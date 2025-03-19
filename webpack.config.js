@@ -46,9 +46,6 @@ module.exports = (env, argv) => {
     main: './src/ts/main.ts',
     index: './src/ts/pages/index.ts',
     unit: './src/ts/pages/unit.ts',
-    'code-editor': './src/ts/pages/placeholder.ts',
-    feedback: './src/ts/pages/placeholder.ts',
-    about: './src/ts/pages/placeholder.ts',
   };
 
   // Add lesson entry points

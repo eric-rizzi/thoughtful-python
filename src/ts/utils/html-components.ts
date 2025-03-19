@@ -13,25 +13,45 @@ import { BASE_PATH, LESSON_CONTROLLER_TYPES, LESSON_TITLES } from "../config";
 export function generateHeader(currentPage: string, unitId?: string): string {
   let navItems = '';
   
-  // Check if we're on a lesson or unit page
+  // Check if we're on a lesson page
   const isLessonPage = currentPage.startsWith('lesson_');
   const isUnitPage = currentPage === 'unit';
 
-  if (isLessonPage || isUnitPage) {
-    // Lesson or Unit page - we'll show the lessons in this unit
-    // Note: This will be populated dynamically later via JavaScript
+  if (isLessonPage) {
+    // Get the lesson number for basic navigation
+    const lessonNumber = parseInt(currentPage.replace('lesson_', ''), 10);
+    const prevLessonNumber = lessonNumber > 1 ? lessonNumber - 1 : null;
+    const nextLessonNumber = lessonNumber < 7 ? lessonNumber + 1 : null; // Assuming 7 lessons
+    
+    // Build navigation elements
+    const prevLink = prevLessonNumber 
+      ? `<a href="${BASE_PATH}/lesson_${prevLessonNumber}.html" class="nav-button">← Previous</a>` 
+      : `<span class="nav-button disabled">← Previous</span>`;
+      
+    const nextLink = nextLessonNumber 
+      ? `<a href="${BASE_PATH}/lesson_${nextLessonNumber}.html" class="nav-button">Next →</a>` 
+      : `<span class="nav-button disabled">Next →</span>`;
+    
     navItems = `
       <li><a href="${BASE_PATH}/index.html">Home</a></li>
-      <li><a href="${BASE_PATH}/unit.html?id=${unitId || 'intro_python'}" ${isUnitPage ? 'class="active"' : ''}>Unit Overview</a></li>
+      <li><a href="${BASE_PATH}/unit.html?id=${unitId || 'intro_python'}">Unit Overview</a></li>
       <li class="nav-separator">|</li>
-      <!-- Lessons will be populated dynamically -->
-      <li class="dynamic-lessons-placeholder"></li>
+      <li class="lesson-progress">Lesson ${lessonNumber} of 7</li>
+      <li class="prev-next-container">
+        ${prevLink}
+        ${nextLink}
+      </li>
+    `;
+  } else if (isUnitPage) {
+    // Unit page - show home and unit title
+    navItems = `
+      <li><a href="${BASE_PATH}/index.html">Home</a></li>
+      <li><a href="${BASE_PATH}/unit.html?id=${unitId || 'intro_python'}" class="active">Unit Overview</a></li>
     `;
   } else {
     // Main index page - show the main navigation
     navItems = `
       <li><a href="${BASE_PATH}/index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>
-      <li><a href="${BASE_PATH}/unit.html?id=intro_python">Learning Paths</a></li>
       <li><a href="${BASE_PATH}/code-editor.html" class="disabled">Interactive Code Editor</a></li>
       <li><a href="${BASE_PATH}/feedback.html" class="disabled">Instant Feedback</a></li>
       <li><a href="${BASE_PATH}/about.html" class="disabled">About Us</a></li>
@@ -63,28 +83,6 @@ export function generateFooter(): string {
       <p>&copy; ${currentYear} Python Browser Lessons</p>
     </div>
   </footer>`;
-}
-
-/**
- * Dynamically updates the header navigation for unit and lesson pages
- * @param unitId - The ID of the current unit
- * @param lessons - Array of lesson IDs in this unit
- * @param currentLessonId - The ID of the current lesson (if on a lesson page)
- */
-export function updateHeaderWithLessons(unitId: string, lessons: string[], currentLessonId?: string): void {
-  // Find the placeholder in the DOM
-  const placeholder = document.querySelector('.dynamic-lessons-placeholder');
-  if (!placeholder) return;
-  
-  // Create the lesson navigation items
-  const lessonNavItems = lessons.map((lessonId, index) => {
-    const isActive = lessonId === currentLessonId ? 'class="active"' : '';
-    const title = LESSON_TITLES[lessonId] || `Lesson ${index + 1}`;
-    return `<li><a href="${BASE_PATH}/${lessonId}.html" ${isActive}>Lesson ${index + 1}: ${title}</a></li>`;
-  }).join('');
-  
-  // Replace the placeholder with the actual lesson navigation
-  placeholder.outerHTML = lessonNavItems;
 }
 
 /**

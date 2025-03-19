@@ -3,7 +3,7 @@
  */
 import { escapeHTML } from '../utils/pyodide-utils';
 import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
-import { LESSON_CONTROLLER_TYPES, TOTAL_LESSONS } from '../config';
+import { LESSON_CONTROLLER_TYPES } from '../config';
 
 export abstract class DynamicLessonController {
   protected lesson: Lesson | null = null;
@@ -45,9 +45,9 @@ export abstract class DynamicLessonController {
       // Load completion status
       this.loadCompletionFromStorage();
       
-      // Update sidebar to show completed sections
+      // Update header and sidebar to show completed sections
       this.updateSidebarCompletions();
-      
+       
       // Check if all sections are completed
       this.checkAllSectionsCompleted();
       
