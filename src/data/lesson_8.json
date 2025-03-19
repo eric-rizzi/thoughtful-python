@@ -13,41 +13,41 @@
       "id": "simple-coverage",
       "title": "Simple Branching Exercise",
       "content": "Let's start with a simple example. The following function analyzes a number and prints different messages based on its value. Try to find inputs that will reach each part of the code.",
-      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1: Number is negative\")\n        if x < -10:\n            print(\"Line 2: Number is less than -10\")\n    elif x == 0:\n        print(\"Line 3: Number is zero\")\n    else:  # x > 0\n        print(\"Line 4: Number is positive\")\n        if x > 10:\n            print(\"Line 5: Number is greater than 10\")\n        if x % 2 == 0:\n            print(\"Line 6: Number is even\")\n        else:\n            print(\"Line 7: Number is odd\")\n\n# Call the function with the input value\nanalyze_number(x)",
+      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1\")\n        if x < -10:\n            print(\"Line 2\")\n    elif x == 0:\n        print(\"Line 3\")\n    else:  # x > 0\n        print(\"Line 4\")\n        if x > 10:\n            print(\"Line 5\")\n        if x % 2 == 0:\n            print(\"Line 6\")\n        else:\n            print(\"Line 7\")\n\n# Call the function with the input value\nanalyze_number(x)",
       "coverageChallenges": [
         {
           "id": "challenge-1",
-          "expectedOutput": "Line 1: Number is negative",
+          "expectedOutput": "Line 1",
           "hint": "Try a negative number that's greater than -10."
         },
         {
           "id": "challenge-2",
-          "expectedOutput": "Line 1: Number is negative\nLine 2: Number is less than -10",
+          "expectedOutput": "Line 1",
           "hint": "Try a number less than -10."
         },
         {
           "id": "challenge-3",
-          "expectedOutput": "Line 3: Number is zero",
+          "expectedOutput": "Line 3",
           "hint": "What number equals zero?"
         },
         {
           "id": "challenge-4",
-          "expectedOutput": "Line 4: Number is positive\nLine 6: Number is even",
+          "expectedOutput": "Line 4",
           "hint": "Try a positive even number that's not greater than 10."
         },
         {
           "id": "challenge-5",
-          "expectedOutput": "Line 4: Number is positive\nLine 5: Number is greater than 10\nLine 6: Number is even",
+          "expectedOutput": "Line 4\nLine 5\nLine 6",
           "hint": "Try a positive even number greater than 10."
         },
         {
           "id": "challenge-6",
-          "expectedOutput": "Line 4: Number is positive\nLine 7: Number is odd",
+          "expectedOutput": "Line 4\nLine 7",
           "hint": "Try a positive odd number that's not greater than 10."
         },
         {
           "id": "challenge-7",
-          "expectedOutput": "Line 4: Number is positive\nLine 5: Number is greater than 10\nLine 7: Number is odd",
+          "expectedOutput": "Line 4\nLine 5\nLine 7",
           "hint": "Try a positive odd number greater than 10."
         }
       ],
@@ -64,36 +64,36 @@
       "id": "nested-conditions",
       "title": "More Complex Branching",
       "content": "Now let's try a more complex example with nested conditions. This function determines whether to approve a loan based on income, credit score, and employment status.",
-      "code": "def approve_loan(income, credit_score, employed):\n    if income < 30000:\n        print(\"Line 1: Low income check\")\n        if credit_score >= 700:\n            print(\"Line 2: Good credit despite low income\")\n            if employed:\n                print(\"Line 3: Approved with conditions despite low income\")\n                return True\n            else:\n                print(\"Line 4: Rejected due to unemployment with low income\")\n                return False\n        else:\n            print(\"Line 5: Rejected due to low income and poor credit\")\n            return False\n    else:\n        print(\"Line 6: Sufficient income\")\n        if credit_score < 650:\n            print(\"Line 7: Poor credit despite good income\")\n            if employed:\n                print(\"Line 8: Approved with conditions despite poor credit\")\n                return True\n            else:\n                print(\"Line 9: Rejected due to unemployment and poor credit\")\n                return False\n        else:\n            print(\"Line 10: Good credit and income\")\n            print(\"Line 11: Fully approved\")\n            return True\n\n# Call the function with the input values\nresult = approve_loan(income, credit_score, employed)\nprint(f\"Final decision: {'Approved' if result else 'Rejected'}\")",
+      "code": "def approve_loan(income, credit_score, employed):\n    if income < 30000:\n        print(\"Line 1\")\n        if credit_score >= 700:\n            print(\"Line 2\")\n            if employed:\n                print(\"Line 3\")\n                return True\n            else:\n                print(\"Line 4\")\n                return False\n        else:\n            print(\"Line 5\")\n            return False\n    else:\n        print(\"Line 6\")\n        if credit_score < 650:\n            print(\"Line 7\")\n            if employed:\n                print(\"Line 8\")\n                return True\n            else:\n                print(\"Line 9\")\n                return False\n        else:\n            print(\"Line 10\")\n            print(\"Line 11\")\n            return True\n\n# Call the function with the input values\nresult = approve_loan(income, credit_score, employed)\nprint(f\"Decision: {'Approved' if result else 'Rejected'}\")",
       "coverageChallenges": [
         {
           "id": "loan-challenge-1",
-          "expectedOutput": "Line 1: Low income check\nLine 2: Good credit despite low income\nLine 3: Approved with conditions despite low income\nFinal decision: Approved",
+          "expectedOutput": "Line 1\nLine 2\nLine 3\nDecision: Approved",
           "hint": "Low income but good credit and employed."
         },
         {
           "id": "loan-challenge-2",
-          "expectedOutput": "Line 1: Low income check\nLine 2: Good credit despite low income\nLine 4: Rejected due to unemployment with low income\nFinal decision: Rejected",
+          "expectedOutput": "Line 1\nLine 2\nLine 4\nDecision: Rejected",
           "hint": "Low income, good credit, but unemployed."
         },
         {
           "id": "loan-challenge-3",
-          "expectedOutput": "Line 1: Low income check\nLine 5: Rejected due to low income and poor credit\nFinal decision: Rejected",
+          "expectedOutput": "Line 1\nLine 5\nDecision: Rejected",
           "hint": "Low income and poor credit."
         },
         {
           "id": "loan-challenge-4",
-          "expectedOutput": "Line 6: Sufficient income\nLine 7: Poor credit despite good income\nLine 8: Approved with conditions despite poor credit\nFinal decision: Approved",
+          "expectedOutput": "Line 6\nLine 7\nLine 8\nDecision: Approved",
           "hint": "Good income, poor credit, but employed."
         },
         {
           "id": "loan-challenge-5",
-          "expectedOutput": "Line 6: Sufficient income\nLine 7: Poor credit despite good income\nLine 9: Rejected due to unemployment and poor credit\nFinal decision: Rejected",
+          "expectedOutput": "Line 6\nLine 7\nLine 9\nDecision: Rejected",
           "hint": "Good income, poor credit, and unemployed."
         },
         {
           "id": "loan-challenge-6",
-          "expectedOutput": "Line 6: Sufficient income\nLine 10: Good credit and income\nLine 11: Fully approved\nFinal decision: Approved",
+          "expectedOutput": "Line 6\nLine 10\nLine 11\nDecision: Approved",
           "hint": "Good income and good credit."
         }
       ],
