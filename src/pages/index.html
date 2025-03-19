@@ -31,39 +31,16 @@
       </div>
     </section>
 
-    <section class="getting-started">
-      <h2>Getting Started</h2>
-      <p>Choose a lesson from the navigation menu to begin your Python learning journey!</p>
+    <section class="learning-paths">
+      <h2>Learning Paths</h2>
+      <p>Choose a learning path to begin your Python journey. Each path contains a sequence of carefully designed lessons.</p>
       
-      <div class="lesson-cards">
-        <a href="lesson_1.html" class="lesson-card">
-          <h3>Lesson 1: Python Basics</h3>
-          <p>Learn about printing, basic data types, and simple operations.</p>
-        </a>
-        <a href="lesson_2.html" class="lesson-card">
-          <h3>Lesson 2: Functions & Temperature Conversion</h3>
-          <p>Create reusable code blocks and build a temperature converter.</p>
-        </a>
-        <a href="lesson_3.html" class="lesson-card">
-          <h3>Lesson 3: Control Flow</h3>
-          <p>Practice predicting function outputs with different inputs.</p>
-        </a>
-        <a href="lesson_4.html" class="lesson-card">
-          <h3>Lesson 4: Data Structures</h3>
-          <p>Learn about lists, dictionaries, sets and other data structures.</p>
-        </a>
-        <a href="lesson_5.html" class="lesson-card">
-          <h3>Lesson 5: Python Knowledge Quiz</h3>
-          <p>Test your understanding with an interactive quiz covering all concepts.</p>
-        </a>
-        <a href="lesson_6.html" class="lesson-card">
-          <h3>Lesson 6: Turtles</h3>
-          <p>Time for some fun with turtles!</p>
-        </a>
-        <a href="lesson_7.html" class="lesson-card">
-          <h3>Lesson 7: Reflection</h3>
-          <p>What is learning with out reflection?</p>
-        </a>
+      <!-- Units will be dynamically loaded here -->
+      <div id="units-container" class="units-grid">
+        <div class="loading-message">
+          <p>Loading learning paths...</p>
+          <div class="spinner"></div>
+        </div>
       </div>
     </section>
   </main>

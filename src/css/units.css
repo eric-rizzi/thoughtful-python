@@ -1,0 +1,212 @@
+/* styles for units and learning paths */
+
+.units-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.unit-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.unit-image {
+  width: 100%;
+  height: 160px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.unit-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.unit-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-title {
+  font-size: 1.4rem;
+  color: #306998;
+  margin-bottom: 0.75rem;
+}
+
+.unit-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.unit-lessons {
+  font-size: 0.9rem;
+  color: #777;
+  font-weight: 500;
+}
+
+.unit-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #4b8bbe;
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.unit-button:hover {
+  background-color: #306998;
+}
+
+/* Unit page specific styles */
+.unit-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.unit-header {
+  margin-bottom: 3rem;
+  text-align: center;
+  padding: 2rem 0;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.unit-header h2 {
+  font-size: 2.2rem;
+  color: #306998;
+  margin-bottom: 1rem;
+}
+
+.unit-header p {
+  max-width: 800px;
+  margin: 0 auto;
+  color: #555;
+  line-height: 1.6;
+}
+
+.lessons-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.lesson-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  border-left: 4px solid #4b8bbe;
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-left-color: #ffd43b;
+}
+
+.lesson-card h3 {
+  color: #306998;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.lesson-number {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.lesson-description {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.lesson-status {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-not-started {
+  background-color: #ccc;
+}
+
+.status-in-progress {
+  background-color: #ffd43b;
+}
+
+.status-completed {
+  background-color: #28a745;
+}
+
+.back-to-units {
+  display: inline-block;
+  margin-bottom: 2rem;
+  color: #4b8bbe;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-to-units:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .units-grid,
+  .lessons-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .unit-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .unit-header h2 {
+    font-size: 1.8rem;
+  }
+}

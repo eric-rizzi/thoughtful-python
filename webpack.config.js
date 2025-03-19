@@ -11,54 +11,68 @@ const REPO_NAME = 'thoughtful-python';
 const pagesDir = path.resolve(__dirname, 'src/pages');
 const pages = fs.readdirSync(pagesDir).filter(file => file.endsWith('.html'));
 
-// Create an HTML plugin for each page
-const htmlPlugins = pages.map(page => {
-  // Extract the base name without extension
-  const baseName = page.replace('.html', '');
-  
-  // Map the HTML filename to corresponding JS entry point
-  // This handles both lesson1.html and lesson_1.html patterns
-  const jsEntryPoint = baseName.includes('_') ? baseName : baseName.replace(/(\d+)$/, '_$1');
-  
-  return new HtmlWebpackPlugin({
-    template: path.resolve(pagesDir, page),
-    filename: page,
-    chunks: [jsEntryPoint, 'main'],
-    minify: {
-      collapseWhitespace: true,
-      removeComments: true,
-      removeRedundantAttributes: true,
-    },
-    // Add public path for GitHub Pages
-    publicPath: `/${REPO_NAME}/`,
-  });
-});
-
-// Dynamic entry points based on TS files in src/ts/lessons
-const lessonsDir = path.resolve(__dirname, 'src/ts/lessons');
-const entryPoints = {
-  main: './src/ts/main.ts',
-};
-
-if (fs.existsSync(lessonsDir)) {
-  fs.readdirSync(lessonsDir)
-    .filter(file => file.endsWith('.ts'))
-    .forEach(file => {
-      // Use the exact filename (without extension) as the entry point name
-      const name = file.replace('.ts', '');
-      entryPoints[name] = `./src/ts/lessons/${file}`;
-    });
-}
-
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
   
+  // Use repository name for production (GitHub Pages), empty for development
+  const publicPath = isProduction ? `/${REPO_NAME}/` : '/';
+  
+  // Create an HTML plugin for each page
+  const htmlPlugins = pages.map(page => {
+    // Extract the base name without extension
+    const baseName = page.replace('.html', '');
+    
+    // Map the HTML filename to corresponding JS entry point
+    // This handles both lesson1.html and lesson_1.html patterns
+    const jsEntryPoint = baseName.includes('_') ? baseName : baseName.replace(/(\d+)$/, '_$1');
+    
+    return new HtmlWebpackPlugin({
+      template: path.resolve(pagesDir, page),
+      filename: page,
+      chunks: [jsEntryPoint, 'main'],
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+      },
+      publicPath: publicPath,
+    });
+  });
+
+  // Dynamic entry points based on TS files in src/ts/lessons and src/ts/pages
+  const lessonsDir = path.resolve(__dirname, 'src/ts/lessons');
+  const pagesJsDir = path.resolve(__dirname, 'src/ts/pages');
+  const entryPoints = {
+    main: './src/ts/main.ts',
+  };
+
+  // Add lesson entry points
+  if (fs.existsSync(lessonsDir)) {
+    fs.readdirSync(lessonsDir)
+      .filter(file => file.endsWith('.ts'))
+      .forEach(file => {
+        // Use the exact filename (without extension) as the entry point name
+        const name = file.replace('.ts', '');
+        entryPoints[name] = `./src/ts/lessons/${file}`;
+      });
+  }
+
+  // Add page entry points
+  if (fs.existsSync(pagesJsDir)) {
+    fs.readdirSync(pagesJsDir)
+      .filter(file => file.endsWith('.ts'))
+      .forEach(file => {
+        const name = file.replace('.ts', '');
+        entryPoints[name] = `./src/ts/pages/${file}`;
+      });
+  }
+
   return {
     entry: entryPoints,
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'js/[name].[contenthash].js',
-      publicPath: `/${REPO_NAME}/`, // Add this for GitHub Pages
+      publicPath: publicPath,
       clean: true,
     },
     devtool: isProduction ? 'source-map' : 'inline-source-map',
@@ -72,7 +86,7 @@ module.exports = (env, argv) => {
         {
           test: /\.css$/,
           use: [
-            MiniCssExtractPlugin.loader, // Always use MiniCssExtractPlugin loader
+            MiniCssExtractPlugin.loader,
             'css-loader',
           ],
         },
@@ -106,7 +120,8 @@ module.exports = (env, argv) => {
         patterns: [
           { 
             from: 'src/python', 
-            to: 'python' 
+            to: 'python',
+            noErrorOnMissing: true 
           },
           { 
             from: 'src/data', 
@@ -118,6 +133,11 @@ module.exports = (env, argv) => {
             to: '.',
             noErrorOnMissing: true
           },
+          {
+            from: 'src/images',
+            to: 'images',
+            noErrorOnMissing: true
+          }
         ],
       }),
       ...htmlPlugins,
@@ -126,10 +146,11 @@ module.exports = (env, argv) => {
       static: {
         directory: path.join(__dirname, 'dist'),
       },
-      compress: true,
+      compress: isProduction, // Only compress in production
       port: 9000,
       hot: true,
       open: true,
+      historyApiFallback: true, // This will redirect 404s to /index.html
     },
     optimization: {
       splitChunks: {

@@ -21,4 +21,6 @@ export const LESSON_TITLES: { [key: string]: string } = {
 
 export const TOTAL_LESSONS = 7;
 
-export const BASE_PATH = '/thoughtful-python';
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+export const REPO_NAME = 'thoughtful-python';
+export const BASE_PATH = IS_PRODUCTION ? `/${REPO_NAME}` : '';
