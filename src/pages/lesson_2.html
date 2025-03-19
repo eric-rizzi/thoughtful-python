@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson 2: Functions - Python in the Browser</title>
+  <title>Functions - Python in the Browser</title>
   <!-- CSS is injected by webpack -->
-  <!-- Note: main.css, lessons.css, and challenges.css are imported via lesson_2.ts -->
   
   <!-- Add CodeMirror for code editing -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -17,155 +16,20 @@
   <header></header>
 
   <main class="container lesson-container">
-    <aside class="lesson-sidebar">
+    <!-- Sidebar will be dynamically generated -->
+    <aside class="lesson-sidebar" id="lesson-sidebar">
       <h3>In This Lesson</h3>
-      <ul>
-        <li><a href="#introduction">Introduction</a></li>
-        <li><a href="#functions">Python Functions</a></li>
-        <li><a href="#temperature">Temperature Conversion</a></li>
-        <li><a href="#challenge">Coding Challenge</a></li>
-        <li><a href="#testing">Testing Your Solution</a></li>
+      <ul id="sidebar-sections">
+        <li class="sidebar-loading">Loading lesson content...</li>
       </ul>
     </aside>
 
-    <div class="lesson-content">
-      <h2>Lesson 2: Functions and Temperature Conversion</h2>
-      
-      <section id="introduction">
-        <h3>Introduction</h3>
-        <p>In this lesson, you'll learn how to create and use functions in Python. Functions allow us to organize code into reusable blocks that perform specific tasks.</p>
-      </section>
-
-      <section id="functions">
-        <h3>Python Functions</h3>
-        <p>Functions are defined using the <code>def</code> keyword, followed by the function name and parentheses. Any parameters the function takes are placed inside the parentheses.</p>
-        
-        <div class="code-editor-container">
-          <div class="code-header">
-            <span>Example: Basic Function</span>
-            <button class="run-button" data-example-id="function-basic">Run</button>
-          </div>
-          <textarea class="code-editor" id="function-basic-editor">def greet(name):
-    """This function greets the person passed in as a parameter"""
-    return f"Hello, {name}!"
-
-# Call the function
-message = greet("Alice")
-print(message)
-
-# Call it again with a different name
-print(greet("Bob"))</textarea>
-          <div class="code-output" id="function-basic-output"></div>
-        </div>
-        
-        <h4>Function Parameters and Return Values</h4>
-        <p>Functions can take input parameters and return values using the <code>return</code> statement.</p>
-        
-        <div class="code-editor-container">
-          <div class="code-header">
-            <span>Example: Parameters and Return Values</span>
-            <button class="run-button" data-example-id="function-params">Run</button>
-          </div>
-          <textarea class="code-editor" id="function-params-editor">def add_numbers(a, b):
-    """This function adds two numbers and returns the result"""
-    sum = a + b
-    return sum
-
-# Call the function and store the result
-result = add_numbers(5, 3)
-print(f"5 + 3 = {result}")
-
-# We can use the function directly in expressions
-print(f"10 + 20 = {add_numbers(10, 20)}")
-print(f"Result × 2 = {add_numbers(5, 3) * 2}")</textarea>
-          <div class="code-output" id="function-params-output"></div>
-        </div>
-      </section>
-
-      <section id="temperature">
-        <h3>Temperature Conversion</h3>
-        <p>One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures.</p>
-        
-        <div class="info-box">
-          <h4>Temperature Conversion Formula</h4>
-          <p>To convert from Celsius to Fahrenheit, use the formula:</p>
-          <p><code>F = (C × 9/5) + 32</code></p>
-          <p>Where <code>F</code> is the temperature in Fahrenheit and <code>C</code> is the temperature in Celsius.</p>
-        </div>
-        
-        <div class="code-editor-container">
-          <div class="code-header">
-            <span>Example: Converting Celsius to Fahrenheit</span>
-            <button class="run-button" data-example-id="temp-conversion">Run</button>
-          </div>
-          <textarea class="code-editor" id="temp-conversion-editor">def celsius_to_fahrenheit(celsius):
-    """Convert Celsius temperature to Fahrenheit"""
-    fahrenheit = (celsius * 9/5) + 32
-    return fahrenheit
-
-# Test the function with some values
-freezing_c = 0
-freezing_f = celsius_to_fahrenheit(freezing_c)
-print(f"{freezing_c}°C is {freezing_f}°F")
-
-body_temp_c = 37
-body_temp_f = celsius_to_fahrenheit(body_temp_c)
-print(f"{body_temp_c}°C is {body_temp_f}°F")
-
-boiling_c = 100
-boiling_f = celsius_to_fahrenheit(boiling_c)
-print(f"{boiling_c}°C is {boiling_f}°F")</textarea>
-          <div class="code-output" id="temp-conversion-output"></div>
-        </div>
-      </section>
-
-      <section id="challenge">
-        <h3>Coding Challenge: Temperature Converter</h3>
-        <p>Now it's your turn! Create a function called <code>celsius_to_fahrenheit</code> that:</p>
-        <ul>
-          <li>Takes a temperature in Celsius as input</li>
-          <li>Converts it to Fahrenheit using the formula: <code>F = (C × 9/5) + 32</code></li>
-          <li>Returns the Fahrenheit temperature as a number</li>
-        </ul>
-        
-        <div class="challenge-container">
-          <h4>Your Task</h4>
-          <p>Implement the <code>celsius_to_fahrenheit</code> function below:</p>
-          
-          <div class="code-editor-container">
-            <div class="code-header">
-              <span>Your Solution:</span>
-              <button class="run-button" data-example-id="challenge">Run</button>
-              <button class="test-button" data-example-id="challenge">Test Solution</button>
-            </div>
-            <textarea class="code-editor" id="challenge-editor">def celsius_to_fahrenheit(celsius):
-    # Write your function here
-    pass  # Delete this line and add your code
-
-# You can test your function with different values here
-print(celsius_to_fahrenheit(0))  # Should print 32.0
-print(celsius_to_fahrenheit(100))  # Should print 212.0
-</textarea>
-            <div class="code-output" id="challenge-output"></div>
-            <div class="test-result" id="challenge-test-result"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="testing">
-        <h3>Understanding Testing</h3>
-        <p>Testing is a crucial part of software development. When you click the "Test Solution" button, our system will run your function with various inputs and check if the outputs match the expected results.</p>
-        
-        <p>The test cases include:</p>
-        <ul>
-          <li>Standard temperatures (freezing point, boiling point)</li>
-          <li>Body temperature</li>
-          <li>Negative temperatures</li>
-          <li>Edge cases</li>
-        </ul>
-        
-        <p>Your function should handle all these cases correctly to pass the tests.</p>
-      </section>
+    <!-- Content will be dynamically generated -->
+    <div class="lesson-content" id="lesson-content">
+      <div class="loading-message">
+        <p>Loading lesson content...</p>
+        <div class="spinner"></div>
+      </div>
     </div>
   </main>
 
@@ -178,5 +42,29 @@ print(celsius_to_fahrenheit(100))  # Should print 212.0
   
   <!-- This div will be used by Pyodide to indicate loading status -->
   <div id="pyodide-loading" class="loading-indicator">Loading Python environment...</div>
+  
+  <!-- Templates for dynamic content generation -->
+  <template id="section-template">
+    <section class="lesson-section">
+      <h2 class="section-title"></h2>
+      <div class="section-content"></div>
+      <div class="examples-container"></div>
+    </section>
+  </template>
+  
+  <template id="example-template">
+    <div class="example">
+      <h3 class="example-title"></h3>
+      <p class="example-description"></p>
+      <div class="code-editor-container">
+        <div class="code-header">
+          <span class="example-header-title"></span>
+          <button class="run-button">Run</button>
+        </div>
+        <textarea class="code-editor"></textarea>
+        <div class="code-output"></div>
+      </div>
+    </div>
+  </template>
 </body>
 </html>
