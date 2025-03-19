@@ -4,17 +4,8 @@ import { PredictionLessonController } from './controllers/prediction-lesson-cont
 import { QuizLessonController } from './controllers/quiz-lesson-controller';
 import { TurtleLessonController } from './controllers/turtle-lesson-controller';
 import { ReflectionLessonController } from './controllers/reflection-lesson-controller';
+import { LESSON_CONTROLLER_TYPES } from './config';
 
-// Map lesson IDs to their controller types
-const LESSON_CONTROLLER_TYPES: { [key: string]: string } = {
-  'lesson_1': 'code',
-  'lesson_2': 'code',
-  'lesson_3': 'prediction',
-  'lesson_4': 'code',
-  'lesson_5': 'quiz',
-  'lesson_6': 'turtle',
-  'lesson_7': 'reflection'
-};
 
 // Factory to create the appropriate controller based on lesson ID
 export function createLessonController(lessonId: string) {

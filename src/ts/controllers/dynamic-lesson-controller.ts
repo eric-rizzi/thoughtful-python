@@ -3,6 +3,7 @@
  */
 import { escapeHTML } from '../utils/pyodide-utils';
 import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
+import { LESSON_CONTROLLER_TYPES, TOTAL_LESSONS } from '../config';
 
 export abstract class DynamicLessonController {
   protected lesson: Lesson | null = null;
@@ -568,15 +569,15 @@ export abstract class DynamicLessonController {
    * This replaces functionality from lesson-progress-tracker.ts
    */
   protected updateLessonCompletionStatus(): void {
-    // Get all lessons from 1 to 7 (or whatever your max lesson is)
-    const maxLesson = 7; // Update this if you add more lessons
+    // Get all lesson IDs from your config
+    const lessonIds = Object.keys(LESSON_CONTROLLER_TYPES);
     
-    for (let i = 1; i <= maxLesson; i++) {
-      const currentLessonId = `lesson_${i}`;
-      const isComplete = this.isLessonComplete(currentLessonId);
+    // Process each lesson
+    lessonIds.forEach(lessonId => {
+      const isComplete = this.isLessonComplete(lessonId);
       
       // Find the nav link for this lesson
-      const navLink = document.querySelector(`nav li a[href="${currentLessonId}.html"]`);
+      const navLink = document.querySelector(`nav li a[href="${lessonId}.html"]`);
       if (navLink) {
         const parentLi = navLink.parentElement;
         
@@ -584,17 +585,17 @@ export abstract class DynamicLessonController {
           // Add completed class to the li element
           if (parentLi && !parentLi.classList.contains('nav-completed')) {
             parentLi.classList.add('nav-completed');
-            console.log(`Added nav-completed class to ${currentLessonId} nav item`);
+            console.log(`Added nav-completed class to ${lessonId} nav item`);
           }
         } else {
           // Remove completed class if not complete (in case user cleared progress)
           if (parentLi && parentLi.classList.contains('nav-completed')) {
             parentLi.classList.remove('nav-completed');
-            console.log(`Removed nav-completed class from ${currentLessonId} nav item`);
+            console.log(`Removed nav-completed class from ${lessonId} nav item`);
           }
         }
       }
-    }
+    });
   }
   
   /**

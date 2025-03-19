@@ -2,26 +2,34 @@
  * Utility functions for generating common HTML components across lessons
  */
 
+import { LESSON_CONTROLLER_TYPES, LESSON_TITLES } from "../config";
+
 /**
  * Generates the common header HTML with navigation
  * @param currentPage - The ID of the current page (e.g., 'lesson_1', 'lesson_2')
  * @returns HTML string for the header
  */
 export function generateHeader(currentPage: string): string {
+  // Start building the navigation items
+  let navItems = `<li><a href="index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>`;
+  
+  // Generate nav items for each lesson
+  Object.keys(LESSON_CONTROLLER_TYPES).forEach(lessonId => {
+    const title = LESSON_TITLES[lessonId] || lessonId;
+    navItems += `
+      <li><a href="${lessonId}.html" ${currentPage === lessonId ? 'class="active"' : ''}>
+        ${lessonId.replace('_', ' ')}: ${title}
+      </a></li>
+    `;
+  });
+  
   return `
   <header>
     <div class="container">
       <h1>Learn Python in the Browser</h1>
       <nav>
         <ul>
-          <li><a href="index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>
-          <li><a href="lesson_1.html" ${currentPage === 'lesson_1' ? 'class="active"' : ''}>Lesson 1: Basics</a></li>
-          <li><a href="lesson_2.html" ${currentPage === 'lesson_2' ? 'class="active"' : ''}>Lesson 2: Functions</a></li>
-          <li><a href="lesson_3.html" ${currentPage === 'lesson_3' ? 'class="active"' : ''}>Lesson 3: Control Flow</a></li>
-          <li><a href="lesson_4.html" ${currentPage === 'lesson_4' ? 'class="active"' : ''}>Lesson 4: Data Structures</a></li>
-          <li><a href="lesson_5.html" ${currentPage === 'lesson_5' ? 'class="active"' : ''}>Lesson 5: Python Quiz</a></li>
-          <li><a href="lesson_6.html" ${currentPage === 'lesson_6' ? 'class="active"' : ''}>Lesson 6: Turtles!</a></li>
-          <li><a href="lesson_7.html" ${currentPage === 'lesson_7' ? 'class="active"' : ''}>Lesson 7: Reflection!</a></li>
+          ${navItems}
         </ul>
       </nav>
     </div>
