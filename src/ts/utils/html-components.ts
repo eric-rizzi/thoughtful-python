@@ -50,12 +50,37 @@ export function generateHeader(currentPage: string, unitId?: string): string {
     `;
   } else {
     // Main index page - show the main navigation
-    navItems = `
-      <li><a href="${BASE_PATH}/index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>
-      <li><a href="${BASE_PATH}/code-editor.html" class="disabled">Interactive Code Editor</a></li>
-      <li><a href="${BASE_PATH}/feedback.html" class="disabled">Instant Feedback</a></li>
-      <li><a href="${BASE_PATH}/about.html" class="disabled">About Us</a></li>
-    `;
+    if (currentPage === 'index') {
+      // Main index page with active Home link
+      navItems = `
+        <li><a href="${BASE_PATH}/index.html" class="active">Home</a></li>
+        <li><a href="${BASE_PATH}/unit.html?id=intro_python">Learning Paths</a></li>
+        <li><a href="${BASE_PATH}/learning-entries.html">Learning Entries</a></li>
+        <li><a href="${BASE_PATH}/code-editor.html" class="disabled">Interactive Code Editor</a></li>
+        <li><a href="${BASE_PATH}/feedback.html" class="disabled">Instant Feedback</a></li>
+        <li><a href="${BASE_PATH}/about.html" class="disabled">About Us</a></li>
+      `;
+    } else if (currentPage === 'learning-entries') {
+      // Learning entries page with active Learning Entries link
+      navItems = `
+        <li><a href="${BASE_PATH}/index.html">Home</a></li>
+        <li><a href="${BASE_PATH}/unit.html?id=intro_python">Learning Paths</a></li>
+        <li><a href="${BASE_PATH}/learning-entries.html" class="active">Learning Entries</a></li>
+        <li><a href="${BASE_PATH}/code-editor.html" class="disabled">Interactive Code Editor</a></li>
+        <li><a href="${BASE_PATH}/feedback.html" class="disabled">Instant Feedback</a></li>
+        <li><a href="${BASE_PATH}/about.html" class="disabled">About Us</a></li>
+      `;
+    } else if (!isLessonPage && !isUnitPage) {
+      // Any other page on the main menu
+      navItems = `
+        <li><a href="${BASE_PATH}/index.html">Home</a></li>
+        <li><a href="${BASE_PATH}/unit.html?id=intro_python">Learning Paths</a></li>
+        <li><a href="${BASE_PATH}/learning-entries.html">Learning Entries</a></li>
+        <li><a href="${BASE_PATH}/code-editor.html" class="${currentPage === 'code-editor' ? 'active' : 'disabled'}">Interactive Code Editor</a></li>
+        <li><a href="${BASE_PATH}/feedback.html" class="${currentPage === 'feedback' ? 'active' : 'disabled'}">Instant Feedback</a></li>
+        <li><a href="${BASE_PATH}/about.html" class="${currentPage === 'about' ? 'active' : 'disabled'}">About Us</a></li>
+      `;
+    }
   }
   
   return `

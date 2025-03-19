@@ -729,6 +729,76 @@ tr.incorrect-row {
   margin: 0;
 }
 
+.reflection-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Feedback button styling */
+.reflection-feedback-btn {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  flex: 1;
+}
+
+.reflection-feedback-btn:hover {
+  background-color: #306998;
+}
+
+.reflection-feedback-btn:disabled {
+  background-color: #a8c7e0;
+  cursor: not-allowed;
+}
+
+/* Submit entry button styling */
+.reflection-submit-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  flex: 1;
+}
+
+.reflection-submit-btn:hover {
+  background-color: #218838;
+}
+
+.reflection-submit-btn:disabled {
+  background-color: #8ed7a5;
+  cursor: not-allowed;
+}
+
+/* Submission badge styling */
+.submission-badge {
+  display: inline-block;
+  background-color: #28a745;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+/* Reflection header styling */
+.reflection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
 .reflection-response {
   margin-top: 1rem;
   padding-top: 1rem;

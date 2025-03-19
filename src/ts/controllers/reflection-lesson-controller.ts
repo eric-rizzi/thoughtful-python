@@ -14,6 +14,7 @@ export interface ReflectionSubmission {
   code: string;
   explanation: string;
   timestamp: number;
+  submitted?: boolean;
 }
 
 export interface ReflectionSession {
@@ -28,7 +29,7 @@ export abstract class ReflectionLessonController extends DynamicLessonController
     // Load saved reflection sessions
     this.loadSavedSessions();
   }
-  
+
   protected renderReflectionSection(section: LessonSection, container: HTMLElement): void {
     // First render as a standard section to get the base structure
     this.renderStandardSection(section, container);
@@ -79,13 +80,28 @@ export abstract class ReflectionLessonController extends DynamicLessonController
     `;
     reflectionContainer.appendChild(explanationContainer);
     
-    // Add submit button
+    // Add button container with both buttons
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'reflection-buttons';
+    
+    // Get Feedback button
+    const feedbackButton = document.createElement('button');
+    feedbackButton.id = `${section.id}-feedback`;
+    feedbackButton.className = 'reflection-feedback-btn';
+    feedbackButton.textContent = 'Get Feedback';
+    feedbackButton.addEventListener('click', () => this.handleReflectionSubmit(section.id, false));
+    
+    // Submit Entry button
     const submitButton = document.createElement('button');
     submitButton.id = `${section.id}-submit`;
-    submitButton.className = 'reflection-submit';
-    submitButton.textContent = 'Submit for Feedback';
-    submitButton.addEventListener('click', () => this.handleReflectionSubmit(section.id));
-    reflectionContainer.appendChild(submitButton);
+    submitButton.className = 'reflection-submit-btn';
+    submitButton.textContent = 'Submit Entry';
+    submitButton.addEventListener('click', () => this.handleReflectionSubmit(section.id, true));
+    
+    // Add buttons to container
+    buttonContainer.appendChild(feedbackButton);
+    buttonContainer.appendChild(submitButton);
+    reflectionContainer.appendChild(buttonContainer);
     
     // Add history container
     const historyContainer = document.createElement('div');
@@ -100,7 +116,8 @@ export abstract class ReflectionLessonController extends DynamicLessonController
     this.displayReflectionHistory(section.id);
   }
   
-  protected async handleReflectionSubmit(sectionId: string): Promise<void> {
+  // Update the handleReflectionSubmit method to accept a submit parameter
+  protected async handleReflectionSubmit(sectionId: string, isSubmitEntry: boolean = false): Promise<void> {
     // Get values from form
     const topicElement = document.getElementById(`${sectionId}-topic`) as HTMLSelectElement;
     const codeElement = document.getElementById(`${sectionId}-code`) as HTMLTextAreaElement;
@@ -116,20 +133,28 @@ export abstract class ReflectionLessonController extends DynamicLessonController
       return;
     }
     
-    // Disable submit button while processing
+    // Disable both buttons while processing
+    const feedbackButton = document.getElementById(`${sectionId}-feedback`) as HTMLButtonElement;
     const submitButton = document.getElementById(`${sectionId}-submit`) as HTMLButtonElement;
+    
+    if (feedbackButton) {
+      feedbackButton.disabled = true;
+      feedbackButton.textContent = 'Processing...';
+    }
+    
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = 'Getting feedback...';
+      submitButton.textContent = 'Processing...';
     }
     
     try {
-      // Create submission object
+      // Create submission object with the submitted flag
       const submission: ReflectionSubmission = {
         topic: topic,
         code: code,
         explanation: explanation,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        submitted: isSubmitEntry // Flag indicating if this is a formal submission
       };
       
       // Get or create session
@@ -164,15 +189,96 @@ export abstract class ReflectionLessonController extends DynamicLessonController
         this.updateSidebarCompletions();
         this.checkAllSectionsCompleted();
       }
+      
+      // Show specific message based on button clicked
+      if (isSubmitEntry) {
+        alert('Your entry has been submitted to your Learning Entries journal!');
+      }
     } catch (error) {
       console.error('Error submitting reflection:', error);
       alert('There was an error submitting your reflection. Please try again.');
     } finally {
-      // Re-enable submit button
+      // Re-enable both buttons
+      if (feedbackButton) {
+        feedbackButton.disabled = false;
+        feedbackButton.textContent = 'Get Feedback';
+      }
+      
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = 'Submit for Feedback';
+        submitButton.textContent = 'Submit Entry';
       }
+    }
+  }
+  
+  // Update the displayReflectionHistory method to show submission status
+  private displayReflectionHistory(sectionId: string): void {
+    const historyContainer = document.getElementById(`${sectionId}-history`);
+    if (!historyContainer) return;
+    
+    // Clear existing history
+    historyContainer.innerHTML = '';
+    
+    // Get session
+    const session = this.reflectionSessions.get(sectionId);
+    if (!session || session.submissions.length === 0) {
+      historyContainer.innerHTML = '<p class="no-history">No submissions yet. Complete the form above to get feedback.</p>';
+      return;
+    }
+    
+    // Create history header
+    const historyHeader = document.createElement('h4');
+    historyHeader.textContent = 'Your Submission History';
+    historyContainer.appendChild(historyHeader);
+    
+    // Display submissions and responses
+    for (let i = session.submissions.length - 1; i >= 0; i--) {
+      const submission = session.submissions[i];
+      const response = session.responses[i];
+      
+      // Create submission card
+      const card = document.createElement('div');
+      card.className = `reflection-card assessment-${response?.assessment || 'pending'}`;
+      
+      // Format date
+      const date = new Date(submission.timestamp);
+      const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+      
+      // Add submission details with submission status badge if submitted
+      card.innerHTML = `
+        <div class="reflection-submission">
+          <div class="reflection-header">
+            <span class="reflection-date">${dateStr}</span>
+            ${submission.submitted ? '<span class="submission-badge">Submitted to Journal</span>' : ''}
+          </div>
+          <h5>Topic: ${this.getTopicName(submission.topic)}</h5>
+          <div class="reflection-code-display">
+            <pre><code>${this.escapeHTML(submission.code)}</code></pre>
+          </div>
+          <div class="reflection-explanation-display">
+            <p>${this.escapeHTML(submission.explanation)}</p>
+          </div>
+        </div>
+      `;
+      
+      // Add response if available
+      if (response) {
+        const responseEl = document.createElement('div');
+        responseEl.className = 'reflection-response';
+        responseEl.innerHTML = `
+          <h5>Feedback:</h5>
+          <div class="assessment-badge ${response.assessment}">${response.assessment}</div>
+          <p>${this.escapeHTML(response.feedback)}</p>
+        `;
+        card.appendChild(responseEl);
+      } else {
+        const pendingEl = document.createElement('div');
+        pendingEl.className = 'reflection-pending';
+        pendingEl.textContent = 'Feedback pending...';
+        card.appendChild(pendingEl);
+      }
+      
+      historyContainer.appendChild(card);
     }
   }
   
@@ -210,73 +316,6 @@ export abstract class ReflectionLessonController extends DynamicLessonController
       assessment,
       timestamp: Date.now()
     };
-  }
-  
-  private displayReflectionHistory(sectionId: string): void {
-    const historyContainer = document.getElementById(`${sectionId}-history`);
-    if (!historyContainer) return;
-    
-    // Clear existing history
-    historyContainer.innerHTML = '';
-    
-    // Get session
-    const session = this.reflectionSessions.get(sectionId);
-    if (!session || session.submissions.length === 0) {
-      historyContainer.innerHTML = '<p class="no-history">No submissions yet. Complete the form above to get feedback.</p>';
-      return;
-    }
-    
-    // Create history header
-    const historyHeader = document.createElement('h4');
-    historyHeader.textContent = 'Your Submission History';
-    historyContainer.appendChild(historyHeader);
-    
-    // Display submissions and responses
-    for (let i = session.submissions.length - 1; i >= 0; i--) {
-      const submission = session.submissions[i];
-      const response = session.responses[i];
-      
-      // Create submission card
-      const card = document.createElement('div');
-      card.className = `reflection-card assessment-${response?.assessment || 'pending'}`;
-      
-      // Format date
-      const date = new Date(submission.timestamp);
-      const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-      
-      // Add submission details
-      card.innerHTML = `
-        <div class="reflection-submission">
-          <span class="reflection-date">${dateStr}</span>
-          <h5>Topic: ${this.getTopicName(submission.topic)}</h5>
-          <div class="reflection-code-display">
-            <pre><code>${this.escapeHTML(submission.code)}</code></pre>
-          </div>
-          <div class="reflection-explanation-display">
-            <p>${this.escapeHTML(submission.explanation)}</p>
-          </div>
-        </div>
-      `;
-      
-      // Add response if available
-      if (response) {
-        const responseEl = document.createElement('div');
-        responseEl.className = 'reflection-response';
-        responseEl.innerHTML = `
-          <h5>Feedback:</h5>
-          <div class="assessment-badge ${response.assessment}">${response.assessment}</div>
-          <p>${this.escapeHTML(response.feedback)}</p>
-        `;
-        card.appendChild(responseEl);
-      } else {
-        const pendingEl = document.createElement('div');
-        pendingEl.className = 'reflection-pending';
-        pendingEl.textContent = 'Feedback pending...';
-        card.appendChild(pendingEl);
-      }
-      
-      historyContainer.appendChild(card);
-    }
   }
   
   private getTopicName(topicValue: string): string {

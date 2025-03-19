@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Entries - Python in the Browser</title>
+  <!-- CSS is injected by webpack -->
+</head>
+<body>
+  <!-- HEADER (Common across pages) -->
+  <header></header>
+
+  <main class="container">
+    <section class="learning-entries-section">
+      <h2>Your Learning Entries</h2>
+      <p class="intro-text">This page collects all your submitted reflections and learning entries from across the lessons.</p>
+      
+      <div id="entries-container">
+        <div class="loading-message">
+          <p>Loading your learning entries...</p>
+          <div class="spinner"></div>
+        </div>
+      </div>
+      
+      <div class="no-entries-message hidden">
+        <p>You haven't submitted any learning entries yet.</p>
+        <p>As you progress through the lessons, use the "Submit Entry" button in the reflection sections to add entries to your learning journal.</p>
+        <a href="index.html" class="primary-button">Go to Lessons</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER (Common across pages) -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Python Browser Lessons</p>
+    </div>
+  </footer>
+</body>
+</html>
