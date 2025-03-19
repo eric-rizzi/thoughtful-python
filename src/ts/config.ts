@@ -20,3 +20,5 @@ export const LESSON_TITLES: { [key: string]: string } = {
 };
 
 export const TOTAL_LESSONS = 7;
+
+export const BASE_PATH = '/thoughtful-python';

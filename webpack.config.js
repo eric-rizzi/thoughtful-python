@@ -4,6 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const fs = require('fs');
 
+// GitHub Pages repository name
+const REPO_NAME = 'thoughtful-python';
+
 // Get all HTML files from src/pages
 const pagesDir = path.resolve(__dirname, 'src/pages');
 const pages = fs.readdirSync(pagesDir).filter(file => file.endsWith('.html'));
@@ -26,6 +29,8 @@ const htmlPlugins = pages.map(page => {
       removeComments: true,
       removeRedundantAttributes: true,
     },
+    // Add public path for GitHub Pages
+    publicPath: `/${REPO_NAME}/`,
   });
 });
 
@@ -53,6 +58,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'js/[name].[contenthash].js',
+      publicPath: `/${REPO_NAME}/`, // Add this for GitHub Pages
       clean: true,
     },
     devtool: isProduction ? 'source-map' : 'inline-source-map',

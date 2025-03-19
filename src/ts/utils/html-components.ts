@@ -2,7 +2,7 @@
  * Utility functions for generating common HTML components across lessons
  */
 
-import { LESSON_CONTROLLER_TYPES, LESSON_TITLES } from "../config";
+import { BASE_PATH, LESSON_CONTROLLER_TYPES, LESSON_TITLES } from "../config";
 
 /**
  * Generates the common header HTML with navigation
@@ -11,13 +11,13 @@ import { LESSON_CONTROLLER_TYPES, LESSON_TITLES } from "../config";
  */
 export function generateHeader(currentPage: string): string {
   // Start building the navigation items
-  let navItems = `<li><a href="index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>`;
+  let navItems = `<li><a href="${BASE_PATH}/index.html" ${currentPage === 'index' ? 'class="active"' : ''}>Home</a></li>`;
   
   // Generate nav items for each lesson
   Object.keys(LESSON_CONTROLLER_TYPES).forEach(lessonId => {
     const title = LESSON_TITLES[lessonId] || lessonId;
     navItems += `
-      <li><a href="${lessonId}.html" ${currentPage === lessonId ? 'class="active"' : ''}>
+      <li><a href="${BASE_PATH}/${lessonId}.html" ${currentPage === lessonId ? 'class="active"' : ''}>
         ${lessonId.replace('_', ' ')}: ${title}
       </a></li>
     `;

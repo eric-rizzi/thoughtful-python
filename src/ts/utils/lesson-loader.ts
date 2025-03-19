@@ -2,6 +2,9 @@
  * Utility for loading lesson data from JSON
  */
 
+import { BASE_PATH } from "../config";
+
+
 export interface LessonExample {
   id: string;
   title: string;
@@ -68,7 +71,6 @@ export interface Lesson {
   sections: LessonSection[];
 }
 
-// In lesson-loader.ts
 export interface ReflectionSection extends LessonSection {
   kind: 'Reflection';
   prompts: {
@@ -91,8 +93,11 @@ export interface ReflectionSection extends LessonSection {
  */
 export async function loadLesson(lessonId: string): Promise<Lesson> {
   try {
+    // Construct the full path to the JSON file, accounting for GitHub Pages base path
+    const jsonPath = `${BASE_PATH}/data/${lessonId}.json`;
+    
     // Fetch the lesson JSON file
-    const response = await fetch(`/data/${lessonId}.json`);
+    const response = await fetch(jsonPath);
     
     if (!response.ok) {
       throw new Error(`Failed to load lesson data: ${response.status} ${response.statusText}`);
