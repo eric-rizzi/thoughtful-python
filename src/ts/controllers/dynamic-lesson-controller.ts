@@ -71,7 +71,8 @@ export abstract class DynamicLessonController {
       'Prediction': ['id', 'title', 'content', 'functionDisplay', 'predictionTable'],
       'MultipleChoice': ['id', 'title', 'content', 'options', 'correctAnswer', 'feedback'],
       'MultiSelection': ['id', 'title', 'content', 'options', 'correctAnswers', 'feedback'],
-      'Turtle': ['id', 'title', 'content', 'instructions', 'initialCode', 'validationCriteria', 'feedback']
+      'Turtle': ['id', 'title', 'content', 'instructions', 'initialCode', 'validationCriteria', 'feedback'],
+      'Reflection': ['id', 'title', 'content', 'prompts'],
     };
     
     // Validate each section
@@ -208,6 +209,9 @@ export abstract class DynamicLessonController {
       case 'Turtle':
         this.renderTurtleSection(section, container);
         break;
+      case 'Reflection':
+        this.renderReflectionSection(section, container);
+        break;
       case 'Testing':
       case 'Observation':
       case 'Information':
@@ -216,7 +220,13 @@ export abstract class DynamicLessonController {
         break;
     }
   }
-  
+
+  // Add placeholder method for Reflection sections
+  protected renderReflectionSection(section: LessonSection, container: HTMLElement): void {
+    // This will be overridden by ReflectionLessonController
+    this.renderStandardSection(section, container);
+  }
+
   /**
    * Render a MultipleChoice section
    * This is a placeholder that should be overridden by QuizLessonController

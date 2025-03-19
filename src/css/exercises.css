@@ -617,3 +617,150 @@ tr.incorrect-row {
 .completed-section {
   border-left: 4px solid #28a745 !important;
 }
+
+/* 6. REFLECTION EXERCISES */
+.reflection-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid #e1e4e8;
+}
+
+.topic-selector {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.reflection-code-editor {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.reflection-explanation {
+  width: 100%;
+  min-height: 150px;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.reflection-submit {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  margin-bottom: 2rem;
+}
+
+.reflection-submit:hover {
+  background-color: #306998;
+}
+
+.reflection-submit:disabled {
+  background-color: #a8c7e0;
+  cursor: not-allowed;
+}
+
+.reflection-history {
+  margin-top: 2.5rem;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+}
+
+.reflection-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #eee;
+}
+
+.assessment-developing {
+  border-left-color: #ffc107;
+}
+
+.assessment-meets {
+  border-left-color: #28a745;
+}
+
+.assessment-exceeds {
+  border-left-color: #4b8bbe;
+}
+
+.reflection-date {
+  color: #666;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.reflection-code-display {
+  background-color: #f8f8f8;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.reflection-code-display pre {
+  margin: 0;
+}
+
+.reflection-response {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #eee;
+}
+
+.assessment-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.assessment-badge.developing {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.assessment-badge.meets {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.assessment-badge.exceeds {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.no-history {
+  color: #666;
+  font-style: italic;
+}

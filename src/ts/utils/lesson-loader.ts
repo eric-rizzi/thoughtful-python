@@ -15,7 +15,7 @@ export interface LessonExample {
 }
 
 export interface LessonSection {
-  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction' | 'MultipleChoice' | 'MultiSelection' | 'Turtle';
+  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction' | 'MultipleChoice' | 'MultiSelection' | 'Turtle' | 'Reflection';
   id: string;
   title: string;
   content: string;
@@ -66,6 +66,22 @@ export interface Lesson {
   title: string;
   description: string;
   sections: LessonSection[];
+}
+
+// In lesson-loader.ts
+export interface ReflectionSection extends LessonSection {
+  kind: 'Reflection';
+  prompts: {
+    topic: string;
+    code: string;
+    explanation: string;
+  };
+  apiEndpoint?: string; // Claude API endpoint
+  rubric?: {
+    developing: string;
+    meets: string;
+    exceeds: string;
+  };
 }
 
 /**
