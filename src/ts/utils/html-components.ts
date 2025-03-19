@@ -2,7 +2,7 @@
  * Utility functions for generating common HTML components across lessons
  */
 
-import { BASE_PATH, LESSON_CONTROLLER_TYPES, LESSON_TITLES } from "../config";
+import { BASE_PATH, TOTAL_LESSONS } from "../config";
 
 /**
  * Generates the common header HTML with navigation
@@ -21,7 +21,7 @@ export function generateHeader(currentPage: string, unitId?: string): string {
     // Get the lesson number for basic navigation
     const lessonNumber = parseInt(currentPage.replace('lesson_', ''), 10);
     const prevLessonNumber = lessonNumber > 1 ? lessonNumber - 1 : null;
-    const nextLessonNumber = lessonNumber < 7 ? lessonNumber + 1 : null; // Assuming 7 lessons
+    const nextLessonNumber = lessonNumber < TOTAL_LESSONS ? lessonNumber + 1 : null;
     
     // Build navigation elements
     const prevLink = prevLessonNumber 
@@ -36,7 +36,7 @@ export function generateHeader(currentPage: string, unitId?: string): string {
       <li><a href="${BASE_PATH}/index.html">Home</a></li>
       <li><a href="${BASE_PATH}/unit.html?id=${unitId || 'intro_python'}">Unit Overview</a></li>
       <li class="nav-separator">|</li>
-      <li class="lesson-progress">Lesson ${lessonNumber} of 7</li>
+      <li class="lesson-progress">Lesson ${lessonNumber} of ${TOTAL_LESSONS}</li>
       <li class="prev-next-container">
         ${prevLink}
         ${nextLink}
