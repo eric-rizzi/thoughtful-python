@@ -6,28 +6,20 @@ import '../css/exercises.css';  // Exercise styles last
 
 // Import utility for page layout
 import { initializePageLayout } from './utils/html-loader';
+import { createLessonController } from './lesson-factory';
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Python in the Browser application initialized');
-  
   // Determine current page from URL
   const currentPath = window.location.pathname;
   let currentPage = 'index';
   
-  if (currentPath.includes('lesson_1')) {
-    currentPage = 'lesson_1';
-  } else if (currentPath.includes('lesson_2')) {
-    currentPage = 'lesson_2';
-  } else if (currentPath.includes('lesson_3')) {
-    currentPage = 'lesson_3';
-  } else if (currentPath.includes('lesson_4')) {
-    currentPage = 'lesson_4';
-  } else if (currentPath.includes('lesson_5')) {
-    currentPage = 'lesson_5';
-  } else if (currentPath.includes('lesson_6')) {
-    currentPage = 'lesson_6';
-  } else if (currentPath.includes('lesson_7')) {
-    currentPage = 'lesson_7';
+  // Extract lesson ID from path
+  const lessonMatch = currentPath.match(/lesson_(\d+)/);
+  if (lessonMatch) {
+    currentPage = `lesson_${lessonMatch[1]}`;
+    
+    // Create the appropriate controller
+    createLessonController(currentPage);
   }
   
   // Initialize common page components
