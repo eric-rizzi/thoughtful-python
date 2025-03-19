@@ -89,7 +89,8 @@ export abstract class DynamicLessonController {
       'MultipleChoice': ['id', 'title', 'content', 'options', 'correctAnswer', 'feedback'],
       'MultiSelection': ['id', 'title', 'content', 'options', 'correctAnswers', 'feedback'],
       'Turtle': ['id', 'title', 'content', 'instructions', 'initialCode', 'validationCriteria', 'feedback'],
-      'Reflection': ['id', 'title', 'content', 'prompts']
+      'Reflection': ['id', 'title', 'content', 'prompts'],
+      'Coverage': ['id', 'title', 'content', 'code', 'coverageChallenges', 'inputParams'],
     };
     
     // Validate each section
@@ -225,6 +226,9 @@ export abstract class DynamicLessonController {
       case 'Reflection':
         this.renderReflectionSection(section, container);
         break;
+      case 'Coverage':  // Add this case
+        this.renderCoverageSection(section, container);
+        break;
       case 'Testing':
       case 'Observation':
       case 'Information':
@@ -234,6 +238,16 @@ export abstract class DynamicLessonController {
     }
   }
   
+  /**
+   * Render a Coverage section
+   * This is a placeholder that should be overridden by CoverageLessonController
+   */
+  protected renderCoverageSection(section: LessonSection, container: HTMLElement): void {
+    // By default, just render as a standard section
+    // This will be overridden by CoverageLessonController
+    this.renderStandardSection(section, container);
+  }
+
   /**
    * Render a MultipleChoice section
    * This is a placeholder that should be overridden by QuizLessonController

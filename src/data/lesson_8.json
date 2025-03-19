@@ -1,0 +1,125 @@
+{
+  "title": "Lesson 8: Code Coverage and Execution Paths",
+  "description": "Learn to understand how code executes by exploring different execution paths through a program.",
+  "sections": [
+    {
+      "kind": "Information",
+      "id": "coverage-intro",
+      "title": "Understanding Code Coverage",
+      "content": "Code coverage is a measure of how much of your code is executed during testing. In this lesson, you'll explore different execution paths through a program by providing inputs that trigger specific code paths.\n\nThis exercise will help you understand how conditionals work and how different inputs affect which lines of code are executed."
+    },
+    {
+      "kind": "Coverage",
+      "id": "simple-coverage",
+      "title": "Simple Branching Exercise",
+      "content": "Let's start with a simple example. The following function analyzes a number and prints different messages based on its value. Try to find inputs that will reach each part of the code.",
+      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1: Number is negative\")\n        if x < -10:\n            print(\"Line 2: Number is less than -10\")\n    elif x == 0:\n        print(\"Line 3: Number is zero\")\n    else:  # x > 0\n        print(\"Line 4: Number is positive\")\n        if x > 10:\n            print(\"Line 5: Number is greater than 10\")\n        if x % 2 == 0:\n            print(\"Line 6: Number is even\")\n        else:\n            print(\"Line 7: Number is odd\")\n\n# Call the function with the input value\nanalyze_number(x)",
+      "coverageChallenges": [
+        {
+          "id": "challenge-1",
+          "expectedOutput": "Line 1: Number is negative",
+          "hint": "Try a negative number that's greater than -10."
+        },
+        {
+          "id": "challenge-2",
+          "expectedOutput": "Line 1: Number is negative\nLine 2: Number is less than -10",
+          "hint": "Try a number less than -10."
+        },
+        {
+          "id": "challenge-3",
+          "expectedOutput": "Line 3: Number is zero",
+          "hint": "What number equals zero?"
+        },
+        {
+          "id": "challenge-4",
+          "expectedOutput": "Line 4: Number is positive\nLine 6: Number is even",
+          "hint": "Try a positive even number that's not greater than 10."
+        },
+        {
+          "id": "challenge-5",
+          "expectedOutput": "Line 4: Number is positive\nLine 5: Number is greater than 10\nLine 6: Number is even",
+          "hint": "Try a positive even number greater than 10."
+        },
+        {
+          "id": "challenge-6",
+          "expectedOutput": "Line 4: Number is positive\nLine 7: Number is odd",
+          "hint": "Try a positive odd number that's not greater than 10."
+        },
+        {
+          "id": "challenge-7",
+          "expectedOutput": "Line 4: Number is positive\nLine 5: Number is greater than 10\nLine 7: Number is odd",
+          "hint": "Try a positive odd number greater than 10."
+        }
+      ],
+      "inputParams": [
+        {
+          "name": "x",
+          "type": "number",
+          "placeholder": "Enter a number"
+        }
+      ]
+    },
+    {
+      "kind": "Coverage",
+      "id": "nested-conditions",
+      "title": "More Complex Branching",
+      "content": "Now let's try a more complex example with nested conditions. This function determines whether to approve a loan based on income, credit score, and employment status.",
+      "code": "def approve_loan(income, credit_score, employed):\n    if income < 30000:\n        print(\"Line 1: Low income check\")\n        if credit_score >= 700:\n            print(\"Line 2: Good credit despite low income\")\n            if employed:\n                print(\"Line 3: Approved with conditions despite low income\")\n                return True\n            else:\n                print(\"Line 4: Rejected due to unemployment with low income\")\n                return False\n        else:\n            print(\"Line 5: Rejected due to low income and poor credit\")\n            return False\n    else:\n        print(\"Line 6: Sufficient income\")\n        if credit_score < 650:\n            print(\"Line 7: Poor credit despite good income\")\n            if employed:\n                print(\"Line 8: Approved with conditions despite poor credit\")\n                return True\n            else:\n                print(\"Line 9: Rejected due to unemployment and poor credit\")\n                return False\n        else:\n            print(\"Line 10: Good credit and income\")\n            print(\"Line 11: Fully approved\")\n            return True\n\n# Call the function with the input values\nresult = approve_loan(income, credit_score, employed)\nprint(f\"Final decision: {'Approved' if result else 'Rejected'}\")",
+      "coverageChallenges": [
+        {
+          "id": "loan-challenge-1",
+          "expectedOutput": "Line 1: Low income check\nLine 2: Good credit despite low income\nLine 3: Approved with conditions despite low income\nFinal decision: Approved",
+          "hint": "Low income but good credit and employed."
+        },
+        {
+          "id": "loan-challenge-2",
+          "expectedOutput": "Line 1: Low income check\nLine 2: Good credit despite low income\nLine 4: Rejected due to unemployment with low income\nFinal decision: Rejected",
+          "hint": "Low income, good credit, but unemployed."
+        },
+        {
+          "id": "loan-challenge-3",
+          "expectedOutput": "Line 1: Low income check\nLine 5: Rejected due to low income and poor credit\nFinal decision: Rejected",
+          "hint": "Low income and poor credit."
+        },
+        {
+          "id": "loan-challenge-4",
+          "expectedOutput": "Line 6: Sufficient income\nLine 7: Poor credit despite good income\nLine 8: Approved with conditions despite poor credit\nFinal decision: Approved",
+          "hint": "Good income, poor credit, but employed."
+        },
+        {
+          "id": "loan-challenge-5",
+          "expectedOutput": "Line 6: Sufficient income\nLine 7: Poor credit despite good income\nLine 9: Rejected due to unemployment and poor credit\nFinal decision: Rejected",
+          "hint": "Good income, poor credit, and unemployed."
+        },
+        {
+          "id": "loan-challenge-6",
+          "expectedOutput": "Line 6: Sufficient income\nLine 10: Good credit and income\nLine 11: Fully approved\nFinal decision: Approved",
+          "hint": "Good income and good credit."
+        }
+      ],
+      "inputParams": [
+        {
+          "name": "income",
+          "type": "number",
+          "placeholder": "Annual income"
+        },
+        {
+          "name": "credit_score",
+          "type": "number",
+          "placeholder": "Credit score (300-850)"
+        },
+        {
+          "name": "employed",
+          "type": "text",
+          "placeholder": "True or False"
+        }
+      ]
+    },
+    {
+      "kind": "Information",
+      "id": "coverage-conclusion",
+      "title": "Understanding Code Paths",
+      "content": "Great job exploring different execution paths through code! Understanding how inputs affect which parts of code execute is a critical skill for programming.\n\nKey takeaways:\n\n1. Each condition in your code creates a branch point where execution can go in different directions.\n2. When you have nested conditions, you must satisfy all parent conditions to reach the inner code blocks.\n3. The same output can sometimes be produced by different inputs, but the execution paths may differ.\n4. Testing edge cases (like zero, negative numbers, boundary values) is important to ensure all code paths work correctly.\n\nIn real-world programming, tools called \"code coverage analyzers\" help developers measure which parts of their code are being executed by tests. Aiming for high code coverage helps ensure that your program has been thoroughly tested under different conditions."
+    }
+  ]
+}

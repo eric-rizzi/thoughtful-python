@@ -6,7 +6,8 @@ export const LESSON_CONTROLLER_TYPES: { [key: string]: string } = {
   'lesson_4': 'code',
   'lesson_5': 'quiz',
   'lesson_6': 'turtle',
-  'lesson_7': 'reflection'
+  'lesson_7': 'reflection',
+  'lesson_8': 'coverage',
 };
 
 export const LESSON_TITLES: { [key: string]: string } = {
@@ -16,10 +17,11 @@ export const LESSON_TITLES: { [key: string]: string } = {
   'lesson_4': 'Data Structures',
   'lesson_5': 'Python Quiz',
   'lesson_6': 'Turtles!',
-  'lesson_7': 'Reflection!'
+  'lesson_7': 'Reflection!',
+  'lesson_8': 'Code Coverage',
 };
 
-export const TOTAL_LESSONS = 7;
+export const TOTAL_LESSONS = 8;
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 export const REPO_NAME = 'thoughtful-python';

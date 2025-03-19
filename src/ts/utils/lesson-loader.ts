@@ -18,7 +18,7 @@ export interface LessonExample {
 }
 
 export interface LessonSection {
-  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction' | 'MultipleChoice' | 'MultiSelection' | 'Turtle' | 'Reflection';
+  kind: 'Information' | 'Observation' | 'Testing' | 'Prediction' | 'MultipleChoice' | 'MultiSelection' | 'Turtle' | 'Reflection' | 'Coverage';
   id: string;
   title: string;
   content: string;
