@@ -2,6 +2,7 @@
 import { loadUnitById, Unit } from '../utils/units-loader';
 import { BASE_PATH, LESSON_TITLES } from '../config';
 import { loadLesson, Lesson, LessonSection } from '../utils/lesson-loader';
+import { updateHeaderWithLessons } from '../utils/html-components';
 
 /**
  * Helper function to get required sections from a lesson
@@ -65,6 +66,11 @@ export class UnitController {
       
       // Load all lesson data for this unit
       await this.loadLessonData();
+      
+      // Update the header with lessons from this unit
+      if (this.unit.lessons && this.unit.lessons.length > 0) {
+        updateHeaderWithLessons(this.unitId, this.unit.lessons);
+      }
       
       // Render the unit content
       this.renderUnitContent();
