@@ -2,7 +2,6 @@
  * Utility for dynamically loading HTML components
  */
 import { generateHeader, generateFooter } from './html-components';
-import { initializeLessonProgressTracker } from './lesson-progress-tracker';
 
 /**
  * Injects common HTML components into the page
@@ -21,11 +20,8 @@ export function injectCommonComponents(currentPage: string): void {
     footerPlaceholder.outerHTML = generateFooter();
   }
   
-  // Initialize the lesson progress tracker AFTER header is injected
-  // This ensures navigation elements exist when we try to update them
-  setTimeout(() => {
-    initializeLessonProgressTracker();
-  }, 0);
+  // Note: We're no longer initializing the lesson progress tracker here
+  // The functionality is now handled by DynamicLessonController
 }
 
 /**

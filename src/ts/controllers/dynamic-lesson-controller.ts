@@ -2,7 +2,6 @@
  * Base class for dynamic lesson controllers that load from JSON
  */
 import { escapeHTML } from '../utils/pyodide-utils';
-import { markSectionCompleted, loadCompletionFromStorage } from '../utils/progress-utils';
 import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
 
 export abstract class DynamicLessonController {
@@ -27,6 +26,9 @@ export abstract class DynamicLessonController {
       // Load lesson data from JSON
       this.lesson = await loadLesson(this.lessonId);
       
+      // Cache lesson data for completion checking in other tabs/contexts
+      this.storeLessonData(this.lesson);
+      
       // Validate section kinds
       this.validateSectionKinds();
       
@@ -40,7 +42,7 @@ export abstract class DynamicLessonController {
       this.renderLesson();
       
       // Load completion status
-      loadCompletionFromStorage(this.lessonId);
+      this.loadCompletionFromStorage();
       
       // Update sidebar to show completed sections
       this.updateSidebarCompletions();
@@ -48,12 +50,26 @@ export abstract class DynamicLessonController {
       // Check if all sections are completed
       this.checkAllSectionsCompleted();
       
+      // Update global navigation menu
+      this.updateLessonCompletionStatus();
+      
       // Mark as initialized
       this.isInitialized = true;
       console.log(`${this.lessonId} controller initialized`);
     } catch (error) {
       console.error(`Failed to initialize ${this.lessonId}:`, error);
       this.showLoadError(error);
+    }
+  }
+  
+  /**
+   * Store lesson data in localStorage for completion checking in other contexts
+   */
+  private storeLessonData(lesson: Lesson): void {
+    try {
+      localStorage.setItem(`python_${this.lessonId}_data`, JSON.stringify(lesson));
+    } catch (error) {
+      console.warn('Failed to cache lesson data:', error);
     }
   }
 
@@ -72,7 +88,7 @@ export abstract class DynamicLessonController {
       'MultipleChoice': ['id', 'title', 'content', 'options', 'correctAnswer', 'feedback'],
       'MultiSelection': ['id', 'title', 'content', 'options', 'correctAnswers', 'feedback'],
       'Turtle': ['id', 'title', 'content', 'instructions', 'initialCode', 'validationCriteria', 'feedback'],
-      'Reflection': ['id', 'title', 'content', 'prompts'],
+      'Reflection': ['id', 'title', 'content', 'prompts']
     };
     
     // Validate each section
@@ -96,7 +112,7 @@ export abstract class DynamicLessonController {
         }
       }
       
-      // If it's a Testing kind, validate the examples have testCases
+      // Specific validations for different section kinds
       if (kind === 'Testing' && section.examples) {
         const hasTestCases = section.examples.some(example => example.testCases && example.testCases.length > 0);
         if (!hasTestCases) {
@@ -104,14 +120,12 @@ export abstract class DynamicLessonController {
         }
       }
       
-      // If it's a Prediction kind, validate the predictionTable has rows
       if (kind === 'Prediction' && section.predictionTable) {
         if (!section.predictionTable.rows || !section.predictionTable.rows.length) {
           throw new Error(`Section '${section.title}' of kind 'Prediction' must have a predictionTable with rows`);
         }
       }
       
-      // If it's a MultipleChoice kind, validate the options and correctAnswer
       if (kind === 'MultipleChoice') {
         if (!section.options || !section.options.length) {
           throw new Error(`Section '${section.title}' of kind 'MultipleChoice' must have options`);
@@ -121,7 +135,6 @@ export abstract class DynamicLessonController {
         }
       }
       
-      // If it's a MultiSelection kind, validate the options and correctAnswers
       if (kind === 'MultiSelection') {
         if (!section.options || !section.options.length) {
           throw new Error(`Section '${section.title}' of kind 'MultiSelection' must have options`);
@@ -136,7 +149,6 @@ export abstract class DynamicLessonController {
         }
       }
       
-      // If it's a Turtle kind, validate the validationCriteria
       if (kind === 'Turtle') {
         if (!section.validationCriteria || !section.validationCriteria.type) {
           throw new Error(`Section '${section.title}' of kind 'Turtle' must have validationCriteria with a type property`);
@@ -220,13 +232,7 @@ export abstract class DynamicLessonController {
         break;
     }
   }
-
-  // Add placeholder method for Reflection sections
-  protected renderReflectionSection(section: LessonSection, container: HTMLElement): void {
-    // This will be overridden by ReflectionLessonController
-    this.renderStandardSection(section, container);
-  }
-
+  
   /**
    * Render a MultipleChoice section
    * This is a placeholder that should be overridden by QuizLessonController
@@ -254,6 +260,16 @@ export abstract class DynamicLessonController {
   protected renderTurtleSection(section: LessonSection, container: HTMLElement): void {
     // By default, just render as a standard section
     // This will be overridden by TurtleLessonController
+    this.renderStandardSection(section, container);
+  }
+  
+  /**
+   * Render a Reflection section
+   * This is a placeholder that should be overridden by ReflectionLessonController
+   */
+  protected renderReflectionSection(section: LessonSection, container: HTMLElement): void {
+    // By default, just render as a standard section
+    // This will be overridden by ReflectionLessonController
     this.renderStandardSection(section, container);
   }
   
@@ -389,6 +405,105 @@ export abstract class DynamicLessonController {
   }
   
   /**
+   * Marks a sidebar section as completed
+   */
+  protected markSectionCompleted(sectionId: string): void {
+    // Find the sidebar link for this section
+    const sidebarLink = document.querySelector(`.lesson-sidebar a[href="#${sectionId}"]`);
+    if (!sidebarLink) {
+      console.warn(`Could not find sidebar link for section: ${sectionId}`);
+      return;
+    }
+    
+    // Add completed class to parent li element
+    const parentLi = sidebarLink.parentElement;
+    if (parentLi && !parentLi.classList.contains('completed')) {
+      parentLi.classList.add('completed');
+      
+      // Show temporary notification
+      this.showProgressSavedNotification();
+      
+      // Store completion in localStorage
+      this.saveCompletionToStorage(sectionId);
+    }
+  }
+  
+  /**
+   * Shows a temporary notification that progress was saved
+   */
+  protected showProgressSavedNotification(): void {
+    // Check if notification already exists
+    let notification = document.querySelector('.progress-saved');
+    
+    if (!notification) {
+      // Create new notification
+      notification = document.createElement('div');
+      notification.className = 'progress-saved';
+      notification.textContent = 'Progress saved ✓';
+      
+      // Add to sidebar
+      const sidebar = document.querySelector('.lesson-sidebar');
+      if (sidebar) {
+        sidebar.appendChild(notification);
+      }
+    } else {
+      // Reset animation if notification exists
+      notification.classList.remove('fade-out');
+      // Force reflow - need to cast to HTMLElement to access offsetWidth
+      (notification as HTMLElement).offsetWidth;
+    }
+    
+    // Fade out after 2 seconds
+    setTimeout(() => {
+      notification?.classList.add('fade-out');
+    }, 2000);
+  }
+  
+  /**
+   * Saves section completion status to localStorage
+   */
+  protected saveCompletionToStorage(sectionId: string): void {
+    try {
+      // Get existing completed sections
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Add this section if not already included
+      if (!completedSections.includes(sectionId)) {
+        completedSections.push(sectionId);
+        localStorage.setItem(storageKey, JSON.stringify(completedSections));
+        
+        // Dispatch a custom event to notify that progress has been updated
+        window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
+          detail: { lessonId: this.lessonId, sectionId }
+        }));
+      }
+    } catch (error) {
+      console.warn('Failed to save progress to localStorage:', error);
+    }
+  }
+  
+  /**
+   * Loads completion status from localStorage
+   */
+  protected loadCompletionFromStorage(): void {
+    try {
+      const storageKey = `python_${this.lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Mark each completed section
+      completedSections.forEach((sectionId: string) => {
+        const sidebarLink = document.querySelector(`.lesson-sidebar a[href="#${sectionId}"]`);
+        if (sidebarLink && sidebarLink.parentElement) {
+          sidebarLink.parentElement.classList.add('completed');
+        }
+      });
+    } catch (error) {
+      console.warn('Failed to load progress from localStorage:', error);
+    }
+  }
+  
+  /**
    * Updates the sidebar to show which sections are completed
    */
   protected updateSidebarCompletions(): void {
@@ -445,6 +560,70 @@ export abstract class DynamicLessonController {
       }
     } catch (error) {
       console.error('Error checking lesson completion:', error);
+    }
+  }
+  
+  /**
+   * Updates the lesson completion status in the navigation menu
+   * This replaces functionality from lesson-progress-tracker.ts
+   */
+  protected updateLessonCompletionStatus(): void {
+    // Get all lessons from 1 to 7 (or whatever your max lesson is)
+    const maxLesson = 7; // Update this if you add more lessons
+    
+    for (let i = 1; i <= maxLesson; i++) {
+      const currentLessonId = `lesson_${i}`;
+      const isComplete = this.isLessonComplete(currentLessonId);
+      
+      // Find the nav link for this lesson
+      const navLink = document.querySelector(`nav li a[href="${currentLessonId}.html"]`);
+      if (navLink) {
+        const parentLi = navLink.parentElement;
+        
+        if (isComplete) {
+          // Add completed class to the li element
+          if (parentLi && !parentLi.classList.contains('nav-completed')) {
+            parentLi.classList.add('nav-completed');
+            console.log(`Added nav-completed class to ${currentLessonId} nav item`);
+          }
+        } else {
+          // Remove completed class if not complete (in case user cleared progress)
+          if (parentLi && parentLi.classList.contains('nav-completed')) {
+            parentLi.classList.remove('nav-completed');
+            console.log(`Removed nav-completed class from ${currentLessonId} nav item`);
+          }
+        }
+      }
+    }
+  }
+  
+  /**
+   * Checks if a lesson is completely finished
+   * This replaces functionality from lesson-progress-tracker.ts
+   */
+  protected isLessonComplete(lessonId: string): boolean {
+    try {
+      const storageKey = `python_${lessonId}_completed`;
+      const completedSections = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      
+      // Get the required sections for this lesson
+      const cachedLessonData = JSON.parse(localStorage.getItem(`python_${lessonId}_data`) || 'null');
+      if (!cachedLessonData) {
+        return false; // Can't determine completion without lesson data
+      }
+      
+      const requiredSections = getRequiredSections(cachedLessonData);
+      
+      // If no sections are defined, lesson is not completable
+      if (requiredSections.length === 0) {
+        return false;
+      }
+      
+      // Check if all required sections are completed
+      return requiredSections.every(section => completedSections.includes(section));
+    } catch (error) {
+      console.warn(`Failed to check lesson completion status for ${lessonId}:`, error);
+      return false;
     }
   }
   
