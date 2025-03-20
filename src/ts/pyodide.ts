@@ -53,7 +53,7 @@ class PythonRunner {
   private loadPyodideScript(): Promise<void> {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      // script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js'; WTF
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
       script.async = true;
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load Pyodide script'));
