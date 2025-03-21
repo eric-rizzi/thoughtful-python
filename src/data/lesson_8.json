@@ -13,7 +13,7 @@
       "id": "simple-coverage",
       "title": "Simple Branching Exercise",
       "content": "Let's start with a simple example. The following function analyzes a number and prints different messages based on its value. Try to find inputs that will reach each part of the code.",
-      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1\")\n        if x < -10:\n            print(\"Line 2\")\n    elif x == 0:\n        print(\"Line 3\")\n    else:  # x > 0\n        print(\"Line 4\")\n        if x > 10:\n            print(\"Line 5\")\n        if x % 2 == 0:\n            print(\"Line 6\")\n        else:\n            print(\"Line 7\")\n\n# Call the function with the input value\nanalyze_number(input_var_1_here)",
+      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1\")\n        if x < -10:\n            print(\"Line 2\")\n    elif x == 0:\n        print(\"Line 3\")\n    else:  # x > 0\n        print(\"Line 4\")\n        if x > 10:\n            print(\"Line 5\")\n        if x % 2 == 0:\n            print(\"Line 6\")\n        if x % 3 == 0:\n            print(\"Line 7\")\n\n# Call the function with the input value\nanalyze_number(input_var_1_here)",
       "coverageChallenges": [
         {
           "id": "challenge-1",
@@ -22,33 +22,13 @@
         },
         {
           "id": "challenge-2",
-          "expectedOutput": "Line 1",
-          "hint": "Try a number less than -10."
-        },
-        {
-          "id": "challenge-3",
           "expectedOutput": "Line 3",
           "hint": "What number equals zero?"
         },
         {
-          "id": "challenge-4",
+          "id": "challenge-3",
           "expectedOutput": "Line 4",
           "hint": "Try a positive even number that's not greater than 10."
-        },
-        {
-          "id": "challenge-5",
-          "expectedOutput": "Line 4\nLine 5\nLine 6",
-          "hint": "Try a positive even number greater than 10."
-        },
-        {
-          "id": "challenge-6",
-          "expectedOutput": "Line 4\nLine 7",
-          "hint": "Try a positive odd number that's not greater than 10."
-        },
-        {
-          "id": "challenge-7",
-          "expectedOutput": "Line 4\nLine 5\nLine 7",
-          "hint": "Try a positive odd number greater than 10."
         }
       ],
       "inputParams": [
