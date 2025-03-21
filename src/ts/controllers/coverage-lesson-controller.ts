@@ -51,7 +51,7 @@ export abstract class CoverageLessonController extends DynamicLessonController {
   /**
    * Render a Coverage section
    */
-  protected renderCoverageSection(section: CoverageSection, container: HTMLElement): void {
+  public renderCoverageSection(section: CoverageSection, container: HTMLElement): void {
     // First render as a standard section to get the base structure
     this.renderStandardSection(section, container);
     

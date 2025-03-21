@@ -4,6 +4,7 @@
 import { escapeHTML } from '../utils/pyodide-utils';
 import { loadLesson, getLessonMapping, getRequiredSections, Lesson, LessonSection, LessonExample } from '../utils/lesson-loader';
 import { LESSON_CONTROLLER_TYPES } from '../config';
+import { CoverageLessonController } from './coverage-lesson-controller';
 
 export abstract class DynamicLessonController {
   protected lesson: Lesson | null = null;
@@ -193,6 +194,7 @@ export abstract class DynamicLessonController {
     // Clear loading message
     const contentContainer = document.getElementById('lesson-content');
     if (contentContainer) {
+      contentContainer.innerHTML = '';
       
       // Add lesson title and description
       const titleElement = document.createElement('h2');
@@ -234,7 +236,8 @@ export abstract class DynamicLessonController {
         this.renderReflectionSection(section, container);
         break;
       case 'Coverage':  // Add this case
-        this.renderCoverageSection(section, container);
+        // First render as a standard section to get the base structure
+        (this as unknown as CoverageLessonController).renderCoverageSection(section as any, container);
         break;
       case 'Testing':
       case 'Observation':
