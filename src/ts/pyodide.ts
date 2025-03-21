@@ -71,7 +71,7 @@ class PythonRunner {
       // Set stdout to capture output
       pyodide.setStdout({
         batched: (text: string) => {
-          output += text;
+          output += text + "\n";
         }
       });
       

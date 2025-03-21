@@ -234,6 +234,11 @@ nav ul li.nav-completed a::after {
   min-height: 0;
 }
 
+.code-output pre {
+  white-space: pre-wrap;  /* Preserves newlines and wraps text */
+  font-family: monospace;
+}
+
 .output-text {
   margin: 0;
   color: #d8dee9;
