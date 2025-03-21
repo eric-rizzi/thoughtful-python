@@ -13,7 +13,7 @@
       "id": "simple-coverage",
       "title": "Simple Branching Exercise",
       "content": "Let's start with a simple example. The following function analyzes a number and prints different messages based on its value. Try to find inputs that will reach each part of the code.",
-      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1\")\n        if x < -10:\n            print(\"Line 2\")\n    elif x == 0:\n        print(\"Line 3\")\n    else:  # x > 0\n        print(\"Line 4\")\n        if x > 10:\n            print(\"Line 5\")\n        if x % 2 == 0:\n            print(\"Line 6\")\n        else:\n            print(\"Line 7\")\n\n# Call the function with the input value\nanalyze_number(x)",
+      "code": "def analyze_number(x):\n    if x < 0:\n        print(\"Line 1\")\n        if x < -10:\n            print(\"Line 2\")\n    elif x == 0:\n        print(\"Line 3\")\n    else:  # x > 0\n        print(\"Line 4\")\n        if x > 10:\n            print(\"Line 5\")\n        if x % 2 == 0:\n            print(\"Line 6\")\n        else:\n            print(\"Line 7\")\n\n# Call the function with the input value\nanalyze_number(input_var_1_here)",
       "coverageChallenges": [
         {
           "id": "challenge-1",
@@ -53,7 +53,7 @@
       ],
       "inputParams": [
         {
-          "name": "x",
+          "name": "input_var_1_here",
           "type": "number",
           "placeholder": "Enter a number"
         }
