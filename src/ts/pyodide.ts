@@ -39,7 +39,6 @@ class PythonRunner {
       this.pyodide = await this.loadPromise;
       this.isLoading = false;
       this.hideLoadingIndicator();
-      console.log("Pyodide loaded successfully");
       return this.pyodide;
     } catch (error) {
       this.isLoading = false;

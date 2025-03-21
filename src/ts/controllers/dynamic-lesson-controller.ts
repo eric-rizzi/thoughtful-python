@@ -177,15 +177,22 @@ export abstract class DynamicLessonController {
    * Renders the entire lesson, including sidebar and content
    */
   protected renderLesson(): void {
+    console.log("Rendering again??")
     if (!this.lesson) return;
-    
+
+    // Remove loading message (if it exists)
+    const loadingMessage = document.getElementById('loading-message-container');
+    if (loadingMessage) {
+      console.log("Trying to remove loading message")
+      loadingMessage.remove();
+    }
+
     // Render the sidebar navigation
     this.renderSidebar();
-    
+
     // Clear loading message
     const contentContainer = document.getElementById('lesson-content');
     if (contentContainer) {
-      contentContainer.innerHTML = '';
       
       // Add lesson title and description
       const titleElement = document.createElement('h2');
