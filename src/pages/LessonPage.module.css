@@ -1,0 +1,73 @@
+/* src/pages/LessonPage.module.css */
+
+.lessonContainer {
+  display: grid;
+  /* Adjust column widths as needed: sidebar fixed/flexible, content flexible */
+  grid-template-columns: 260px 1fr; /* Example: 260px sidebar, rest for content */
+  gap: 2rem; /* Space between sidebar and content */
+  align-items: start; /* Align items to the top */
+}
+
+.lessonSidebar {
+  position: sticky; /* Make sidebar sticky */
+  top: 2rem; /* Adjust top spacing as needed */
+  height: calc(100vh - 4rem); /* Example height, adjust based on header/footer */
+  overflow-y: auto; /* Allow sidebar scrolling if content overflows */
+  /* Add background, padding, border-radius etc. later in Step 10 */
+  /* background-color: #f8f9fa; */
+  /* padding: 1rem; */
+  /* border-radius: 8px; */
+}
+
+.lessonContent {
+  /* Add background, padding etc. as needed */
+  /* background-color: white; */
+  /* padding: 2rem; */
+  /* border-radius: 8px; */
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); */
+}
+
+/* Loading and Error States */
+.loading, .error {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+  grid-column: 1 / -1; /* Span both columns */
+}
+
+.error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: #4b8bbe;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) { /* Adjust breakpoint as needed */
+  .lessonContainer {
+    grid-template-columns: 1fr; /* Stack columns */
+  }
+
+  .lessonSidebar {
+    position: static; /* Unstick sidebar */
+    height: auto;
+    margin-bottom: 2rem;
+    overflow-y: visible;
+  }
+}

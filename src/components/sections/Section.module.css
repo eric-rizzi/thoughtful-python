@@ -1,120 +1,300 @@
 /* src/components/sections/Section.module.css */
 
-/* Existing styles (.section, .title, .content, .interactivePlaceholder) */
-.section {
-  margin-bottom: 2.5rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #eee;
-}
-/* ... other existing styles ... */
-.title {
-  /* ... existing styles ... */
-  scroll-margin-top: 80px; /* Increased offset for potentially taller sticky header */
-}
-.content {
- /* ... existing styles ... */
-  white-space: pre-wrap;
-}
-.interactivePlaceholder {
-  /* ... existing styles ... */
-}
+/* ============================
+   Base Section Styles (Step 11)
+   ============================ */
 
-/* --- New/Refined Styles for Examples --- */
-.exampleContainer {
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background-color: #fdfdfd; /* Slightly off-white background */
-  border: 1px solid #eaeaea;
-  border-radius: 6px;
-}
-
-.exampleContainer:last-child {
+   .section {
+    margin-bottom: 2.5rem; /* Spacing between sections */
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee; /* Separator line */
+  }
+  
+  /* Remove bottom border for the very last section on a page */
+  .section:last-child {
+    border-bottom: none;
     margin-bottom: 0;
-}
-
-.exampleTitle {
-  font-size: 1.3rem; /* Match lesson H3 */
-  color: #3a7ab8; /* Slightly different blue for distinction */
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-}
-
-.exampleDescription {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  color: #555;
-  line-height: 1.6;
-}
-
-.editorControls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.75rem;
+    padding-bottom: 0;
+  }
+  
+  .title {
+    color: #306998; /* Dark blue for titles */
+    margin-top: 0; /* Important for anchor links */
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    font-weight: 600; /* Make titles a bit bolder */
+    scroll-margin-top: 80px; /* Offset for sticky header when scrolling to ID */
+  }
+  
+  .content {
+    margin-bottom: 1.5rem;
+    line-height: 1.7; /* Good readability */
+    color: #444; /* Dark gray for text */
+    white-space: pre-wrap; /* Preserve newlines from JSON content */
+  }
+  
+  /* Placeholder for sections where interactive part isn't built yet */
+  .interactivePlaceholder {
+      border: 1px dashed #ccc;
+      padding: 1rem;
+      margin-top: 1.5rem; /* Spacing from main content */
+      color: #777;
+      font-style: italic;
+      background-color: #f9f9f9;
+      border-radius: 4px;
+      text-align: center;
+  }
+  
+  /* ==========================================
+     Code Example Styles (Observation/Testing - Step 15)
+     ========================================== */
+  
+  .exampleContainer {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #fdfdfd; /* Slightly off-white background for examples */
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+  }
+  
+  /* No bottom margin for the last example in a section */
+  .exampleContainer:last-child {
+      margin-bottom: 0;
+  }
+  
+  .exampleTitle {
+    font-size: 1.3rem;
+    color: #3a7ab8; /* Slightly different blue */
+    margin-top: 0;
     margin-bottom: 0.75rem;
-    flex-wrap: wrap; /* Wrap on small screens */
-    gap: 0.5rem;
-}
-
-.runButton {
-  background-color: #4b8bbe;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem; /* Slightly larger padding */
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-  font-size: 0.9rem;
-}
-
-.runButton:hover:not(:disabled) {
-  background-color: #306998;
-}
-
-.runButton:disabled {
-  background-color: #a8c7e0;
-  cursor: not-allowed;
-}
-
-.pyodideStatus {
+    font-weight: 500; /* Less heavy than section title */
+  }
+  
+  .exampleDescription {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  /* Controls below the editor (buttons, status) */
+  .editorControls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.75rem; /* Space between buttons and status */
+  }
+  
+  .runButton {
+    background-color: #4b8bbe;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    font-size: 0.9rem;
+  }
+  
+  .runButton:hover:not(:disabled) {
+    background-color: #306998;
+  }
+  
+  .runButton:disabled {
+    background-color: #a8c7e0;
+    cursor: not-allowed;
+  }
+  
+  .pyodideStatus {
+      font-size: 0.85rem;
+      color: #666;
+      font-style: italic;
+      text-align: right; /* Align status to the right */
+  }
+  
+  .pyodideError {
+      composes: pyodideStatus; /* Inherit base style */
+      color: #c53030; /* Red for error */
+      font-weight: 500;
+  }
+  
+  /* Code output area */
+  .outputArea {
+    margin-top: 1rem;
+    background-color: #2e3440; /* Dark background (Nord theme like) */
+    color: #d8dee9; /* Light text */
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    min-height: 40px; /* Minimum height even when empty */
+    max-height: 300px; /* Prevent excessive height */
+    overflow-y: auto; /* Allow scrolling */
+    white-space: pre-wrap; /* Wrap long lines */
+    border: 1px solid #444; /* Darker border */
+  }
+  
+  .outputArea pre {
+      margin: 0; /* Remove default pre margin */
+  }
+  
+  .outputError {
+    color: #ff7c7c; /* Bright red for errors within output */
+  }
+  
+  .outputEmpty {
+      color: #888; /* Dim color for empty output message */
+      font-style: italic;
+  }
+  
+  /* =====================================
+     Testing Specific Styles (Step 16)
+     ===================================== */
+  
+  .testButton {
+    background-color: #28a745; /* Green */
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    font-size: 0.9rem;
+    margin-left: 0.5rem; /* Space from run button */
+  }
+  
+  .testButton:hover:not(:disabled) {
+    background-color: #218838; /* Darker green */
+  }
+  
+  .testButton:disabled {
+    background-color: #94d3a2; /* Lighter green */
+    cursor: not-allowed;
+  }
+  
+  /* Container for test results display */
+  .testResultArea {
+    margin-top: 1.5rem;
+    border-top: 2px solid #eee; /* Clearer separator */
+    padding-top: 1.5rem;
+  }
+  
+  /* Test Success Box */
+  .testSuccess {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    border-left: 5px solid #28a745; /* Thick green border */
+  }
+  .testSuccess h4 {
+    color: #155724;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  /* Test Failure Box */
+  .testFailure {
+    background-color: #fff3cd; /* Warning yellow */
+    color: #856404;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    border-left: 5px solid #ffc107; /* Thick warning border */
+  }
+  .testFailure h4 {
+    color: #856404;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  .testFailure h5 { /* Sub-heading for "First Failed Test" */
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+  }
+  
+  /* Test Error Box (e.g., code crashed, parsing failed) */
+  .testError {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    border-left: 5px solid #dc3545; /* Thick error border */
+  }
+  .testError h4 {
+    color: #721c24;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  .testError pre { /* Styling for error details */
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.5rem;
+    border-radius: 3px;
+    overflow-x: auto;
+    margin-top: 0.5rem;
+    white-space: pre-wrap;
     font-size: 0.85rem;
-    color: #666;
-    font-style: italic;
-}
-
-.pyodideError {
-    composes: pyodideStatus; /* Inherit base style */
-    color: #c53030; /* Red for error */
-    font-weight: 500;
-}
-
-.outputArea {
-  margin-top: 1rem;
-  background-color: #2e3440; /* Dark background for output */
-  color: #d8dee9; /* Light text */
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  min-height: 40px;
-  max-height: 300px; /* Limit height */
-  overflow-y: auto;
-  white-space: pre-wrap;
-  border: 1px solid #444; /* Darker border */
-}
-
-.outputArea pre {
-    margin: 0; /* Remove default pre margin */
-}
-
-.outputError {
-  color: #ff7c7c; /* Bright red for errors within output */
-}
-
-.outputEmpty {
-    color: #888;
-    font-style: italic;
-}
+  }
+  
+  /* Test Results Table */
+  .testResultsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    background-color: white;
+    border: 1px solid #dee2e6;
+  }
+  
+  .testResultsTable th,
+  .testResultsTable td {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  .testResultsTable th {
+    background-color: #e9ecef; /* Light gray header */
+    font-weight: 600;
+  }
+  
+  /* Failed row styling within the table */
+  .testFailedRow {
+    background-color: #fff5f5; /* Light red background */
+  }
+  .testFailedRow code {
+      background-color: rgba(220, 53, 69, 0.1); /* Reddish background for code */
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+  }
+  
+  /* General code styling within the results table */
+  .testResultsTable code {
+      font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+      font-size: 0.85rem;
+      background-color: #f1f1f1; /* Light gray background for code snippets */
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+      word-break: break-word; /* Break long code snippets */
+  }
+  
+  /* =====================================
+     Placeholders for Future Styles
+     (Quiz, Prediction, Turtle, Reflection, Coverage)
+     ===================================== */
+  
+  /* Add specific styles for Quiz options, Prediction tables, Turtle canvas,
+     Reflection forms/history, Coverage tables etc. as those components
+     are fully implemented. Use this Section.module.css or create
+     new specific modules as needed. */
