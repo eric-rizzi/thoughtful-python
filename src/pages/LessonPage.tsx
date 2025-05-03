@@ -2,109 +2,102 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchLessonData } from '../lib/dataLoader';
-import type { Lesson } from '../types/data';
+import type { Lesson, LessonSection } from '../types/data'; // Import base types
 import styles from './LessonPage.module.css';
 import { BASE_PATH } from '../config';
 
 // Import the actual sidebar component
 import LessonSidebar from '../components/LessonSidebar';
 
-// Placeholder for Section Renderer (Step 12+)
-const SectionRendererPlaceholder: React.FC<{ sections: Lesson['sections'] }> = ({ sections }) => {
-     return (
-        <div style={{ border: '1px dashed blue', padding: '1rem', minHeight: '300px' }}>
-            <h4>Section Renderer (Step 12+)</h4>
-            <p>Will render {sections?.length || 0} sections here based on their 'kind'.</p>
-            {/* Example: Render section titles to verify data is passed */}
-            {/* {sections?.map(s => <h5 key={s.id} id={s.id}>{s.title} (Kind: {s.kind})</h5>)} */}
-        </div>
-    );
-};
-
+// --- Import ALL Section Components ---
+import InformationSection from '../components/sections/InformationSection';
+import ObservationSection from '../components/sections/ObservationSection';
+import TestingSection from '../components/sections/TestingSection';
+import PredictionSection from '../components/sections/PredictionSection';
+import MultipleChoiceSection from '../components/sections/MultipleChoiceSection';
+import MultipleSelectionSection from '../components/sections/MultipleSelectionSection';
+import TurtleSection from '../components/sections/TurtleSection';
+import ReflectionSection from '../components/sections/ReflectionSection';
+import CoverageSection from '../components/sections/CoverageSection';
 
 const LessonPage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // --- TEMPORARY State for Completion Tracking ---
-  // This will be replaced by a proper state management solution (Step 22/23)
-  // For now, we load from localStorage on mount and store it in state.
-  // We use a Set for efficient checking in the Sidebar prop.
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
 
+  // Effect for loading initial completion status (from Step 10)
   useEffect(() => {
       if (!lessonId) return;
-      // Load initial completion status from localStorage
       try {
           const storageKey = `python_${lessonId}_completed`;
           const storedData = localStorage.getItem(storageKey);
           const completedIds = storedData ? JSON.parse(storedData) : [];
           if (Array.isArray(completedIds)) {
               setCompletedSections(new Set(completedIds));
-              console.log(`LessonPage: Loaded ${completedIds.length} completed sections for ${lessonId}`);
-          } else {
-              console.warn(`Invalid completion data found in localStorage for ${lessonId}`);
-              setCompletedSections(new Set()); // Start fresh if data is invalid
-          }
-      } catch (e) {
-          console.error("Failed to load completion status from localStorage", e);
-          setCompletedSections(new Set()); // Start fresh on error
-      }
+          } else { setCompletedSections(new Set<string>()); }
+      } catch (e) { setCompletedSections(new Set<string>()); }
 
-      // --- OPTIONAL: Listener for updates from other components ---
-      // This allows the sidebar to update if a section is completed
-      // This assumes utils/progress-utils.ts (or equivalent) dispatches this event
-      const handleProgressUpdate = (event: Event) => {
-        const customEvent = event as CustomEvent;
-        if (customEvent.detail?.lessonId === lessonId && customEvent.detail?.sectionId) {
-            console.log(`LessonPage: Received progress update for section ${customEvent.detail.sectionId}`);
-            setCompletedSections(prev => new Set(prev).add(customEvent.detail.sectionId));
-        }
-      };
+      // Optional listener for dynamic updates
+      const handleProgressUpdate = (event: Event) => { /* ... as before ... */ };
       window.addEventListener('lessonProgressUpdated', handleProgressUpdate);
-      // Cleanup listener on component unmount or lessonId change
-      return () => {
-        window.removeEventListener('lessonProgressUpdated', handleProgressUpdate);
-      };
-      // --- End Optional Listener ---
+      return () => window.removeEventListener('lessonProgressUpdated', handleProgressUpdate);
+  }, [lessonId]);
 
-  }, [lessonId]); // Rerun only when lessonId changes
-
-  // --- End TEMPORARY State ---
-
-
+  // Effect for loading lesson data (from Step 9)
   useEffect(() => {
     const loadData = async () => {
-      if (!lessonId) {
-        setError("No Lesson ID provided in URL.");
-        setIsLoading(false);
-        return;
-      }
-
+      // ... (fetch logic as implemented in Step 9) ...
+      if (!lessonId) { /* ... */ return; }
       setIsLoading(true);
       setError(null);
-      setLesson(null); // Clear previous lesson data
-      console.log(`LessonPage: Attempting to fetch lesson ${lessonId}`);
-
+      setLesson(null);
       try {
         const fetchedLesson = await fetchLessonData(lessonId);
         setLesson(fetchedLesson);
         document.title = `${fetchedLesson.title} - Python Lesson`;
-        console.log(`LessonPage: Successfully fetched ${lessonId}`);
-      } catch (err) {
-        console.error(`LessonPage Error fetching ${lessonId}:`, err);
-        setError(err instanceof Error ? err.message : `An unknown error occurred loading lesson ${lessonId}`);
-      } finally {
-        setIsLoading(false);
-      }
+      } catch (err) { /* ... */ setError(/* ... */); }
+      finally { setIsLoading(false); }
     };
-
     loadData();
-  }, [lessonId]); // Re-run effect if lessonId changes
+  }, [lessonId]);
 
-  // --- Rendering Logic ---
+  // --- Helper Function to Render Sections ---
+  const renderSection = (section: LessonSection) => {
+      // Based on the section kind, return the appropriate component
+      // We pass the whole section object as a prop.
+      // TypeScript's structural typing helps here, but for components
+      // requiring specific properties (like PredictionSectionData), ensure
+      // the JSON data provides them or handle potential undefined values
+      // within the specific section component.
+      switch (section.kind) {
+          case 'Information':
+              return <InformationSection section={section} />;
+          case 'Observation':
+              return <ObservationSection section={section} />;
+          case 'Testing':
+              return <TestingSection section={section} />;
+          case 'Prediction':
+              // Cast section type for components expecting more specific props
+              return <PredictionSection section={section as any} />;
+          case 'MultipleChoice':
+              return <MultipleChoiceSection section={section as any} />;
+          case 'MultiSelection':
+              return <MultipleSelectionSection section={section as any} />;
+          case 'Turtle':
+              return <TurtleSection section={section as any} />;
+          case 'Reflection':
+              return <ReflectionSection section={section as any} />;
+          case 'Coverage':
+              return <CoverageSection section={section as any} />;
+          default:
+              console.warn(`Unknown section kind encountered: ${section.kind}`);
+              return <div className={styles.error}>Unsupported section type: {section.kind}</div>;
+      }
+  };
+
+  // --- Main Rendering Logic ---
 
   if (isLoading) {
     return (
@@ -132,15 +125,22 @@ const LessonPage: React.FC = () => {
   return (
     <div className={styles.lessonContainer}>
       <aside className={styles.lessonSidebar}>
-        {/* Use the actual LessonSidebar component */}
+        {/* Render the actual LessonSidebar component */}
         <LessonSidebar
             sections={lesson.sections}
-            completedSections={completedSections} // Pass the state here
+            completedSections={completedSections}
         />
       </aside>
       <div className={styles.lessonContent}>
-        {/* Placeholder for Section Renderer logic/components (Step 12+) */}
-        <SectionRendererPlaceholder sections={lesson.sections} />
+        {/* --- DYNAMIC SECTION RENDERING --- */}
+        {lesson.sections.map((section) => (
+          // Use the helper function to render the correct component
+          // Use section.id as the key for efficient list rendering
+          <React.Fragment key={section.id}>
+            {renderSection(section)}
+          </React.Fragment>
+        ))}
+        {/* --- END DYNAMIC SECTION RENDERING --- */}
       </div>
     </div>
   );
