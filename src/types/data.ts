@@ -12,6 +12,7 @@ export interface LessonExample {
     expected: any;
     description: string;
   }>;
+  functionToTest?: string;
 }
 
 export interface LessonSection {
