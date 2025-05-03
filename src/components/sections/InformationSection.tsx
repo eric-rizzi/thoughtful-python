@@ -1,20 +1,19 @@
+// src/components/sections/InformationSection.tsx
 import React from 'react';
 import type { LessonSection } from '../../types/data';
-import styles from './Section.module.css';
+import styles from './Section.module.css'; // Use the common style
 
 interface InformationSectionProps {
-  section: LessonSection; // Base type is sufficient
+  section: LessonSection;
 }
 
 const InformationSection: React.FC<InformationSectionProps> = ({ section }) => {
   return (
+    // Set the ID for sidebar navigation
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>
-         {/* Render content, assuming plain text with newlines */}
-         {section.content}
-      </div>
-      {/* No interactive elements for Information sections */}
+      {/* CSS white-space: pre-wrap handles newlines */}
+      <div className={styles.content}>{section.content}</div>
     </section>
   );
 };

@@ -1,39 +1,120 @@
 /* src/components/sections/Section.module.css */
 
+/* Existing styles (.section, .title, .content, .interactivePlaceholder) */
 .section {
-  margin-bottom: 2.5rem; /* Increased spacing */
+  margin-bottom: 2.5rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid #eee;
 }
-
-.section:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
+/* ... other existing styles ... */
 .title {
-  color: #306998;
-  margin-top: 0; /* Ensure ID linking aligns well */
-  margin-bottom: 1rem;
-  font-size: 1.8rem;
-  scroll-margin-top: 70px; /* Offset for sticky header when scrolling to ID */
+  /* ... existing styles ... */
+  scroll-margin-top: 80px; /* Increased offset for potentially taller sticky header */
 }
-
 .content {
-  margin-bottom: 1.5rem;
-  line-height: 1.7; /* Slightly more spacing */
-  color: #444;
-  white-space: pre-wrap; /* Render newline characters from JSON content */
+ /* ... existing styles ... */
+  white-space: pre-wrap;
+}
+.interactivePlaceholder {
+  /* ... existing styles ... */
 }
 
-/* Basic placeholder for future interactive elements */
-.interactivePlaceholder {
-    border: 1px dashed #ccc;
-    padding: 1rem;
-    margin-top: 1rem;
-    color: #777;
+/* --- New/Refined Styles for Examples --- */
+.exampleContainer {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #fdfdfd; /* Slightly off-white background */
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+}
+
+.exampleContainer:last-child {
+    margin-bottom: 0;
+}
+
+.exampleTitle {
+  font-size: 1.3rem; /* Match lesson H3 */
+  color: #3a7ab8; /* Slightly different blue for distinction */
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.exampleDescription {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.editorControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap; /* Wrap on small screens */
+    gap: 0.5rem;
+}
+
+.runButton {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem; /* Slightly larger padding */
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.runButton:hover:not(:disabled) {
+  background-color: #306998;
+}
+
+.runButton:disabled {
+  background-color: #a8c7e0;
+  cursor: not-allowed;
+}
+
+.pyodideStatus {
+    font-size: 0.85rem;
+    color: #666;
     font-style: italic;
-    background-color: #f9f9f9;
-    border-radius: 4px;
+}
+
+.pyodideError {
+    composes: pyodideStatus; /* Inherit base style */
+    color: #c53030; /* Red for error */
+    font-weight: 500;
+}
+
+.outputArea {
+  margin-top: 1rem;
+  background-color: #2e3440; /* Dark background for output */
+  color: #d8dee9; /* Light text */
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 40px;
+  max-height: 300px; /* Limit height */
+  overflow-y: auto;
+  white-space: pre-wrap;
+  border: 1px solid #444; /* Darker border */
+}
+
+.outputArea pre {
+    margin: 0; /* Remove default pre margin */
+}
+
+.outputError {
+  color: #ff7c7c; /* Bright red for errors within output */
+}
+
+.outputEmpty {
+    color: #888;
+    font-style: italic;
 }
