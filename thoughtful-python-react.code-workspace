@@ -1,0 +1,72 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode", // Default for most files
+    "editor.tabSize": 2,
+    "typescript.tsdk": "node_modules/typescript/lib", // Use workspace TS version
+    "eslint.validate": [                         // Validate more file types
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "**/dist": true,                           // Hide build output
+      "**/.cache": true,                         // Hide common cache dirs
+      "**/.vite": true                           // Hide Vite cache
+    },
+    // Removed redundant [typescript] default formatter
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": { // Good to format JSON too
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter" // Or ms-python.autopep8 if you prefer
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",                 // Code formatter
+      "dbaeumer.vscode-eslint",                 // JavaScript/TypeScript linter
+      "ms-python.python",                       // Core Python support
+      "ms-python.vscode-pylance",               // Python IntelliSense
+      "ms-python.black-formatter",              // Python formatter (if using Black)
+      // "ms-python.autopep8",                  // Python formatter (if using Autopep8)
+      // "bradlc.vscode-tailwindcss",           // Optional: If using Tailwind
+      // "styled-components.vscode-styled-components", // Optional: If using styled-components
+      "pflannery.vscode-versionlens",           // Optional: Shows dependency versions
+      "formulahendry.auto-rename-tag",          // Optional: Auto rename HTML/XML tags
+      "christian-kohler.path-intellisense"      // Optional: File path completion
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "chrome",
+        "request": "launch",
+        "name": "Launch Chrome against Dev Server",
+        "url": "http://localhost:5173",
+        "webRoot": "${workspaceFolder}/src"       // Often works better for source maps with dev server
+        // Or potentially remove webRoot entirely for dev server debugging
+      }
+      // You might add a separate config later for debugging the *built* app if needed
+    ]
+  }
+}
