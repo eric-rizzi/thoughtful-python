@@ -1,0 +1,83 @@
+/* src/components/LessonSidebar.module.css */
+.sidebar {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  /* Sticky positioning is handled by the parent grid layout in LessonPage.module.css */
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem; /* Increased padding */
+  border-bottom: 2px solid #eee;
+  font-size: 1.2rem; /* Slightly larger title */
+  color: #333;
+}
+
+.sectionList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sectionItem {
+  position: relative; /* For potential pseudo-elements */
+  margin-bottom: 0.5rem;
+  border-radius: 4px; /* Add border-radius to list item */
+  transition: background-color 0.2s ease-in-out; /* Smooth hover */
+}
+
+.sectionItem:hover {
+    background-color: #f8f9fa; /* Subtle hover background */
+}
+
+.sectionLink {
+  color: #306998; /* Link color */
+  text-decoration: none;
+  transition: color 0.3s;
+  display: block; /* Make link fill the list item */
+  padding: 0.6rem 0.8rem; /* Adjust padding */
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.sectionLink:hover {
+  color: #4b8bbe; /* Slightly lighter blue on hover */
+}
+
+/* Completed state styling */
+.sectionItemCompleted {
+  /* Optionally change background or add border */
+  /* background-color: #e6f4ea; */
+}
+
+.sectionItemCompleted::before {
+  content: "✓"; /* Checkmark */
+  color: #28a745; /* Green color */
+  font-weight: bold;
+  margin-right: 8px;
+  display: inline-block;
+  /* Position it nicely - adjust as needed */
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Adjust link padding when checkmark is present */
+.sectionItemCompleted .sectionLink {
+  padding-left: 30px; /* Make space for the checkmark */
+  color: #555; /* Optional: slightly muted color for completed items */
+}
+
+.sectionItemCompleted .sectionLink:hover {
+    color: #333; /* Darken slightly on hover */
+}
+
+.loading {
+    color: #666;
+    font-style: italic;
+    padding: 0.5rem 0;
+}
