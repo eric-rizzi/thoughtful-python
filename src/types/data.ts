@@ -138,21 +138,6 @@ export interface ReflectionSection extends LessonSection {
   // apiEndpoint?: string; // Consider adding if needed later
 }
 
-export interface CoverageSection extends LessonSection {
-  kind: 'Coverage';
-  code: string; // The code snippet to analyze
-  coverageChallenges: Array<{
-    id: string;
-    expectedOutput: string;
-    hint?: string;
-  }>;
-  inputParams: Array<{
-    name: string; // Name of the variable to replace in the code
-    type: string; // e.g., 'number', 'text', 'boolean'
-    placeholder: string;
-  }>;
-}
-
 // You might add specific interfaces for ObservationSection, TestingSection etc.
 // if they have unique properties beyond the base LessonSection and examples.
 // For now, they can just use LessonSection directly.
@@ -203,4 +188,36 @@ export interface SavedReflectionState {
     // draftTopic?: string;
     // draftCode?: string;
     // draftExplanation?: string;
+}
+
+export interface CoverageChallenge {
+  id: string; // Unique ID for the challenge row
+  expectedOutput: string; // The exact stdout expected
+  hint?: string; // Optional hint for the user
+}
+
+export interface InputParam {
+  name: string;      // Name of the variable used in the Python code
+  type: 'text' | 'number' | 'boolean'; // Input type hint
+  placeholder: string; // Placeholder text for the input field
+}
+
+export interface CoverageSection extends LessonSection {
+  kind: 'Coverage';
+  code: string; // The Python code snippet to analyze
+  inputParams: InputParam[]; // Definitions of the inputs needed
+  coverageChallenges: CoverageChallenge[]; // The list of challenges
+}
+
+// Type for the state of a single challenge row
+export interface ChallengeState {
+    inputs: { [paramName: string]: string }; // Store all inputs as strings initially
+    actualOutput: string | null;
+    isCorrect: boolean | null;
+    isRunning: boolean;
+}
+
+// Type for the overall state saved in localStorage
+export interface SavedCoverageState {
+    challengeStates: { [challengeId: string]: Omit<ChallengeState, 'isRunning'> }; // Don't save runtime state
 }
