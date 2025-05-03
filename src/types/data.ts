@@ -94,6 +94,13 @@ export interface MultipleSelectionSection extends LessonSection {
   };
 }
 
+export interface TurtlePathSegment {
+  type: 'segment' | 'move'; // 'segment' = line drawn, 'move' = penup move
+  start: { x: number; y: number };
+  end: { x: number; y: number };
+  // Add color, pensize if needed later
+}
+
 export interface TurtleSection extends LessonSection {
   kind: 'Turtle';
   instructions: string;
@@ -149,3 +156,51 @@ export interface CoverageSection extends LessonSection {
 // You might add specific interfaces for ObservationSection, TestingSection etc.
 // if they have unique properties beyond the base LessonSection and examples.
 // For now, they can just use LessonSection directly.
+
+export interface ReflectionSubmission {
+  topic: string;        // Value from the select dropdown
+  code: string;         // User's code example
+  explanation: string;  // User's explanation
+  timestamp: number;    // When the submission was created/sent
+  submitted: boolean;   // Was this submitted to the 'journal'?
+}
+
+export type AssessmentLevel = 'developing' | 'meets' | 'exceeds';
+
+export interface ReflectionResponse {
+  feedback: string;         // Text feedback (simulated AI)
+  assessment: AssessmentLevel; // Assessment level based on rubric
+  timestamp: number;         // When feedback was generated
+}
+
+// Update ReflectionSection interface slightly
+export interface ReflectionSection extends LessonSection {
+  kind: 'Reflection';
+  prompts: {
+    topic: string; // Label for topic dropdown
+    code: string; // Label for code input
+    explanation: string; // Label for explanation input
+  };
+  // Rubric is optional, used by simulated feedback
+  rubric?: {
+    developing: string; // Description for 'developing'
+    meets: string;      // Description for 'meets'
+    exceeds: string;    // Description for 'exceeds'
+  };
+  // apiEndpoint?: string; // Optional: If using a real backend later
+}
+
+// Type for the history entry combining submission and optional response
+export interface ReflectionHistoryEntry {
+    submission: ReflectionSubmission;
+    response?: ReflectionResponse;
+}
+
+// Type for the state saved in localStorage
+export interface SavedReflectionState {
+    history: ReflectionHistoryEntry[];
+    // Optionally save draft state too
+    // draftTopic?: string;
+    // draftCode?: string;
+    // draftExplanation?: string;
+}
