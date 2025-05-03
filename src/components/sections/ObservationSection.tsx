@@ -1,15 +1,15 @@
 // src/components/sections/ObservationSection.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import type { LessonSection, LessonExample } from '../../types/data';
+import type { LessonSection, LessonExample, SavedCodeState } from '../../types/data';
 import styles from './Section.module.css'; // Common section styles
 import CodeEditor from '../CodeEditor'; // The CM6 editor component (Step 14)
 import { usePyodide } from '../../contexts/PyodideContext'; // Pyodide context (Step 13)
+import { useProgressActions } from '../../stores/progressStore';
+import { loadProgress, saveProgress } from '../../lib/localStorageUtils';
 
 interface ObservationSectionProps {
   section: LessonSection;
-  // Add lessonId and onComplete callback later for Step 22/23
-  // lessonId: string;
-  // onSectionComplete: (sectionId: string) => void;
+  lessonId: string;
 }
 
 // Define state structure for each example
@@ -20,32 +20,50 @@ interface ExampleState {
   hasBeenRun: boolean; // Track if run button was clicked at least once
 }
 
-const ObservationSection: React.FC<ObservationSectionProps> = ({ section }) => {
+
+const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lessonId }) => {
+  const { completeSection } = useProgressActions();
   const { runPythonCode, isLoading: isPyodideLoading, error: pyodideError } = usePyodide();
   const [exampleStates, setExampleStates] = useState<{ [key: string]: ExampleState }>({});
+  const storageKey = `observeCode_${lessonId}_${section.id}`;
 
   // Initialize state when examples change (e.g., on initial load)
   useEffect(() => {
     const initialState: { [key: string]: ExampleState } = {};
+    const savedCodeState = loadProgress<SavedCodeState>(storageKey);
     section.examples?.forEach(ex => {
-      // TODO: Later, load saved code state from localStorage if needed
+      console.log(`ObservationSection ${section.id}: Loaded saved code state:`, savedCodeState);
       initialState[ex.id] = {
-        code: ex.code,
+        code: savedCodeState?.[ex.id] ?? ex.code,
         output: '',
         isRunning: false,
         hasBeenRun: false,
       };
     });
     setExampleStates(initialState);
-  }, [section.examples]); // Rerun if examples array changes reference
+  }, [section.examples, storageKey, section.id]); // Rerun if examples array changes reference
+
+  // Callback to handle code changes (uses storageKey via saveCurrentCodeState)
+  const saveCurrentCodeState = useCallback((currentStates: typeof exampleStates) => {
+    const codeToSave: SavedCodeState = {};
+    Object.keys(currentStates).forEach(exId => {
+        codeToSave[exId] = currentStates[exId].code;
+    });
+    saveProgress(storageKey, codeToSave); // Use storageKey
+  }, [storageKey]); // Dependency
+
 
   const handleCodeChange = useCallback((exampleId: string, newCode: string) => {
-    setExampleStates(prev => ({
-      ...prev,
-      [exampleId]: { ...(prev[exampleId] || {}), code: newCode }
-    }));
-    // TODO: Potentially save draft code to localStorage here
-  }, []);
+    setExampleStates(prev => {
+      const newState = {
+        ...prev,
+        [exampleId]: { ...(prev[exampleId] || { code: '', output: '', isRunning: false, hasBeenRun: false }), code: newCode }
+      };
+      // Save the updated code state
+      saveCurrentCodeState(newState);
+      return newState;
+    });
+  }, [saveCurrentCodeState]); // Dependency
 
   const handleRunCode = useCallback(async (exampleId: string) => {
     if (isPyodideLoading || pyodideError || !exampleStates[exampleId]) {
@@ -75,17 +93,13 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({ section }) => {
       }
     }));
 
-    // --- Placeholder for Completion Logic (Phase 5) ---
-    // For Observation, maybe complete after running *any* example?
-    // Or maybe all examples? Needs clarification.
-    // if (!result.error) {
-    //    // Call function passed via props or context to mark completion
-    //    // onSectionComplete(section.id);
-    //    console.log(`Placeholder: Section ${section.id} potentially complete.`);
-    // }
-    // --- End Placeholder ---
+    // For Observation, complete after running *any* example?
+    if (!result.error) {
+      console.log(`Observation section ${section.id} run successfully. Marking complete.`);
+      completeSection(lessonId, section.id);
+    }
 
-  }, [exampleStates, isPyodideLoading, pyodideError, runPythonCode]); // Dependencies for useCallback
+  }, [exampleStates, isPyodideLoading, pyodideError, runPythonCode, lessonId, section.id, completeSection]);
 
 
   return (

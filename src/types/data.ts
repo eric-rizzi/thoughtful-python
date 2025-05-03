@@ -221,3 +221,7 @@ export interface ChallengeState {
 export interface SavedCoverageState {
     challengeStates: { [challengeId: string]: Omit<ChallengeState, 'isRunning'> }; // Don't save runtime state
 }
+
+export interface SavedCodeState {
+  [exampleId: string]: string; // Map example ID to its code string
+}
