@@ -1,0 +1,187 @@
+/* src/pages/HomePage.module.css */
+
+/* Welcome Section Styles (Optional - based on original index.html) */
+.welcome {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.welcome h2 {
+  color: #306998;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.welcome p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+/* Features Section (Optional - based on original index.html) */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.featureCard {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.featureCard h3 {
+  color: #306998;
+  margin-bottom: 0.75rem;
+}
+
+/* Learning Paths Section */
+.learningPaths {
+    margin-top: 2rem;
+}
+
+.learningPaths h2 {
+    color: #306998;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.learningPaths p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Units Grid Styles (Ported from units.css) */
+.unitsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Individual Unit Card Styles (Ported from units.css) */
+.unitCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Ensure the link takes up the card space */
+}
+
+.unitCard {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Make cards in a row equal height */
+}
+
+.unitCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.unitImageContainer {
+  width: 100%;
+  height: 160px; /* Fixed height for image area */
+  background-color: #f0f0f0; /* Fallback background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.unitImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Changed from cover for potentially non-uniform images */
+}
+
+.unitContent {
+  padding: 1.5rem;
+  flex-grow: 1; /* Allows content to fill space */
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+}
+
+.unitTitle {
+  font-size: 1.4rem;
+  color: #306998;
+  margin-bottom: 0.75rem;
+  margin-top: 0; /* Reset margin */
+}
+
+.unitDescription {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 1rem;
+  flex-grow: 1; /* Push details/button down */
+}
+
+.unitDetails {
+    margin-top: auto; /* Push to bottom */
+}
+
+.unitLessons {
+  font-size: 0.9rem;
+  color: #777;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.unitButton {
+  display: inline-block;
+  width: 100%; /* Make button fill width */
+  padding: 0.7rem 1.2rem;
+  background-color: #4b8bbe;
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.3s;
+  border: none; /* Reset button border */
+  cursor: pointer;
+}
+
+.unitButton:hover {
+  background-color: #306998;
+}
+
+/* Loading and Error States */
+.loading, .error {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: #4b8bbe;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto 0; /* Center spinner */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
