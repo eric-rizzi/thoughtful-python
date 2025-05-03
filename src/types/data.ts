@@ -44,6 +44,12 @@ export interface UnitsData {
 
 // --- Specific Section Kind Interfaces (Extending LessonSection) ---
 
+export interface PredictionTableRow {
+  inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
+  expected: number | string | boolean; // Allow different expected types
+  description: string;
+}
+
 export type SectionKind =
   | 'Information'
   | 'Observation' // Uses examples
@@ -63,11 +69,7 @@ export interface PredictionSection extends LessonSection {
   };
   predictionTable: {
     columns: string[];
-    rows: Array<{
-      inputs: number[];
-      expected: number;
-      description: string;
-    }>;
+    rows: PredictionTableRow[];
   };
   completionMessage?: string;
 }
