@@ -2,8 +2,6 @@
 import React from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
 import styles from './Header.module.css'; // Import CSS Module
-// Assuming BASE_PATH is defined or imported from a config file if needed for production on GitHub Pages
-// import { BASE_PATH } from '../config'; // Example import
 
 // Placeholder for dynamic lesson navigation - needs state/props later
 const LessonNavigationPlaceholder: React.FC = () => {
@@ -29,25 +27,23 @@ const Header: React.FC = () => {
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
 
-  // You might need BASE_PATH if deploying to GitHub Pages subdirectory
-  const BASE_PATH = '/thoughtful-python'; // Example, adjust as needed or import from config
-
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <h1 className={styles.title}>Learn Python in the Browser</h1>
         <nav className={styles.nav}>
           <ul className={styles.navList}>
-            <li><NavLink to={`${BASE_PATH}/`} className={getNavLinkClass} end>Home</NavLink></li>
-            <li><NavLink to={`${BASE_PATH}/unit/intro_python`} className={getNavLinkClass}>Learning Paths</NavLink></li>
-            <li><NavLink to={`${BASE_PATH}/learning-entries`} className={getNavLinkClass}>Learning Entries</NavLink></li>
+            {/* Use paths relative to the application root */}
+            <li><NavLink to="/" className={getNavLinkClass} end>Home</NavLink></li>
+            <li><NavLink to="/unit/intro_python" className={getNavLinkClass}>Learning Paths</NavLink></li>
+            <li><NavLink to="/learning-entries" className={getNavLinkClass}>Learning Entries</NavLink></li>
              <li>
-                {/* Example of a disabled-looking link */}
                <span className={styles.navLinkDisabled}>
                  Code Editor (soon)
                </span>
              </li>
-          </ul>
+             {/* Add other NavLinks similarly, e.g., <NavLink to="/about" ...> */}
+          </ul> 
           <LessonNavigationPlaceholder />
         </nav>
       </div>

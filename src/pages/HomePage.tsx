@@ -60,7 +60,7 @@ const HomePage: React.FC = () => {
       <div className={styles.unitsGrid}>
         {units.map((unit) => (
           // Use Link component for client-side navigation
-          <Link to={`${BASE_PATH}unit/${unit.id}`} key={unit.id} className={styles.unitCardLink}>
+          <Link to={`/unit/${unit.id}`} key={unit.id} className={styles.unitCardLink}>
             <div className={styles.unitCard}>
               <div className={styles.unitImageContainer}>
                 <img
