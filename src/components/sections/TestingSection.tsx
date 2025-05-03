@@ -82,6 +82,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
 
   // Handler for the "Test Solution" button
   const handleTestCode = useCallback(async (exampleId: string, exampleData: LessonExample) => {
+
     if (isPyodideLoading || pyodideError || !exampleStates[exampleId]) {
         setExampleStates(prev => ({ ...prev, [exampleId]: { ...(prev[exampleId]), testResults: { test_error: 'Python environment not ready.' }, isTesting: false, testRunCompleted: true } }));
         return;
@@ -104,7 +105,10 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
 
     try {
         const testCode = generateTestCode(codeToTest, functionNameToTest, exampleData.testCases);
+      console.log(testCode)
         const rawResult = await runPythonCode(testCode); // Returns { output, error }
+        console.log("Boobs 110")
+        console.log(rawResult)
 
         let parsedResults: TestResult[] | { test_error: string } | null = null;
         let allPassed = false;
@@ -165,6 +169,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
   const renderTestResults = (results: TestResult[] | { test_error: string } | null) => {
       if (!results) return null;
 
+      console.log(results)
       if ('test_error' in results) {
           return (
               <div className={styles.testError}>

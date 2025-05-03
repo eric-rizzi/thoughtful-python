@@ -45,17 +45,26 @@ export function generateTestCode(
   functionName: string,
   testCases: TestCase[]
 ): string {
-  // Ensure functionName is a valid identifier to prevent injection
   if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(functionName)) {
       throw new Error("Invalid function name provided for testing.");
   }
 
-  // Safely serialize test cases for Python
-  const testCasesJson = JSON.stringify(testCases).replace(/"/g, '\\"');
+  // 1. Generate standard JSON string directly from the test cases
+  const testCasesJson = JSON.stringify(testCases);
+  //    (No need for the .replace(/"/g, '\\"') anymore!)
 
-  // Use triple quotes for the user code to handle internal quotes/newlines
-  const safeUserCode = userCode.replace(/"""/g, '\\"\\"\\"'); // Basic escaping
+  // Basic escaping for the user code within triple quotes
+  // Handles existing triple quotes and backslashes simply. May need refinement for complex code.
+  const escapeTripleQuotes = (str: string) =>
+      str.replace(/\\/g, '\\\\').replace(/"""/g, '\\"\\"\\"');
 
+  const safeUserCode = escapeTripleQuotes(userCode);
+  // Escape backslashes in the JSON string itself for Python literal
+  const safeTestCasesJson = testCasesJson.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+
+  // 2. Embed using standard triple quotes (""") in Python, not raw (r""")
+  //    And embed the escaped JSON string directly.
   return `
 # --- Test Setup ---
 import sys
@@ -64,46 +73,46 @@ import io
 import math
 import traceback
 
-# Using a dictionary to store the user's globals after execution
 user_globals = {}
-
-# Execute user's code within a controlled environment
 user_code = """
 ${safeUserCode}
 """
+
+# --- Execute User Code ---
 try:
     exec(user_code, user_globals)
 except Exception as e:
-    # If user code fails to even execute, report that as a general error
     print("===PYTHON_TEST_RESULTS_JSON===")
     print(json.dumps({"test_error": f"Error executing user code: {traceback.format_exc()}"}))
     print("===END_PYTHON_TEST_RESULTS_JSON===")
-    # Exit early if user code has syntax errors etc.
     sys.exit(0)
 
-
 # --- Test Runner ---
-
-# Save the user-defined function if available
 user_function = user_globals.get('${functionName}')
 
-# Function to compare results, handling floats
 def compare_results(actual, expected):
-    tolerance = 1e-5 # Tolerance for float comparisons
+    # ... (comparison logic as before) ...
+    tolerance = 1e-5
     if isinstance(actual, float) or isinstance(expected, float):
         try:
+            # Handle potential None values before converting to float
+            if actual is None or expected is None:
+                return actual == expected
             return math.isclose(float(actual), float(expected), rel_tol=tolerance, abs_tol=tolerance)
         except (ValueError, TypeError):
-            return False # Cannot compare if conversion fails
+            return False
     else:
-        # Basic equality check for other types (can be expanded)
         return actual == expected
 
 def run_tests():
     results = []
-    # Use raw string and parse JSON safely inside Python
-    test_cases_json = r"""${testCasesJson}"""
-    test_cases = json.loads(test_cases_json)
+    # Use standard triple quotes and the escaped JSON string
+    test_cases_json_string_literal = """${safeTestCasesJson}"""
+    try:
+        test_cases = json.loads(test_cases_json_string_literal)
+    except json.JSONDecodeError as json_err:
+        # Error if Python fails to parse the JSON string we provided
+        return {"test_error": f"Internal Error: Failed to parse test case JSON in Python. Error: {json_err}. String was: {test_cases_json_string_literal}"}
 
     if user_function is None:
          return {"test_error": f"Function '{functionName}' not found in user code."}
@@ -113,28 +122,30 @@ def run_tests():
     for test in test_cases:
         inp = test["input"]
         exp = test["expected"]
-        description = test.get("description", f"Test with input: {inp}") # Use description or default
+        description = test.get("description", f"Test with input: {repr(inp)}") # Use repr for input desc
         passed = False
-        actual_result = None
+        actual_result_repr = None # Store repr for JSON output
         is_error = False
+        error_trace = None
 
         try:
-            # Handle single input vs multiple args if needed (basic case: assume single input)
-            # More complex cases might require inspecting function signature
             actual_result = user_function(inp)
             passed = compare_results(actual_result, exp)
+            actual_result_repr = repr(actual_result) # Get repr after successful execution
         except Exception as e:
-            actual_result = traceback.format_exc() # Get full traceback
+            error_trace = traceback.format_exc()
+            actual_result_repr = error_trace # Put traceback in actual result on error
             is_error = True
             passed = False
 
         results.append({
-            "input": inp,
-            "expected": exp,
-            "actual": repr(actual_result), # Use repr for clearer output of types
+            "input": repr(inp), # Use repr for input in results
+            "expected": repr(exp), # Use repr for expected in results
+            "actual": actual_result_repr,
             "passed": passed,
             "description": description,
             "error": is_error
+            # Optionally include error_trace separately if needed
         })
     return results
 
@@ -143,7 +154,8 @@ final_results = run_tests()
 
 # --- Output Results ---
 print("===PYTHON_TEST_RESULTS_JSON===")
-print(json.dumps(final_results))
+# Use ensure_ascii=False for better handling of unicode, though maybe not needed here
+print(json.dumps(final_results, ensure_ascii=False))
 print("===END_PYTHON_TEST_RESULTS_JSON===")
 `;
 }
