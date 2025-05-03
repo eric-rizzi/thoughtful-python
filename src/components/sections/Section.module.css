@@ -298,3 +298,98 @@
      Reflection forms/history, Coverage tables etc. as those components
      are fully implemented. Use this Section.module.css or create
      new specific modules as needed. */
+
+     .quizForm {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0 0; /* Add margin top only */
+      border: 1px solid #e1e4e8;
+    }
+    
+    .quizOption {
+      display: block; /* Ensure options are block level */
+      margin-bottom: 1rem;
+      padding: 0.75rem 1rem; /* Add padding */
+      border-radius: 4px;
+      border: 1px solid transparent; /* Add border for hover effect */
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    
+    .quizOption:hover:not(.optionDisabled) {
+      background-color: #e9ecef; /* Light hover */
+      border-color: #ced4da;
+    }
+    
+    .quizOption input[type="radio"],
+    .quizOption input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.1); /* Slightly larger */
+      cursor: pointer;
+      vertical-align: middle; /* Align with label text */
+    }
+    
+    .quizOption label {
+      cursor: pointer;
+      font-weight: 500;
+      vertical-align: middle;
+      /* width: calc(100% - 30px); Allow label to wrap naturally */
+    }
+    
+    /* Styles when submitted */
+    .quizFormSubmitted .quizOption {
+        cursor: default;
+    }
+    .quizFormSubmitted .quizOption:hover {
+        background-color: transparent; /* No hover effect after submit */
+        border-color: transparent;
+    }
+    .quizFormSubmitted input {
+        cursor: default;
+    }
+    
+    .quizSubmitButton {
+      background-color: #4b8bbe;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 1rem;
+      transition: background-color 0.3s;
+      font-size: 1rem;
+    }
+    
+    .quizSubmitButton:hover:not(:disabled) {
+      background-color: #306998;
+    }
+    
+    .quizSubmitButton:disabled {
+      background-color: #a8c7e0;
+      cursor: not-allowed;
+    }
+    
+    /* Feedback Area */
+    .quizFeedback {
+      margin-top: 1.5rem; /* Space above feedback */
+      padding: 1rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 500;
+      border-left: 5px solid transparent; /* Base for colored border */
+    }
+    
+    .correctFeedback {
+      composes: quizFeedback; /* Inherit base quizFeedback styles */
+      background-color: #d4edda;
+      color: #155724;
+      border-left-color: #28a745; /* Thick green border */
+    }
+    
+    .incorrectFeedback {
+      composes: quizFeedback; /* Inherit base quizFeedback styles */
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left-color: #dc3545; /* Thick error border */
+    }

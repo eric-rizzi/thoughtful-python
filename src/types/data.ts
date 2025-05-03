@@ -81,7 +81,7 @@ export interface MultipleChoiceSection extends LessonSection {
   };
 }
 
-export interface MultiSelectionSection extends LessonSection {
+export interface MultipleSelectionSection extends LessonSection {
   kind: 'MultiSelection';
   options: string[];
   correctAnswers: number[];
