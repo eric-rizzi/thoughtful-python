@@ -4,7 +4,6 @@ import type { LessonSection, LessonExample } from '../../types/data';
 import styles from './Section.module.css'; // Common section styles
 import CodeEditor from '../CodeEditor'; // The CM6 editor component (Step 14)
 import { usePyodide } from '../../contexts/PyodideContext'; // Pyodide context (Step 13)
-import { escapeHTML } from '../../lib/pyodideUtils'; // Helper utility (Step 13)
 
 interface ObservationSectionProps {
   section: LessonSection;
@@ -126,9 +125,8 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({ section }) => {
             {(state?.isRunning || state?.hasBeenRun) && (
                  <div className={styles.outputArea}>
                      <pre>
-                        {/* Use escapeHTML for security */}
                         {state?.output
-                            ? escapeHTML(state.output)
+                            ? state.output
                             : (state?.isRunning ? '' : <span className={styles.outputEmpty}>Code executed (no output).</span>)
                         }
                      </pre>

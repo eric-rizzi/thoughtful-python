@@ -1,10 +1,10 @@
 // src/components/sections/TestingSection.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import type { LessonSection, LessonExample, TestResult, TestCase } from '../../types/data';
+import type { LessonSection, LessonExample } from '../../types/data';
 import styles from './Section.module.css';
 import CodeEditor from '../CodeEditor';
 import { usePyodide } from '../../contexts/PyodideContext';
-import { generateTestCode, parseTestResults, escapeHTML } from '../../lib/pyodideUtils';
+import { generateTestCode, parseTestResults, TestResult } from '../../lib/pyodideUtils';
 
 interface TestingSectionProps {
   section: LessonSection;
@@ -174,7 +174,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
           return (
               <div className={styles.testError}>
                   <h4>Test Execution Error</h4>
-                  <pre>{escapeHTML(results.test_error)}</pre>
+                  <pre>{results.test_error}</pre>
               </div>
           );
       }
@@ -211,11 +211,11 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
                                   </thead>
                                   <tbody>
                                       <tr className={styles.testFailedRow}>
-                                           <td>{escapeHTML(firstFailed.description)}</td>
+                                           <td>{firstFailed.description}</td>
                                            {/* Use repr for input/expected/actual */}
-                                           <td><code>{escapeHTML(firstFailed.input)}</code></td>
-                                           <td><code>{escapeHTML(firstFailed.expected)}</code></td>
-                                           <td><code>{escapeHTML(firstFailed.actual)}</code>{firstFailed.error ? ' (error!)' : ''}</td>
+                                           <td><code>{firstFailed.input}</code></td>
+                                           <td><code>{firstFailed.expected}</code></td>
+                                           <td><code>{firstFailed.actual}</code>{firstFailed.error ? ' (error!)' : ''}</td>
                                       </tr>
                                   </tbody>
                               </table>
@@ -283,7 +283,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
                  <div className={styles.outputArea}>
                     <pre>
                         {state?.output
-                            ? escapeHTML(state.output)
+                            ? state.output
                             : (state?.isRunning ? '' : <span className={styles.outputEmpty}>No output from run.</span>)
                         }
                     </pre>

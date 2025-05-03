@@ -1,22 +1,5 @@
 // src/lib/pyodideUtils.ts
 
-/**
- * Formats and escapes HTML output text
- * @param str - The string to escape
- * @returns Safe HTML string with entities escaped
- */
-export function escapeHTML(str: string | undefined | null): string {
-  if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-// --- Test Generation & Parsing Logic (from original pyodide-utils.ts) ---
-
 export interface TestCase {
     input: any;
     expected: any;
