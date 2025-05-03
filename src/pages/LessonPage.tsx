@@ -1,15 +1,28 @@
 // src/pages/LessonPage.tsx
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+
+// --- Data Loading & Types ---
 import { fetchLessonData } from '../lib/dataLoader';
-import type { Lesson, LessonSection } from '../types/data'; // Import base types
-import styles from './LessonPage.module.css';
+import { saveProgress, loadProgress } from '../lib/localStorageUtils';
+import type {
+    Lesson,
+    LessonSection,
+    PredictionSection as PredictionSectionData,
+    MultipleChoiceSection as MultipleChoiceSectionData,
+    MultipleSelectionSection as MultipleSelectionSectionData,
+    TurtleSection as TurtleSectionData,
+    ReflectionSection as ReflectionSectionData,
+    CoverageSection as CoverageSectionData
+    // Add other specific section data types if defined/needed
+} from '../types/data';
+
+// --- Configuration ---
 import { BASE_PATH } from '../config';
 
-// Import the actual sidebar component
+// --- Child Components ---
 import LessonSidebar from '../components/LessonSidebar';
-
-// --- Import ALL Section Components ---
 import InformationSection from '../components/sections/InformationSection';
 import ObservationSection from '../components/sections/ObservationSection';
 import TestingSection from '../components/sections/TestingSection';
@@ -20,127 +33,239 @@ import TurtleSection from '../components/sections/TurtleSection';
 import ReflectionSection from '../components/sections/ReflectionSection';
 import CoverageSection from '../components/sections/CoverageSection';
 
+// --- Styling ---
+import styles from './LessonPage.module.css';
+
+// ======================================================================
+// LessonPage Component
+// ======================================================================
 const LessonPage: React.FC = () => {
-  const { lessonId } = useParams<{ lessonId: string }>();
-  const [lesson, setLesson] = useState<Lesson | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
+  // --- Hooks ---
+  const { lessonId } = useParams<{ lessonId: string }>(); // Get lesson ID from router
 
-  // Effect for loading initial completion status (from Step 10)
+  // --- State ---
+  const [lesson, setLesson] = useState<Lesson | null>(null); // Holds the loaded lesson data
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Tracks loading state for lesson data
+  const [error, setError] = useState<string | null>(null);  // Holds any data loading error message
+  const [completedSections, setCompletedSections] = useState<Set<string>>(new Set()); // Tracks completed sections for this lesson
+
+  // --- Effects ---
+
+  // Effect 1: Load initial completion status from localStorage when lessonId changes
   useEffect(() => {
-      if (!lessonId) return;
-      try {
-          const storageKey = `python_${lessonId}_completed`;
-          const storedData = localStorage.getItem(storageKey);
-          const completedIds = storedData ? JSON.parse(storedData) : [];
-          if (Array.isArray(completedIds)) {
-              setCompletedSections(new Set(completedIds));
-          } else { setCompletedSections(new Set<string>()); }
-      } catch (e) { setCompletedSections(new Set<string>()); }
+    if (!lessonId) return; // Don't run if lessonId isn't available yet
 
-      // Optional listener for dynamic updates
-      const handleProgressUpdate = (event: Event) => { /* ... as before ... */ };
-      window.addEventListener('lessonProgressUpdated', handleProgressUpdate);
-      return () => window.removeEventListener('lessonProgressUpdated', handleProgressUpdate);
-  }, [lessonId]);
+    let isMounted = true; // Flag to prevent state update if component unmounts quickly
+    const storageKey = `python_${lessonId}_completed`;
+    console.log(`LessonPage: Checking localStorage for key: ${storageKey}`);
 
-  // Effect for loading lesson data (from Step 9)
+    try {
+      const storedData = localStorage.getItem(storageKey);
+      const completedIds = storedData ? JSON.parse(storedData) : [];
+
+      if (isMounted) {
+        if (Array.isArray(completedIds) && completedIds.every(id => typeof id === 'string')) {
+          setCompletedSections(new Set(completedIds));
+          console.log(`LessonPage: Loaded ${completedIds.length} completed sections for ${lessonId}:`, completedIds);
+        } else {
+          console.warn(`Invalid completion data found in localStorage for ${lessonId}. Resetting.`);
+          setCompletedSections(new Set<string>());
+          localStorage.removeItem(storageKey); // Clear invalid data
+        }
+      }
+    } catch (e) {
+      console.error(`Failed to load or parse completion status from localStorage for ${lessonId}`, e);
+      if (isMounted) {
+        setCompletedSections(new Set<string>()); // Start fresh on error
+        localStorage.removeItem(storageKey); // Clear potentially corrupted data
+      }
+    }
+
+    // Optional: Listener for dynamic updates from other components/tabs (if needed)
+    const handleProgressUpdate = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      // Check if the update is for the current lesson
+      if (customEvent.detail?.lessonId === lessonId && customEvent.detail?.sectionId) {
+        console.log(`LessonPage: Received progress update for section ${customEvent.detail.sectionId}, updating state.`);
+        // Ensure state update happens correctly even if event fires rapidly
+        setCompletedSections(prev => {
+            if (prev.has(customEvent.detail.sectionId)) return prev; // Avoid redundant updates
+            return new Set(prev).add(customEvent.detail.sectionId);
+        });
+      }
+    };
+    window.addEventListener('lessonProgressUpdated', handleProgressUpdate);
+
+    // Cleanup function
+    return () => {
+      isMounted = false; // Mark as unmounted
+      window.removeEventListener('lessonProgressUpdated', handleProgressUpdate);
+      console.log(`LessonPage: Unmounting or lessonId changing (${lessonId}), cleanup listener.`);
+    };
+
+  }, [lessonId]); // Rerun only when the lessonId from the URL changes
+
+
+  // Effect 2: Load lesson data from JSON when lessonId changes
   useEffect(() => {
+    let isMounted = true; // Prevent state update if component unmounts during fetch
+
     const loadData = async () => {
-      // ... (fetch logic as implemented in Step 9) ...
-      if (!lessonId) { /* ... */ return; }
+      if (!lessonId) {
+        setError("No Lesson ID provided in URL.");
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
-      setLesson(null);
+      setLesson(null); // Clear previous lesson data
+      console.log(`LessonPage: Attempting to fetch lesson ${lessonId}`);
+
       try {
         const fetchedLesson = await fetchLessonData(lessonId);
-        setLesson(fetchedLesson);
-        document.title = `${fetchedLesson.title} - Python Lesson`;
-      } catch (err) { /* ... */ setError(/* ... */); }
-      finally { setIsLoading(false); }
-    };
-    loadData();
-  }, [lessonId]);
-
-  // --- Helper Function to Render Sections ---
-  const renderSection = (section: LessonSection) => {
-      // Based on the section kind, return the appropriate component
-      // We pass the whole section object as a prop.
-      // TypeScript's structural typing helps here, but for components
-      // requiring specific properties (like PredictionSectionData), ensure
-      // the JSON data provides them or handle potential undefined values
-      // within the specific section component.
-      switch (section.kind) {
-          case 'Information':
-              return <InformationSection section={section} />;
-          case 'Observation':
-              return <ObservationSection section={section} />;
-          case 'Testing':
-              return <TestingSection section={section} />;
-          case 'Prediction':
-              // Cast section type for components expecting more specific props
-              return <PredictionSection section={section as any} />;
-          case 'MultipleChoice':
-              return <MultipleChoiceSection section={section as any} />;
-          case 'MultiSelection':
-              return <MultipleSelectionSection section={section as any} />;
-          case 'Turtle':
-              return <TurtleSection section={section as any} />;
-          case 'Reflection':
-              return <ReflectionSection section={section as any} />;
-          case 'Coverage':
-              return <CoverageSection section={section as any} />;
-          default:
-              console.warn(`Unknown section kind encountered: ${section.kind}`);
-              return <div className={styles.error}>Unsupported section type: {section.kind}</div>;
+        if (isMounted) {
+          setLesson(fetchedLesson);
+          document.title = `${fetchedLesson.title} - Python Lesson`; // Update page title
+          console.log(`LessonPage: Successfully fetched ${lessonId}`);
+        }
+      } catch (err) {
+        console.error(`LessonPage Error fetching ${lessonId}:`, err);
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : `An unknown error occurred loading lesson ${lessonId}`);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
+    };
+
+    loadData();
+
+    // Cleanup function
+    return () => {
+        isMounted = false;
+        console.log(`LessonPage: Unmounting or lessonId changing (${lessonId}), cleanup fetch.`);
+    };
+  }, [lessonId]); // Re-run effect if lessonId changes
+
+
+  // --- Callbacks ---
+
+  // Callback passed to interactive sections to report completion
+  const handleSectionComplete = useCallback((sectionId: string) => {
+    // Use functional update to ensure we have the latest state
+    setCompletedSections(prevCompletedSections => {
+      // Avoid unnecessary state updates and saves if already completed
+      if (prevCompletedSections.has(sectionId)) {
+        return prevCompletedSections;
+      }
+
+      console.log(`LessonPage: Section ${sectionId} reported complete! Updating state and localStorage.`);
+      const newCompletedSet = new Set(prevCompletedSections).add(sectionId);
+
+      // Persist updated completion status to localStorage
+      if (lessonId) {
+        const storageKey = `python_${lessonId}_completed`;
+        saveProgress(storageKey, Array.from(newCompletedSet)); // Save as array
+
+        // Optionally dispatch event for other listeners
+        window.dispatchEvent(new CustomEvent('lessonProgressUpdated', {
+            detail: { lessonId, sectionId }
+        }));
+      }
+      return newCompletedSet; // Return the new set for the state update
+    });
+  }, [lessonId]); // lessonId is needed for the storage key
+
+
+  // --- Rendering ---
+
+  // Helper function to render the correct section component
+  const renderSection = (section: LessonSection) => {
+    // Props common to most interactive sections that need completion logic
+    const commonInteractiveProps = {
+      lessonId: lessonId!, // Assert non-null as lessonId is checked before this render path
+      onSectionComplete: handleSectionComplete,
+    };
+
+    switch (section.kind) {
+      case 'Information':
+        return <InformationSection key={section.id} section={section} />;
+      case 'Observation':
+        return <ObservationSection key={section.id} {...commonInteractiveProps} section={section} />;
+      case 'Testing':
+        return <TestingSection key={section.id} {...commonInteractiveProps} section={section} />;
+      case 'Prediction':
+        return <PredictionSection key={section.id} {...commonInteractiveProps} section={section as PredictionSectionData} />;
+      case 'MultipleChoice':
+        return <MultipleChoiceSection key={section.id} {...commonInteractiveProps} section={section as MultipleChoiceSectionData} />;
+      case 'MultiSelection':
+        return <MultipleSelectionSection key={section.id} {...commonInteractiveProps} section={section as MultipleSelectionSectionData} />;
+      case 'Turtle':
+        return <TurtleSection key={section.id} {...commonInteractiveProps} section={section as TurtleSectionData} />;
+      case 'Reflection':
+        return <ReflectionSection key={section.id} {...commonInteractiveProps} section={section as ReflectionSectionData} />;
+      case 'Coverage':
+        return <CoverageSection key={section.id} {...commonInteractiveProps} section={section as CoverageSectionData} />;
+      default:
+        console.warn(`Unknown section kind encountered: ${section.kind} for section ID: ${section.id}`);
+        return (
+          <div key={section.id} className={styles.error}>
+            Unsupported section type: {(section as any).kind || 'Unknown'}
+          </div>
+        );
+    }
   };
 
-  // --- Main Rendering Logic ---
-
+  // Handle Loading State
   if (isLoading) {
     return (
       <div className={styles.loading}>
-        <p>Loading lesson content...</p>
+        <p>Loading lesson content for '{lessonId}'...</p>
         <div className={styles.spinner}></div>
       </div>
     );
   }
 
+  // Handle Error State
   if (error) {
     return (
       <div className={styles.error}>
-        <p>Error loading lesson: {error}</p>
-        <Link to={`${BASE_PATH}/`} >&larr; Back to Home</Link>
+        <h2>Error Loading Lesson</h2>
+        <p>{error}</p>
+        <Link to={`${BASE_PATH}/`} className={styles.backLink}>&larr; Back to Home</Link>
       </div>
     );
   }
 
+  // Handle Lesson Not Found (should be caught by error, but good failsafe)
   if (!lesson) {
-    return <div className={styles.loading}><p>Lesson data could not be loaded.</p></div>;
+    return (
+      <div className={styles.error}>
+          <h2>Lesson Not Found</h2>
+          <p>Could not find data for lesson '{lessonId}'.</p>
+          <Link to={`${BASE_PATH}/`} className={styles.backLink}>&larr; Back to Home</Link>
+      </div>
+    );
   }
 
-  // Render the main two-column layout
+  // --- Render Main Lesson Layout ---
   return (
     <div className={styles.lessonContainer}>
+      {/* Sidebar Area */}
       <aside className={styles.lessonSidebar}>
-        {/* Render the actual LessonSidebar component */}
         <LessonSidebar
-            sections={lesson.sections}
-            completedSections={completedSections}
+          sections={lesson.sections}
+          completedSections={completedSections} // Pass current completion state
         />
       </aside>
+
+      {/* Main Content Area */}
       <div className={styles.lessonContent}>
-        {/* --- DYNAMIC SECTION RENDERING --- */}
-        {lesson.sections.map((section) => (
-          // Use the helper function to render the correct component
-          // Use section.id as the key for efficient list rendering
-          <React.Fragment key={section.id}>
-            {renderSection(section)}
-          </React.Fragment>
-        ))}
-        {/* --- END DYNAMIC SECTION RENDERING --- */}
+        {/* Map over sections and render using the helper */}
+        {lesson.sections.map(section => renderSection(section))}
       </div>
     </div>
   );
