@@ -1,0 +1,100 @@
+/* src/components/Header.module.css */
+.header {
+  background-color: #4b8bbe; /* Original header blue */
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.title {
+  font-size: 1.8rem;
+  margin: 0;
+  margin-right: 2rem; /* Space between title and nav */
+  white-space: nowrap; /* Prevent title from wrapping */
+}
+
+.nav {
+  display: flex;
+  flex-grow: 1; /* Allow nav to take remaining space */
+  align-items: center;
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  gap: 1rem; /* Space between nav items */
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  flex-wrap: wrap; /* Allow nav items to wrap */
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.3s, opacity 0.3s;
+  font-size: 0.95rem;
+  display: block; /* Ensures padding applies correctly */
+}
+
+.navLink:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Style for the active NavLink */
+.navLinkActive {
+  background-color: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+}
+
+.navLinkDisabled {
+  composes: navLink; /* Inherit base styles */
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.navLinkDisabled:hover {
+    background-color: transparent; /* Don't highlight disabled links on hover */
+}
+
+.lessonNavigation {
+  margin-left: auto; /* Pushes lesson nav to the right */
+  color: rgba(255, 255, 255, 0.8);
+  /* Add other lesson nav styles here later if needed */
+  white-space: nowrap;
+}
+
+/* Responsive adjustments for header if needed */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: stretch; /* Stretch items to full width */
+  }
+  .title {
+    text-align: center;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  .nav {
+    justify-content: center;
+  }
+  .navList {
+    justify-content: center;
+  }
+  .lessonNavigation {
+      margin-left: 0; /* Center lesson nav on small screens */
+      margin-top: 0.5rem;
+      text-align: center;
+  }
+}

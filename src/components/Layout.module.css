@@ -1,0 +1,25 @@
+/* src/components/Layout.module.css */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure layout takes full viewport height */
+}
+
+.mainContent {
+  flex-grow: 1; /* Allow main content to expand and push footer down */
+  padding: 20px; /* Match inline style */
+}
+
+/* Define container here if you want it scoped to Layout, */
+/* or import from a shared/global CSS file */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Combine container rules if defined globally */
+.mainContent.container {
+    /* Styles specific to the main content area if needed */
+}

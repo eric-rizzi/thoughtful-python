@@ -1,0 +1,20 @@
+{
+  "units": [
+    {
+      "id": "intro_python",
+      "title": "Introduction to Python",
+      "description": "Learn the fundamentals of Python programming through interactive lessons that run directly in your browser.",
+      "lessons": [
+        "lesson_1",
+        "lesson_2", 
+        "lesson_3",
+        "lesson_4",
+        "lesson_5",
+        "lesson_6",
+        "lesson_7",
+        "lesson_8"
+      ],
+      "image": "python-logo.png"
+    }
+  ]
+}

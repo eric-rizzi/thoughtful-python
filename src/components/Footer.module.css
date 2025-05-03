@@ -1,0 +1,20 @@
+/* src/components/Footer.module.css */
+.footer {
+  background-color: #306998; /* Original footer blue */
+  color: white;
+  padding: 1.5rem 0;
+  text-align: center;
+  margin-top: 2rem; /* Ensure space above footer */
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px; /* Standard container width */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer p {
+  margin: 0; /* Remove default paragraph margin */
+}

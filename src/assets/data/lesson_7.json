@@ -1,0 +1,34 @@
+{
+  "title": "Lesson 7: Reflection and Self-Assessment",
+  "description": "Demonstrate your understanding by creating and explaining a Python code example on a topic of your choice.",
+  "sections": [
+    {
+      "kind": "Information",
+      "id": "reflection-intro",
+      "title": "Introduction to Reflection",
+      "content": "Reflection is a powerful learning tool that helps solidify your understanding. In this lesson, you will choose a topic from the previous lessons, create a code example, and explain how it works.\n\nYou'll receive feedback from an AI assistant that will help you improve your understanding and expression of Python concepts."
+    },
+    {
+      "kind": "Reflection",
+      "id": "python-reflection",
+      "title": "Python Concept Reflection",
+      "content": "Choose a topic from the previous lessons that you found interesting or challenging. Create a simple code example that demonstrates this concept, and write 3-4 sentences explaining how the code works.",
+      "prompts": {
+        "topic": "Choose a topic you've learned about",
+        "code": "Create a simple example that demonstrates this topic",
+        "explanation": "Explain how your example works (3-4 sentences)"
+      },
+      "rubric": {
+        "developing": "The explanation is brief or contains misconceptions about how the code works.",
+        "meets": "The explanation correctly describes how the code works and demonstrates understanding of the core concept.",
+        "exceeds": "The explanation shows deep understanding of the concept, including nuances or connections to other concepts."
+      }
+    },
+    {
+      "kind": "Information",
+      "id": "reflection-conclusion",
+      "title": "Conclusion",
+      "content": "Congratulations on completing the Python in the Browser course! You've learned fundamental Python concepts, practiced coding, and now demonstrated your understanding through reflection.\n\nRemember that learning to code is a journey - continue practicing and building projects to strengthen your skills."
+    }
+  ]
+}

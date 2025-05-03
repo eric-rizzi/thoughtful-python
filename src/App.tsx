@@ -1,5 +1,4 @@
 // src/App.tsx (Should already look like this from Step 3 implementation)
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import UnitPage from './pages/UnitPage';
