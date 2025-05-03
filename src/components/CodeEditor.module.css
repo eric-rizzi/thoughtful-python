@@ -1,0 +1,17 @@
+/* src/components/CodeEditor.module.css */
+.editorWrapper {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden; /* Ensures border-radius applies to CodeMirror */
+  margin: 1rem 0; /* Example spacing */
+  position: relative; /* For potential absolute positioned elements later */
+  font-size: 0.9rem; /* Match editor font size if needed */
+}
+
+/* Ensure CodeMirror takes up space */
+.editorWrapper :global(.CodeMirror) {
+  height: auto; /* Allow editor to grow */
+  min-height: 100px; /* Minimum height */
+}
+
+/* Add more specific styles if needed */

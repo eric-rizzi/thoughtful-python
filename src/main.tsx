@@ -1,15 +1,17 @@
-// src/main.tsx
+// src/main.tsx (Example - place provider appropriately)
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import './index.css'; // Assuming a global CSS file
+import { PyodideProvider } from './contexts/PyodideContext'; // Import Provider
+import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* Wrap App with BrowserRouter */}
     <BrowserRouter>
-      <App />
+      <PyodideProvider> {/* Wrap App with the Provider */}
+        <App />
+      </PyodideProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
