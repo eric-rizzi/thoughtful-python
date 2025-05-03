@@ -1,0 +1,39 @@
+/* src/components/sections/Section.module.css */
+
+.section {
+  margin-bottom: 2.5rem; /* Increased spacing */
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.title {
+  color: #306998;
+  margin-top: 0; /* Ensure ID linking aligns well */
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  scroll-margin-top: 70px; /* Offset for sticky header when scrolling to ID */
+}
+
+.content {
+  margin-bottom: 1.5rem;
+  line-height: 1.7; /* Slightly more spacing */
+  color: #444;
+  white-space: pre-wrap; /* Render newline characters from JSON content */
+}
+
+/* Basic placeholder for future interactive elements */
+.interactivePlaceholder {
+    border: 1px dashed #ccc;
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #777;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
