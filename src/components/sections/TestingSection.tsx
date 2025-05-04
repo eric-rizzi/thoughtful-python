@@ -8,9 +8,8 @@ import { generateTestCode, parseTestResults, TestResult } from '../../lib/pyodid
 
 interface TestingSectionProps {
   section: LessonSection;
-  // Add lessonId and onComplete callback later for Step 22/23
-  // lessonId: string;
-  // onSectionComplete: (sectionId: string) => void;
+  lessonId: string;
+  onSectionComplete: (sectionId: string) => void;  // Callback for completion
 }
 
 interface ExampleState {
@@ -22,7 +21,7 @@ interface ExampleState {
   testRunCompleted: boolean; // Track if tests have been run at least once
 }
 
-const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
+const TestingSection: React.FC<TestingSectionProps> = ({ section, lessonId, onSectionComplete }) => {
   const { runPythonCode, isLoading: isPyodideLoading, error: pyodideError } = usePyodide();
   const [exampleStates, setExampleStates] = useState<{ [key: string]: ExampleState }>({});
 
@@ -146,7 +145,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section }) => {
         // --- Placeholder for Completion Logic (Phase 5) ---
         if (allPassed) {
              // Call function passed via props or context to mark completion
-             // onSectionComplete(section.id);
+             onSectionComplete(section.id);
              console.log(`Placeholder: Section ${section.id} / Example ${exampleId} PASSED all tests.`);
         }
         // --- End Placeholder ---
