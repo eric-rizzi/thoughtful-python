@@ -252,6 +252,12 @@ const LessonPage: React.FC = () => {
   }
 
   // --- Render Main Lesson Layout ---
+
+  const informationSections: Set<string> = new Set(
+    lesson.sections
+      .filter(section => section.kind === "Information")
+      .map(infoSection => infoSection.id)
+  )
   return (
     <div className={styles.lessonContainer}>
       {/* Sidebar Area */}
@@ -259,6 +265,7 @@ const LessonPage: React.FC = () => {
         <LessonSidebar
           sections={lesson.sections}
           completedSections={completedSections} // Pass current completion state
+          informationSections={informationSections}
         />
       </aside>
 

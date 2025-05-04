@@ -2,10 +2,13 @@
 import React from 'react';
 import type { LessonSection } from '../types/data';
 import styles from './LessonSidebar.module.css';
+import InformationSection from './sections/InformationSection';
 
 interface LessonSidebarProps {
   sections: LessonSection[];
-  completedSections: Set<string>; // Use a Set for efficient lookup
+  completedSections: Set<string>;
+  informationSections: Set<string>;
+
   // Optional: Add onClick handler for smooth scrolling later
   // onLinkClick?: (sectionId: string) => void;
 }
@@ -13,6 +16,7 @@ interface LessonSidebarProps {
 const LessonSidebar: React.FC<LessonSidebarProps> = ({
   sections,
   completedSections,
+  informationSections,
   // onLinkClick
 }) => {
 
@@ -47,9 +51,15 @@ const LessonSidebar: React.FC<LessonSidebarProps> = ({
       <ul className={styles.sectionList}>
         {sections.map((section) => {
           const isCompleted = completedSections.has(section.id);
-          const itemClass = isCompleted
-            ? `${styles.sectionItem} ${styles.sectionItemCompleted}`
-            : styles.sectionItem;
+          const isInformation = informationSections.has(section.id);
+          
+          let itemClass = `${styles.sectionItem} ${styles.sectionItemToBeDone}`;
+          if (isInformation) {
+            itemClass = `${styles.sectionItem} ${styles.sectionItemInfo}`;
+          }
+          else if (isCompleted) {
+            itemClass = `${styles.sectionItem} ${styles.sectionItemCompleted}`;
+          }
 
           return (
             <li key={section.id} className={itemClass} data-section-id={section.id}>
