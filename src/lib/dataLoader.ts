@@ -95,7 +95,7 @@ export function getRequiredSectionsForLesson(lesson: Lesson): string[] {
   const requiredSections: string[] = [];
   lesson.sections.forEach(section => {
     // Add kinds that require active completion
-    if (['Testing', 'Prediction', 'MultipleChoice', 'MultiSelection', 'Turtle', 'Reflection', 'Coverage'].includes(section.kind)) {
+    if (['Observation', 'Testing', 'Prediction', 'MultipleChoice', 'MultiSelection', 'Turtle', 'Reflection', 'Coverage'].includes(section.kind)) {
        requiredSections.push(section.id);
     }
     // You might refine this logic based on exactly which sections count towards completion

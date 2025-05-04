@@ -197,7 +197,11 @@ const UnitPage: React.FC = () => {
                 <h3 className={styles.lessonTitle}>{lesson.title}</h3>
                 <p className={styles.lessonDescription}>{lesson.description}</p>
                 <div className={styles.lessonStatus}>
-                  <span className={`${styles.statusDot} ${styles[status.class]}`}></span>
+                  {status.class === 'completed' ? (
+                    <span className={`${styles.checkmarkIcon} ${styles.statusCompleted}`}>✓</span>
+                  ) : (
+                    <span className={`${styles.statusDot} ${styles[status.class]}`}></span>
+                  )}
                   {status.text}
                 </div>
               </div>
