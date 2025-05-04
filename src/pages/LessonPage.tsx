@@ -1,6 +1,6 @@
 // src/pages/LessonPage.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 // --- Data Loading & Types ---

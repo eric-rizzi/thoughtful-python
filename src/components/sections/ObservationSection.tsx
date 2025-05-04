@@ -10,6 +10,7 @@ import { loadProgress, saveProgress } from '../../lib/localStorageUtils';
 interface ObservationSectionProps {
   section: LessonSection;
   lessonId: string;
+  onSectionComplete: (sectionId: string) => void; // Callback for completion
 }
 
 // Define state structure for each example
@@ -21,7 +22,7 @@ interface ExampleState {
 }
 
 
-const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lessonId }) => {
+const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lessonId, onSectionComplete }) => {
   const { completeSection } = useProgressActions();
   const { runPythonCode, isLoading: isPyodideLoading, error: pyodideError } = usePyodide();
   const [exampleStates, setExampleStates] = useState<{ [key: string]: ExampleState }>({});
@@ -97,6 +98,7 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lesson
     if (!result.error) {
       console.log(`Observation section ${section.id} run successfully. Marking complete.`);
       completeSection(lessonId, section.id);
+      onSectionComplete(section.id)
     }
 
   }, [exampleStates, isPyodideLoading, pyodideError, runPythonCode, lessonId, section.id, completeSection]);
