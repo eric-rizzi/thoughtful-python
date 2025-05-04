@@ -11,7 +11,6 @@ import styles from './Section.module.css';
 import { saveProgress, loadProgress } from '../../lib/localStorageUtils';
 import { usePyodide } from '../../contexts/PyodideContext';
 import CodeEditor from '../CodeEditor'; // For displaying target code
-import { escapeHTML } from '../../lib/pyodideUtils'; // For output display
 
 interface CoverageSectionProps {
   section: CoverageSectionData;
