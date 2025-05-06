@@ -104,10 +104,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({ section, lessonId, onSe
 
     try {
         const testCode = generateTestCode(codeToTest, functionNameToTest, exampleData.testCases);
-      console.log(testCode)
         const rawResult = await runPythonCode(testCode); // Returns { output, error }
-        console.log("Boobs 110")
-        console.log(rawResult)
 
         let parsedResults: TestResult[] | { test_error: string } | null = null;
         let allPassed = false;
