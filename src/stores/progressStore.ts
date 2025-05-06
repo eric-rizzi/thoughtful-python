@@ -39,6 +39,7 @@ export const useProgressStore = create<ProgressState>()(
             console.log(`ProgressStore: Marking ${lessonId} - ${sectionId} complete. New state:`, newCompletion);
             return { completion: newCompletion };
           }
+          console.log(`Zustand Store: completeSection called for ${lessonId} - ${sectionId}, but already present.`);
           return state;
         }),
 

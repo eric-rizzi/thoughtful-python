@@ -2,7 +2,6 @@
 import React from 'react';
 import type { LessonSection } from '../types/data';
 import styles from './LessonSidebar.module.css';
-import InformationSection from './sections/InformationSection';
 
 interface LessonSidebarProps {
   sections: LessonSection[];

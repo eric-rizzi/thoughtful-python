@@ -9,7 +9,6 @@ import InteractiveExampleDisplay from './InteractiveExampleDisplay'; // IMPORT N
 interface ObservationSectionProps {
   section: LessonSection; // Expects a generic LessonSection, but examples are key
   lessonId: string;
-  onSectionComplete: (sectionId: string) => void; // Callback for completion
 }
 
 // Helper component for each example to use the hook
@@ -17,8 +16,7 @@ const ObservationExample: React.FC<{
   example: LessonExample;
   lessonId: string;
   sectionId: string;
-  onSectionComplete: (sectionId: string) => void;
-}> = ({ example, lessonId, sectionId, onSectionComplete }) => {
+}> = ({ example, lessonId, sectionId }) => {
   const { completeSection } = useProgressActions();
   const exampleHook = useInteractiveExample({
     exampleId: example.id,
@@ -34,7 +32,6 @@ const ObservationExample: React.FC<{
     if (!result.error) {
       console.log(`Observation section ${sectionId} - example ${example.id} run successfully. Marking complete.`);
       completeSection(lessonId, sectionId);
-      onSectionComplete(sectionId);
     }
     return result;
   };
@@ -48,7 +45,7 @@ const ObservationExample: React.FC<{
   );
 };
 
-const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lessonId, onSectionComplete }) => {
+const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lessonId }) => {
   if (!section.examples || section.examples.length === 0) {
     return (
       <section id={section.id} className={styles.section}>
@@ -69,7 +66,6 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lesson
           example={example}
           lessonId={lessonId}
           sectionId={section.id}
-          onSectionComplete={onSectionComplete}
         />
       ))}
     </section>
