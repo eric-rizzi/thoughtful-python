@@ -2,7 +2,9 @@
 .pageContainer {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px); /* Adjust based on header/footer height */
+  /* Adjust height based on header/footer, assuming header is around 60px */
+  /* Full viewport height minus header and some padding */
+  height: calc(100vh - 60px - 2rem);
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -19,7 +21,8 @@
   color: #306998;
 }
 
-.runButton {
+.mainActions button {
+  /* Style for Run Tests, Add Test buttons */
   background-color: #28a745;
   color: white;
   border: none;
@@ -29,50 +32,63 @@
   font-weight: 600;
   transition: background-color 0.3s;
   font-size: 0.9rem;
+  margin-left: 0.5rem; /* Space between buttons */
 }
 
-.runButton:hover:not(:disabled) {
+.mainActions button:hover:not(:disabled) {
   background-color: #218838;
 }
 
-.runButton:disabled {
+.mainActions button:disabled {
   background-color: #94d3a2;
   cursor: not-allowed;
 }
 
-.panesContainer {
+.mainActions .addTestButton {
+  background-color: #007bff;
+}
+.mainActions .addTestButton:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.contentPanes {
+  /* Renamed from panesContainer */
   display: flex;
   flex-grow: 1;
   gap: 1rem;
-  height: 100%; /* Ensure it takes up available space */
+  /* Occupy remaining vertical space */
+  /* Height calculation may need adjustment based on titleBar */
+  height: calc(100% - 40px - 1rem); /* Subtract titleBar height and margin */
+  min-height: 300px; /* Ensure panes don't collapse too much */
 }
 
 .pane {
-  flex: 1;
+  flex: 1; /* Distribute space equally by default */
   display: flex;
   flex-direction: column;
-  background-color: #f9f9f9;
+  background-color: #fdfdfd; /* Slightly off-white */
   border: 1px solid #ddd;
   border-radius: 4px;
-  overflow: hidden; /* Important for CodeMirror */
-  height: 100%;
+  overflow: hidden;
 }
 
 .paneHeader {
   padding: 0.5rem 0.75rem;
   background-color: #e9ecef;
   border-bottom: 1px solid #ddd;
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .editorWrapper {
   flex-grow: 1;
-  overflow: auto; /* Allow editor itself to scroll if content overflows */
-  position: relative; /* For CodeMirror sizing */
+  overflow: auto;
+  position: relative;
 }
 
-/* Ensure CodeMirror takes full height of its wrapper */
 .editorWrapper :global(.cm-editor) {
   height: 100%;
 }
@@ -80,65 +96,99 @@
   overflow: auto;
 }
 
-.resultsPane {
-  flex: 1;
-  background-color: #2e3440; /* Dark background for results */
-  color: #d8dee9;
-  padding: 1rem;
+/* Right Pane: Active Test Suite */
+.activeTestSuitePane {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Allow scrolling for many tests */
+  padding: 0.75rem;
+  background-color: #f0f4f8; /* Slightly different background */
+}
+
+.activeTestItem {
+  background-color: white;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  font-family: "Menlo", "Consolas", "Courier New", monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  overflow-y: auto;
-  border: 1px solid #444;
-  min-height: 100px; /* Ensure it has some height */
-}
-
-.resultsPane h4 {
-  margin-top: 0;
-  color: #88c0d0; /* Light blue for heading */
-  border-bottom: 1px solid #4c566a;
-  padding-bottom: 0.5rem;
+  padding: 0.75rem;
   margin-bottom: 0.75rem;
+  transition: background-color 0.3s ease;
+  position: relative; /* For delete button positioning */
 }
 
-.resultsPane pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-break: break-word;
+.activeTestItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
-.testResultItem {
-  padding: 0.5rem 0;
-  border-bottom: 1px dashed #4c566a;
-}
-.testResultItem:last-child {
-  border-bottom: none;
+.activeTestItemHeader strong {
+  font-size: 0.95rem;
+  color: #333;
 }
 
-.testResultItem.passed {
-  color: #a3be8c; /* Green for pass */
+.deleteTestButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+}
+.deleteTestButton:hover {
+  background-color: #c82333;
 }
 
-.testResultItem.failed {
-  color: #bf616a; /* Red for fail */
-}
-
-.testResultItem.error {
-  color: #ebcb8b; /* Yellow for error */
-}
-.testResultItem strong {
-  margin-right: 0.5em;
-}
-.testResultItem pre {
-  margin-top: 0.25em;
-  padding-left: 1em;
-  font-size: 0.85em;
-  background-color: rgba(0, 0, 0, 0.1);
+.activeTestItem pre {
+  /* For displaying test code snippet */
+  background-color: #f8f9fa;
+  padding: 0.5rem;
   border-radius: 3px;
+  font-size: 0.85em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 100px; /* Limit snippet height */
+  overflow-y: auto;
+  border: 1px solid #eee;
 }
 
-.noTestsMessage {
+.activeTestItem.statusPending {
+  border-left: 5px solid #6c757d; /* Grey */
+}
+.activeTestItem.statusPassed {
+  background-color: #e6ffed; /* Light green */
+  border-left: 5px solid #28a745; /* Green */
+}
+.activeTestItem.statusFailed {
+  background-color: #ffebee; /* Light red */
+  border-left: 5px solid #dc3545; /* Red */
+}
+.activeTestItem.statusError {
+  background-color: #fff8e1; /* Light yellow */
+  border-left: 5px solid #ffc107; /* Yellow */
+}
+
+.testOutputDetails {
+  margin-top: 0.5rem;
+  font-size: 0.8em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background-color: #343a40; /* Darker background for output */
+  color: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 3px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.noActiveTests {
+  color: #6c757d;
+  text-align: center;
+  margin-top: 2rem;
   font-style: italic;
-  color: #6c757d; /* Lighter text */
 }
