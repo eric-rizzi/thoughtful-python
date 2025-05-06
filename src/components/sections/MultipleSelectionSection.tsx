@@ -1,17 +1,19 @@
-// src/components/sections/MultiSelectionSection.tsx
+// src/components/sections/MultipleSelectionSection.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import type { MultipleSelectionSection as MultipleSelectionSectionData } from '../../types/data';
 import styles from './Section.module.css';
-import { saveProgress, loadProgress } from '../../lib/localStorageUtils'; // Helper for localStorage
+import { saveProgress, loadProgress } from '../../lib/localStorageUtils';
+import { useProgressActions } from '../../stores/progressStore'; // IMPORT ZUSTAND ACTIONS
 
 interface MultipleSelectionSectionProps {
   section: MultipleSelectionSectionData;
-  lessonId: string; // Needed for localStorage key
-  onSectionComplete: (sectionId: string) => void; // Callback for completion
+  lessonId: string; // Needed for localStorage key and progressStore
+  // onSectionComplete prop is removed
 }
 
+// This interface defines the shape of the state saved to localStorage for this specific quiz type
 interface SavedMultiSelectState {
-    selected: number[]; // Store selected indexes as an array
+    selected: number[]; // Store selected indexes as an array for JSON compatibility
     submitted: boolean;
     correct: boolean | null;
 }
@@ -19,18 +21,20 @@ interface SavedMultiSelectState {
 const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     section,
     lessonId,
-    onSectionComplete
 }) => {
+  // Component's active state for selected options uses a Set for efficiency
   const [selectedOptions, setSelectedOptions] = useState<Set<number>>(new Set());
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const storageKey = `quizState_${lessonId}_${section.id}`;
 
+  const { completeSection } = useProgressActions();
+
   // Load saved state on mount
   useEffect(() => {
       const savedState = loadProgress<SavedMultiSelectState>(storageKey);
       if (savedState) {
-          setSelectedOptions(new Set(savedState.selected || []));
+          setSelectedOptions(new Set(savedState.selected || [])); // Initialize Set from saved array
           setIsSubmitted(savedState.submitted);
           setIsCorrect(savedState.correct);
       }
@@ -39,7 +43,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
   // Save state whenever it changes
   useEffect(() => {
       const stateToSave: SavedMultiSelectState = {
-          selected: Array.from(selectedOptions), // Convert Set to Array for JSON
+          selected: Array.from(selectedOptions), // Convert Set to Array for saving
           submitted: isSubmitted,
           correct: isCorrect
       };
@@ -77,10 +81,10 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     setIsSubmitted(true);
 
     if (correct) {
-      console.log(`Placeholder: MS Section ${section.id} completed correctly.`);
-      onSectionComplete(section.id); // Mark section as complete
+      console.log(`MultipleSelectionSection: ${section.id} answered correctly. Marking complete in progress store.`);
+      completeSection(lessonId, section.id);
     }
-  }, [selectedOptions, isSubmitted, section.correctAnswers, section.id, onSectionComplete]);
+  }, [selectedOptions, isSubmitted, section.correctAnswers, section.id, lessonId, completeSection, setIsCorrect, setIsSubmitted]); // Added setIsCorrect, setIsSubmitted
 
   return (
     <section id={section.id} className={styles.section}>
@@ -92,12 +96,12 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
           <div key={index} className={`${styles.quizOption} ${isSubmitted ? styles.optionDisabled : ''}`}>
             <input
               type="checkbox"
-              name={section.id} // Can share name for checkboxes
+              name={`${section.id}-option-${index}`} // Ensure unique name for accessibility if needed, though not strictly for functionality here
               value={index}
               id={`${section.id}-option-${index}`}
               checked={selectedOptions.has(index)}
               onChange={handleOptionChange}
-              disabled={isSubmitted} // Disable after submission
+              disabled={isSubmitted}
             />
             <label htmlFor={`${section.id}-option-${index}`}>
               {option}
