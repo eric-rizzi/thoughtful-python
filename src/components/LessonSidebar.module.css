@@ -30,7 +30,7 @@
 }
 
 .sectionItem:hover {
-    background-color: #f8f9fa; /* Subtle hover background */
+  background-color: #f8f9fa; /* Subtle hover background */
 }
 
 .sectionLink {
@@ -73,7 +73,7 @@
 }
 
 .sectionItemToBeDone .sectionLink:hover {
-    color: #333; /* Darken slightly on hover */
+  color: #333; /* Darken slightly on hover */
 }
 
 .sectionItemCompleted {
@@ -101,11 +101,11 @@
 }
 
 .sectionItemCompleted .sectionLink:hover {
-    color: #333; /* Darken slightly on hover */
+  color: #333; /* Darken slightly on hover */
 }
 
 .loading {
-    color: #666;
-    font-style: italic;
-    padding: 0.5rem 0;
+  color: #666;
+  font-style: italic;
+  padding: 0.5rem 0;
 }

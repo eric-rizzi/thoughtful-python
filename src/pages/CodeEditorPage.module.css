@@ -115,12 +115,15 @@
 .testResultItem:last-child {
   border-bottom: none;
 }
+
 .testResultItem.passed {
   color: #a3be8c; /* Green for pass */
 }
+
 .testResultItem.failed {
   color: #bf616a; /* Red for fail */
 }
+
 .testResultItem.error {
   color: #ebcb8b; /* Yellow for error */
 }

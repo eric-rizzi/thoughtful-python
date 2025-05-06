@@ -65,7 +65,7 @@
   cursor: not-allowed;
 }
 .navLinkDisabled:hover {
-    background-color: transparent; /* Don't highlight disabled links on hover */
+  background-color: transparent; /* Don't highlight disabled links on hover */
 }
 
 .lessonNavigation {
@@ -93,8 +93,8 @@
     justify-content: center;
   }
   .lessonNavigation {
-      margin-left: 0; /* Center lesson nav on small screens */
-      margin-top: 0.5rem;
-      text-align: center;
+    margin-left: 0; /* Center lesson nav on small screens */
+    margin-top: 0.5rem;
+    text-align: center;
   }
 }

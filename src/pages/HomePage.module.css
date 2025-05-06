@@ -14,8 +14,8 @@
 }
 
 .welcome p {
-    font-size: 1.1rem;
-    color: #555;
+  font-size: 1.1rem;
+  color: #555;
 }
 
 /* Features Section (Optional - based on original index.html) */
@@ -42,20 +42,20 @@
 
 /* Learning Paths Section */
 .learningPaths {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
 .learningPaths h2 {
-    color: #306998;
-    margin-bottom: 1rem;
-    text-align: center;
-    font-size: 1.8rem;
+  color: #306998;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.8rem;
 }
 
 .learningPaths p {
-    text-align: center;
-    color: #666;
-    margin-bottom: 2rem;
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
 }
 
 /* Units Grid Styles (Ported from units.css) */
@@ -128,7 +128,7 @@
 }
 
 .unitDetails {
-    margin-top: auto; /* Push to bottom */
+  margin-top: auto; /* Push to bottom */
 }
 
 .unitLessons {
@@ -157,7 +157,8 @@
 }
 
 /* Loading and Error States */
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   padding: 3rem;
   color: #666;
@@ -165,10 +166,10 @@
 }
 
 .error {
-    color: #dc3545;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 8px;
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
 }
 
 .spinner {
@@ -182,6 +183,10 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -11,7 +11,9 @@
 .lessonSidebar {
   position: sticky; /* Make sidebar sticky */
   top: 2rem; /* Adjust top spacing as needed */
-  height: calc(100vh - 4rem); /* Example height, adjust based on header/footer */
+  height: calc(
+    100vh - 4rem
+  ); /* Example height, adjust based on header/footer */
   overflow-y: auto; /* Allow sidebar scrolling if content overflows */
   /* Add background, padding, border-radius etc. later in Step 10 */
   /* background-color: #f8f9fa; */
@@ -28,7 +30,8 @@
 }
 
 /* Loading and Error States */
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   padding: 3rem;
   color: #666;
@@ -54,12 +57,17 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive adjustments */
-@media (max-width: 992px) { /* Adjust breakpoint as needed */
+@media (max-width: 992px) {
+  /* Adjust breakpoint as needed */
   .lessonContainer {
     grid-template-columns: 1fr; /* Stack columns */
   }
