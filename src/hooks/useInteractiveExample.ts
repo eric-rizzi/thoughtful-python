@@ -46,14 +46,15 @@ export const useInteractiveExample = ({
     }
   }, [initialCode, exampleId, persistCode, fullStorageKey]); // Rerun if initialCode or key parts change
 
-  const handleCodeChange = useCallback((newCode: string) => {
+  const onCodeChange = useCallback((newCode: string) => {
+    console.log(newCode)
     setCode(newCode);
     if (persistCode && fullStorageKey) {
       saveProgress(fullStorageKey, { code: newCode });
     }
   }, [persistCode, fullStorageKey]);
 
-  const executeCode = useCallback(async () => {
+  const onRunCode  = useCallback(async () => {
     if (isPyodideLoading || pyodideError) {
       setOutput('Python environment is not ready.');
       return { output: '', error: 'Python environment is not ready.' };
@@ -75,8 +76,8 @@ export const useInteractiveExample = ({
     hasBeenRun,
     isPyodideLoading,
     pyodideError,
-    handleCodeChange,
-    executeCode,
+    onCodeChange,
+    onRunCode,
     setOutput, // Expose setOutput if direct manipulation is needed (e.g., for test results before run)
   };
 };

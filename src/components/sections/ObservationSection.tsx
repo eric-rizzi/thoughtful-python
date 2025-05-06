@@ -29,20 +29,21 @@ const ObservationExample: React.FC<{
     storageKeyPrefix: 'observeCode',
   });
 
-  const handleRunAndComplete = async () => {
-    const result = await exampleHook.executeCode();
+  const onRunCode = async () => {
+    const result = await exampleHook.onRunCode();
     if (!result.error) {
       console.log(`Observation section ${sectionId} - example ${example.id} run successfully. Marking complete.`);
       completeSection(lessonId, sectionId);
       onSectionComplete(sectionId);
     }
+    return result;
   };
 
   return (
     <InteractiveExampleDisplay
       example={example}
       {...exampleHook}
-      onRunCode={handleRunAndComplete}
+      onRunCode={onRunCode}
     />
   );
 };
