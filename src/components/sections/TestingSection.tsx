@@ -1,303 +1,219 @@
 // src/components/sections/TestingSection.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { LessonSection, LessonExample } from '../../types/data';
 import styles from './Section.module.css';
-import CodeEditor from '../CodeEditor';
-import { usePyodide } from '../../contexts/PyodideContext';
+import { usePyodide } from '../../contexts/PyodideContext'; // To run the test script
 import { generateTestCode, parseTestResults, TestResult } from '../../lib/pyodideUtils';
+import { useProgressActions } from '../../stores/progressStore';
+import { useInteractiveExample } from '../../hooks/useInteractiveExample';
+import InteractiveExampleDisplay from './InteractiveExampleDisplay';
 
 interface TestingSectionProps {
-  section: LessonSection;
+  section: LessonSection; // Should ideally be a more specific TestingSectionData type
   lessonId: string;
-  onSectionComplete: (sectionId: string) => void;  // Callback for completion
+  // onSectionComplete is handled internally by TestableExample using useProgressActions
 }
 
-interface ExampleState {
-  code: string;
-  output: string; // For regular 'Run' output
-  testResults: TestResult[] | { test_error: string } | null;
-  isRunning: boolean;
-  isTesting: boolean;
-  testRunCompleted: boolean; // Track if tests have been run at least once
-}
+// Helper component for each testable example
+const TestableExample: React.FC<{
+  example: LessonExample;
+  lessonId: string;
+  sectionId: string;
+}> = React.memo(({ example, lessonId, sectionId }) => {
+  const { completeSection } = useProgressActions();
+  const { runPythonCode: pyodideDirectRunner, isLoading: isPyodideDirectLoading, error: pyodideDirectError } = usePyodide(); // For running the test script
 
-const TestingSection: React.FC<TestingSectionProps> = ({ section, lessonId, onSectionComplete }) => {
-  const { runPythonCode, isLoading: isPyodideLoading, error: pyodideError } = usePyodide();
-  const [exampleStates, setExampleStates] = useState<{ [key: string]: ExampleState }>({});
+  const exampleHook = useInteractiveExample({
+    exampleId: example.id,
+    initialCode: example.code,
+    lessonId, // For potential future code persistence keying, though not used now
+    sectionId,
+    persistCode: false, // Typically, test solutions aren't persisted, but this could be a prop
+    storageKeyPrefix: 'testCodeAttempt', // If you ever enable persistCode
+  });
 
-  // Initialize or update state when section examples change
-  useEffect(() => {
-    const initialState: { [key: string]: ExampleState } = {};
-    section.examples?.forEach(ex => {
-      initialState[ex.id] = {
-        code: ex.code,
-        output: '',
-        testResults: null,
-        isRunning: false,
-        isTesting: false,
-        testRunCompleted: false,
-      };
-    });
-    setExampleStates(initialState);
-  }, [section.examples]);
+  const [isTesting, setIsTesting] = useState<boolean>(false);
+  const [testResults, setTestResults] = useState<TestResult[] | { test_error: string } | null>(null);
+  const [testRunHasBeenAttempted, setTestRunHasBeenAttempted] = useState<boolean>(false);
 
-  const handleCodeChange = useCallback((exampleId: string, newCode: string) => {
-    setExampleStates(prev => ({
-      ...prev,
-      [exampleId]: {
-        ...(prev[exampleId] || {}), // Ensure previous state exists
-        code: newCode,
-        // Reset test results if code changes? Optional.
-        // testResults: null,
-        // testRunCompleted: false,
-      }
-    }));
-  }, []);
+  const functionNameToTest = example.functionToTest || 'celsius_to_fahrenheit'; // Get from JSON or use a default
 
-  // Handler for the simple "Run" button (optional)
-  const handleRunCode = useCallback(async (exampleId: string) => {
-    if (isPyodideLoading || pyodideError || !exampleStates[exampleId]) {
-       setExampleStates(prev => ({ ...prev, [exampleId]: { ...(prev[exampleId]), output: 'Python environment not ready.', isRunning: false } }));
+  const handleTestSolution = useCallback(async () => {
+    if (isPyodideDirectLoading || pyodideDirectError) {
+      setTestResults({ test_error: 'Python environment not ready for testing.' });
+      setTestRunHasBeenAttempted(true);
+      return;
+    }
+    if (!example.testCases || example.testCases.length === 0) {
+      setTestResults({ test_error: 'No test cases defined for this example.' });
+      setTestRunHasBeenAttempted(true);
       return;
     }
 
-    setExampleStates(prev => ({
-      ...prev,
-      [exampleId]: { ...prev[exampleId], output: 'Running...', isRunning: true, testResults: null, testRunCompleted: false }
-    }));
-
-    const codeToRun = exampleStates[exampleId].code;
-    const result = await runPythonCode(codeToRun); // Returns { output, error }
-
-    setExampleStates(prev => ({
-      ...prev,
-      [exampleId]: {
-        ...prev[exampleId],
-        output: result.error ? `Error:\n${result.error}` : result.output || 'Code executed (no output).',
-        isRunning: false
-      }
-    }));
-  }, [exampleStates, isPyodideLoading, pyodideError, runPythonCode]);
-
-  // Handler for the "Test Solution" button
-  const handleTestCode = useCallback(async (exampleId: string, exampleData: LessonExample) => {
-
-    if (isPyodideLoading || pyodideError || !exampleStates[exampleId]) {
-        setExampleStates(prev => ({ ...prev, [exampleId]: { ...(prev[exampleId]), testResults: { test_error: 'Python environment not ready.' }, isTesting: false, testRunCompleted: true } }));
-        return;
-    }
-    if (!exampleData.testCases || exampleData.testCases.length === 0) {
-        setExampleStates(prev => ({ ...prev, [exampleId]: { ...(prev[exampleId]), testResults: { test_error: 'No test cases defined for this example.' }, isTesting: false, testRunCompleted: true } }));
-        return;
-    }
-
-    setExampleStates(prev => ({
-      ...prev,
-      [exampleId]: { ...prev[exampleId], output: '', testResults: null, isTesting: true, testRunCompleted: false }
-    }));
-
-    const codeToTest = exampleStates[exampleId].code;
-    // TODO: Make function name configurable in JSON? Assume 'solution' or parse?
-    // Let's assume the function to test is typically named 'solution' or infer from context if possible.
-    // For now, using a placeholder name. Update generateTestCode if needed.
-    const functionNameToTest = 'celsius_to_fahrenheit'; // Example - MAKE DYNAMIC LATER
+    setIsTesting(true);
+    setTestResults(null);
+    setTestRunHasBeenAttempted(true);
+    // exampleHook.setOutput('Testing solution...'); // Optionally update main output
 
     try {
-        const testCode = generateTestCode(codeToTest, functionNameToTest, exampleData.testCases);
-        const rawResult = await runPythonCode(testCode); // Returns { output, error }
+      const testScript = generateTestCode(exampleHook.code, functionNameToTest, example.testCases);
+      const result = await pyodideDirectRunner(testScript); // Use direct runner for test script
 
-        let parsedResults: TestResult[] | { test_error: string } | null = null;
-        let allPassed = false;
+      let parsed: TestResult[] | { test_error: string };
+      let allPassed = false;
 
-        if (rawResult.error) {
-            // If runPythonCode itself returned an error (e.g., syntax in generated code)
-             parsedResults = { test_error: rawResult.error };
-        } else {
-            // Try parsing the JSON block from the output
-            try {
-                 parsedResults = parseTestResults(rawResult.output);
-                 if (Array.isArray(parsedResults)) {
-                     allPassed = parsedResults.every(r => r.passed);
-                 } else {
-                     // It's the { test_error: "..." } object from Python
-                     console.error("Test execution error reported from Python:", parsedResults.test_error);
-                 }
-            } catch (parseError) {
-                 console.error("Failed to parse test results:", parseError);
-                 console.error("Raw output was:", rawResult.output);
-                 parsedResults = { test_error: `Failed to parse results: ${parseError instanceof Error ? parseError.message : String(parseError)}\nRaw Output:\n${rawResult.output}` };
-            }
-        }
-
-        setExampleStates(prev => ({
-            ...prev,
-            [exampleId]: {
-                ...prev[exampleId],
-                testResults: parsedResults,
-                isTesting: false,
-                testRunCompleted: true
-            }
-        }));
-
-        // --- Placeholder for Completion Logic (Phase 5) ---
-        if (allPassed) {
-             // Call function passed via props or context to mark completion
-             onSectionComplete(section.id);
-             console.log(`Placeholder: Section ${section.id} / Example ${exampleId} PASSED all tests.`);
-        }
-        // --- End Placeholder ---
-
-    } catch (err) {
-        console.error(`Error during test generation or execution for ${exampleId}:`, err);
-        setExampleStates(prev => ({
-            ...prev,
-            [exampleId]: {
-                ...prev[exampleId],
-                testResults: { test_error: `Testing failed: ${err instanceof Error ? err.message : String(err)}` },
-                isTesting: false,
-                testRunCompleted: true
-            }
-        }));
-    }
-  }, [exampleStates, isPyodideLoading, pyodideError, runPythonCode]);
-
-  // Helper component/function to render test results
-  const renderTestResults = (results: TestResult[] | { test_error: string } | null) => {
-      if (!results) return null;
-
-      console.log(results)
-      if ('test_error' in results) {
-          return (
-              <div className={styles.testError}>
-                  <h4>Test Execution Error</h4>
-                  <pre>{results.test_error}</pre>
-              </div>
-          );
-      }
-
-      if (Array.isArray(results)) {
-          const passedCount = results.filter(r => r.passed).length;
-          const totalCount = results.length;
-          const allPassed = passedCount === totalCount;
-
-          if (allPassed) {
-              return (
-                  <div className={styles.testSuccess}>
-                      <h4>🎉 Great job! All tests passed!</h4>
-                      <p>Your solution passed {totalCount} out of {totalCount} tests.</p>
-                  </div>
-              );
-          } else {
-              const firstFailed = results.find(r => !r.passed);
-              return (
-                  <div className={styles.testFailure}>
-                      <h4>Almost there!</h4>
-                      <p>Your solution passed {passedCount} out of {totalCount} tests.</p>
-                      {firstFailed && (
-                          <>
-                              <h5>First Failed Test:</h5>
-                              <table className={styles.testResultsTable}>
-                                  <thead>
-                                      <tr>
-                                          <th>Description</th>
-                                          <th>Input</th>
-                                          <th>Expected</th>
-                                          <th>Your Result</th>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      <tr className={styles.testFailedRow}>
-                                           <td>{firstFailed.description}</td>
-                                           {/* Use repr for input/expected/actual */}
-                                           <td><code>{firstFailed.input}</code></td>
-                                           <td><code>{firstFailed.expected}</code></td>
-                                           <td><code>{firstFailed.actual}</code>{firstFailed.error ? ' (error!)' : ''}</td>
-                                      </tr>
-                                  </tbody>
-                              </table>
-                          </>
-                      )}
-                      <p style={{marginTop: '1rem'}}>Review the failed test and try again.</p>
-                  </div>
-              );
+      if (result.error) {
+        parsed = { test_error: `Error executing test script:\n${result.error}` };
+      } else {
+        try {
+          parsed = parseTestResults(result.output);
+          if (Array.isArray(parsed)) {
+            allPassed = parsed.every(r => r.passed);
           }
+        } catch (parseError) {
+          console.error("Failed to parse test results:", parseError, "\nRaw output:", result.output);
+          parsed = { test_error: `Failed to parse results: ${parseError instanceof Error ? parseError.message : String(parseError)}` };
+        }
       }
-      return null; // Should not happen
+      setTestResults(parsed);
+
+      if (allPassed) {
+        console.log(`Testing section ${sectionId} - example ${example.id} PASSED all tests. Marking complete.`);
+        completeSection(lessonId, sectionId);
+      }
+    } catch (err) {
+      console.error(`Error during test execution for ${example.id}:`, err);
+      setTestResults({ test_error: `Testing failed: ${err instanceof Error ? err.message : String(err)}` });
+    } finally {
+      setIsTesting(false);
+    }
+  }, [
+    exampleHook.code, // User's current code from the editor
+    example.testCases,
+    functionNameToTest,
+    pyodideDirectRunner,
+    isPyodideDirectLoading,
+    pyodideDirectError,
+    completeSection,
+    lessonId,
+    sectionId,
+    example.id,
+    // exampleHook.setOutput // if using it
+  ]);
+
+  const renderTestResultsDisplay = () => {
+    if (!testRunHasBeenAttempted || !testResults) return null;
+
+    if ('test_error' in testResults) {
+      return (
+        <div className={styles.testResultArea}>
+          <div className={styles.testError}>
+            <h4>Test Execution Error</h4>
+            <pre>{testResults.test_error}</pre>
+          </div>
+        </div>
+      );
+    }
+
+    if (Array.isArray(testResults)) {
+      const passedCount = testResults.filter(r => r.passed).length;
+      const totalCount = testResults.length;
+      const allPassed = passedCount === totalCount;
+
+      return (
+        <div className={styles.testResultArea}>
+          {allPassed ? (
+            <div className={styles.testSuccess}>
+              <h4>🎉 Great job! All tests passed!</h4>
+              <p>Your solution passed {totalCount} out of {totalCount} tests.</p>
+            </div>
+          ) : (
+            <div className={styles.testFailure}>
+              <h4>Almost there!</h4>
+              <p>Your solution passed {passedCount} out of {totalCount} tests.</p>
+              {/* You can add more detailed table rendering here if needed */}
+              {/* For brevity, showing only the summary. Original TestingSection had a table. */}
+              {(() => {
+                const firstFailed = testResults.find(r => !r.passed);
+                if (!firstFailed) return null;
+                return (
+                     <>
+                        <h5>First Failed Test:</h5>
+                        <table className={styles.testResultsTable}>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Input</th>
+                                    <th>Expected</th>
+                                    <th>Your Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className={styles.testFailedRow}>
+                                     <td>{firstFailed.description}</td>
+                                     <td><code>{firstFailed.input}</code></td>
+                                     <td><code>{firstFailed.expected}</code></td>
+                                     <td><code>{firstFailed.actual}</code>{firstFailed.error ? ' (error!)' : ''}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </>
+                );
+              })()}
+            </div>
+          )}
+        </div>
+      );
+    }
+    return null;
   };
 
+  return (
+    <InteractiveExampleDisplay
+      example={example}
+      {...exampleHook} // Spreads code, onCodeChange, default onRunCode, output, isRunning etc.
+      // The onRunCode from exampleHook will be for the "Run Code" button (general execution)
+      isRunning={exampleHook.isRunning || isTesting} // Combine running states
+      hasBeenRun={exampleHook.hasBeenRun || testRunHasBeenAttempted}
+      renderExtraControls={() => (
+        example.testCases && example.testCases.length > 0 && (
+          <button
+            onClick={handleTestSolution}
+            disabled={exampleHook.isPyodideLoading || pyodideDirectError || exampleHook.isRunning || isTesting}
+            className={styles.testButton}
+          >
+            {isTesting ? 'Testing...' : 'Test Solution'}
+          </button>
+        )
+      )}
+      renderExtraOutput={renderTestResultsDisplay}
+    />
+  );
+});
+
+const TestingSection: React.FC<TestingSectionProps> = ({ section, lessonId }) => {
+  if (!section.examples || section.examples.length === 0) {
+    return (
+      <section id={section.id} className={styles.section}>
+        <h2 className={styles.title}>{section.title}</h2>
+        <div className={styles.content}>{section.content}</div>
+        <p>No examples for this testing section.</p>
+      </section>
+    );
+  }
 
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>{section.content}</div>
-
-      {section.examples?.map((example: LessonExample) => {
-        const state = exampleStates[example.id];
-        const canRunOrTest = !isPyodideLoading && !pyodideError && !state?.isRunning && !state?.isTesting;
-
-        // Testing sections MUST have test cases defined in the JSON
-        const hasTests = !!example.testCases && example.testCases.length > 0;
-
-        return (
-          <div key={example.id} className={styles.exampleContainer}>
-            <h3 className={styles.exampleTitle}>{example.title}</h3>
-            <p className={styles.exampleDescription}>{example.description}</p>
-            <CodeEditor
-              value={state?.code ?? example.code}
-              onChange={(newCode) => handleCodeChange(example.id, newCode)}
-            />
-            <div className={styles.editorControls}>
-              <div> {/* Group buttons */}
-                <button
-                    onClick={() => handleRunCode(example.id)}
-                    disabled={!canRunOrTest}
-                    className={styles.runButton}
-                    title="Run code without tests"
-                >
-                    {state?.isRunning ? 'Running...' : 'Run'}
-                </button>
-                {hasTests && (
-                     <button
-                        onClick={() => handleTestCode(example.id, example)}
-                        disabled={!canRunOrTest}
-                        className={styles.testButton}
-                        title="Run code against test cases"
-                    >
-                        {state?.isTesting ? 'Testing...' : 'Test Solution'}
-                    </button>
-                )}
-              </div>
-               {/* Show Pyodide status */}
-               <div>
-                    {isPyodideLoading && <span className={styles.pyodideStatus}>Initializing Python...</span>}
-                    {pyodideError && <span className={styles.pyodideError}>Pyodide Error!</span>}
-               </div>
-            </div>
-
-            {/* Area for standard run output */}
-            {(state?.isRunning || state?.output) && (
-                 <div className={styles.outputArea}>
-                    <pre>
-                        {state?.output
-                            ? state.output
-                            : (state?.isRunning ? '' : <span className={styles.outputEmpty}>No output from run.</span>)
-                        }
-                    </pre>
-                 </div>
-            )}
-
-            {/* Area for Test Results */}
-            {state?.testRunCompleted && (
-                <div className={styles.testResultArea}>
-                    {renderTestResults(state.testResults)}
-                </div>
-            )}
-
-            {!hasTests && <p style={{marginTop: '1rem', color: '#777', fontSize: '0.9em'}}><i>Note: No automated tests defined for this example. Use the "Run" button to execute.</i></p>}
-
-          </div>
-        );
-      })}
+      {section.examples.map((example: LessonExample) => (
+        <TestableExample
+          key={example.id}
+          example={example}
+          lessonId={lessonId}
+          sectionId={section.id}
+        />
+      ))}
     </section>
   );
 };
