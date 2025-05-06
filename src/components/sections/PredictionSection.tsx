@@ -1,28 +1,25 @@
 // src/components/sections/PredictionSection.tsx
 import React, { useState, useEffect, useCallback } from "react";
-import type {
-  PredictionSection as PredictionSectionData,
-  PredictionTableRow,
-} from "../../types/data";
+import type { PredictionSection as PredictionSectionData } from "../../types/data";
 import styles from "./Section.module.css";
 import { saveProgress, loadProgress } from "../../lib/localStorageUtils";
-import CodeEditor from "../CodeEditor"; // Import CodeEditor for displaying function
+import CodeEditor from "../CodeEditor";
+import { useProgressActions } from "../../stores/progressStore";
 
 interface PredictionSectionProps {
   section: PredictionSectionData;
   lessonId: string;
-  onSectionComplete: (sectionId: string) => void;
 }
 
-// Type for the state storing user answers and correctness
+// Type for the state storing user answers and correctness (can remain local or from types/data.ts)
 interface PredictionState {
   [rowIndex: number]: {
     userAnswer: string;
-    isCorrect: boolean | null; // null = unanswered, true = correct, false = incorrect
+    isCorrect: boolean | null;
   };
 }
 
-// Type for saved state in localStorage
+// Type for saved state in localStorage (can remain local or from types/data.ts)
 interface SavedPredictionState {
   predictions: PredictionState;
 }
@@ -30,128 +27,123 @@ interface SavedPredictionState {
 const PredictionSection: React.FC<PredictionSectionProps> = ({
   section,
   lessonId,
-  onSectionComplete,
 }) => {
   const [predictions, setPredictions] = useState<PredictionState>({});
-  const [allCorrect, setAllCorrect] = useState<boolean>(false);
+  const [allCorrectState, setAllCorrectState] = useState<boolean>(false);
   const storageKey = `predictState_${lessonId}_${section.id}`;
+  const { completeSection } = useProgressActions();
 
   // --- Initialization & Persistence ---
-
-  // Load saved state on mount
   useEffect(() => {
     const savedState = loadProgress<SavedPredictionState>(storageKey);
-    let initialPredictions = {};
-    if (savedState && savedState.predictions) {
+    let initialPredictions: PredictionState = {};
+    if (savedState?.predictions) {
       initialPredictions = savedState.predictions;
     }
     setPredictions(initialPredictions);
-    // Initial check if all are correct based on loaded state
-    checkIfAllCorrect(initialPredictions, section.predictionTable.rows);
-  }, [storageKey, section.predictionTable.rows]); // Rerun if section data changes
+    // Initial check for completion based on loaded state will be handled by the effect below
+  }, [storageKey]); // Rerun only if storageKey changes (lessonId/section.id)
 
-  // Function to check if all predictions are correct
-  const checkIfAllCorrect = (
-    currentPredictions: PredictionState,
-    rows: PredictionTableRow[]
-  ) => {
-    const allDone = rows.every(
-      (row, index) => currentPredictions[index]?.isCorrect === true
-    );
-    setAllCorrect(allDone);
-    if (allDone) {
-      console.log(`Placeholder: Prediction Section ${section.id} completed.`);
-      onSectionComplete(section.id);
-    }
-    return allDone;
-  };
+  // --- Effect to check for completion and call Zustand action ---
+  useEffect(() => {
+    const checkAndComplete = () => {
+      const allRows = section.predictionTable.rows;
+      if (allRows.length === 0) {
+        // No predictions to make
+        setAllCorrectState(false); // Or true, depending on desired behavior for empty sections
+        return false;
+      }
+      const currentAllCorrect = allRows.every(
+        (row, index) => predictions[index]?.isCorrect === true
+      );
+
+      setAllCorrectState(currentAllCorrect); // Update local state for UI message
+
+      if (currentAllCorrect) {
+        console.log(
+          `PredictionSection ${section.id} is complete. Marking via Zustand.`
+        );
+        completeSection(lessonId, section.id); // <-- USE ZUSTAND ACTION
+      }
+      return currentAllCorrect; // Return for potential use in handlePredictionChange
+    };
+
+    checkAndComplete();
+  }, [
+    predictions,
+    section.predictionTable.rows,
+    section.id,
+    lessonId,
+    completeSection,
+  ]);
 
   // --- Event Handler ---
-
   const handlePredictionChange = useCallback(
     (rowIndex: number, newValue: string) => {
       const expectedValue = section.predictionTable.rows[rowIndex].expected;
       let isNowCorrect: boolean | null = null;
-
       const trimmedValue = newValue.trim();
 
       if (trimmedValue === "") {
-        isNowCorrect = null; // Unanswered
+        isNowCorrect = null;
       } else {
-        // Attempt comparison (handle potential type mismatch - assume number for now)
-        // TODO: Make comparison type-aware if expected values can be strings etc.
         try {
-          // Try parsing user input as float if expected is number
           const userNum = parseFloat(trimmedValue);
           const expectedNum =
             typeof expectedValue === "number"
               ? expectedValue
               : parseFloat(String(expectedValue));
-          // Use isNaN checks for safety
           if (!isNaN(userNum) && !isNaN(expectedNum)) {
-            // Basic comparison (consider tolerance for floats if needed)
-            isNowCorrect = Math.abs(userNum - expectedNum) < 1e-9; // Example float comparison
+            isNowCorrect = Math.abs(userNum - expectedNum) < 1e-9;
           } else {
-            // Fallback to string comparison if parsing fails or types differ fundamentally
             isNowCorrect = trimmedValue === String(expectedValue);
           }
         } catch {
-          isNowCorrect = false; // Treat comparison errors as incorrect
+          isNowCorrect = false;
         }
       }
 
-      // Update state for this row
-      const updatedPredictions = {
-        ...predictions,
-        [rowIndex]: { userAnswer: newValue, isCorrect: isNowCorrect },
-      };
-      setPredictions(updatedPredictions);
-
-      // Check overall completion and save
-      const allAreCorrect = checkIfAllCorrect(
-        updatedPredictions,
-        section.predictionTable.rows
-      );
-      saveProgress<SavedPredictionState>(storageKey, {
-        predictions: updatedPredictions,
+      setPredictions((prevPredictions) => {
+        const updatedRowState = {
+          userAnswer: newValue,
+          isCorrect: isNowCorrect,
+        };
+        const newPredictions = {
+          ...prevPredictions,
+          [rowIndex]: updatedRowState,
+        };
+        // Save progress immediately on prediction change
+        saveProgress<SavedPredictionState>(storageKey, {
+          predictions: newPredictions,
+        });
+        return newPredictions;
       });
+      // The useEffect depending on 'predictions' will handle checking overall completion
     },
-    [
-      predictions,
-      section.predictionTable.rows,
-      onSectionComplete,
-      section.id,
-      storageKey,
-    ]
+    [section.predictionTable.rows, storageKey]
   ); // Dependencies
 
   // --- Rendering ---
-
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>{section.content}</div>
 
-      {/* Display the function code */}
       {section.functionDisplay && (
         <div className={styles.functionDisplayContainer}>
           <h4 className={styles.functionDisplayTitle}>
             {section.functionDisplay.title}
           </h4>
-          {/* Use CodeEditor in readOnly mode for syntax highlighting */}
           <CodeEditor
             value={section.functionDisplay.code}
-            onChange={() => {}} // No-op change handler
+            onChange={() => {}}
             readOnly={true}
-            height="auto" // Adjust height as needed
+            height="auto"
             minHeight="50px"
           />
-          {/* Or use simple pre/code if CodeEditor is too heavy here */}
-          {/* <pre className={styles.functionDisplayCode}><code>{section.functionDisplay.code}</code></pre> */}
         </div>
       )}
 
-      {/* Prediction Table */}
       <div className={styles.predictionTableContainer}>
         <table className={styles.predictionTable}>
           <thead>
@@ -176,17 +168,14 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                   : rowState?.isCorrect === false
                   ? styles.predictionInputIncorrect
                   : styles.predictionInput;
-
               return (
                 <tr key={rowIndex} className={rowClass}>
-                  {/* Input Columns */}
                   {row.inputs.map((inputVal, inputIndex) => (
-                    <td key={`input-${inputIndex}`}>{inputVal}</td>
+                    <td key={`input-${inputIndex}`}>{String(inputVal)}</td>
                   ))}
-                  {/* Prediction Input Column */}
                   <td>
                     <input
-                      type="text" // Keep as text, parse on check
+                      type="text"
                       className={inputClass}
                       value={rowState?.userAnswer ?? ""}
                       onChange={(e) =>
@@ -198,7 +187,6 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                       )}`}
                     />
                   </td>
-                  {/* Status Column */}
                   <td className={styles.statusCell}>
                     {rowState?.isCorrect === true && (
                       <span className={styles.statusIndicatorCorrect}></span>
@@ -206,7 +194,6 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                     {rowState?.isCorrect === false && (
                       <span className={styles.statusIndicatorIncorrect}></span>
                     )}
-                    {/* Render nothing if isCorrect is null (unanswered) */}
                   </td>
                 </tr>
               );
@@ -215,8 +202,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         </table>
       </div>
 
-      {/* Completion Message */}
-      {allCorrect && section.completionMessage && (
+      {allCorrectState && section.completionMessage && (
         <div className={styles.completionMessage}>
           {section.completionMessage}
         </div>
