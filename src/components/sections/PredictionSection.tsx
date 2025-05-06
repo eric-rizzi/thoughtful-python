@@ -87,19 +87,24 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
       if (trimmedValue === "") {
         isNowCorrect = null;
       } else {
+        // Attempt comparison (handle potential type mismatch - assume number for now)
+        // TODO: Make comparison type-aware if expected values can be strings etc.
         try {
+          // Try parsing user input as float if expected is number
           const userNum = parseFloat(trimmedValue);
           const expectedNum =
             typeof expectedValue === "number"
               ? expectedValue
               : parseFloat(String(expectedValue));
+          // Use isNaN checks for safety
           if (!isNaN(userNum) && !isNaN(expectedNum)) {
             isNowCorrect = Math.abs(userNum - expectedNum) < 1e-9;
           } else {
+            // Fallback to string comparison if parsing fails or types differ fundamentally
             isNowCorrect = trimmedValue === String(expectedValue);
           }
         } catch {
-          isNowCorrect = false;
+          isNowCorrect = false; // Treat comparison errors as incorrect
         }
       }
 
@@ -129,11 +134,13 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>{section.content}</div>
 
+      {/* Display the function code */}
       {section.functionDisplay && (
         <div className={styles.functionDisplayContainer}>
           <h4 className={styles.functionDisplayTitle}>
             {section.functionDisplay.title}
           </h4>
+          {/* Use CodeEditor in readOnly mode for syntax highlighting */}
           <CodeEditor
             value={section.functionDisplay.code}
             onChange={() => {}}
@@ -144,6 +151,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         </div>
       )}
 
+      {/* Prediction Table */}
       <div className={styles.predictionTableContainer}>
         <table className={styles.predictionTable}>
           <thead>
@@ -170,9 +178,11 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                   : styles.predictionInput;
               return (
                 <tr key={rowIndex} className={rowClass}>
+                  {/* Input Columns */}
                   {row.inputs.map((inputVal, inputIndex) => (
                     <td key={`input-${inputIndex}`}>{String(inputVal)}</td>
                   ))}
+                  {/* Prediction Input Column */}
                   <td>
                     <input
                       type="text"
@@ -187,6 +197,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                       )}`}
                     />
                   </td>
+                  {/* Status Column */}
                   <td className={styles.statusCell}>
                     {rowState?.isCorrect === true && (
                       <span className={styles.statusIndicatorCorrect}></span>

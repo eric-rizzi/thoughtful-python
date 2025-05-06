@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from "uuid";
 import { usePyodide } from "../contexts/PyodideContext";
 import { loadProgress, saveProgress } from "../lib/localStorageUtils";
 
-const ACTIVE_TESTS_STORAGE_KEY = "codeEditorPage_activeTests_v3"; // Updated version if schema changes
+const ACTIVE_TESTS_STORAGE_KEY = "codeEditorPage_activeTests_v3";
 
 export type TestStatus = "pending" | "passed" | "failed" | "error";
 
 export interface ActiveTest {
   id: string;
-  name: string; // Should ideally be the actual 'test_...' function name if possible
-  code: string;
+  name: string; // Display name, ideally the 'test_...' function name
+  code: string; // The actual Python code for this test
   status: TestStatus;
   output?: string;
 }
@@ -50,11 +50,11 @@ export const useActiveTestSuite = () => {
 
       const functionName = extractTestFunctionName(testCode);
       const displayName =
-        userGivenName || functionName || `Test ${Date.now() % 10000}`;
+        userGivenName || functionName || `Test snippet ${Date.now() % 10000}`;
 
       const newTest: ActiveTest = {
         id: uuidv4(),
-        name: displayName, // This name is crucial for matching results
+        name: displayName, // This name should match the `def test_...` for result mapping
         code: testCode,
         status: "pending",
         output: "",
@@ -73,169 +73,173 @@ export const useActiveTestSuite = () => {
   const runActiveTests = useCallback(
     async (mainCode: string) => {
       if (isPyodideLoading || !runPythonCode || activeTests.length === 0) {
+        const errorMessage =
+          pyodideError?.message || "Pyodide not ready or no active tests.";
         setActiveTests((prev) =>
-          prev.map((t) => ({
-            ...t,
-            status: "error",
-            output:
-              pyodideError?.message || "Pyodide not ready or no active tests.",
-          }))
+          prev.map((t) => ({ ...t, status: "error", output: errorMessage }))
         );
+        setIsRunningTests(false);
         return;
       }
 
       setIsRunningTests(true);
-      // Reset statuses to pending and clear previous output before run
-      setActiveTests((prev) =>
-        prev.map((test) => ({
-          ...test,
-          status: "pending",
-          output: "Running...",
-        }))
-      );
+      // Set all tests to 'pending' and clear previous specific outputs
+      let initialTestStates = activeTests.map((test) => ({
+        ...test,
+        status: "pending" as TestStatus,
+        output: "Queued...",
+      }));
+      setActiveTests(initialTestStates);
 
-      const allTestCodeSnippets = activeTests
-        .map((test) => test.code)
-        .join("\n\n# === Next Test Snippet ===\n");
-
-      const testRunnerScript = `
-import json
-import traceback
-
-# ==== User's Main Code Start ====
-${mainCode}
-# ==== User's Main Code End ====
-
-# ==== User's Active Test Code Start ====
-${allTestCodeSnippets}
-# ==== User's Active Test Code End ====
-
-# ==== Simple Pytest-like Test Runner ====
-results = []
-tests_to_run_from_globals = []
-
-# Discover test functions defined by the concatenated test snippets
-for name_in_globals, item_in_globals in list(globals().items()):
-    if name_in_globals.startswith("test_") and callable(item_in_globals):
-        tests_to_run_from_globals.append({"name": name_in_globals, "func": item_in_globals})
-
-if not tests_to_run_from_globals:
-    print("===PYTEST_RESULTS_JSON===")
-    print(json.dumps([{"name": "No test functions found", "status": "ERROR", "output": "No functions starting with 'test_' were found in the active test suite code."}]))
-    print("===END_PYTEST_RESULTS_JSON===")
-else:
-    for test_info in tests_to_run_from_globals:
-        test_name = test_info["name"] # This is the 'test_xyz' function name
-        test_func = test_info["func"]
-        try:
-            test_func()
-            results.append({"name": test_name, "status": "PASSED", "output": ""})
-        except AssertionError as e:
-            results.append({"name": test_name, "status": "FAILED", "output": f"AssertionError: {e}"})
-        except Exception as e:
-            tb_str = traceback.format_exc()
-            results.append({"name": test_name, "status": "ERROR", "output": tb_str})
-    
-    print("===PYTEST_RESULTS_JSON===")
-    print(json.dumps(results))
-    print("===END_PYTEST_RESULTS_JSON===")
-    `;
-
-      const { output: rawPyodideOutput, error: pyodideExecError } =
-        await runPythonCode(testRunnerScript);
-
-      if (pyodideExecError) {
-        setActiveTests((prev) =>
-          prev.map((t) => ({
-            ...t,
-            status: "error",
-            output: `Pyodide execution error: ${pyodideExecError}`,
-          }))
-        );
-      } else {
-        const match = rawPyodideOutput.match(
-          /===PYTEST_RESULTS_JSON===\s*([\s\S]*?)\s*===END_PYTEST_RESULTS_JSON===/
-        );
-        if (match && match[1]) {
-          try {
-            const parsedResults = JSON.parse(
-              match[1].trim()
-            ) as PytestSimResult[];
-
-            setActiveTests((prevTests) =>
-              prevTests.map((activeTest) => {
-                // Match result by the function name defined within the test's code
-                // The activeTest.name is for display; the runner identifies tests by their actual def test_... name
-                const actualTestFuncNameInCode =
-                  extractTestFunctionName(activeTest.code) || activeTest.name; // Fallback to activeTest.name if no def test_ is found (less ideal)
-                const result = parsedResults.find(
-                  (r) => r.name === actualTestFuncNameInCode
-                );
-
-                if (result) {
-                  return {
-                    ...activeTest,
-                    status: result.status.toLowerCase() as TestStatus,
-                    output: result.output,
-                  };
-                }
-                // If this specific active test's function wasn't found by the runner, mark it as an error or skipped.
-                // This can happen if the code snippet in activeTest.code doesn't define a discoverable test_ function.
-                if (
-                  parsedResults.length > 0 &&
-                  parsedResults[0].name === "No test functions found" &&
-                  parsedResults[0].status === "ERROR"
-                ) {
-                  return {
-                    ...activeTest,
-                    status: "error",
-                    output:
-                      "Test function not found or not discoverable in its snippet.",
-                  };
-                }
-                return {
-                  ...activeTest,
-                  status: "error",
-                  output:
-                    "Test function not executed or result not found in runner output.",
-                };
-              })
-            );
-          } catch (parseError) {
-            console.error(
-              "Error parsing test results:",
-              parseError,
-              "\nRaw output:",
-              rawPyodideOutput
-            );
-            setActiveTests((prev) =>
-              prev.map((t) => ({
-                ...t,
-                status: "error",
-                output: `Failed to parse test results: ${parseError}\nOutput snippet:\n${rawPyodideOutput.substring(
-                  0,
-                  500
-                )}`,
-              }))
-            );
-          }
-        } else {
-          setActiveTests((prev) =>
-            prev.map((t) => ({
-              ...t,
-              status: "error",
-              output: `Test runner output format error.\nOutput snippet:\n${rawPyodideOutput.substring(
-                0,
-                500
-              )}`,
-            }))
-          );
+      // Attempt to run mainCode once to catch syntax errors there first.
+      // Note: Definitions from this run will be available to subsequent runPythonCode calls in the same Pyodide session.
+      try {
+        const mainCodeResult = await runPythonCode(mainCode);
+        if (mainCodeResult.error) {
+          throw new Error(`Error in main code: ${mainCodeResult.error}`);
         }
+      } catch (e) {
+        console.error("Error executing mainCode:", e);
+        const errorMessage = `Error in main code: ${
+          e instanceof Error ? e.message : String(e)
+        }`;
+        setActiveTests((prev) =>
+          prev.map((t) => ({ ...t, status: "error", output: errorMessage }))
+        );
+        setIsRunningTests(false);
+        return;
       }
+
+      const updatedResults: ActiveTest[] = [];
+
+      for (const currentTest of initialTestStates) {
+        // Iterate using the initial pending states
+        setActiveTests((prev) =>
+          prev.map((t) =>
+            t.id === currentTest.id ? { ...t, output: "Running..." } : t
+          )
+        );
+
+        // The name used here MUST match the function name `def test_...():` inside currentTest.code
+        const testFunctionToCall =
+          extractTestFunctionName(currentTest.code) || currentTest.name;
+
+        // Script to define the current test's code AND run its specific test_ function
+        // mainCode has already been executed, so its definitions should be in the global scope
+        const singleTestExecutionScript = `
+import traceback
+import json
+
+# ==== Current Test Snippet Start ====
+# (This defines the test function in the global scope if not already defined by mainCode execution)
+${currentTest.code}
+# ==== Current Test Snippet End ====
+
+# ==== Runner for a single test function ====
+result_data = {"name": "${testFunctionToCall.replace(
+          /"/g,
+          '\\"'
+        )}", "status": "ERROR", "output": "Test function '${testFunctionToCall.replace(
+          /"/g,
+          '\\"'
+        )}' not found or not callable after executing its snippet."}
+
+# Check if the specific test function is now defined and callable
+if "${testFunctionToCall.replace(
+          /"/g,
+          '\\"'
+        )}" in globals() and callable(globals()["${testFunctionToCall.replace(
+          /"/g,
+          '\\"'
+        )}"]):
+    try:
+        globals()["${testFunctionToCall.replace(
+          /"/g,
+          '\\"'
+        )}"]() # Call the specific test function
+        result_data["status"] = "PASSED"
+        result_data["output"] = ""
+    except AssertionError as e_assert:
+        result_data["status"] = "FAILED"
+        result_data["output"] = f"AssertionError: {e_assert}"
+    except Exception as e_general:
+        result_data["status"] = "ERROR"
+        result_data["output"] = traceback.format_exc()
+else:
+    # This could also mean a syntax error in currentTest.code prevented its definition
+    # Check if there's an implicit error from Pyodide (less direct way)
+    pass
+
+print("===PYTEST_SINGLE_RESULT_JSON===")
+print(json.dumps(result_data))
+print("===END_PYTEST_SINGLE_RESULT_JSON===")
+      `;
+
+        let testStatus: TestStatus = "error";
+        let testOutputString: string =
+          "Execution did not complete as expected.";
+
+        try {
+          const {
+            output: pyodideOutputForThisTest,
+            error: pyodideErrorForThisTest,
+          } = await runPythonCode(singleTestExecutionScript);
+
+          if (pyodideErrorForThisTest) {
+            // This error is from Pyodide failing to run `singleTestExecutionScript` (e.g. syntax error in test code itself)
+            testStatus = "error";
+            testOutputString = `Error executing test snippet: ${pyodideErrorForThisTest}`;
+          } else {
+            const match = pyodideOutputForThisTest.match(
+              /===PYTEST_SINGLE_RESULT_JSON===\s*([\s\S]*?)\s*===END_PYTEST_SINGLE_RESULT_JSON===/
+            );
+            if (match && match[1]) {
+              try {
+                const parsedResult = JSON.parse(
+                  match[1].trim()
+                ) as PytestSimResult;
+                // Ensure the result name matches the function we tried to call for this activeTest
+                if (parsedResult.name === testFunctionToCall) {
+                  testStatus = parsedResult.status.toLowerCase() as TestStatus;
+                  testOutputString = parsedResult.output;
+                } else {
+                  testOutputString = `Result name mismatch. Expected: ${testFunctionToCall}, Got: ${parsedResult.name}. Raw: ${parsedResult.output}`;
+                }
+              } catch (parseError) {
+                testOutputString = `Failed to parse result for test '${currentTest.name}': ${parseError}\nRaw output:\n${pyodideOutputForThisTest}`;
+              }
+            } else {
+              testOutputString = `Result format error for test '${currentTest.name}'.\nRaw output:\n${pyodideOutputForThisTest}`;
+            }
+          }
+        } catch (e) {
+          // Catch any JS errors during the process for this test
+          testStatus = "error";
+          testOutputString = `Unexpected error running test '${
+            currentTest.name
+          }': ${e instanceof Error ? e.message : String(e)}`;
+        }
+
+        // Update the specific test in the main state array immediately after it runs
+        setActiveTests((prev) =>
+          prev.map((t) =>
+            t.id === currentTest.id
+              ? { ...t, status: testStatus, output: testOutputString }
+              : t
+          )
+        );
+        updatedResults.push({
+          ...currentTest,
+          status: testStatus,
+          output: testOutputString,
+        }); // Also collect for final state set if needed
+      } // End for loop
+
+      // setActiveTests(updatedResults); // Or rely on the individual updates within the loop
       setIsRunningTests(false);
     },
-    [activeTests, runPythonCode, isPyodideLoading, pyodideError]
-  ); // Removed mainCode from deps, it's passed as arg
+    [activeTests, runPythonCode, isPyodideLoading, pyodideError, setActiveTests]
+  ); // Added setActiveTests
 
   return {
     activeTests,
@@ -243,7 +247,6 @@ else:
     deleteTestFromSuite,
     runActiveTests,
     isRunningTests,
-    // Expose Pyodide loading/error state if CodeEditorPage needs it for global disabling
     isPyodideReady: !isPyodideLoading && !pyodideError,
     pyodideHookError: pyodideError,
   };
