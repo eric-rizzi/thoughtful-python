@@ -1,7 +1,6 @@
 // src/hooks/useInteractiveExample.ts (NEW FILE)
 import { useState, useCallback, useEffect } from "react";
 import { usePyodide } from "../contexts/PyodideContext";
-import type { LessonExample, SavedCodeState } from "../types/data"; // Assuming SavedCodeState is relevant
 import { loadProgress, saveProgress } from "../lib/localStorageUtils"; // If persisting code
 
 interface UseInteractiveExampleProps {
