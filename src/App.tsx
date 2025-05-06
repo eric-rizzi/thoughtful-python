@@ -1,9 +1,9 @@
-// src/App.tsx (Should already look like this from Step 3 implementation)
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import UnitPage from "./pages/UnitPage";
 import LessonPage from "./pages/LessonPage";
-import Layout from "./components/Layout"; // Import the Layout component
+import CodeEditorPage from "./pages/CodeEditorPage";
+import Layout from "./components/Layout";
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="unit/:unitId" element={<UnitPage />} />
         <Route path="lesson/:lessonId" element={<LessonPage />} />
+        <Route path="editor" element={<CodeEditorPage />} />{" "}
         {/* Other routes go here */}
         <Route
           path="*"

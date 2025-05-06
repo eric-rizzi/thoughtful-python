@@ -1,0 +1,141 @@
+/* src/pages/CodeEditorPage.module.css */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px); /* Adjust based on header/footer height */
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.titleBar {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleBar h2 {
+  margin: 0;
+  color: #306998;
+}
+
+.runButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.runButton:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.runButton:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+.panesContainer {
+  display: flex;
+  flex-grow: 1;
+  gap: 1rem;
+  height: 100%; /* Ensure it takes up available space */
+}
+
+.pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden; /* Important for CodeMirror */
+  height: 100%;
+}
+
+.paneHeader {
+  padding: 0.5rem 0.75rem;
+  background-color: #e9ecef;
+  border-bottom: 1px solid #ddd;
+  font-weight: 500;
+  color: #333;
+}
+
+.editorWrapper {
+  flex-grow: 1;
+  overflow: auto; /* Allow editor itself to scroll if content overflows */
+  position: relative; /* For CodeMirror sizing */
+}
+
+/* Ensure CodeMirror takes full height of its wrapper */
+.editorWrapper :global(.cm-editor) {
+  height: 100%;
+}
+.editorWrapper :global(.cm-scroller) {
+  overflow: auto;
+}
+
+.resultsPane {
+  flex: 1;
+  background-color: #2e3440; /* Dark background for results */
+  color: #d8dee9;
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow-y: auto;
+  border: 1px solid #444;
+  min-height: 100px; /* Ensure it has some height */
+}
+
+.resultsPane h4 {
+  margin-top: 0;
+  color: #88c0d0; /* Light blue for heading */
+  border-bottom: 1px solid #4c566a;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.resultsPane pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.testResultItem {
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #4c566a;
+}
+.testResultItem:last-child {
+  border-bottom: none;
+}
+.testResultItem.passed {
+  color: #a3be8c; /* Green for pass */
+}
+.testResultItem.failed {
+  color: #bf616a; /* Red for fail */
+}
+.testResultItem.error {
+  color: #ebcb8b; /* Yellow for error */
+}
+.testResultItem strong {
+  margin-right: 0.5em;
+}
+.testResultItem pre {
+  margin-top: 0.25em;
+  padding-left: 1em;
+  font-size: 0.85em;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.noTestsMessage {
+  font-style: italic;
+  color: #6c757d; /* Lighter text */
+}

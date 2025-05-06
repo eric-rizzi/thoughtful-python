@@ -22,7 +22,6 @@ const LessonNavigationPlaceholder: React.FC = () => {
 };
 
 const Header: React.FC = () => {
-  // Function to apply active class using CSS Modules
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
 
@@ -44,14 +43,16 @@ const Header: React.FC = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/editor" className={getNavLinkClass}>
+                Code Editor
+              </NavLink>
+            </li>{" "}
+            <li>
               <NavLink to="/learning-entries" className={getNavLinkClass}>
                 Learning Entries
               </NavLink>
             </li>
-            <li>
-              <span className={styles.navLinkDisabled}>Code Editor (soon)</span>
-            </li>
-            {/* Add other NavLinks similarly, e.g., <NavLink to="/about" ...> */}
+            {/* ... */}
           </ul>
           <LessonNavigationPlaceholder />
         </nav>
