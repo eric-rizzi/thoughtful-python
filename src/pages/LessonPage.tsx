@@ -35,15 +35,11 @@ import { BASE_PATH } from '../config';
 // LessonPage Component
 // ======================================================================
 const LessonPage: React.FC = () => {
-  // --- Hooks ---
   const { lessonId } = useParams<{ lessonId: string }>();
-
-  // --- State ---
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // --- Effects ---
+  const completedSectionsArray = useCompletedSectionsForLesson(lessonId);
 
   // Effect 1: Load lesson data (remains the same)
   useEffect(() => {
@@ -86,6 +82,25 @@ const LessonPage: React.FC = () => {
     };
   }, [lessonId]);
 
+
+  const completedSectionsSet = useMemo(() => {
+    // console.log(`LessonPage (${lessonId}): Calculating Set from Zustand array:`, completedSectionsArray);
+    return new Set(completedSectionsArray);
+  }, [completedSectionsArray]); // Depends only on the array from the hook
+
+  // Calculate informationSections here, handling null 'lesson'
+  const informationSections: Set<string> = useMemo(() => {
+    if (!lesson) { // Handle null case
+      return new Set<string>(); // Return empty set if no lesson data yet
+    }
+    // Only process if lesson exists
+    return new Set(
+      lesson.sections
+        .filter(section => section.kind === "Information")
+        .map(infoSection => infoSection.id)
+    );
+  }, [lesson]); // Dependency is the 'lesson' state
+
   // Helper function to render the correct section component
   const renderSection = (section: LessonSection) => {
     switch (section.kind) {
@@ -118,7 +133,6 @@ const LessonPage: React.FC = () => {
     }
   };
 
-  // Handle Loading State
   if (isLoading) {
     return (
       <div className={styles.loading}>
@@ -128,7 +142,6 @@ const LessonPage: React.FC = () => {
     );
   }
 
-  // Handle Error State
   if (error) {
     return (
       <div className={styles.error}>
@@ -156,8 +169,8 @@ const LessonPage: React.FC = () => {
       <aside className={styles.lessonSidebar}>
         <LessonSidebar
           sections={lesson.sections}
-          completedSections={new Set()} // Use the Set derived from Zustand state
-          informationSections={new Set()}
+          completedSections={completedSectionsSet}
+          informationSections={informationSections}
         />
       </aside>
       <div className={styles.lessonContent}>
