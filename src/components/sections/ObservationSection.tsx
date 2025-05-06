@@ -1,10 +1,10 @@
 // src/components/sections/ObservationSection.tsx
-import React from 'react'; // Removed unused useState, useEffect, useCallback
-import type { LessonSection, LessonExample } from '../../types/data';
-import styles from './Section.module.css';
-import { useProgressActions } from '../../stores/progressStore';
-import { useInteractiveExample } from '../../hooks/useInteractiveExample'; // IMPORT NEW HOOK
-import InteractiveExampleDisplay from './InteractiveExampleDisplay'; // IMPORT NEW COMPONENT
+import React from "react"; // Removed unused useState, useEffect, useCallback
+import type { LessonSection, LessonExample } from "../../types/data";
+import styles from "./Section.module.css";
+import { useProgressActions } from "../../stores/progressStore";
+import { useInteractiveExample } from "../../hooks/useInteractiveExample"; // IMPORT NEW HOOK
+import InteractiveExampleDisplay from "./InteractiveExampleDisplay"; // IMPORT NEW COMPONENT
 
 interface ObservationSectionProps {
   section: LessonSection; // Expects a generic LessonSection, but examples are key
@@ -24,13 +24,15 @@ const ObservationExample: React.FC<{
     lessonId,
     sectionId,
     persistCode: true, // Enable code persistence for Observation
-    storageKeyPrefix: 'observeCode',
+    storageKeyPrefix: "observeCode",
   });
 
   const onRunCode = async () => {
     const result = await exampleHook.onRunCode();
     if (!result.error) {
-      console.log(`Observation section ${sectionId} - example ${example.id} run successfully. Marking complete.`);
+      console.log(
+        `Observation section ${sectionId} - example ${example.id} run successfully. Marking complete.`
+      );
       completeSection(lessonId, sectionId);
     }
     return result;
@@ -45,7 +47,10 @@ const ObservationExample: React.FC<{
   );
 };
 
-const ObservationSection: React.FC<ObservationSectionProps> = ({ section, lessonId }) => {
+const ObservationSection: React.FC<ObservationSectionProps> = ({
+  section,
+  lessonId,
+}) => {
   if (!section.examples || section.examples.length === 0) {
     return (
       <section id={section.id} className={styles.section}>

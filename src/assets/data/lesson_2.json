@@ -55,12 +55,36 @@
           "description": "Implement the celsius_to_fahrenheit function below:",
           "code": "def celsius_to_fahrenheit(celsius):\n    # Write your function here\n    pass  # Delete this line and add your code\n\n# You can test your function with different values here\nprint(celsius_to_fahrenheit(0))  # Should print 32.0\nprint(celsius_to_fahrenheit(100))  # Should print 212.0",
           "testCases": [
-            { "input": 0, "expected": 32, "description": "Freezing point of water (0°C)" },
-            { "input": 100, "expected": 212, "description": "Boiling point of water (100°C)" },
-            { "input": 37, "expected": 98.6, "description": "Human body temperature (37°C)" },
-            { "input": -40, "expected": -40, "description": "Equal point (-40°C)" },
-            { "input": 25, "expected": 77, "description": "Room temperature (25°C)" },
-            { "input": -10, "expected": 14, "description": "Cold winter day (-10°C)" },
+            {
+              "input": 0,
+              "expected": 32,
+              "description": "Freezing point of water (0°C)"
+            },
+            {
+              "input": 100,
+              "expected": 212,
+              "description": "Boiling point of water (100°C)"
+            },
+            {
+              "input": 37,
+              "expected": 98.6,
+              "description": "Human body temperature (37°C)"
+            },
+            {
+              "input": -40,
+              "expected": -40,
+              "description": "Equal point (-40°C)"
+            },
+            {
+              "input": 25,
+              "expected": 77,
+              "description": "Room temperature (25°C)"
+            },
+            {
+              "input": -10,
+              "expected": 14,
+              "description": "Cold winter day (-10°C)"
+            },
             { "input": 42, "expected": 107.6, "description": "Hot day (42°C)" }
           ]
         }

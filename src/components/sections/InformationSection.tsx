@@ -1,7 +1,7 @@
 // src/components/sections/InformationSection.tsx
-import React from 'react';
-import type { LessonSection } from '../../types/data';
-import styles from './Section.module.css'; // Use the common style
+import React from "react";
+import type { LessonSection } from "../../types/data";
+import styles from "./Section.module.css"; // Use the common style
 
 interface InformationSectionProps {
   section: LessonSection;

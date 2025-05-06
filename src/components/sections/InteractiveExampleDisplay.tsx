@@ -1,8 +1,8 @@
 // src/components/sections/InteractiveExampleDisplay.tsx (NEW FILE)
-import React from 'react';
-import CodeEditor from '../CodeEditor';
-import styles from './Section.module.css'; // Assuming common styles
-import type { LessonExample } from '../../types/data';
+import React from "react";
+import CodeEditor from "../CodeEditor";
+import styles from "./Section.module.css"; // Assuming common styles
+import type { LessonExample } from "../../types/data";
 
 interface InteractiveExampleDisplayProps {
   example: LessonExample;
@@ -49,20 +49,31 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
             disabled={!canRun}
             className={styles.runButton}
           >
-            {isRunning ? 'Running...' : 'Run Code'}
+            {isRunning ? "Running..." : "Run Code"}
           </button>
           {renderExtraControls && renderExtraControls()}
         </div>
         <div>
-          {isPyodideLoading && <span className={styles.pyodideStatus}>Initializing Python...</span>}
-          {pyodideError && <span className={styles.pyodideError}>Pyodide Error!</span>}
+          {isPyodideLoading && (
+            <span className={styles.pyodideStatus}>Initializing Python...</span>
+          )}
+          {pyodideError && (
+            <span className={styles.pyodideError}>Pyodide Error!</span>
+          )}
         </div>
       </div>
 
       {(isRunning || hasBeenRun || output) && ( // Ensure output area shows if output is set (e.g., by tests)
         <div className={styles.outputArea}>
           <pre>
-            {output || (isRunning ? '' : <span className={styles.outputEmpty}>Code executed (no output).</span>)}
+            {output ||
+              (isRunning ? (
+                ""
+              ) : (
+                <span className={styles.outputEmpty}>
+                  Code executed (no output).
+                </span>
+              ))}
           </pre>
         </div>
       )}

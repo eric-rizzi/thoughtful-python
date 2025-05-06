@@ -47,12 +47,7 @@
       "id": "question-3",
       "title": "Question 3: Temperature Conversion",
       "content": "What is the result of calling celsius_to_fahrenheit(0)?",
-      "options": [
-        "0",
-        "32",
-        "100",
-        "273.15"
-      ],
+      "options": ["0", "32", "100", "273.15"],
       "correctAnswer": 1,
       "feedback": {
         "correct": "Correct! When converting 0°C to Fahrenheit using the formula F = (C × 9/5) + 32, we get 32°F.",

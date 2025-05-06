@@ -1,8 +1,8 @@
 // src/hooks/useInteractiveExample.ts (NEW FILE)
-import { useState, useCallback, useEffect } from 'react';
-import { usePyodide } from '../contexts/PyodideContext';
-import type { LessonExample, SavedCodeState } from '../types/data'; // Assuming SavedCodeState is relevant
-import { loadProgress, saveProgress } from '../lib/localStorageUtils'; // If persisting code
+import { useState, useCallback, useEffect } from "react";
+import { usePyodide } from "../contexts/PyodideContext";
+import type { LessonExample, SavedCodeState } from "../types/data"; // Assuming SavedCodeState is relevant
+import { loadProgress, saveProgress } from "../lib/localStorageUtils"; // If persisting code
 
 interface UseInteractiveExampleProps {
   exampleId: string;
@@ -19,11 +19,15 @@ export const useInteractiveExample = ({
   lessonId,
   sectionId,
   persistCode = false,
-  storageKeyPrefix = 'exampleCode',
+  storageKeyPrefix = "exampleCode",
 }: UseInteractiveExampleProps) => {
-  const { runPythonCode, isLoading: isPyodideLoading, error: pyodideError } = usePyodide();
+  const {
+    runPythonCode,
+    isLoading: isPyodideLoading,
+    error: pyodideError,
+  } = usePyodide();
   const [code, setCode] = useState<string>(initialCode);
-  const [output, setOutput] = useState<string>('');
+  const [output, setOutput] = useState<string>("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [hasBeenRun, setHasBeenRun] = useState<boolean>(false); // From ObservationSection
 
@@ -47,25 +51,34 @@ export const useInteractiveExample = ({
     }
   }, [initialCode, exampleId, persistCode, fullStorageKey]); // Rerun if initialCode or key parts change
 
-  const onCodeChange = useCallback((newCode: string) => {
-    console.log(newCode)
-    setCode(newCode);
-    if (persistCode && fullStorageKey) {
-      saveProgress(fullStorageKey, { code: newCode });
-    }
-  }, [persistCode, fullStorageKey]);
+  const onCodeChange = useCallback(
+    (newCode: string) => {
+      console.log(newCode);
+      setCode(newCode);
+      if (persistCode && fullStorageKey) {
+        saveProgress(fullStorageKey, { code: newCode });
+      }
+    },
+    [persistCode, fullStorageKey]
+  );
 
-  const onRunCode  = useCallback(async () => {
+  const onRunCode = useCallback(async () => {
     if (isPyodideLoading || pyodideError) {
-      setOutput('Python environment is not ready.');
-      return { output: '', error: 'Python environment is not ready.' };
+      setOutput("Python environment is not ready.");
+      return { output: "", error: "Python environment is not ready." };
     }
     setIsRunning(true);
     setHasBeenRun(true);
-    setOutput('Running...');
+    setOutput("Running...");
 
     const result = await runPythonCode(code);
-    setOutput(result.error ? `Error:\n${result.error}${result.output ? `\nOutput before error:\n${result.output}` : ''}` : result.output || 'Code executed (no output).');
+    setOutput(
+      result.error
+        ? `Error:\n${result.error}${
+            result.output ? `\nOutput before error:\n${result.output}` : ""
+          }`
+        : result.output || "Code executed (no output)."
+    );
     setIsRunning(false);
     return result; // Return the full result { output, error }
   }, [code, isPyodideLoading, pyodideError, runPythonCode]);

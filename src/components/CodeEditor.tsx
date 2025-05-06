@@ -1,8 +1,8 @@
 // src/components/CodeEditor.tsx
-import React, { useCallback } from 'react';
-import CodeMirror from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { oneDark } from '@codemirror/theme-one-dark'; // Example theme
+import React, { useCallback } from "react";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
+import { oneDark } from "@codemirror/theme-one-dark"; // Example theme
 
 // Import other extensions if needed, e.g., for specific keymaps or features
 // import { keymap } from '@codemirror/view';
@@ -24,8 +24,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   value,
   onChange,
   readOnly = false,
-  height = 'auto', // Default height to auto
-  minHeight = '100px', // Default min height
+  height = "auto", // Default height to auto
+  minHeight = "100px", // Default min height
 }) => {
   // Use useCallback to prevent unnecessary re-creation of the onChange handler
   const handleChange = useCallback(
@@ -44,43 +44,44 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   return (
     // Optional: Add a wrapper div if needed for styling/layout
     // <div className={styles.editorWrapper}>
-      <CodeMirror
-        value={value}
-        height={height}
-        minHeight={minHeight}
-        extensions={extensions}
-        onChange={handleChange}
-        readOnly={readOnly}
-        theme={oneDark} // Apply the imported theme
-        // You can add more props based on @uiw/react-codemirror documentation
-        // e.g., basicSetup={{ lineNumbers: true, foldGutter: true, ... }}
-        basicSetup={{ // Enable common features easily
-            lineNumbers: true,
-            highlightActiveLineGutter: true,
-            highlightSpecialChars: true,
-            history: true,
-            foldGutter: true,
-            drawSelection: true,
-            dropCursor: true,
-            allowMultipleSelections: true,
-            indentOnInput: true,
-            syntaxHighlighting: true,
-            bracketMatching: true,
-            closeBrackets: true,
-            autocompletion: true, // Basic autocompletion
-            rectangularSelection: true,
-            crosshairCursor: true,
-            highlightActiveLine: true,
-            highlightSelectionMatches: true,
-            closeBracketsKeymap: true,
-            // defaultKeymap: true, // Often included, check if needed
-            searchKeymap: true,
-            historyKeymap: true,
-            foldKeymap: true,
-            completionKeymap: true,
-            lintKeymap: true,
-         }}
-      />
+    <CodeMirror
+      value={value}
+      height={height}
+      minHeight={minHeight}
+      extensions={extensions}
+      onChange={handleChange}
+      readOnly={readOnly}
+      theme={oneDark} // Apply the imported theme
+      // You can add more props based on @uiw/react-codemirror documentation
+      // e.g., basicSetup={{ lineNumbers: true, foldGutter: true, ... }}
+      basicSetup={{
+        // Enable common features easily
+        lineNumbers: true,
+        highlightActiveLineGutter: true,
+        highlightSpecialChars: true,
+        history: true,
+        foldGutter: true,
+        drawSelection: true,
+        dropCursor: true,
+        allowMultipleSelections: true,
+        indentOnInput: true,
+        syntaxHighlighting: true,
+        bracketMatching: true,
+        closeBrackets: true,
+        autocompletion: true, // Basic autocompletion
+        rectangularSelection: true,
+        crosshairCursor: true,
+        highlightActiveLine: true,
+        highlightSelectionMatches: true,
+        closeBracketsKeymap: true,
+        // defaultKeymap: true, // Often included, check if needed
+        searchKeymap: true,
+        historyKeymap: true,
+        foldKeymap: true,
+        completionKeymap: true,
+        lintKeymap: true,
+      }}
+    />
     // </div>
   );
 };

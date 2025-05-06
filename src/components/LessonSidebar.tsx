@@ -1,7 +1,7 @@
 // src/components/LessonSidebar.tsx
-import React from 'react';
-import type { LessonSection } from '../types/data';
-import styles from './LessonSidebar.module.css';
+import React from "react";
+import type { LessonSection } from "../types/data";
+import styles from "./LessonSidebar.module.css";
 
 interface LessonSidebarProps {
   sections: LessonSection[];
@@ -18,22 +18,23 @@ const LessonSidebar: React.FC<LessonSidebarProps> = ({
   informationSections,
   // onLinkClick
 }) => {
-
-  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+  const handleLinkClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    sectionId: string
+  ) => {
     // Prevent default jump
     event.preventDefault();
     // Find target element
     const targetElement = document.getElementById(sectionId);
     if (targetElement) {
-        // Smooth scroll (optional)
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Update URL hash manually if needed, without triggering full navigation
-        // window.history.pushState(null, '', `#${sectionId}`);
+      // Smooth scroll (optional)
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Update URL hash manually if needed, without triggering full navigation
+      // window.history.pushState(null, '', `#${sectionId}`);
     }
     // Call prop handler if provided
     // onLinkClick?.(sectionId);
   };
-
 
   if (!sections || sections.length === 0) {
     return (
@@ -51,17 +52,20 @@ const LessonSidebar: React.FC<LessonSidebarProps> = ({
         {sections.map((section) => {
           const isCompleted = completedSections.has(section.id);
           const isInformation = informationSections.has(section.id);
-          
+
           let itemClass = `${styles.sectionItem} ${styles.sectionItemToBeDone}`;
           if (isInformation) {
             itemClass = `${styles.sectionItem} ${styles.sectionItemInfo}`;
-          }
-          else if (isCompleted) {
+          } else if (isCompleted) {
             itemClass = `${styles.sectionItem} ${styles.sectionItemCompleted}`;
           }
 
           return (
-            <li key={section.id} className={itemClass} data-section-id={section.id}>
+            <li
+              key={section.id}
+              className={itemClass}
+              data-section-id={section.id}
+            >
               <a
                 href={`#${section.id}`}
                 className={styles.sectionLink}

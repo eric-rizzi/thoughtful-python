@@ -1,6 +1,6 @@
 // src/stores/progressStore.ts
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // Define a constant empty array outside the hook
 const EMPTY_COMPLETED_SECTIONS: string[] = [];
@@ -27,34 +27,36 @@ export const useProgressStore = create<ProgressState>()(
     (set, get) => ({
       completion: {},
       actions: {
-        completeSection: (lessonId, sectionId) => set((state) => {
-          const lessonCompletion = state.completion[lessonId] || [];
-          if (!lessonCompletion.includes(sectionId)) {
-            const newCompletion = {
-              ...state.completion,
-              [lessonId]: [...lessonCompletion, sectionId],
-            };
-            return { completion: newCompletion };
-          }
-          return state;
-        }),
+        completeSection: (lessonId, sectionId) =>
+          set((state) => {
+            const lessonCompletion = state.completion[lessonId] || [];
+            if (!lessonCompletion.includes(sectionId)) {
+              const newCompletion = {
+                ...state.completion,
+                [lessonId]: [...lessonCompletion, sectionId],
+              };
+              return { completion: newCompletion };
+            }
+            return state;
+          }),
         isSectionComplete: (lessonId, sectionId) => {
-            const lessonCompletion = get().completion[lessonId] || [];
-            return lessonCompletion.includes(sectionId);
+          const lessonCompletion = get().completion[lessonId] || [];
+          return lessonCompletion.includes(sectionId);
         },
         getCompletedSections: (lessonId) => {
-            return get().completion[lessonId] || EMPTY_COMPLETED_SECTIONS; // Use stable empty array
+          return get().completion[lessonId] || EMPTY_COMPLETED_SECTIONS; // Use stable empty array
         },
-        resetLessonProgress: (lessonId) => set((state) => {
+        resetLessonProgress: (lessonId) =>
+          set((state) => {
             const newCompletion = { ...state.completion };
             delete newCompletion[lessonId];
             return { completion: newCompletion };
-        }),
+          }),
         resetAllProgress: () => set({ completion: {} }),
       },
     }),
     {
-      name: 'lesson-progress-storage',
+      name: "lesson-progress-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ completion: state.completion }),
     }
@@ -62,16 +64,21 @@ export const useProgressStore = create<ProgressState>()(
 );
 
 // Export actions separately for convenience (optional but common pattern)
-export const useProgressActions = () => useProgressStore((state) => state.actions);
+export const useProgressActions = () =>
+  useProgressStore((state) => state.actions);
 
 // Selector hook for getting completed sections for a specific lesson (memoized)
 // This helps components re-render only when the specific lesson's progress changes
-export const useCompletedSectionsForLesson = (lessonId: string | undefined): string[] => {
-  return useProgressStore((state) =>
-    lessonId
-      ? state.completion[lessonId] || EMPTY_COMPLETED_SECTIONS // Return stable empty array
-      : EMPTY_COMPLETED_SECTIONS // Return stable empty array for undefined lessonId
+export const useCompletedSectionsForLesson = (
+  lessonId: string | undefined
+): string[] => {
+  return useProgressStore(
+    (state) =>
+      lessonId
+        ? state.completion[lessonId] || EMPTY_COMPLETED_SECTIONS // Return stable empty array
+        : EMPTY_COMPLETED_SECTIONS // Return stable empty array for undefined lessonId
   );
 };
 
-export const useAllCompletions = () => useProgressStore((state) => state.completion);
+export const useAllCompletions = () =>
+  useProgressStore((state) => state.completion);
