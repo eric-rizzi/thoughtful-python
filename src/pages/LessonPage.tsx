@@ -83,6 +83,8 @@ const LessonPage: React.FC = () => {
   }, [lessonId]);
 
 
+  
+  // const completedSectionsSet = new Set();
   const completedSectionsSet = useMemo(() => {
     // console.log(`LessonPage (${lessonId}): Calculating Set from Zustand array:`, completedSectionsArray);
     return new Set(completedSectionsArray);

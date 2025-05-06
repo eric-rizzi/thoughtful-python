@@ -33,6 +33,7 @@ export const useInteractiveExample = ({
 
   // Load persisted code if applicable
   useEffect(() => {
+    console.log("dereps");
     if (persistCode && fullStorageKey) {
       const savedState = loadProgress<{ code: string }>(fullStorageKey);
       if (savedState?.code !== undefined) {
