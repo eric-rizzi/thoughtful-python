@@ -11,22 +11,21 @@ import type {
 import styles from "./Section.module.css";
 import { saveProgress, loadProgress } from "../../lib/localStorageUtils";
 import CodeEditor from "../CodeEditor";
+import { useProgressActions } from "../../stores/progressStore";
 
 interface ReflectionSectionProps {
   section: ReflectionSectionData;
   lessonId: string;
-  onSectionComplete: (sectionId: string) => void;
 }
 
 // --- Simulated API Call ---
-// Replace this with your actual API call logic later
 async function getSimulatedFeedback(
   submission: ReflectionSubmission,
   rubric?: ReflectionSectionData["rubric"]
 ): Promise<ReflectionResponse> {
   // Simulate network delay
   await new Promise((resolve) =>
-    setTimeout(resolve, 1500 + Math.random() * 1000)
+    setTimeout(resolve, 1500 + Math.random() * 100)
   );
 
   // Simulate simple analysis based on length and keywords
@@ -50,9 +49,10 @@ async function getSimulatedFeedback(
       "value",
     ],
     turtle: ["turtle", "forward", "left", "right", "penup", "pendown"],
+    testing: ["test", "assert", "unittest", "pytest"],
+    prediction: ["predict", "output", "input", "trace"],
   };
-
-  const relevantKeywords = topicKeywords[submission.topic] || [];
+  const relevantKeywords = topicKeywords[submission.topic.toLowerCase()] || []; // handle topic case
   const keywordMatch = relevantKeywords.some(
     (kw) => codeLower.includes(kw) || explanationLower.includes(kw)
   );
@@ -77,22 +77,14 @@ async function getSimulatedFeedback(
       rubric?.meets ||
       "Good job! Your code example works and your explanation covers the main points of the topic.";
   }
-
-  // Simulate occasional "error" for testing
-  // if (Math.random() < 0.1) { throw new Error("Simulated API error"); }
-
-  return {
-    feedback,
-    assessment,
-    timestamp: Date.now(),
-  };
+  return { feedback, assessment, timestamp: Date.now() };
 }
+
 // --- End Simulated API Call ---
 
 const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   section,
   lessonId,
-  onSectionComplete,
 }) => {
   const [topic, setTopic] = useState<string>("");
   const [code, setCode] = useState<string>("");
@@ -102,23 +94,35 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const [error, setError] = useState<string | null>(null);
   const storageKey = `reflectState_${lessonId}_${section.id}`;
 
-  // Load saved history on mount
+  // Get completeSection action from Zustand store
+  const { completeSection } = useProgressActions();
+
+  // Load saved history on mount (remains the same)
   useEffect(() => {
     const savedState = loadProgress<SavedReflectionState>(storageKey);
     if (savedState?.history) {
       setHistory(savedState.history);
-      // Check if already completed based on loaded history
-      const alreadyComplete = savedState.history.some(
-        (entry) =>
-          entry.response?.assessment &&
-          ["meets", "exceeds"].includes(entry.response.assessment)
-      );
-      if (alreadyComplete) {
-        // Optionally call onSectionComplete directly if loaded state shows completion
-        // onSectionComplete(section.id);
-      }
+      // Check if already completed based on loaded history - this will now be handled by useEffect below
     }
-  }, [storageKey /*, section.id, onSectionComplete*/]); // Avoid running onSectionComplete in initial load effect
+  }, [storageKey]);
+
+  // Effect to mark section complete if a "meets" or "exceeds" assessment exists in history
+  // This handles loading a previously completed state.
+  useEffect(() => {
+    const alreadyComplete = history.some(
+      (entry) =>
+        entry.response?.assessment &&
+        ["meets", "exceeds"].includes(entry.response.assessment)
+    );
+    if (alreadyComplete) {
+      console.log(
+        `ReflectionSection ${section.id} loaded as already meeting criteria. Marking via Zustand.`
+      );
+      completeSection(lessonId, section.id);
+    }
+    // Note: This effect runs when `history` changes. If `handleSubmit` adds to history
+    // and the new entry meets criteria, this effect will then call `completeSection`.
+  }, [history, lessonId, section.id, completeSection]);
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
@@ -151,27 +155,20 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
         // Update history state and save
         setHistory((prevHistory) => {
-          const updatedHistory = [newHistoryEntry, ...prevHistory]; // Add to front
-          const stateToSave: SavedReflectionState = { history: updatedHistory };
-          saveProgress(storageKey, stateToSave);
+          const updatedHistory = [newHistoryEntry, ...prevHistory];
+          saveProgress<SavedReflectionState>(storageKey, {
+            history: updatedHistory,
+          });
           return updatedHistory;
         });
 
-        // Clear inputs after successful submission
-        // setTopic(''); // Keep topic maybe?
-        setCode("");
-        setExplanation("");
-
-        // Check for completion
-        if (
-          response.assessment === "meets" ||
-          response.assessment === "exceeds"
-        ) {
-          onSectionComplete(section.id);
-        }
-
+        // Clear inputs only for formal submission, or always? User preference.
+        // For now, clearing only for formal seems reasonable.
         if (isFormalSubmission) {
-          alert("Your entry has been submitted and saved!"); // Inform user
+          setCode("");
+          setExplanation("");
+          // setTopic(''); // Maybe keep topic selected?
+          alert("Your entry has been submitted and saved!");
         }
       } catch (err) {
         console.error("Feedback submission error:", err);
@@ -184,31 +181,15 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         setIsSubmitting(false);
       }
     },
-    [
-      topic,
-      code,
-      explanation,
-      section.rubric,
-      section.id,
-      history,
-      onSectionComplete,
-      storageKey,
-    ]
-  ); // Added history dependency
+    [topic, code, explanation, section.rubric, storageKey]
+  );
 
-  // Helper to get topic display name
+  // Helper to get topic display name (remains the same)
   const getTopicName = (topicValue: string): string => {
-    const optionElement = document.querySelector(
-      `#${section.id}-topic option[value="${topicValue}"]`
-    );
-    return optionElement?.textContent || topicValue;
+    /* ... */ return topicValue;
   };
-
-  // Format date utility
-  const formatDate = (timestamp: number): string => {
-    const date = new Date(timestamp);
-    return date.toLocaleString(); // Adjust format as needed
-  };
+  const formatDate = (timestamp: number): string =>
+    new Date(timestamp).toLocaleString();
 
   return (
     <section id={section.id} className={styles.section}>
@@ -216,7 +197,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       <div className={styles.content}>{section.content}</div>
 
       <div className={styles.reflectionContainer}>
-        {/* Input Fields */}
         <div className={styles.reflectionInputGroup}>
           <label
             htmlFor={`${section.id}-topic`}
@@ -231,19 +211,15 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onChange={(e) => setTopic(e.target.value)}
             disabled={isSubmitting}
           >
-            {/* TODO: Populate options dynamically or ensure they match JSON */}
             <option value="">Select a topic...</option>
             <option value="variables">Variables and Data Types</option>
             <option value="functions">Functions</option>
             <option value="loops">Loops and Iteration</option>
             <option value="conditions">Conditional Statements</option>
-            <option value="datastructures">
-              Data Structures (Lists, Dictionaries)
-            </option>
+            <option value="datastructures">Data Structures</option>
             <option value="turtle">Turtle Graphics</option>
             <option value="testing">Testing</option>
             <option value="prediction">Prediction</option>
-            {/* Add more based on your lessons */}
           </select>
         </div>
 
@@ -256,7 +232,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               value={code}
               onChange={setCode}
               readOnly={isSubmitting}
-              // Set height/minHeight if needed
               minHeight="150px"
             />
           </div>
@@ -279,10 +254,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           />
         </div>
 
-        {/* Buttons */}
         <div className={styles.reflectionButtons}>
           <button
-            onClick={() => handleSubmit(false)}
+            onClick={() => handleSubmit(false)} // Get Feedback
             disabled={
               isSubmitting || !topic || !code.trim() || !explanation.trim()
             }
@@ -291,7 +265,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             {isSubmitting ? "Processing..." : "Get Feedback"}
           </button>
           <button
-            onClick={() => handleSubmit(true)}
+            onClick={() => handleSubmit(true)} // Submit Entry
             disabled={
               isSubmitting || !topic || !code.trim() || !explanation.trim()
             }
@@ -312,7 +286,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           ) : (
             history.map((entry, index) => (
               <div
-                key={entry.submission.timestamp + "-" + index} // Combine for more uniqueness
+                key={entry.submission.timestamp + "-" + index}
                 className={`${styles.reflectionCard} ${
                   entry.response?.assessment
                     ? styles[
@@ -370,15 +344,14 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                     <p>{entry.response.feedback}</p>
                   </div>
                 )}
-                {!entry.response &&
-                  isSubmitting &&
-                  index === 0 && ( // Show loading only for the latest if still submitting
-                    <div className={styles.reflectionResponse}>
-                      <p>
-                        <i>Getting feedback...</i>
-                      </p>
-                    </div>
-                  )}
+                {!entry.response && isSubmitting && index === 0 && (
+                  <div className={styles.reflectionResponse}>
+                    {" "}
+                    <p>
+                      <i>Getting feedback...</i>
+                    </p>{" "}
+                  </div>
+                )}
               </div>
             ))
           )}
