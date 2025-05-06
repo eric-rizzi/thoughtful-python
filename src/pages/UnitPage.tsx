@@ -4,9 +4,9 @@ import { useParams, Link } from 'react-router-dom';
 import { fetchUnitById, fetchLessonData, getRequiredSectionsForLesson } from '../lib/dataLoader';
 import type { Unit, Lesson } from '../types/data';
 import styles from './UnitPage.module.css';
-import { BASE_PATH } from '../config'; // For back link
+import { BASE_PATH } from '../config';
+import { useAllCompletions } from '../stores/progressStore';
 
-// Define completion status type
 type CompletionStatus = {
     text: string;
     class: string;
@@ -15,9 +15,12 @@ type CompletionStatus = {
 const UnitPage: React.FC = () => {
   const { unitId } = useParams<{ unitId: string }>();
   const [unit, setUnit] = useState<Unit | null>(null);
-  const [lessonsData, setLessonsData] = useState<Map<string, Lesson | null>>(new Map()); // Store lesson data or null if failed
+  const [lessonsData, setLessonsData] = useState<Map<string, Lesson | null>>(new Map());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Get all completion data from the Zustand store
+  const allCompletions = useAllCompletions();
 
   useEffect(() => {
     const loadUnitAndLessons = async () => {
@@ -29,7 +32,7 @@ const UnitPage: React.FC = () => {
 
       setIsLoading(true);
       setError(null);
-      setLessonsData(new Map()); // Reset lessons data on unitId change
+      setLessonsData(new Map());
 
       try {
         const fetchedUnit = await fetchUnitById(unitId);
@@ -37,7 +40,7 @@ const UnitPage: React.FC = () => {
           throw new Error(`Unit with ID "${unitId}" not found.`);
         }
         setUnit(fetchedUnit);
-        document.title = `${fetchedUnit.title} - Python Lessons`; // Update page title
+        document.title = `${fetchedUnit.title} - Python Lessons`;
 
         // Fetch all lessons for this unit concurrently
         const lessonPromises = fetchedUnit.lessons.map(lessonId =>
@@ -45,88 +48,77 @@ const UnitPage: React.FC = () => {
             .then(data => ({ id: lessonId, status: 'fulfilled', value: data }))
             .catch(err => ({ id: lessonId, status: 'rejected', reason: err }))
         );
-
-        const results = await Promise.allSettled(lessonPromises);
+        
+        // Use Promise.all to await all lesson fetches
+        const results = await Promise.all(lessonPromises);
         const loadedLessons = new Map<string, Lesson | null>();
         results.forEach(result => {
-           // Check if result is promise and fulfilled or rejected
-            if (result.status === 'fulfilled') {
-                // Now result.value has the structure { id: string, status: string, value: Lesson }
-                const lessonResult = result.value as { id: string, status: 'fulfilled', value: Lesson };
-                 loadedLessons.set(lessonResult.id, lessonResult.value);
-            } else {
-                 // Result is promise and rejected
-                const lessonResult = result as { id: string, status: 'rejected', reason: any };
-                 console.error(`Failed to load lesson ${lessonResult.id}:`, lessonResult.reason);
-                 loadedLessons.set(lessonResult.id, null); // Mark as failed to load
-            }
+           if (result.status === 'fulfilled') {
+                loadedLessons.set(result.id, result.value);
+           } else {
+               console.error(`Failed to load lesson ${result.id}:`, result.reason);
+               loadedLessons.set(result.id, null);
+           }
         });
         setLessonsData(loadedLessons);
 
       } catch (err) {
         console.error("Error loading unit page:", err);
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        setUnit(null); // Clear unit data on error
+        setUnit(null);
       } finally {
         setIsLoading(false);
       }
     };
 
     loadUnitAndLessons();
-  }, [unitId]); // Re-run effect if unitId changes
+  }, [unitId]);
 
-  // Function to calculate completion status for a single lesson
-  const calculateLessonStatus = (lessonId: string): CompletionStatus => {
-    const lesson = lessonsData.get(lessonId);
-    if (!lesson) {
-        // Handle case where lesson data failed to load or isn't available yet
-        return { text: 'Info unavailable', class: 'not-started' };
-    }
-
-    try {
-      const storageKey = `python_${lessonId}_completed`;
-      const completedSections: string[] = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      const requiredSections = getRequiredSectionsForLesson(lesson); // Use helper
-
-      if (requiredSections.length === 0) {
-          // If lesson has no sections requiring active completion, consider it 'viewed' if visited?
-          // Or maybe just 'Not Started' until explicitly marked otherwise. Let's use 'Not Started'.
-          return { text: 'Not applicable', class: 'not-started' };
-      }
-
-      if (completedSections.length === 0) {
-        return { text: 'Not started', class: 'not-started' };
-      }
-
-      const completedRequiredCount = requiredSections.filter(sectionId =>
-        completedSections.includes(sectionId)
-      ).length;
-
-      if (completedRequiredCount >= requiredSections.length) {
-        return { text: 'Completed', class: 'completed' };
-      } else if (completedRequiredCount > 0) {
-        const percentage = Math.round((completedRequiredCount / requiredSections.length) * 100);
-        return { text: `${percentage}% complete`, class: 'in-progress' };
-      } else {
-        return { text: 'Started', class: 'in-progress' }; // Started but no required sections done yet
-      }
-    } catch (e) {
-      console.error(`Error calculating status for ${lessonId}:`, e);
-      return { text: 'Error checking status', class: 'not-started' };
-    }
-  };
-
-  // Memoize lesson statuses to avoid recalculating on every render
+  // Memoize lesson statuses using data from Zustand store
   const lessonStatuses = useMemo(() => {
+    console.log("UnitPage: Recalculating lesson statuses based on Zustand. Current allCompletions:", allCompletions);
     const statuses = new Map<string, CompletionStatus>();
     if (unit) {
-        unit.lessons.forEach(lessonId => {
-            statuses.set(lessonId, calculateLessonStatus(lessonId));
-        });
+      unit.lessons.forEach(lessonId => {
+        let status: CompletionStatus = { text: 'Loading info...', class: 'not-started' }; // Default
+        const lesson = lessonsData.get(lessonId);
+
+        if (lesson === null) { // Failed to load lesson data
+             status = { text: 'Info unavailable', class: 'not-started' };
+        } else if (lesson) { // Lesson data is available
+            try {
+              // Get completed sections for *this* lessonId from the Zustand state
+              const completedSectionsForThisLesson = new Set(allCompletions[lessonId] || []);
+              const requiredSections = getRequiredSectionsForLesson(lesson);
+
+              if (requiredSections.length === 0) {
+                 status = { text: 'Not applicable', class: 'not-started' };
+              } else if (completedSectionsForThisLesson.size === 0) {
+                status = { text: 'Not started', class: 'not-started' };
+              } else {
+                const completedRequiredCount = requiredSections.filter(sectionId =>
+                  completedSectionsForThisLesson.has(sectionId)
+                ).length;
+
+                if (completedRequiredCount >= requiredSections.length) {
+                  status = { text: 'Completed', class: 'completed' };
+                } else if (completedRequiredCount > 0) {
+                  const percentage = Math.round((completedRequiredCount / requiredSections.length) * 100);
+                  status = { text: `${percentage}% complete`, class: 'in-progress' };
+                } else {
+                  status = { text: 'Started', class: 'in-progress' };
+                }
+              }
+            } catch (e) {
+                console.error(`Error calculating status for ${lessonId}:`, e);
+                status = { text: 'Status Error', class: 'not-started' };
+            }
+        }
+        statuses.set(lessonId, status);
+      });
     }
     return statuses;
-    // Recalculate only when unit or lessonsData changes
-  }, [unit, lessonsData]);
+  }, [unit, lessonsData, allCompletions]); // Re-calculate when unit, lessonsData, OR allCompletions from Zustand changes
 
 
   // --- Rendering Logic ---
@@ -154,16 +146,13 @@ const UnitPage: React.FC = () => {
     return <div className={styles.loading}><p>Unit data could not be loaded.</p></div>;
   }
 
-  // Main render
   return (
     <div className={styles.unitContainer}>
       <Link to={`${BASE_PATH}/`} className={styles.backLink}>&larr; Back to Learning Paths</Link>
-
       <div className={styles.unitHeader}>
         <h2 className={styles.unitTitle}>{unit.title}</h2>
         <p className={styles.unitDescription}>{unit.description}</p>
       </div>
-
       <div className={styles.lessonsList}>
         {unit.lessons.map((lessonId, index) => {
           const lesson = lessonsData.get(lessonId);
@@ -202,7 +191,7 @@ const UnitPage: React.FC = () => {
                   ) : (
                     <span className={`${styles.statusDot} ${styles[status.class]}`}></span>
                   )}
-                  {status.text}
+                  <span>{status.text}</span> {/* Added span around status.text for consistent styling if needed */}
                 </div>
               </div>
             </Link>
