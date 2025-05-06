@@ -82,7 +82,6 @@ const LessonPage: React.FC = () => {
     };
   }, [lessonId]);
 
-
   
   // const completedSectionsSet = new Set();
   const completedSectionsSet = useMemo(() => {

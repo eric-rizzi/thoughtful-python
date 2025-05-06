@@ -3,11 +3,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { MultipleChoiceSection as MultipleChoiceSectionData } from '../../types/data';
 import styles from './Section.module.css';
 import { saveProgress, loadProgress } from '../../lib/localStorageUtils'; // Helper for localStorage
+import { useProgressActions } from '../../stores/progressStore';
 
 interface MultipleChoiceSectionProps {
   section: MultipleChoiceSectionData;
-  lessonId: string; // Needed for localStorage key
-  onSectionComplete: (sectionId: string) => void; // Callback for completion
+  lessonId: string;
 }
 
 interface SavedQuizState {
@@ -19,24 +19,30 @@ interface SavedQuizState {
 const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     section,
     lessonId,
-    onSectionComplete
 }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const storageKey = `quizState_${lessonId}_${section.id}`;
 
-  // Load saved state on mount
+  // Get actions from the progress store
+  const { completeSection } = useProgressActions();
+
+  // Load saved state on mount (persists user's choice within the quiz)
   useEffect(() => {
       const savedState = loadProgress<SavedQuizState>(storageKey);
       if (savedState) {
           setSelectedOption(savedState.selected);
           setIsSubmitted(savedState.submitted);
           setIsCorrect(savedState.correct);
+          // If already submitted and correct from a previous session, ensure it's marked in global store.
+          // This is important if localStorage is cleared but store isn't, or vice versa.
+          // However, the primary responsibility for marking complete is on initial correct submission.
+          // If the section was already marked complete in the global store, this component doesn't need to do it again.
       }
   }, [storageKey]);
 
-  // Save state whenever it changes
+  // Save state whenever it changes (persists user's choice within the quiz)
   useEffect(() => {
       const stateToSave: SavedQuizState = {
           selected: selectedOption,
@@ -48,11 +54,8 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
 
 
   const handleOptionChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-      // Allow changing answer only if not submitted
       if (!isSubmitted) {
           setSelectedOption(parseInt(event.target.value, 10));
-          // Reset correctness if changing answer after incorrect submission (optional)
-          // setIsCorrect(null);
       }
   }, [isSubmitted]);
 
@@ -64,10 +67,11 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     setIsSubmitted(true);
 
     if (correct) {
-      console.log(`Placeholder: MC Section ${section.id} completed correctly.`);
-      onSectionComplete(section.id); // Mark section as complete
+      console.log(`MultipleChoiceSection: ${section.id} answered correctly. Marking complete in progress store.`);
+      // Use the action from progressStore to mark the section as complete
+      completeSection(lessonId, section.id);
     }
-  }, [selectedOption, isSubmitted, section.correctAnswer, section.id, onSectionComplete]);
+  }, [selectedOption, isSubmitted, section.correctAnswer, section.id, lessonId, completeSection]);
 
   return (
     <section id={section.id} className={styles.section}>
@@ -79,12 +83,12 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
           <div key={index} className={`${styles.quizOption} ${isSubmitted ? styles.optionDisabled : ''}`}>
             <input
               type="radio"
-              name={section.id} // Group radios by section id
+              name={section.id}
               value={index}
               id={`${section.id}-option-${index}`}
               checked={selectedOption === index}
               onChange={handleOptionChange}
-              disabled={isSubmitted} // Disable after submission
+              disabled={isSubmitted}
             />
             <label htmlFor={`${section.id}-option-${index}`}>
               {option}
