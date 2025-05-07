@@ -1,0 +1,171 @@
+/* src/components/sections/PRIMMSection.module.css */
+.primmSectionContainer {
+  border-left: 5px solid #8e44ad; /* New distinct color (purple) */
+  background-color: #f9f6fc;
+  padding-left: 1.5rem;
+  margin-top: 1rem; /* Ensure spacing from previous section */
+}
+
+.introduction {
+  margin-bottom: 1.5rem;
+  font-size: 1.05em;
+  background-color: #fdfdff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px dashed #dcd6e4;
+
+}
+
+.exampleBlock {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Style for completed blocks */
+.blockComplete {
+   border-left: 5px solid #2ecc71; /* Green border for completed block */
+}
+
+
+.exampleBlock h4 { /* Code Example: / Output: */
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #306998;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* Ensure output area has margin */
+.outputArea {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem; /* Space before prediction */
+  min-height: 50px; /* Give it some initial height */
+  background-color: #f8f9fa; /* Lighter background than default code output maybe */
+  border: 1px solid #eee;
+}
+
+
+.predictionRunArea {
+  display: flex;
+  align-items: flex-start; /* Align items top */
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f0f3f5;
+  border-radius: 6px;
+  border: 1px solid #d8dfe4;
+}
+
+.predictionInputGroup {
+   flex-grow: 1; /* Allow input group to take space */
+}
+
+.predictionInputGroup label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+
+.predictionInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.predictionInput:focus {
+  border-color: #8e44ad; /* Match section border */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.2);
+}
+
+/* Adjust run button appearance if needed */
+.runButton {
+  /* Inherits from styles.runButton */
+  flex-shrink: 0; /* Prevent button from shrinking */
+  margin-top: 1.8em; /* Align roughly with input box (adjust if label is multi-line) */
+}
+/* Override disabled style if needed */
+.runButton:disabled {
+    background-color: #bdc3c7; /* Grey */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.feedbackArea {
+  margin-top: 0.5rem; /* Space below prediction/run area */
+  padding: 0.25rem 0.5rem; /* Less padding maybe */
+  border-radius: 4px;
+  min-height: 1.5em; /* Prevent layout shift */
+}
+
+.correctText {
+  color: #27ae60; /* Green */
+  font-weight: bold;
+  margin: 0.25rem 0;
+}
+
+.incorrectText {
+  color: #c0392b; /* Red */
+  font-weight: bold;
+    margin: 0.25rem 0;
+}
+
+.stage { /* Base for explanation stage */
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ccc;
+}
+
+.explanationStage {
+  background-color: #fff9e6; /* Light yellow background */
+  padding: 1rem;
+  border: 1px solid #ffe8a3;
+  border-radius: 6px;
+}
+
+
+.explanationStage h5 {
+  font-size: 1.1em;
+  color: #d35400; /* Orange */
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+.explanationStage p {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.explanationTextarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 1em;
+  min-height: 80px;
+  margin-bottom: 0.5rem;
+}
+.explanationTextarea:focus {
+  border-color: #f39c12; /* Orange focus */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2);
+}
+
+.lengthHint {
+  font-size: 0.85em;
+  color: #7f8c8d; /* Grey */
+  margin-top: 0.25rem;
+}
+
+.conclusion {
+  margin-top: 2rem;
+  /* Uses .completionMessage from Section.module.css */
+}

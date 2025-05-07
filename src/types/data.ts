@@ -248,24 +248,24 @@ export interface PRIMMSection extends LessonSection {
   conclusion?: string; // Text to show after all examples are completed
 }
 
-// State for a single PRIMM example block (what the hook will manage per example)
 export interface PRIMMExampleState {
-  userPrediction: string;
-  predictionSubmitted: boolean;
-  isPredictionCorrect: boolean | null;
-  explanationText: string;
-  explanationSubmitted: boolean;
-  hasMetExplanationRequirement: boolean; // True if explanation is long enough (or not needed)
-  hasBeenRun: boolean; // Tracks if the "Run" step has been completed for this example
-  output: string | null; // Stores the output of running the code
+  userPrediction: string; // User's input
+  explanationText: string; // User's explanation (if needed)
+  hasMetExplanationRequirement: boolean; // Tracks if explanation is sufficient OR prediction was correct
+  output: string | null; // Actual output from running the code
+  runError: string | null; // Any error message from the Python execution
+  runAttempted: boolean; // Has the user clicked Run for this block?
+  // No predictionSubmitted or isPredictionCorrect needed here anymore
+  // isComplete is now the primary flag for completion of this block
+  isComplete: boolean; // Has this specific PRIMM block met its completion criteria?
 }
 
-// What will be saved in localStorage by useSectionProgress for the whole PRIMM section
+// REVISED Saved state for the whole section
 export interface SavedPRIMMSectionState {
   // Keyed by PRIMMCodeExample.id
   exampleStates: {
+    // Still store the full state per example, excluding maybe transient error states if desired
+    // But storing runError and output is useful for displaying state across sessions
     [exampleId: string]: PRIMMExampleState;
   };
-  // We might also track overall section completion here if needed,
-  // but the hook can derive it.
 }
