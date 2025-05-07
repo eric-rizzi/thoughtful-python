@@ -16,7 +16,7 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        <h1 className={styles.title}>Learn Python in the Browser</h1>
+        <h1 className={styles.title}>Thoughtful Python</h1>
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             <li>
