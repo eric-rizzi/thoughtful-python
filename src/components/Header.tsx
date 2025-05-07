@@ -1,14 +1,11 @@
 // src/components/Header.tsx
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom"; // Removed useLocation
 import styles from "./Header.module.css";
 import { BASE_PATH } from "../config";
-import LessonNavigation from "./LessonNavigation";
 
 const Header: React.FC = () => {
-  const location = useLocation();
-  // Check if the current path starts with '/lesson/'
-  const isLessonPage = location.pathname.startsWith(`${BASE_PATH}lesson/`);
+  // Removed useLocation and isLessonPage check
 
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
@@ -26,19 +23,23 @@ const Header: React.FC = () => {
             </li>
             <li>
               <NavLink
-                to={`${BASE_PATH}unit/intro_python`}
-                className={getNavLinkClass}
+                to={`${BASE_PATH}unit/intro_python`} // Example link
+                className={(navData) =>
+                  getNavLinkClass(navData) +
+                  (location.pathname.startsWith(`${BASE_PATH}unit/`)
+                    ? ` ${styles.navLinkActive}`
+                    : "")
+                } // Highlight if on any unit page
               >
                 Learning Paths
               </NavLink>
             </li>
-            {!isLessonPage && (
-              <li>
-                <NavLink to={`${BASE_PATH}editor`} className={getNavLinkClass}>
-                  Code Editor
-                </NavLink>
-              </li>
-            )}
+            <li>
+              {/* This can always be shown now, or hidden based on other criteria */}
+              <NavLink to={`${BASE_PATH}editor`} className={getNavLinkClass}>
+                Code Editor
+              </NavLink>
+            </li>
             <li>
               <NavLink
                 to={`${BASE_PATH}learning-entries`}
@@ -48,7 +49,6 @@ const Header: React.FC = () => {
               </NavLink>
             </li>
           </ul>
-          <LessonNavigation />
         </nav>
       </div>
     </header>
