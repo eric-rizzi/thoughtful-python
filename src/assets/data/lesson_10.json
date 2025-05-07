@@ -1,0 +1,80 @@
+{
+  "title": "Lesson 10: Type Casting and Input",
+  "description": "Understand how Python handles data types from user input and learn to convert types (type casting) to prevent errors.",
+  "sections": [
+    {
+      "kind": "Information",
+      "id": "lesson10-intro",
+      "title": "Dealing with Input Data Types",
+      "content": "User input is essential, but Python's `input()` function always gives us a string. What happens if we try to do math with that string? Let's predict the outcome!"
+    },
+    {
+      "kind": "PRIMM",
+      "id": "primm-type-error",
+      "title": "Predict, Run, Investigate: The `TypeError`",
+      "introduction": "This code asks for the user's age and tries to calculate their age next year. Follow the PRIMM steps.",
+      "examples": [
+        {
+          "id": "primm-age-calc",
+          "code": "# Assume user enters 25 for age\nage = \"25\"\nprint(f\"I think {age} is a good age, but so is {age + 1}\")",
+          "predictPrompt": "What do you predict will happen when Python executes the line `print(f\"... {age + 1}\")`? Will it print a number, cause an error, or something else?",
+          "expectedPrediction": "Error",
+          "predictionTargetDescription": "the overall outcome (successful print or error)",
+          "explanationPrompt": "If your prediction was different (e.g., you thought it would print '26' or '251'), explain why the TypeError actually occurs. What rule about adding strings and integers does this demonstrate?",
+          "minExplanationLength": 50
+        }
+      ],
+      "conclusion": "Did you see the `TypeError`? This happens because you cannot directly add a string (like \"25\") and an integer (like 1). Python requires you to explicitly convert the string to a number first using functions like `int()`."
+    },
+    {
+      "kind": "MultipleChoice",
+      "id": "problem2-q1-age-datatype",
+      "title": "Input Data Type",
+      "content": "Just to confirm, what data type does `age = input(\"What is your age? \")` assign to the `age` variable?",
+      "options": ["Integer", "String", "Float", "Depends on user input"],
+      "correctAnswer": 1,
+      "feedback": {
+        "correct": "Correct! `input()` always returns a string.",
+        "incorrect": "Remember, the `input()` function *always* returns data as a string, regardless of what the user types."
+      }
+    },
+    {
+      "kind": "Information",
+      "id": "problem2-type-casting",
+      "title": "Solution: Type Casting with `int()`",
+      "content": "To fix the `TypeError`, we need to convert the string obtained from `input()` into an integer *before* performing addition. We can do this using the `int()` function:\n\n```python\nage_string = input(\"What is your age? \")\nage_number = int(age_string) # Convert the string to an integer\nnext_age = age_number + 1\nprint(f\"I think {age_number} is a good age, but so is {next_age}\")\n```\nThis process of changing a variable from one type to another is called **type casting**."
+    },
+    {
+      "kind": "Testing",
+      "id": "problem2-task-fix-error",
+      "title": "Challenge: Fixing the `TypeError`",
+      "content": "Now, apply the concept of type casting. Modify the original problematic code snippet so that it correctly converts the user's input to an integer and prints the age and the age next year without errors.",
+      "examples": [
+        {
+          "id": "p2-challenge-code",
+          "title": "Implement Your Solution",
+          "description": "Modify the code below. Get the age using input, convert it to an integer, and then use the integer value in the print statement.",
+          "code": "# Get age as a string\nage_str = input(\"What is your age? \")\n\n# Convert age_str to an integer (replace the comment)\n# age_int = ... ?\n\n# Use the integer version in the print statement (replace age_str)\n# print(f\"I think {age_str} is a good age, but so is {age_str + 1}\") # Fix this line",
+          "testCases": [
+            {
+              "input": "25",
+              "expected": "I think 25 is a good age, but so is 26",
+              "description": "Test with age 25"
+            },
+            {
+              "input": "10",
+              "expected": "I think 10 is a good age, but so is 11",
+              "description": "Test with age 10"
+            },
+            {
+              "input": "0",
+              "expected": "I think 0 is a good age, but so is 1",
+              "description": "Test with age 0"
+            }
+          ],
+          "functionToTest": null
+        }
+      ]
+    }
+  ]
+}

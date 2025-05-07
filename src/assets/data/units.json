@@ -15,6 +15,13 @@
         "lesson_8"
       ],
       "image": "python-logo.png"
+    },
+    {
+      "id": "python_strings",
+      "title": "Python Strings Deep Dive",
+      "description": "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
+      "lessons": ["lesson_9", "lesson_10", "lesson_11", "lesson_12"],
+      "image": "python-logo.svg"
     }
   ]
 }

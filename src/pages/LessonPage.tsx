@@ -11,6 +11,7 @@ import type {
   TurtleSection as TurtleSectionData,
   ReflectionSection as ReflectionSectionData,
   CoverageSection as CoverageSectionData,
+  PRIMMSection as PRIMMSectionData,
 } from "../types/data";
 
 // --- Child Components ---
@@ -24,6 +25,7 @@ import MultipleSelectionSection from "../components/sections/MultipleSelectionSe
 import TurtleSection from "../components/sections/TurtleSection";
 import ReflectionSection from "../components/sections/ReflectionSection";
 import CoverageSection from "../components/sections/CoverageSection";
+import PRIMMSectionComponent from "../components/sections/PRIMMSection";
 
 // --- Styling ---
 import styles from "./LessonPage.module.css";
@@ -176,6 +178,14 @@ const LessonPage: React.FC = () => {
             key={section.id}
             lessonId={lessonId!}
             section={section as CoverageSectionData}
+          />
+        );
+      case "PRIMM":
+        return (
+          <PRIMMSectionComponent // Use the imported name
+            key={section.id}
+            lessonId={lessonId!}
+            section={section as PRIMMSectionData} // Cast to the specific type
           />
         );
       default:

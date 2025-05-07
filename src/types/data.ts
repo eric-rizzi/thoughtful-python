@@ -1,5 +1,7 @@
 // src/types/data.ts
 
+import { UserPoolIdentityProviderSamlMetadata } from "aws-cdk-lib/aws-cognito";
+
 // --- Base Structures ---
 
 export interface LessonExample {
@@ -59,7 +61,8 @@ export type SectionKind =
   | "MultiSelection"
   | "Turtle"
   | "Reflection"
-  | "Coverage";
+  | "Coverage"
+  | "PRIMM";
 
 export interface PredictionSection extends LessonSection {
   kind: "Prediction";
@@ -224,4 +227,45 @@ export interface SavedCoverageState {
 
 export interface SavedCodeState {
   [exampleId: string]: string; // Map example ID to its code string
+}
+
+export interface PRIMMCodeExample {
+  id: string; // Unique ID for this PRIMM block within the section
+  code: string; // The code to be displayed and run
+  predictPrompt: string; // Question asking the user to predict something (e.g., "What will be the value of x?")
+  expectedPrediction: string; // The correct answer for the prediction (string-based for simplicity)
+  // Optional: Specific lines to focus on for prediction, or variables
+  predictionTargetDescription?: string; // e.g., "the final output", "the value of variable 'y' at the end"
+  explanationPrompt: string; // Prompt for the explanation if prediction is wrong
+  minExplanationLength: number; // Minimum characters for the explanation
+}
+
+export interface PRIMMSection extends LessonSection {
+  kind: "PRIMM";
+  introduction: string; // General introduction to this PRIMM activity
+  examples: PRIMMCodeExample[]; // Array of PRIMM blocks for this section
+  // Potentially add Modify or Make prompts later
+  conclusion?: string; // Text to show after all examples are completed
+}
+
+// State for a single PRIMM example block (what the hook will manage per example)
+export interface PRIMMExampleState {
+  userPrediction: string;
+  predictionSubmitted: boolean;
+  isPredictionCorrect: boolean | null;
+  explanationText: string;
+  explanationSubmitted: boolean;
+  hasMetExplanationRequirement: boolean; // True if explanation is long enough (or not needed)
+  hasBeenRun: boolean; // Tracks if the "Run" step has been completed for this example
+  output: string | null; // Stores the output of running the code
+}
+
+// What will be saved in localStorage by useSectionProgress for the whole PRIMM section
+export interface SavedPRIMMSectionState {
+  // Keyed by PRIMMCodeExample.id
+  exampleStates: {
+    [exampleId: string]: PRIMMExampleState;
+  };
+  // We might also track overall section completion here if needed,
+  // but the hook can derive it.
 }

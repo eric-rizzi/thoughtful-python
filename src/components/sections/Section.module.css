@@ -1097,3 +1097,116 @@
   margin-top: 1rem;
   white-space: pre-wrap; /* Show error tracebacks correctly */
 }
+
+/* --- Styles for PRIMM Section (Approach 3) --- */
+
+.primmSectionContainer {
+  /* Overall container for the PRIMM section */
+  border-left: 5px solid #6c5ce7; /* A distinct color for PRIMM sections */
+  background-color: #fdfdff; /* Slightly different background */
+  padding-left: 1.5rem;
+}
+
+.introduction {
+  margin-bottom: 2rem;
+  font-size: 1.05em;
+}
+
+.exampleBlock {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.exampleBlock h4 {
+  /* Code Example: title */
+  margin-top: 0;
+  color: #306998; /* From Section.module.css */
+}
+
+.stage {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ccc;
+}
+.stage:first-of-type {
+  border-top: none; /* No top border for the very first stage (Prediction) */
+  padding-top: 0.5rem;
+}
+
+.stage h5 {
+  /* Stage titles like 1. Predict, Explain Discrepancy, 2. Run */
+  font-size: 1.1em;
+  color: #6c5ce7;
+  margin-bottom: 0.75rem;
+}
+
+.predictionInput {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.predictionInput:focus {
+  border-color: #6c5ce7;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+}
+
+.feedbackArea {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.predictionCorrect .feedbackArea {
+  background-color: #e6fffa; /* Light teal for correct */
+  border: 1px solid #a3e9dd;
+}
+.predictionIncorrect .feedbackArea {
+  background-color: #fff0f1; /* Light pink for incorrect */
+  border: 1px solid #ffccd1;
+}
+
+.correctText {
+  color: #00875a; /* Dark green */
+  font-weight: bold;
+}
+
+.incorrectText {
+  color: #de350b; /* Dark red */
+  font-weight: bold;
+}
+
+.explanationTextarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 1em;
+  min-height: 80px;
+  margin-bottom: 0.5rem;
+}
+.explanationTextarea:focus {
+  border-color: #6c5ce7;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+}
+
+.lengthHint {
+  font-size: 0.85em;
+  color: #777;
+  margin-top: 0.25rem;
+}
+
+.conclusion {
+  margin-top: 2rem;
+  /* Uses .completionMessage from Section.module.css */
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Lesson 9: String Formatting and f-strings",
+  "description": "Predict output, run code, and investigate f-strings for variable insertion and handling quotes.",
+  "sections": [
+    {
+      "kind": "Information",
+      "id": "lesson9-intro",
+      "title": "Introduction: Formatting Strings",
+      "content": "Printing messages that include variable values is a common task. Python's f-strings (formatted string literals) provide a powerful and readable way to do this. Let's predict how different approaches work before running the code."
+    },
+    {
+      "kind": "PRIMM",
+      "id": "primm-print-analysis",
+      "title": "Predict, Run, Investigate: Print Statements",
+      "introduction": "Below is Python code that takes a user's name and attempts to print a greeting in several ways. Follow the PRIMM steps for the example.",
+      "examples": [
+        {
+          "id": "primm-greetings",
+          "code": "name = \"Alex\" # Assume user input is 'Alex' for prediction\nprint(f\"Hello {name}it's nice to meet you!\") # Line 1\nprint(\"Hello {name} it's nice to meet you!\") # Line 2\nprint(f\"Hello {name} it's nice to meet you!\") # Line 3\nprint(f\"Hello name it's nice to meet you!\") # Line 4",
+          "predictPrompt": "Look closely at Line 3 (`print(f\"Hello {name} it's nice to meet you!\")`). What exact text will this line print?",
+          "expectedPrediction": "Hello Alex it's nice to meet you!",
+          "predictionTargetDescription": "The output of the third print statement",
+          "explanationPrompt": "If your prediction was different, why did the code produce the actual output? Consider how f-strings handle variables inside `{}` and how spacing works.",
+          "minExplanationLength": 40
+        }
+      ],
+      "conclusion": "Did running the code confirm your prediction? Notice how the `f` prefix enables variable substitution within `{}` and how spacing inside the string matters. Lines without the `f` or without `{}` around the variable behave differently."
+    },
+    {
+      "kind": "MultipleChoice",
+      "id": "problem1-q1-datatype",
+      "title": "Data Type Check",
+      "content": "When using `name = input(\"What is your name? \")`, what data type does the `input()` function *always* return for the `name` variable?",
+      "options": ["Integer", "Float", "String", "Boolean"],
+      "correctAnswer": 2,
+      "feedback": {
+        "correct": "Correct! The `input()` function always returns a string, even if the user types numbers.",
+        "incorrect": "Remember that the `input()` function in Python always captures user input as a string."
+      }
+    },
+    {
+      "kind": "MultipleChoice",
+      "id": "problem1-q3-quotes",
+      "title": "Why Double Quotes?",
+      "content": "In the code `print(f\"Hello {name} it's nice to meet you!\")`, why is using double quotes (`\"`) useful for defining the f-string?",
+      "options": [
+        "Python requires double quotes for f-strings.",
+        "It allows the single quote (apostrophe) in `it's` to be included without causing a syntax error.",
+        "Double quotes make the f-string process faster.",
+        "Variables can only be inserted into double-quoted strings."
+      ],
+      "correctAnswer": 1,
+      "feedback": {
+        "correct": "Correct! Using double quotes for the string allows single quotes (apostrophes) to be included within the string without prematurely ending it.",
+        "incorrect": "Consider what happens if you try to define a string like `'it's'` using only single quotes. Python allows both, but choosing the outer quote type wisely helps manage quotes inside the string."
+      }
+    },
+    {
+      "kind": "Testing",
+      "id": "problem1-task-grammatical-greeting",
+      "title": "Challenge: Perfecting the Greeting",
+      "content": "Grammatically, there should be a comma after saying 'Hello' to the person (e.g., 'Hello Alex, it’s nice to meet you!'). Your task is to write a single `print` statement using an f-string that greets the user (whose name is stored in the `name` variable) in this grammatically correct way.",
+      "examples": [
+        {
+          "id": "p1-challenge-code",
+          "title": "Implement Your Solution",
+          "description": "Complete the code below. If the variable `name` holds 'Alex', the output should be exactly: `Hello Alex, it's nice to meet you!`",
+          "code": "# Assume 'name' variable holds the user's input\nname = \"Alex\" # Example value for testing\n\n# Write the corrected f-string print statement below:\nprint(f\"Your solution here...\")\n",
+          "testCases": [
+            {
+              "input": null,
+              "expected": "Hello Alex, it's nice to meet you!",
+              "description": "Test with name Alex"
+            },
+            {
+              "input": null,
+              "expected": "Hello Sam, it's nice to meet you!",
+              "description": "Test with name Sam (Requires modifying the hardcoded name in test setup)"
+            }
+          ],
+          "functionToTest": null
+        }
+      ]
+    }
+  ]
+}
