@@ -114,22 +114,6 @@ const HomePage: React.FC = () => {
         </p>
       </section>
 
-      {/* Optional Features Section - can be removed if not needed */}
-      <section className={styles.features}>
-        <div className={styles.featureCard}>
-          <h3>Interactive Code Editor</h3>
-          <p>Write and execute Python code directly in your browser.</p>
-        </div>
-        <div className={styles.featureCard}>
-          <h3>Step-by-Step Lessons</h3>
-          <p>Learn programming concepts through guided exercises.</p>
-        </div>
-        <div className={styles.featureCard}>
-          <h3>Instant Feedback</h3>
-          <p>See your code results immediately as you type.</p>
-        </div>
-      </section>
-
       <section className={styles.learningPaths}>
         <h2>Learning Paths</h2>
         <p>Choose a learning path to begin your Python journey.</p>
