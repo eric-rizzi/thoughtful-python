@@ -1,16 +1,16 @@
 // src/components/sections/MultipleChoiceSection.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import type { MultipleChoiceSection as MultipleChoiceSectionData } from "../../types/data";
 import styles from "./Section.module.css";
-import { saveProgress, loadProgress } from "../../lib/localStorageUtils"; // Helper for localStorage
-import { useProgressActions } from "../../stores/progressStore";
+import { useSectionProgress } from "../../hooks/useSectionProgress";
 
 interface MultipleChoiceSectionProps {
   section: MultipleChoiceSectionData;
   lessonId: string;
 }
 
-interface SavedQuizState {
+interface QuizState {
+  // Renamed from SavedQuizState for clarity within component context
   selected: number | null;
   submitted: boolean;
   correct: boolean | null;
@@ -20,69 +20,58 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
   section,
   lessonId,
 }) => {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const storageKey = `quizState_${lessonId}_${section.id}`;
+  const initialState: QuizState = {
+    selected: null,
+    submitted: false,
+    correct: null,
+  };
 
-  // Get actions from the progress store
-  const { completeSection } = useProgressActions();
+  // Define the completion check function for this section type
+  const checkQuizCompletion = useCallback((state: QuizState): boolean => {
+    return state.correct === true;
+  }, []);
 
-  // Load saved state on mount (persists user's choice within the quiz)
-  useEffect(() => {
-    const savedState = loadProgress<SavedQuizState>(storageKey);
-    if (savedState) {
-      setSelectedOption(savedState.selected);
-      setIsSubmitted(savedState.submitted);
-      setIsCorrect(savedState.correct);
-      // If already submitted and correct from a previous session, ensure it's marked in global store.
-      // This is important if localStorage is cleared but store isn't, or vice versa.
-      // However, the primary responsibility for marking complete is on initial correct submission.
-      // If the section was already marked complete in the global store, this component doesn't need to do it again.
-    }
-  }, [storageKey]);
+  const [quizState, setQuizState] = useSectionProgress<QuizState>(
+    lessonId,
+    section.id,
+    storageKey,
+    initialState,
+    checkQuizCompletion
+  );
 
-  // Save state whenever it changes (persists user's choice within the quiz)
-  useEffect(() => {
-    const stateToSave: SavedQuizState = {
-      selected: selectedOption,
-      submitted: isSubmitted,
-      correct: isCorrect,
-    };
-    saveProgress(storageKey, stateToSave);
-  }, [selectedOption, isSubmitted, isCorrect, storageKey]);
+  const {
+    selected: selectedOption,
+    submitted: isSubmitted,
+    correct: isCorrect,
+  } = quizState;
 
   const handleOptionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!isSubmitted) {
-        setSelectedOption(parseInt(event.target.value, 10));
+        const newSelectedOption = parseInt(event.target.value, 10);
+        setQuizState((prevState) => ({
+          ...prevState,
+          selected: newSelectedOption,
+        }));
       }
     },
-    [isSubmitted]
+    [isSubmitted, setQuizState]
   );
 
   const handleSubmit = useCallback(() => {
     if (selectedOption === null || isSubmitted) return;
 
-    const correct = selectedOption === section.correctAnswer;
-    setIsCorrect(correct);
-    setIsSubmitted(true);
+    const isAnswerCorrect = selectedOption === section.correctAnswer;
 
-    if (correct) {
-      console.log(
-        `MultipleChoiceSection: ${section.id} answered correctly. Marking complete in progress store.`
-      );
-      // Use the action from progressStore to mark the section as complete
-      completeSection(lessonId, section.id);
-    }
-  }, [
-    selectedOption,
-    isSubmitted,
-    section.correctAnswer,
-    section.id,
-    lessonId,
-    completeSection,
-  ]);
+    setQuizState((prevState) => ({
+      ...prevState,
+      correct: isAnswerCorrect,
+      submitted: true,
+    }));
+    // The hook's useEffect will now pick up this state change,
+    // run checkQuizCompletion, and call completeSection if quizState.correct becomes true.
+  }, [selectedOption, isSubmitted, section.correctAnswer, setQuizState]);
 
   return (
     <section id={section.id} className={styles.section}>

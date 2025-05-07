@@ -1,18 +1,16 @@
 // src/components/sections/MultipleSelectionSection.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import type { MultipleSelectionSection as MultipleSelectionSectionData } from "../../types/data";
 import styles from "./Section.module.css";
-import { saveProgress, loadProgress } from "../../lib/localStorageUtils";
-import { useProgressActions } from "../../stores/progressStore"; // IMPORT ZUSTAND ACTIONS
+import { useSectionProgress } from "../../hooks/useSectionProgress";
 
 interface MultipleSelectionSectionProps {
   section: MultipleSelectionSectionData;
-  lessonId: string; // Needed for localStorage key and progressStore
-  // onSectionComplete prop is removed
+  lessonId: string;
 }
 
-// This interface defines the shape of the state saved to localStorage for this specific quiz type
-interface SavedMultiSelectState {
+// This interface defines the shape of the state managed by the hook AND saved to localStorage
+interface MultiSelectState {
   selected: number[]; // Store selected indexes as an array for JSON compatibility
   submitted: boolean;
   correct: boolean | null;
@@ -22,35 +20,42 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
   section,
   lessonId,
 }) => {
-  // Component's active state for selected options uses a Set for efficiency
-  const [selectedOptions, setSelectedOptions] = useState<Set<number>>(
-    new Set()
-  );
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const storageKey = `quizState_${lessonId}_${section.id}`;
+  const initialState: MultiSelectState = {
+    selected: [],
+    submitted: false,
+    correct: null,
+  };
 
-  const { completeSection } = useProgressActions();
+  // Define the completion check function for this section type
+  const checkMultiSelectCompletion = useCallback(
+    (state: MultiSelectState): boolean => {
+      return state.correct === true;
+    },
+    []
+  );
 
-  // Load saved state on mount
-  useEffect(() => {
-    const savedState = loadProgress<SavedMultiSelectState>(storageKey);
-    if (savedState) {
-      setSelectedOptions(new Set(savedState.selected || [])); // Initialize Set from saved array
-      setIsSubmitted(savedState.submitted);
-      setIsCorrect(savedState.correct);
-    }
-  }, [storageKey]);
+  // Use the new hook
+  const [multiSelectState, setMultiSelectState] =
+    useSectionProgress<MultiSelectState>(
+      lessonId,
+      section.id,
+      storageKey,
+      initialState,
+      checkMultiSelectCompletion
+    );
 
-  // Save state whenever it changes
-  useEffect(() => {
-    const stateToSave: SavedMultiSelectState = {
-      selected: Array.from(selectedOptions), // Convert Set to Array for saving
-      submitted: isSubmitted,
-      correct: isCorrect,
-    };
-    saveProgress(storageKey, stateToSave);
-  }, [selectedOptions, isSubmitted, isCorrect, storageKey]);
+  const {
+    selected: selectedIndexArray,
+    submitted: isSubmitted,
+    correct: isCorrect,
+  } = multiSelectState;
+
+  // For efficient checking and binding to checkboxes, convert the persisted array to a Set
+  const selectedOptionsSet = React.useMemo(
+    () => new Set(selectedIndexArray),
+    [selectedIndexArray]
+  );
 
   const handleOptionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,51 +64,45 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
       const index = parseInt(event.target.value, 10);
       const isChecked = event.target.checked;
 
-      setSelectedOptions((prev) => {
-        const newSet = new Set(prev);
+      setMultiSelectState((prevState) => {
+        const currentSelectedSet = new Set(prevState.selected);
         if (isChecked) {
-          newSet.add(index);
+          currentSelectedSet.add(index);
         } else {
-          newSet.delete(index);
+          currentSelectedSet.delete(index);
         }
-        return newSet;
+        return {
+          ...prevState,
+          selected: Array.from(currentSelectedSet), // Save back as an array
+        };
       });
-      // Reset correctness if changing answer after incorrect submission (optional)
-      // setIsCorrect(null);
     },
-    [isSubmitted]
+    [isSubmitted, setMultiSelectState]
   );
 
   const handleSubmit = useCallback(() => {
-    if (selectedOptions.size === 0 || isSubmitted) return;
+    if (selectedOptionsSet.size === 0 || isSubmitted) return;
 
-    // Check if the selected options exactly match the correct answers
     const correctAnswersSet = new Set(section.correctAnswers);
-    const correct =
-      selectedOptions.size === correctAnswersSet.size &&
-      [...selectedOptions].every((selectedIndex) =>
+    const isAnswerCorrect =
+      selectedOptionsSet.size === correctAnswersSet.size &&
+      [...selectedOptionsSet].every((selectedIndex) =>
         correctAnswersSet.has(selectedIndex)
       );
 
-    setIsCorrect(correct);
-    setIsSubmitted(true);
-
-    if (correct) {
-      console.log(
-        `MultipleSelectionSection: ${section.id} answered correctly. Marking complete in progress store.`
-      );
-      completeSection(lessonId, section.id);
-    }
+    setMultiSelectState((prevState) => ({
+      ...prevState,
+      correct: isAnswerCorrect,
+      submitted: true,
+    }));
+    // The hook's useEffect will now pick up this state change,
+    // run checkMultiSelectCompletion, and call completeSection if multiSelectState.correct becomes true.
   }, [
-    selectedOptions,
+    selectedOptionsSet,
     isSubmitted,
     section.correctAnswers,
-    section.id,
-    lessonId,
-    completeSection,
-    setIsCorrect,
-    setIsSubmitted,
-  ]); // Added setIsCorrect, setIsSubmitted
+    setMultiSelectState,
+  ]);
 
   return (
     <section id={section.id} className={styles.section}>
@@ -125,10 +124,10 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
           >
             <input
               type="checkbox"
-              name={`${section.id}-option-${index}`} // Ensure unique name for accessibility if needed, though not strictly for functionality here
+              name={`${section.id}-option-${index}`}
               value={index}
               id={`${section.id}-option-${index}`}
-              checked={selectedOptions.has(index)}
+              checked={selectedOptionsSet.has(index)}
               onChange={handleOptionChange}
               disabled={isSubmitted}
             />
@@ -140,7 +139,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={selectedOptions.size === 0}
+            disabled={selectedOptionsSet.size === 0}
             className={styles.quizSubmitButton}
           >
             Submit Answer
