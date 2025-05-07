@@ -1,0 +1,216 @@
+/* src/pages/LearningEntriesPage.module.css */
+
+.learningEntriesSection {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  margin: 2rem auto; /* Center content */
+  max-width: 1000px; /* Limit width */
+}
+
+.learningEntriesSection h2 {
+  color: #306998;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.introText {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.entriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.entryCard {
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  border-left: 4px solid #4b8bbe; /* Default border */
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    border-left-color 0.2s ease; /* Added border transition */
+}
+
+.entryCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Assessment-based border colors */
+.assessmentDeveloping {
+  border-left-color: #ffc107 !important;
+}
+.assessmentMeets {
+  border-left-color: #28a745 !important;
+}
+.assessmentExceeds {
+  border-left-color: #4b8bbe !important;
+} /* Reusing default blue */
+
+.entryHeader {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 1rem;
+}
+
+.entryMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.entryLesson a {
+  color: #4b8bbe;
+  text-decoration: none;
+  font-weight: 500;
+}
+.entryLesson a:hover {
+  text-decoration: underline;
+}
+
+.entryTopic {
+  color: #306998;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.entryContent {
+  display: grid;
+  grid-template-columns: 1fr; /* Default single column */
+  gap: 1.5rem;
+}
+
+.entryCode,
+.entryExplanation,
+.entryFeedback {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.entryCode h4,
+.entryExplanation h4,
+.entryFeedback h4 {
+  color: #555;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.entryCode pre {
+  background-color: #f8f8f8;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0;
+  border: 1px solid #eee;
+}
+
+.entryCode code {
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.entryExplanation p {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap; /* Preserve formatting */
+}
+
+.entryFeedback {
+  border-color: #e0e0e0;
+  background-color: #fcfcfc;
+}
+
+/* Assessment badge styling (copied from original) */
+.assessmentBadge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+/* Classes matching assessment levels for badges */
+.developing {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.meets {
+  background-color: #d4edda;
+  color: #155724;
+}
+.exceeds {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.entryFeedback p {
+  white-space: pre-wrap;
+}
+
+.noEntriesMessage {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f9f9fa;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+
+.noEntriesMessage p {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.primaryButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #4b8bbe;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  background-color: #306998;
+}
+
+.loadingMessage {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Responsive styling for content grid */
+@media (min-width: 768px) {
+  .entryContent {
+    grid-template-columns: 1fr 1fr; /* Two columns on wider screens */
+  }
+
+  .entryFeedback {
+    grid-column: 1 / -1; /* Feedback spans both columns */
+  }
+}
