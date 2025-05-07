@@ -1,5 +1,5 @@
 // src/components/sections/ReflectionSection.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import type {
   ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,
@@ -9,9 +9,8 @@ import type {
   AssessmentLevel,
 } from "../../types/data";
 import styles from "./Section.module.css";
-import { saveProgress, loadProgress } from "../../lib/localStorageUtils";
 import CodeEditor from "../CodeEditor";
-import { useProgressActions } from "../../stores/progressStore";
+import { useSectionProgress } from "../../hooks/useSectionProgress";
 
 interface ReflectionSectionProps {
   section: ReflectionSectionData;
@@ -28,7 +27,6 @@ async function getSimulatedFeedback(
     setTimeout(resolve, 1500 + Math.random() * 100)
   );
 
-  // Simulate simple analysis based on length and keywords
   let assessment: AssessmentLevel = "developing";
   let feedback = "";
   const codeLower = submission.code.toLowerCase();
@@ -52,7 +50,7 @@ async function getSimulatedFeedback(
     testing: ["test", "assert", "unittest", "pytest"],
     prediction: ["predict", "output", "input", "trace"],
   };
-  const relevantKeywords = topicKeywords[submission.topic.toLowerCase()] || []; // handle topic case
+  const relevantKeywords = topicKeywords[submission.topic.toLowerCase()] || [];
   const keywordMatch = relevantKeywords.some(
     (kw) => codeLower.includes(kw) || explanationLower.includes(kw)
   );
@@ -79,54 +77,55 @@ async function getSimulatedFeedback(
   }
   return { feedback, assessment, timestamp: Date.now() };
 }
-
 // --- End Simulated API Call ---
 
 const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   section,
   lessonId,
 }) => {
+  // State for current input fields (not persisted by the hook directly, but used to build entries for history)
   const [topic, setTopic] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [explanation, setExplanation] = useState<string>("");
-  const [history, setHistory] = useState<ReflectionHistoryEntry[]>([]);
+
+  // Runtime state (not persisted by the hook)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
   const storageKey = `reflectState_${lessonId}_${section.id}`;
+  const initialState: SavedReflectionState = { history: [] };
 
-  // Get completeSection action from Zustand store
-  const { completeSection } = useProgressActions();
-
-  // Load saved history on mount (remains the same)
-  useEffect(() => {
-    const savedState = loadProgress<SavedReflectionState>(storageKey);
-    if (savedState?.history) {
-      setHistory(savedState.history);
-      // Check if already completed based on loaded history - this will now be handled by useEffect below
-    }
-  }, [storageKey]);
-
-  // Effect to mark section complete if a "meets" or "exceeds" assessment exists in history
-  // This handles loading a previously completed state.
-  useEffect(() => {
-    const alreadyComplete = history.some(
-      (entry) =>
-        entry.response?.assessment &&
-        ["meets", "exceeds"].includes(entry.response.assessment)
-    );
-    if (alreadyComplete) {
-      console.log(
-        `ReflectionSection ${section.id} loaded as already meeting criteria. Marking via Zustand.`
+  const checkReflectionCompletion = useCallback(
+    (currentHookState: SavedReflectionState): boolean => {
+      return currentHookState.history.some(
+        (entry) =>
+          entry.response?.assessment &&
+          ["meets", "exceeds"].includes(entry.response.assessment)
       );
-      completeSection(lessonId, section.id);
-    }
-    // Note: This effect runs when `history` changes. If `handleSubmit` adds to history
-    // and the new entry meets criteria, this effect will then call `completeSection`.
-  }, [history, lessonId, section.id, completeSection]);
+    },
+    []
+  ); // No dependencies needed as it only uses the passed state
+
+  const [
+    reflectionState, // This is SavedReflectionState { history: ReflectionHistoryEntry[] }
+    setReflectionState,
+    isSectionComplete, // Boolean from the hook
+  ] = useSectionProgress<SavedReflectionState>(
+    lessonId,
+    section.id,
+    storageKey,
+    initialState,
+    checkReflectionCompletion
+  );
+
+  // The history to display comes directly from the hook's state
+  const history = reflectionState.history;
+
+  // No more useEffect for loading history or checking completion based on history changes here,
+  // the hook handles loading and the completion check based on its 'state' (which is reflectionState).
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
-      // Basic validation
       if (!topic || !code.trim() || !explanation.trim()) {
         alert(
           "Please select a topic, write some code, and provide an explanation."
@@ -147,27 +146,23 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
       try {
         const response = await getSimulatedFeedback(submission, section.rubric);
-
         const newHistoryEntry: ReflectionHistoryEntry = {
           submission,
           response,
         };
 
-        // Update history state and save
-        setHistory((prevHistory) => {
-          const updatedHistory = [newHistoryEntry, ...prevHistory];
-          saveProgress<SavedReflectionState>(storageKey, {
-            history: updatedHistory,
-          });
-          return updatedHistory;
-        });
+        // Update history using the setter from the hook
+        setReflectionState((prevState) => ({
+          ...prevState, // Should spread prevState if SavedReflectionState has other keys
+          history: [newHistoryEntry, ...prevState.history],
+        }));
+        // The hook's useEffect will now trigger checkReflectionCompletion with the new history
 
-        // Clear inputs only for formal submission, or always? User preference.
-        // For now, clearing only for formal seems reasonable.
         if (isFormalSubmission) {
+          // Optionally clear input fields after formal submission
+          // setTopic(""); // Or keep topic selected
           setCode("");
           setExplanation("");
-          // setTopic(''); // Maybe keep topic selected?
           alert("Your entry has been submitted and saved!");
         }
       } catch (err) {
@@ -181,13 +176,26 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         setIsSubmitting(false);
       }
     },
-    [topic, code, explanation, section.rubric, storageKey]
+    [topic, code, explanation, section.rubric, setReflectionState] // Added setReflectionState
   );
 
-  // Helper to get topic display name (remains the same)
   const getTopicName = (topicValue: string): string => {
-    /* ... */ return topicValue;
+    const topicMap: { [key: string]: string } = {
+      variables: "Variables and Data Types",
+      functions: "Functions",
+      loops: "Loops and Iteration",
+      conditions: "Conditional Statements",
+      datastructures: "Data Structures",
+      turtle: "Turtle Graphics",
+      testing: "Testing",
+      prediction: "Prediction",
+    };
+    return (
+      topicMap[topicValue] ||
+      topicValue.charAt(0).toUpperCase() + topicValue.slice(1)
+    );
   };
+
   const formatDate = (timestamp: number): string =>
     new Date(timestamp).toLocaleString();
 
@@ -220,6 +228,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             <option value="turtle">Turtle Graphics</option>
             <option value="testing">Testing</option>
             <option value="prediction">Prediction</option>
+            {/* Add other topics if needed */}
           </select>
         </div>
 
@@ -275,18 +284,18 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           </button>
         </div>
 
-        {/* API Error Display */}
         {error && <p className={styles.apiError}>Error: {error}</p>}
 
-        {/* History Display */}
         <div className={styles.reflectionHistory}>
-          <h4>Submission History</h4>
+          <h4>
+            Submission History {isSectionComplete ? "(Section Complete ✓)" : ""}
+          </h4>
           {history.length === 0 ? (
             <p className={styles.noHistory}>No submissions yet.</p>
           ) : (
             history.map((entry, index) => (
               <div
-                key={entry.submission.timestamp + "-" + index}
+                key={entry.submission.timestamp + "-" + index} // Ensure unique key
                 className={`${styles.reflectionCard} ${
                   entry.response?.assessment
                     ? styles[
@@ -311,8 +320,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                   </div>
                   <h5>Topic: {getTopicName(entry.submission.topic)}</h5>
                   <details>
-                    {" "}
-                    {/* Use details/summary for collapsibility */}
                     <summary style={{ cursor: "pointer", fontWeight: "500" }}>
                       Show Code & Explanation
                     </summary>
@@ -329,29 +336,34 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 {entry.response && (
                   <div className={styles.reflectionResponse}>
                     <h5>Feedback ({formatDate(entry.response.timestamp)}):</h5>
-                    <div
-                      className={
-                        styles[
-                          `assessmentBadge${
-                            entry.response.assessment.charAt(0).toUpperCase() +
-                            entry.response.assessment.slice(1)
-                          }`
-                        ]
-                      }
-                    >
-                      {entry.response.assessment}
-                    </div>
+                    {entry.response.assessment && ( // Check if assessment exists before rendering badge
+                      <div
+                        className={`${styles.assessmentBadge} ${
+                          styles[
+                            `assessmentBadge${
+                              entry.response.assessment
+                                .charAt(0)
+                                .toUpperCase() +
+                              entry.response.assessment.slice(1)
+                            }`
+                          ] || ""
+                        }`} // Added fallback for class name
+                      >
+                        {entry.response.assessment}
+                      </div>
+                    )}
                     <p>{entry.response.feedback}</p>
                   </div>
                 )}
-                {!entry.response && isSubmitting && index === 0 && (
-                  <div className={styles.reflectionResponse}>
-                    {" "}
-                    <p>
-                      <i>Getting feedback...</i>
-                    </p>{" "}
-                  </div>
-                )}
+                {!entry.response &&
+                  isSubmitting &&
+                  index === 0 && ( // Show loading for current submission
+                    <div className={styles.reflectionResponse}>
+                      <p>
+                        <i>Getting feedback...</i>
+                      </p>
+                    </div>
+                  )}
               </div>
             ))
           )}
