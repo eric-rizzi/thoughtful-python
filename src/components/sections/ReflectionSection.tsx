@@ -12,11 +12,6 @@ import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 
-interface ReflectionSectionProps {
-  section: ReflectionSectionData;
-  lessonId: string;
-}
-
 // --- Simulated API Call ---
 async function getSimulatedFeedback(
   submission: ReflectionSubmission,
@@ -79,16 +74,18 @@ async function getSimulatedFeedback(
 }
 // --- End Simulated API Call ---
 
+interface ReflectionSectionProps {
+  section: ReflectionSectionData;
+  lessonId: string;
+}
+
 const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   section,
   lessonId,
 }) => {
-  // State for current input fields (not persisted by the hook directly, but used to build entries for history)
   const [topic, setTopic] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [explanation, setExplanation] = useState<string>("");
-
-  // Runtime state (not persisted by the hook)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -99,30 +96,24 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     (currentHookState: SavedReflectionState): boolean => {
       return currentHookState.history.some(
         (entry) =>
+          entry.submission.submitted === true &&
           entry.response?.assessment &&
           ["meets", "exceeds"].includes(entry.response.assessment)
       );
     },
     []
-  ); // No dependencies needed as it only uses the passed state
+  ); // No dependencies, relies only on the state passed to it
 
-  const [
-    reflectionState, // This is SavedReflectionState { history: ReflectionHistoryEntry[] }
-    setReflectionState,
-    isSectionComplete, // Boolean from the hook
-  ] = useSectionProgress<SavedReflectionState>(
-    lessonId,
-    section.id,
-    storageKey,
-    initialState,
-    checkReflectionCompletion
-  );
+  const [reflectionState, setReflectionState, isSectionComplete] =
+    useSectionProgress<SavedReflectionState>(
+      lessonId,
+      section.id,
+      storageKey,
+      initialState,
+      checkReflectionCompletion
+    );
 
-  // The history to display comes directly from the hook's state
   const history = reflectionState.history;
-
-  // No more useEffect for loading history or checking completion based on history changes here,
-  // the hook handles loading and the completion check based on its 'state' (which is reflectionState).
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
@@ -151,19 +142,18 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           response,
         };
 
-        // Update history using the setter from the hook
         setReflectionState((prevState) => ({
-          ...prevState, // Should spread prevState if SavedReflectionState has other keys
           history: [newHistoryEntry, ...prevState.history],
         }));
-        // The hook's useEffect will now trigger checkReflectionCompletion with the new history
 
         if (isFormalSubmission) {
-          // Optionally clear input fields after formal submission
-          // setTopic(""); // Or keep topic selected
           setCode("");
           setExplanation("");
-          alert("Your entry has been submitted and saved!");
+          alert("Your entry has been submitted and saved to your journal!");
+        } else {
+          alert(
+            "Feedback received! You can revise your work or submit it to your journal."
+          );
         }
       } catch (err) {
         console.error("Feedback submission error:", err);
@@ -176,7 +166,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         setIsSubmitting(false);
       }
     },
-    [topic, code, explanation, section.rubric, setReflectionState] // Added setReflectionState
+    [topic, code, explanation, section.rubric, setReflectionState]
   );
 
   const getTopicName = (topicValue: string): string => {
@@ -228,7 +218,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             <option value="turtle">Turtle Graphics</option>
             <option value="testing">Testing</option>
             <option value="prediction">Prediction</option>
-            {/* Add other topics if needed */}
           </select>
         </div>
 
@@ -265,7 +254,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
         <div className={styles.reflectionButtons}>
           <button
-            onClick={() => handleSubmit(false)} // Get Feedback
+            onClick={() => handleSubmit(false)} // Get Feedback - isFormalSubmission is false
             disabled={
               isSubmitting || !topic || !code.trim() || !explanation.trim()
             }
@@ -274,13 +263,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             {isSubmitting ? "Processing..." : "Get Feedback"}
           </button>
           <button
-            onClick={() => handleSubmit(true)} // Submit Entry
+            onClick={() => handleSubmit(true)} // Submit Entry - isFormalSubmission is true
             disabled={
               isSubmitting || !topic || !code.trim() || !explanation.trim()
             }
             className={styles.reflectionSubmitBtn}
           >
-            {isSubmitting ? "Processing..." : "Submit Entry"}
+            {isSubmitting ? "Processing..." : "Submit Entry to Journal"}
           </button>
         </div>
 
@@ -295,7 +284,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           ) : (
             history.map((entry, index) => (
               <div
-                key={entry.submission.timestamp + "-" + index} // Ensure unique key
+                key={entry.submission.timestamp + "-" + index}
                 className={`${styles.reflectionCard} ${
                   entry.response?.assessment
                     ? styles[
@@ -312,9 +301,16 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                     <span className={styles.reflectionDate}>
                       {formatDate(entry.submission.timestamp)}
                     </span>
-                    {entry.submission.submitted && (
+                    {/* Display distinct visual cue for "Get Feedback" vs "Submitted to Journal" */}
+                    {entry.submission.submitted ? (
                       <span className={styles.submissionBadge}>
                         Submitted to Journal
+                      </span>
+                    ) : (
+                      <span
+                        className={`${styles.submissionBadge} ${styles.feedbackOnlyBadge}`}
+                      >
+                        Feedback Cycle
                       </span>
                     )}
                   </div>
@@ -336,7 +332,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 {entry.response && (
                   <div className={styles.reflectionResponse}>
                     <h5>Feedback ({formatDate(entry.response.timestamp)}):</h5>
-                    {entry.response.assessment && ( // Check if assessment exists before rendering badge
+                    {entry.response.assessment && (
                       <div
                         className={`${styles.assessmentBadge} ${
                           styles[
@@ -347,7 +343,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                               entry.response.assessment.slice(1)
                             }`
                           ] || ""
-                        }`} // Added fallback for class name
+                        }`}
                       >
                         {entry.response.assessment}
                       </div>
@@ -357,7 +353,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 )}
                 {!entry.response &&
                   isSubmitting &&
-                  index === 0 && ( // Show loading for current submission
+                  // Check if this history entry is the one currently being submitted
+                  entry.submission.timestamp ===
+                    Math.max(...history.map((h) => h.submission.timestamp)) && (
                     <div className={styles.reflectionResponse}>
                       <p>
                         <i>Getting feedback...</i>
