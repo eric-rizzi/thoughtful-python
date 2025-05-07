@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import UnitPage from "./pages/UnitPage";
 import LessonPage from "./pages/LessonPage";
 import CodeEditorPage from "./pages/CodeEditorPage";
+import LearningEntriesPage from "./pages/LearningEntriesPage";
 import Layout from "./components/Layout";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="unit/:unitId" element={<UnitPage />} />
         <Route path="lesson/:lessonId" element={<LessonPage />} />
         <Route path="editor" element={<CodeEditorPage />} />{" "}
+        <Route path="learning-entries" element={<LearningEntriesPage />} />
         {/* Other routes go here */}
         <Route
           path="*"

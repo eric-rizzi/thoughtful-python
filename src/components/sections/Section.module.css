@@ -998,3 +998,84 @@
   line-height: 1.6;
   color: #444;
 }
+
+/* --- Styles for Turtle Section --- */
+
+.turtleInstructions,
+.turtleCommandsReference {
+  margin-bottom: 1.5rem;
+  background-color: #f0f4f8; /* Light blue background */
+  border: 1px solid #d1dce5;
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+}
+
+.turtleInstructions h4,
+.turtleCommandsReference h4 {
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.turtleCommandsReference ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+
+.turtleCommandsReference li {
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.turtleCommandsReference code {
+  background-color: #e1e8ed;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+}
+
+.turtleEditorContainer {
+  margin: 1.5rem 0;
+}
+.turtleEditorContainer h4 {
+  margin-bottom: 0.75rem;
+  color: #306998;
+}
+
+/* Reuse .editorControls, .runButton, .testButton from previous styles */
+/* Add specific styles if needed */
+
+/* Container where real-turtle will inject the canvas */
+.turtleCanvasContainer {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 320px; /* Ensure space for canvas */
+  width: 100%; /* Adjust width as needed */
+  max-width: 420px; /* Example max width */
+  margin: 1rem auto; /* Center the canvas container */
+  background-color: white; /* Ensure white background */
+  position: relative; /* For potential overlays */
+  overflow: hidden; /* Clip contents */
+}
+
+/* Style the canvas created by real-turtle if necessary */
+.turtleCanvasContainer > canvas {
+  display: block; /* Remove extra space below canvas */
+  max-width: 100%;
+  height: auto;
+}
+
+/* Reuse feedback styles from quiz/testing */
+/* Ensure .quizFeedback, .correctFeedback, .incorrectFeedback, .errorFeedback exist */
+.errorFeedback {
+  /* Example error style */
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left-color: #dc3545; /* Assuming reuse of quizFeedback border */
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-top: 1rem;
+  border-left: 5px solid #dc3545;
+}

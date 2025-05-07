@@ -154,8 +154,14 @@ const LessonPage: React.FC = () => {
             section={section as MultipleSelectionSectionData}
           />
         );
-      // case 'Turtle':
-      //  return <TurtleSection key={section.id} lessonId={lessonId!} section={section as TurtleSectionData} />;
+      case "Turtle":
+        return (
+          <TurtleSection
+            key={section.id}
+            lessonId={lessonId!}
+            section={section as TurtleSectionData}
+          />
+        );
       case "Reflection":
         return (
           <ReflectionSection
