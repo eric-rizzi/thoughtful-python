@@ -178,7 +178,7 @@ const LessonPage: React.FC = () => {
             section={section as any}
           />
         );
-      case "MultiSelection":
+      case "MultipleSelection":
         return (
           <MultipleSelectionSection
             key={section.id}

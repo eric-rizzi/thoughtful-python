@@ -58,7 +58,7 @@ export type SectionKind =
   | "Testing" // Uses examples with testCases
   | "Prediction"
   | "MultipleChoice"
-  | "MultiSelection"
+  | "MultipleSelection"
   | "Turtle"
   | "Reflection"
   | "Coverage"
@@ -88,7 +88,7 @@ export interface MultipleChoiceSection extends LessonSection {
 }
 
 export interface MultipleSelectionSection extends LessonSection {
-  kind: "MultiSelection";
+  kind: "MultipleSelection";
   options: string[];
   correctAnswers: number[];
   feedback: {

@@ -72,7 +72,7 @@
       }
     },
     {
-      "kind": "MultiSelection",
+      "kind": "MultipleSelection",
       "id": "question-5",
       "title": "Question 5: Valid Python Data Structures",
       "content": "Which of the following are built-in data structures in Python? (Select all that apply)",
@@ -91,7 +91,7 @@
       }
     },
     {
-      "kind": "MultiSelection",
+      "kind": "MultipleSelection",
       "id": "question-6",
       "title": "Question 6: Comments in Python",
       "content": "Which of the following are valid ways to create comments in Python? (Select all that apply)",

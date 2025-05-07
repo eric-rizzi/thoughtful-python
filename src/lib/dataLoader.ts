@@ -119,7 +119,7 @@ export function getRequiredSectionsForLesson(lesson: Lesson): string[] {
         "Testing",
         "Prediction",
         "MultipleChoice",
-        "MultiSelection",
+        "MultipleSelection",
         "Turtle",
         "Reflection",
         "Coverage",
