@@ -4,395 +4,397 @@
    Base Section Styles (Step 11)
    ============================ */
 
-   .section {
-    margin-bottom: 2.5rem; /* Spacing between sections */
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #eee; /* Separator line */
-  }
-  
-  /* Remove bottom border for the very last section on a page */
-  .section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-  
-  .title {
-    color: #306998; /* Dark blue for titles */
-    margin-top: 0; /* Important for anchor links */
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    font-weight: 600; /* Make titles a bit bolder */
-    scroll-margin-top: 80px; /* Offset for sticky header when scrolling to ID */
-  }
-  
-  .content {
-    margin-bottom: 1.5rem;
-    line-height: 1.7; /* Good readability */
-    color: #444; /* Dark gray for text */
-    white-space: pre-wrap; /* Preserve newlines from JSON content */
-  }
-  
-  /* Placeholder for sections where interactive part isn't built yet */
-  .interactivePlaceholder {
-      border: 1px dashed #ccc;
-      padding: 1rem;
-      margin-top: 1.5rem; /* Spacing from main content */
-      color: #777;
-      font-style: italic;
-      background-color: #f9f9f9;
-      border-radius: 4px;
-      text-align: center;
-  }
-  
-  /* ==========================================
+.section {
+  margin-bottom: 2.5rem; /* Spacing between sections */
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee; /* Separator line */
+}
+
+/* Remove bottom border for the very last section on a page */
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.title {
+  color: #306998; /* Dark blue for titles */
+  margin-top: 0; /* Important for anchor links */
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 600; /* Make titles a bit bolder */
+  scroll-margin-top: 80px; /* Offset for sticky header when scrolling to ID */
+}
+
+.content {
+  margin-bottom: 1.5rem;
+  line-height: 1.7; /* Good readability */
+  color: #444; /* Dark gray for text */
+  white-space: pre-wrap; /* Preserve newlines from JSON content */
+}
+
+/* Placeholder for sections where interactive part isn't built yet */
+.interactivePlaceholder {
+  border: 1px dashed #ccc;
+  padding: 1rem;
+  margin-top: 1.5rem; /* Spacing from main content */
+  color: #777;
+  font-style: italic;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* ==========================================
      Code Example Styles (Observation/Testing - Step 15)
      ========================================== */
-  
-  .exampleContainer {
-    margin-top: 1.5rem;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background-color: #fdfdfd; /* Slightly off-white background for examples */
-    border: 1px solid #eaeaea;
-    border-radius: 6px;
-  }
-  
-  /* No bottom margin for the last example in a section */
-  .exampleContainer:last-child {
-      margin-bottom: 0;
-  }
-  
-  .exampleTitle {
-    font-size: 1.3rem;
-    color: #3a7ab8; /* Slightly different blue */
-    margin-top: 0;
-    margin-bottom: 0.75rem;
-    font-weight: 500; /* Less heavy than section title */
-  }
-  
-  .exampleDescription {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    color: #555;
-    line-height: 1.6;
-  }
-  
-  /* Controls below the editor (buttons, status) */
-  .editorControls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 0.75rem;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
-      gap: 0.75rem; /* Space between buttons and status */
-  }
-  
-  .runButton {
-    background-color: #4b8bbe;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s;
-    font-size: 0.9rem;
-  }
-  
-  .runButton:hover:not(:disabled) {
-    background-color: #306998;
-  }
-  
-  .runButton:disabled {
-    background-color: #a8c7e0;
-    cursor: not-allowed;
-  }
-  
-  .pyodideStatus {
-      font-size: 0.85rem;
-      color: #666;
-      font-style: italic;
-      text-align: right; /* Align status to the right */
-  }
-  
-  .pyodideError {
-      composes: pyodideStatus; /* Inherit base style */
-      color: #c53030; /* Red for error */
-      font-weight: 500;
-  }
-  
-  /* Code output area */
-  .outputArea {
-    margin-top: 1rem;
-    background-color: #2e3440; /* Dark background (Nord theme like) */
-    color: #d8dee9; /* Light text */
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    min-height: 40px; /* Minimum height even when empty */
-    max-height: 300px; /* Prevent excessive height */
-    overflow-y: auto; /* Allow scrolling */
-    white-space: pre-wrap; /* Wrap long lines */
-    border: 1px solid #444; /* Darker border */
-  }
-  
-  .outputArea pre {
-      margin: 0; /* Remove default pre margin */
-  }
-  
-  .outputError {
-    color: #ff7c7c; /* Bright red for errors within output */
-  }
-  
-  .outputEmpty {
-      color: #888; /* Dim color for empty output message */
-      font-style: italic;
-  }
-  
-  /* =====================================
+
+.exampleContainer {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #fdfdfd; /* Slightly off-white background for examples */
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+}
+
+/* No bottom margin for the last example in a section */
+.exampleContainer:last-child {
+  margin-bottom: 0;
+}
+
+.exampleTitle {
+  font-size: 1.3rem;
+  color: #3a7ab8; /* Slightly different blue */
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-weight: 500; /* Less heavy than section title */
+}
+
+.exampleDescription {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Controls below the editor (buttons, status) */
+.editorControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.75rem; /* Space between buttons and status */
+}
+
+.runButton {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.runButton:hover:not(:disabled) {
+  background-color: #306998;
+}
+
+.runButton:disabled {
+  background-color: #a8c7e0;
+  cursor: not-allowed;
+}
+
+.pyodideStatus {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+  text-align: right; /* Align status to the right */
+}
+
+.pyodideError {
+  composes: pyodideStatus; /* Inherit base style */
+  color: #c53030; /* Red for error */
+  font-weight: 500;
+}
+
+/* Code output area */
+.outputArea {
+  margin-top: 1rem;
+  background-color: #2e3440; /* Dark background (Nord theme like) */
+  color: #d8dee9; /* Light text */
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 40px; /* Minimum height even when empty */
+  max-height: 300px; /* Prevent excessive height */
+  overflow-y: auto; /* Allow scrolling */
+  white-space: pre-wrap; /* Wrap long lines */
+  border: 1px solid #444; /* Darker border */
+}
+
+.outputArea pre {
+  margin: 0; /* Remove default pre margin */
+}
+
+.outputError {
+  color: #ff7c7c; /* Bright red for errors within output */
+}
+
+.outputEmpty {
+  color: #888; /* Dim color for empty output message */
+  font-style: italic;
+}
+
+/* =====================================
      Testing Specific Styles (Step 16)
      ===================================== */
-  
-  .testButton {
-    background-color: #28a745; /* Green */
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s;
-    font-size: 0.9rem;
-    margin-left: 0.5rem; /* Space from run button */
-  }
-  
-  .testButton:hover:not(:disabled) {
-    background-color: #218838; /* Darker green */
-  }
-  
-  .testButton:disabled {
-    background-color: #94d3a2; /* Lighter green */
-    cursor: not-allowed;
-  }
-  
-  /* Container for test results display */
-  .testResultArea {
-    margin-top: 1.5rem;
-    border-top: 2px solid #eee; /* Clearer separator */
-    padding-top: 1.5rem;
-  }
-  
-  /* Test Success Box */
-  .testSuccess {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 1rem 1.5rem;
-    border-radius: 4px;
-    border-left: 5px solid #28a745; /* Thick green border */
-  }
-  .testSuccess h4 {
-    color: #155724;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
-  
-  /* Test Failure Box */
-  .testFailure {
-    background-color: #fff3cd; /* Warning yellow */
-    color: #856404;
-    padding: 1rem 1.5rem;
-    border-radius: 4px;
-    border-left: 5px solid #ffc107; /* Thick warning border */
-  }
-  .testFailure h4 {
-    color: #856404;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
-  .testFailure h5 { /* Sub-heading for "First Failed Test" */
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-      font-weight: 600;
-  }
-  
-  /* Test Error Box (e.g., code crashed, parsing failed) */
-  .testError {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 1rem 1.5rem;
-    border-radius: 4px;
-    border-left: 5px solid #dc3545; /* Thick error border */
-  }
-  .testError h4 {
-    color: #721c24;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
-  .testError pre { /* Styling for error details */
-    background-color: rgba(0, 0, 0, 0.05);
-    padding: 0.5rem;
-    border-radius: 3px;
-    overflow-x: auto;
-    margin-top: 0.5rem;
-    white-space: pre-wrap;
-    font-size: 0.85rem;
-  }
-  
-  /* Test Results Table */
-  .testResultsTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    font-size: 0.9rem;
-    background-color: white;
-    border: 1px solid #dee2e6;
-  }
-  
-  .testResultsTable th,
-  .testResultsTable td {
-    padding: 0.75rem;
-    border: 1px solid #dee2e6;
-    text-align: left;
-    vertical-align: top;
-  }
-  
-  .testResultsTable th {
-    background-color: #e9ecef; /* Light gray header */
-    font-weight: 600;
-  }
-  
-  /* Failed row styling within the table */
-  .testFailedRow {
-    background-color: #fff5f5; /* Light red background */
-  }
-  .testFailedRow code {
-      background-color: rgba(220, 53, 69, 0.1); /* Reddish background for code */
-      padding: 0.1em 0.3em;
-      border-radius: 3px;
-  }
-  
-  /* General code styling within the results table */
-  .testResultsTable code {
-      font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-      font-size: 0.85rem;
-      background-color: #f1f1f1; /* Light gray background for code snippets */
-      padding: 0.1em 0.3em;
-      border-radius: 3px;
-      word-break: break-word; /* Break long code snippets */
-  }
-  
-  /* =====================================
+
+.testButton {
+  background-color: #28a745; /* Green */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+  margin-left: 0.5rem; /* Space from run button */
+}
+
+.testButton:hover:not(:disabled) {
+  background-color: #218838; /* Darker green */
+}
+
+.testButton:disabled {
+  background-color: #94d3a2; /* Lighter green */
+  cursor: not-allowed;
+}
+
+/* Container for test results display */
+.testResultArea {
+  margin-top: 1.5rem;
+  border-top: 2px solid #eee; /* Clearer separator */
+  padding-top: 1.5rem;
+}
+
+/* Test Success Box */
+.testSuccess {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  border-left: 5px solid #28a745; /* Thick green border */
+}
+.testSuccess h4 {
+  color: #155724;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Test Failure Box */
+.testFailure {
+  background-color: #fff3cd; /* Warning yellow */
+  color: #856404;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  border-left: 5px solid #ffc107; /* Thick warning border */
+}
+.testFailure h4 {
+  color: #856404;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+.testFailure h5 {
+  /* Sub-heading for "First Failed Test" */
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Test Error Box (e.g., code crashed, parsing failed) */
+.testError {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  border-left: 5px solid #dc3545; /* Thick error border */
+}
+.testError h4 {
+  color: #721c24;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+.testError pre {
+  /* Styling for error details */
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.5rem;
+  border-radius: 3px;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+}
+
+/* Test Results Table */
+.testResultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  background-color: white;
+  border: 1px solid #dee2e6;
+}
+
+.testResultsTable th,
+.testResultsTable td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  text-align: left;
+  vertical-align: top;
+}
+
+.testResultsTable th {
+  background-color: #e9ecef; /* Light gray header */
+  font-weight: 600;
+}
+
+/* Failed row styling within the table */
+.testFailedRow {
+  background-color: #fff5f5; /* Light red background */
+}
+.testFailedRow code {
+  background-color: rgba(220, 53, 69, 0.1); /* Reddish background for code */
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+/* General code styling within the results table */
+.testResultsTable code {
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.85rem;
+  background-color: #f1f1f1; /* Light gray background for code snippets */
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  word-break: break-word; /* Break long code snippets */
+}
+
+/* =====================================
      Placeholders for Future Styles
      (Quiz, Prediction, Turtle, Reflection, Coverage)
      ===================================== */
-  
-  /* Add specific styles for Quiz options, Prediction tables, Turtle canvas,
+
+/* Add specific styles for Quiz options, Prediction tables, Turtle canvas,
      Reflection forms/history, Coverage tables etc. as those components
      are fully implemented. Use this Section.module.css or create
      new specific modules as needed. */
 
-     .quizForm {
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 1.5rem 0 0; /* Add margin top only */
-      border: 1px solid #e1e4e8;
-    }
-    
-    .quizOption {
-      display: block; /* Ensure options are block level */
-      margin-bottom: 1rem;
-      padding: 0.75rem 1rem; /* Add padding */
-      border-radius: 4px;
-      border: 1px solid transparent; /* Add border for hover effect */
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
-    }
-    
-    .quizOption:hover:not(.optionDisabled) {
-      background-color: #e9ecef; /* Light hover */
-      border-color: #ced4da;
-    }
-    
-    .quizOption input[type="radio"],
-    .quizOption input[type="checkbox"] {
-      margin-right: 10px;
-      transform: scale(1.1); /* Slightly larger */
-      cursor: pointer;
-      vertical-align: middle; /* Align with label text */
-    }
-    
-    .quizOption label {
-      cursor: pointer;
-      font-weight: 500;
-      vertical-align: middle;
-      /* width: calc(100% - 30px); Allow label to wrap naturally */
-    }
-    
-    /* Styles when submitted */
-    .quizFormSubmitted .quizOption {
-        cursor: default;
-    }
-    .quizFormSubmitted .quizOption:hover {
-        background-color: transparent; /* No hover effect after submit */
-        border-color: transparent;
-    }
-    .quizFormSubmitted input {
-        cursor: default;
-    }
-    
-    .quizSubmitButton {
-      background-color: #4b8bbe;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-top: 1rem;
-      transition: background-color 0.3s;
-      font-size: 1rem;
-    }
-    
-    .quizSubmitButton:hover:not(:disabled) {
-      background-color: #306998;
-    }
-    
-    .quizSubmitButton:disabled {
-      background-color: #a8c7e0;
-      cursor: not-allowed;
-    }
-    
-    /* Feedback Area */
-    .quizFeedback {
-      margin-top: 1.5rem; /* Space above feedback */
-      padding: 1rem 1.5rem;
-      border-radius: 4px;
-      font-weight: 500;
-      border-left: 5px solid transparent; /* Base for colored border */
-    }
-    
-    .correctFeedback {
-      composes: quizFeedback; /* Inherit base quizFeedback styles */
-      background-color: #d4edda;
-      color: #155724;
-      border-left-color: #28a745; /* Thick green border */
-    }
-    
-    .incorrectFeedback {
-      composes: quizFeedback; /* Inherit base quizFeedback styles */
-      background-color: #f8d7da;
-      color: #721c24;
-      border-left-color: #dc3545; /* Thick error border */
-    }
+.quizForm {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0 0; /* Add margin top only */
+  border: 1px solid #e1e4e8;
+}
+
+.quizOption {
+  display: block; /* Ensure options are block level */
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem; /* Add padding */
+  border-radius: 4px;
+  border: 1px solid transparent; /* Add border for hover effect */
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.quizOption:hover:not(.optionDisabled) {
+  background-color: #e9ecef; /* Light hover */
+  border-color: #ced4da;
+}
+
+.quizOption input[type="radio"],
+.quizOption input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.1); /* Slightly larger */
+  cursor: pointer;
+  vertical-align: middle; /* Align with label text */
+}
+
+.quizOption label {
+  cursor: pointer;
+  font-weight: 500;
+  vertical-align: middle;
+  /* width: calc(100% - 30px); Allow label to wrap naturally */
+}
+
+/* Styles when submitted */
+.quizFormSubmitted .quizOption {
+  cursor: default;
+}
+.quizFormSubmitted .quizOption:hover {
+  background-color: transparent; /* No hover effect after submit */
+  border-color: transparent;
+}
+.quizFormSubmitted input {
+  cursor: default;
+}
+
+.quizSubmitButton {
+  background-color: #4b8bbe;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+  font-size: 1rem;
+}
+
+.quizSubmitButton:hover:not(:disabled) {
+  background-color: #306998;
+}
+
+.quizSubmitButton:disabled {
+  background-color: #a8c7e0;
+  cursor: not-allowed;
+}
+
+/* Feedback Area */
+.quizFeedback {
+  margin-top: 1.5rem; /* Space above feedback */
+  padding: 1rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  border-left: 5px solid transparent; /* Base for colored border */
+}
+
+.correctFeedback {
+  composes: quizFeedback; /* Inherit base quizFeedback styles */
+  background-color: #d4edda;
+  color: #155724;
+  border-left-color: #28a745; /* Thick green border */
+}
+
+.incorrectFeedback {
+  composes: quizFeedback; /* Inherit base quizFeedback styles */
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left-color: #dc3545; /* Thick error border */
+}
 
 /* --- New Styles for Prediction Sections --- */
 
@@ -417,7 +419,7 @@
   padding: 1rem;
   border-radius: 4px;
   overflow-x: auto;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
   font-size: 0.95rem; /* Slightly larger */
   line-height: 1.5;
   white-space: pre; /* Preserve formatting */
@@ -466,22 +468,22 @@
 }
 
 .predictionInput:focus {
-    outline: none;
-    border-color: #4b8bbe;
-    box-shadow: 0 0 0 2px rgba(75, 139, 190, 0.2);
+  outline: none;
+  border-color: #4b8bbe;
+  box-shadow: 0 0 0 2px rgba(75, 139, 190, 0.2);
 }
 
 /* Styling for correct/incorrect input fields */
 .predictionInputCorrect {
-    composes: predictionInput; /* Inherit base styles */
-    border-color: #28a745;
-    background-color: #e6f4ea;
+  composes: predictionInput; /* Inherit base styles */
+  border-color: #28a745;
+  background-color: #e6f4ea;
 }
 
 .predictionInputIncorrect {
-    composes: predictionInput; /* Inherit base styles */
-    border-color: #dc3545;
-    background-color: #fff5f5;
+  composes: predictionInput; /* Inherit base styles */
+  border-color: #dc3545;
+  background-color: #fff5f5;
 }
 
 /* Status cell with icon */
@@ -507,7 +509,7 @@
   border: 1px solid #c3e6cb;
 }
 .statusIndicatorCorrect::after {
-    content: "✓";
+  content: "✓";
 }
 
 .statusIndicatorIncorrect {
@@ -517,17 +519,17 @@
   border: 1px solid #f5c6cb;
 }
 .statusIndicatorIncorrect::after {
-    content: "✗";
+  content: "✗";
 }
 
 /* Highlight rows based on correctness */
 .correctRow {
-   /* Optional: slight background tint for correct rows */
-   /* background-color: rgba(212, 237, 218, 0.1) !important; */
+  /* Optional: slight background tint for correct rows */
+  /* background-color: rgba(212, 237, 218, 0.1) !important; */
 }
 .incorrectRow {
-    /* Optional: slight background tint for incorrect rows */
-    /* background-color: rgba(248, 215, 218, 0.1) !important; */
+  /* Optional: slight background tint for incorrect rows */
+  /* background-color: rgba(248, 215, 218, 0.1) !important; */
 }
 
 /* Completion Message Area */
@@ -560,66 +562,66 @@
 }
 
 .coverageInstruction {
-margin-bottom: 1.5rem;
-padding: 0.75rem;
-background-color: #f8f9fa;
-border: 1px solid #eee;
-border-radius: 4px;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 4px;
 }
 
 .coverageTableContainer {
-margin: 1.5rem 0;
-overflow-x: auto;
+  margin: 1.5rem 0;
+  overflow-x: auto;
 }
 
 .coverageTable {
-width: 100%;
-min-width: 700px; /* Ensure enough space for columns */
-border-collapse: collapse;
-border: 1px solid #ddd;
+  width: 100%;
+  min-width: 700px; /* Ensure enough space for columns */
+  border-collapse: collapse;
+  border: 1px solid #ddd;
 }
 
 .coverageTable th,
 .coverageTable td {
-padding: 0.75rem;
-border: 1px solid #ddd;
-text-align: left; /* Align text left, center numbers if needed */
-vertical-align: middle;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left; /* Align text left, center numbers if needed */
+  vertical-align: middle;
 }
 
 .coverageTable th {
-background-color: #eef6ff;
-font-weight: 600;
-white-space: nowrap; /* Prevent headers wrapping */
+  background-color: #eef6ff;
+  font-weight: 600;
+  white-space: nowrap; /* Prevent headers wrapping */
 }
 
 .coverageTable tr:nth-child(even) {
-background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 /* Highlight rows based on correctness */
 .correctRow {
- background-color: rgba(212, 237, 218, 0.3) !important;
+  background-color: rgba(212, 237, 218, 0.3) !important;
 }
 .incorrectRow {
   background-color: rgba(248, 215, 218, 0.2) !important;
 }
 
 .coverageInput {
-width: 100%;
-min-width: 80px; /* Ensure reasonable input width */
-padding: 0.5rem;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 0.9rem;
+  width: 100%;
+  min-width: 80px; /* Ensure reasonable input width */
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
 
 .expectedOutputCell,
 .actualOutputCell {
-font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-font-size: 0.85rem;
-white-space: pre-wrap; /* Allow wrapping */
-vertical-align: top; /* Align output top */
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap; /* Allow wrapping */
+  vertical-align: top; /* Align output top */
 }
 .expectedOutputCell pre,
 .actualOutputCell pre {
@@ -627,20 +629,19 @@ vertical-align: top; /* Align output top */
   padding: 0.25rem; /* Add slight padding */
 }
 
-
 .actualOutputCell.correct pre {
-background-color: #d4edda; /* Green background for correct output */
-color: #155724;
+  background-color: #d4edda; /* Green background for correct output */
+  color: #155724;
 }
 
 .actualOutputCell.incorrect pre {
-background-color: #f8d7da; /* Red background for incorrect output */
-color: #721c24;
+  background-color: #f8d7da; /* Red background for incorrect output */
+  color: #721c24;
 }
 .actualOutputCell.error pre {
   background-color: #f8d7da; /* From .incorrect style */
-  color: #721c24;         /* From .incorrect style */
-  font-weight: bold;        /* Specific style for error */
+  color: #721c24; /* From .incorrect style */
+  font-weight: bold; /* Specific style for error */
   /* Add any other styles needed for error output display */
   margin: 0;
   white-space: pre-wrap;
@@ -654,62 +655,62 @@ color: #721c24;
 }
 
 .coverageRunButton {
-composes: runButton from global; /* Reuse run button style */
-padding: 0.5rem 1rem; /* Adjust padding if needed */
-font-size: 0.85rem;
+  composes: runButton from global; /* Reuse run button style */
+  padding: 0.5rem 1rem; /* Adjust padding if needed */
+  font-size: 0.85rem;
 }
 
 .coverageRunButton:disabled {
   /* Instead of composes: runButton:disabled ... */
   background-color: #a8c7e0; /* Copied from .runButton:disabled style */
-  cursor: not-allowed;      /* Copied from .runButton:disabled style */
+  cursor: not-allowed; /* Copied from .runButton:disabled style */
 }
 
 .hintButton {
-display: inline-block;
-width: 20px;
-height: 20px;
-line-height: 18px; /* Adjust line height */
-text-align: center;
-background-color: #ffd43b;
-color: #333;
-border: 1px solid #ffc107;
-border-radius: 50%;
-font-weight: bold;
-cursor: pointer;
-margin-left: 0.5rem;
-font-size: 0.8rem;
-vertical-align: middle;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 18px; /* Adjust line height */
+  text-align: center;
+  background-color: #ffd43b;
+  color: #333;
+  border: 1px solid #ffc107;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  vertical-align: middle;
 }
 .hintButton:hover {
-background-color: #ffca2c;
+  background-color: #ffca2c;
 }
 
 .coverageProgress {
-margin-top: 1.5rem;
-display: flex;
-align-items: center;
-gap: 1rem;
-background-color: #f8f9fa;
-padding: 0.75rem 1rem;
-border-radius: 4px;
-border: 1px solid #eee;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #eee;
 }
 
 .progressBar {
-flex-grow: 1;
-height: 12px; /* Slightly thicker */
-background-color: #e9ecef;
-border-radius: 6px;
-overflow: hidden;
-border: 1px solid #ccc;
+  flex-grow: 1;
+  height: 12px; /* Slightly thicker */
+  background-color: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #ccc;
 }
 
 .progressFill {
-height: 100%;
-background-color: #4b8bbe; /* Blue fill */
-border-radius: 6px 0 0 6px; /* Rounded on left */
-transition: width 0.4s ease-in-out;
+  height: 100%;
+  background-color: #4b8bbe; /* Blue fill */
+  border-radius: 6px 0 0 6px; /* Rounded on left */
+  transition: width 0.4s ease-in-out;
 }
 .progressFillComplete {
   composes: progressFill;
@@ -718,9 +719,9 @@ transition: width 0.4s ease-in-out;
 }
 
 .progressText {
-font-size: 0.9rem;
-color: #333;
-font-weight: 500;
-min-width: 120px; /* Ensure text doesn't wrap too soon */
-text-align: right;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+  min-width: 120px; /* Ensure text doesn't wrap too soon */
+  text-align: right;
 }
