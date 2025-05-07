@@ -999,12 +999,12 @@
   color: #444;
 }
 
-/* --- Styles for Turtle Section --- */
+/* --- Styles for Turtle Section (Approach 3) --- */
 
 .turtleInstructions,
 .turtleCommandsReference {
   margin-bottom: 1.5rem;
-  background-color: #f0f4f8; /* Light blue background */
+  background-color: #f0f4f8;
   border: 1px solid #d1dce5;
   border-radius: 6px;
   padding: 1rem 1.5rem;
@@ -1022,12 +1022,10 @@
   padding-left: 1.2rem;
   list-style: disc;
 }
-
 .turtleCommandsReference li {
   margin-bottom: 0.4rem;
   font-size: 0.9rem;
 }
-
 .turtleCommandsReference code {
   background-color: #e1e8ed;
   padding: 0.2rem 0.4rem;
@@ -1044,26 +1042,46 @@
 }
 
 /* Reuse .editorControls, .runButton, .testButton from previous styles */
-/* Add specific styles if needed */
+/* Add styles for speed control */
+.editorControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem; /* Spacing between controls */
+  margin-top: 0.75rem;
+}
 
-/* Container where real-turtle will inject the canvas */
+.speedLabel {
+  font-weight: 500;
+  margin-left: auto; /* Push speed control to the right */
+}
+
+.speedSlider {
+  cursor: pointer;
+  width: 120px; /* Adjust width */
+}
+
+/* Canvas Container */
 .turtleCanvasContainer {
   border: 1px solid #ccc;
   border-radius: 4px;
-  min-height: 320px; /* Ensure space for canvas */
-  width: 100%; /* Adjust width as needed */
+  /* min-height: 320px; Let canvas element define height */
+  /* width: 100%; Let canvas element define width */
   max-width: 420px; /* Example max width */
   margin: 1rem auto; /* Center the canvas container */
-  background-color: white; /* Ensure white background */
-  position: relative; /* For potential overlays */
-  overflow: hidden; /* Clip contents */
+  background-color: #f0f0f0; /* Background for container */
+  padding: 5px; /* Optional padding around canvas */
+  display: inline-block; /* Allow centering with margin:auto */
+  line-height: 0; /* Prevent extra space below canvas */
 }
 
-/* Style the canvas created by real-turtle if necessary */
+/* Actual canvas element */
 .turtleCanvasContainer > canvas {
-  display: block; /* Remove extra space below canvas */
+  display: block; /* Remove extra space */
+  background-color: white; /* White drawing area */
   max-width: 100%;
   height: auto;
+  /* border: 1px solid #ddd; Moved border to container */
 }
 
 /* Reuse feedback styles from quiz/testing */
@@ -1072,10 +1090,10 @@
   /* Example error style */
   background-color: #f8d7da;
   color: #721c24;
-  border-left-color: #dc3545; /* Assuming reuse of quizFeedback border */
+  border-left: 5px solid #dc3545;
   padding: 1rem 1.5rem;
   border-radius: 4px;
   font-weight: 500;
   margin-top: 1rem;
-  border-left: 5px solid #dc3545;
+  white-space: pre-wrap; /* Show error tracebacks correctly */
 }
