@@ -1,42 +1,51 @@
 /* src/components/Header.module.css */
 .header {
-  background-color: #4b8bbe; /* Original header blue */
+  background-color: #4b8bbe;
   color: white;
-  padding: 1rem 0;
+  /* padding for the bar itself is removed, handled by .headerContent if needed */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
-.container {
+.headerContent {
+  /* This div now controls the header's content layout */
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
   display: flex;
   align-items: center;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  flex-wrap: wrap;
+  /* Add padding for the header content here, e.g.: */
+  padding: 1rem; /* Adjust as desired */
+  box-sizing: border-box;
+  /* If you want a max-width for header content on very large screens,
+     but still more than the old .container, you could add it here:
+     max-width: 1600px;
+     margin: 0 auto;
+     But for truly full-width, just width: 100% and padding is enough.
+  */
 }
 
 .title {
   font-size: 1.8rem;
   margin: 0;
   margin-right: 2rem; /* Space between title and nav */
-  white-space: nowrap; /* Prevent title from wrapping */
+  white-space: nowrap;
 }
 
 .nav {
   display: flex;
-  flex-grow: 1; /* Allow nav to take remaining space */
+  flex-grow: 1;
   align-items: center;
 }
 
 .navList {
   display: flex;
   list-style: none;
-  gap: 1rem; /* Space between nav items */
+  gap: 1rem;
   padding: 0;
   margin: 0;
   align-items: center;
-  flex-wrap: wrap; /* Allow nav items to wrap */
+  flex-wrap: wrap;
 }
 
 .navLink {
@@ -46,40 +55,39 @@
   border-radius: 4px;
   transition: background-color 0.3s, opacity 0.3s;
   font-size: 0.95rem;
-  display: block; /* Ensures padding applies correctly */
+  display: block;
 }
 
 .navLink:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Style for the active NavLink */
 .navLinkActive {
   background-color: rgba(255, 255, 255, 0.25);
   font-weight: 600;
 }
 
 .navLinkDisabled {
-  composes: navLink; /* Inherit base styles */
+  composes: navLink;
   opacity: 0.6;
   cursor: not-allowed;
 }
 .navLinkDisabled:hover {
-  background-color: transparent; /* Don't highlight disabled links on hover */
+  background-color: transparent;
 }
 
 .lessonNavigation {
   margin-left: auto; /* Pushes lesson nav to the right */
   color: rgba(255, 255, 255, 0.8);
-  /* Add other lesson nav styles here later if needed */
   white-space: nowrap;
 }
 
 /* Responsive adjustments for header if needed */
 @media (max-width: 768px) {
-  .container {
+  .headerContent {
+    /* Target the content wrapper for responsive changes */
     flex-direction: column;
-    align-items: stretch; /* Stretch items to full width */
+    align-items: stretch;
   }
   .title {
     text-align: center;
@@ -93,7 +101,7 @@
     justify-content: center;
   }
   .lessonNavigation {
-    margin-left: 0; /* Center lesson nav on small screens */
+    margin-left: 0;
     margin-top: 0.5rem;
     text-align: center;
   }

@@ -1,9 +1,9 @@
 // src/components/Header.tsx
 import React from "react";
 import { NavLink, useLocation, useParams } from "react-router-dom";
-import styles from "./Header.module.css"; // Import CSS Module
+import styles from "./Header.module.css";
 
-// Placeholder for dynamic lesson navigation - needs state/props later
+// Placeholder for dynamic lesson navigation
 const LessonNavigationPlaceholder: React.FC = () => {
   const { lessonId } = useParams<{ lessonId?: string }>();
   const location = useLocation();
@@ -27,7 +27,7 @@ const Header: React.FC = () => {
 
   return (
     <header className={styles.header}>
-      <div className={styles.container}>
+      <div className={styles.headerContent}>
         <h1 className={styles.title}>Learn Python in the Browser</h1>
         <nav className={styles.nav}>
           <ul className={styles.navList}>

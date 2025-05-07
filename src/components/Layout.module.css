@@ -6,20 +6,27 @@
 }
 
 .mainContent {
-  flex-grow: 1; /* Allow main content to expand and push footer down */
-  padding: 20px; /* Match inline style */
+  flex-grow: 1; /* Allow main content to expand */
+  width: 100%; /* Ensure it takes full width */
+  /* Add any default padding you want for all pages here */
+  /* For example, if CodeEditorPage manages its own internal padding,
+     you might have minimal or no padding here.
+     Or, if you want consistent padding for all pages:
+  */
+  padding: 1rem; /* Example padding - adjust as needed */
+  box-sizing: border-box;
 }
 
-/* Define container here if you want it scoped to Layout, */
-/* or import from a shared/global CSS file */
+/* The .container class is no longer used by Layout.tsx directly.
+   If individual pages (like HomePage) still need to be constrained,
+   they can apply their own container div with max-width and margin: auto.
+   Or you can keep .container here as a utility class for those pages.
+*/
 .container {
-  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* Combine container rules if defined globally */
-.mainContent.container {
-  /* Styles specific to the main content area if needed */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem; /* Or your preferred page padding */
+  padding-right: 1rem; /* Or your preferred page padding */
+  width: 100%; /* Ensure it takes up space within its parent if used */
 }
