@@ -126,24 +126,6 @@ const LearningEntriesPage: React.FC = () => {
   const formatDate = (timestamp: number): string => {
     return new Date(timestamp).toLocaleString();
   };
-  const getTopicName = (topicValue: string): string => {
-    const topicMap: { [key: string]: string } = {
-      variables: "Variables and Data Types",
-      functions: "Functions",
-      loops: "Loops and Iteration",
-      conditions: "Conditional Statements",
-      datastructures: "Data Structures",
-      turtle: "Turtle Graphics",
-      testing: "Testing",
-      prediction: "Prediction",
-      madlibs: "Mad Libs Creation",
-      conditionals: "Conditionals Logic",
-    };
-    return (
-      topicMap[topicValue] ||
-      topicValue.charAt(0).toUpperCase() + topicValue.slice(1)
-    );
-  };
   const getAssessmentClass = (assessment?: AssessmentLevel): string => {
     if (!assessment) return "";
     const className = `assessment${
@@ -217,7 +199,9 @@ const LearningEntriesPage: React.FC = () => {
                   </span>
                 </div>
                 <h3 className={styles.entryTopic}>
-                  {getTopicName(entry.topic)}
+                  {entry.topic
+                    ? entry.topic.charAt(0).toUpperCase() + entry.topic.slice(1)
+                    : "Untitled Entry"}
                 </h3>
               </div>
               <div className={styles.entryContent}>

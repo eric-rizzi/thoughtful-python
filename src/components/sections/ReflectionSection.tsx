@@ -1,5 +1,5 @@
 // src/components/sections/ReflectionSection.tsx
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react"; // Removed useEffect no longer needed for hasFeedback flag
 import type {
   ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,
@@ -24,31 +24,6 @@ async function getSimulatedFeedback(
 
   let assessment: AssessmentLevel = "developing";
   let feedback = "";
-  const codeLower = submission.code.toLowerCase();
-  const explanationLower = submission.explanation.toLowerCase();
-
-  const topicKeywords: { [key: string]: string[] } = {
-    variables: ["variable", "type", "assign", "integer", "string", "boolean"],
-    functions: ["def", "return", "parameter", "argument", "call"],
-    loops: ["for", "while", "iterate", "loop", "range"],
-    conditions: ["if", "else", "elif", "condition", "boolean"],
-    datastructures: [
-      "list",
-      "dictionary",
-      "set",
-      "tuple",
-      "append",
-      "key",
-      "value",
-    ],
-    turtle: ["turtle", "forward", "left", "right", "penup", "pendown"],
-    testing: ["test", "assert", "unittest", "pytest"],
-    prediction: ["predict", "output", "input", "trace"],
-  };
-  const relevantKeywords = topicKeywords[submission.topic.toLowerCase()] || [];
-  const keywordMatch = relevantKeywords.some(
-    (kw) => codeLower.includes(kw) || explanationLower.includes(kw)
-  );
 
   if (submission.code.length < 20 || submission.explanation.length < 40) {
     assessment = "developing";
@@ -57,18 +32,18 @@ async function getSimulatedFeedback(
       "Your code example or explanation seems a bit brief. Try elaborating more on the concept and how your code demonstrates it.";
   } else if (
     submission.explanation.length > 100 &&
-    keywordMatch &&
-    submission.code.length > 30
+    submission.code.length > 30 &&
+    submission.topic.length > 3 // Check if topic is somewhat descriptive
   ) {
     assessment = "exceeds";
     feedback =
       rubric?.exceeds ||
-      "Excellent! Your code is clear, and your explanation thoroughly demonstrates a strong understanding of the topic. You've connected the code well to the concept.";
+      "Excellent! Your code is clear, and your explanation thoroughly demonstrates a strong understanding of the topic described in your title. You've connected the code well to the concept.";
   } else {
     assessment = "meets";
     feedback =
       rubric?.meets ||
-      "Good job! Your code example works and your explanation covers the main points of the topic.";
+      "Good job! Your code example works and your explanation covers the main points of the topic described in your title.";
   }
   return { feedback, assessment, timestamp: Date.now() };
 }
@@ -83,15 +58,21 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   section,
   lessonId,
 }) => {
+  // Input field state remains local
   const [topic, setTopic] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [explanation, setExplanation] = useState<string>("");
+
+  // Runtime state remains local
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // REMOVED hasFeedbackForCurrentContent state and associated useEffect
 
   const storageKey = `reflectState_${lessonId}_${section.id}`;
   const initialState: SavedReflectionState = { history: [] };
 
+  // Completion check still requires a formally submitted entry with good assessment
   const checkReflectionCompletion = useCallback(
     (currentHookState: SavedReflectionState): boolean => {
       return currentHookState.history.some(
@@ -102,7 +83,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       );
     },
     []
-  ); // No dependencies, relies only on the state passed to it
+  );
 
   const [reflectionState, setReflectionState, isSectionComplete] =
     useSectionProgress<SavedReflectionState>(
@@ -113,13 +94,22 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       checkReflectionCompletion
     );
 
+  // Get history directly from the hook state
   const history = reflectionState.history;
+  const hasEverReceivedFeedback = history.length > 0;
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
-      if (!topic || !code.trim() || !explanation.trim()) {
+      if (!topic.trim() || !code.trim() || !explanation.trim()) {
         alert(
-          "Please select a topic, write some code, and provide an explanation."
+          "Please provide a topic/title, code example, and an explanation."
+        );
+        return;
+      }
+
+      if (isFormalSubmission && !hasEverReceivedFeedback) {
+        alert(
+          "Please click 'Get Feedback' at least once before submitting to the journal."
         );
         return;
       }
@@ -128,7 +118,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       setError(null);
 
       const submission: ReflectionSubmission = {
-        topic,
+        topic: topic.trim(),
         code,
         explanation,
         timestamp: Date.now(),
@@ -147,12 +137,14 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         }));
 
         if (isFormalSubmission) {
-          setCode("");
-          setExplanation("");
+          // Optional: Clear inputs? Maybe better not to, let user decide.
+          // setTopic("");
+          // setCode("");
+          // setExplanation("");
           alert("Your entry has been submitted and saved to your journal!");
         } else {
           alert(
-            "Feedback received! You can revise your work or submit it to your journal."
+            "Feedback received! Review the feedback below. You can now submit this version (or an edited one) to your journal."
           );
         }
       } catch (err) {
@@ -166,28 +158,27 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         setIsSubmitting(false);
       }
     },
-    [topic, code, explanation, section.rubric, setReflectionState]
+    [
+      topic,
+      code,
+      explanation,
+      section.rubric,
+      setReflectionState,
+      hasEverReceivedFeedback,
+    ]
   );
 
-  const getTopicName = (topicValue: string): string => {
-    const topicMap: { [key: string]: string } = {
-      variables: "Variables and Data Types",
-      functions: "Functions",
-      loops: "Loops and Iteration",
-      conditions: "Conditional Statements",
-      datastructures: "Data Structures",
-      turtle: "Turtle Graphics",
-      testing: "Testing",
-      prediction: "Prediction",
-    };
-    return (
-      topicMap[topicValue] ||
-      topicValue.charAt(0).toUpperCase() + topicValue.slice(1)
-    );
+  // ... (getTopicNameForDisplay, formatDate functions remain the same) ...
+  const getTopicNameForDisplay = (topicValue: string): string => {
+    if (!topicValue) return "Untitled Entry";
+    return topicValue.charAt(0).toUpperCase() + topicValue.slice(1);
   };
-
   const formatDate = (timestamp: number): string =>
     new Date(timestamp).toLocaleString();
+
+  // Determine if base requirements for enabling *any* button are met
+  const canAttemptInteraction =
+    !!topic.trim() && !!code.trim() && !!explanation.trim();
 
   return (
     <section id={section.id} className={styles.section}>
@@ -200,25 +191,17 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             htmlFor={`${section.id}-topic`}
             className={styles.reflectionLabel}
           >
-            {section.prompts.topic || "Choose a topic:"}
+            {section.prompts.topic || "Entry Topic/Title:"}
           </label>
-          <select
+          <input
+            type="text"
             id={`${section.id}-topic`}
-            className={styles.topicSelector}
+            className={styles.topicInput}
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             disabled={isSubmitting}
-          >
-            <option value="">Select a topic...</option>
-            <option value="variables">Variables and Data Types</option>
-            <option value="functions">Functions</option>
-            <option value="loops">Loops and Iteration</option>
-            <option value="conditions">Conditional Statements</option>
-            <option value="datastructures">Data Structures</option>
-            <option value="turtle">Turtle Graphics</option>
-            <option value="testing">Testing</option>
-            <option value="prediction">Prediction</option>
-          </select>
+            placeholder="Enter a descriptive title (e.g., Using Loops for Lists)"
+          />
         </div>
 
         <div className={styles.reflectionInputGroup}>
@@ -254,20 +237,30 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
         <div className={styles.reflectionButtons}>
           <button
-            onClick={() => handleSubmit(false)} // Get Feedback - isFormalSubmission is false
-            disabled={
-              isSubmitting || !topic || !code.trim() || !explanation.trim()
-            }
+            onClick={() => handleSubmit(false)} // Get Feedback
+            disabled={isSubmitting || !canAttemptInteraction}
             className={styles.reflectionFeedbackBtn}
+            title={
+              !canAttemptInteraction ? "Please fill in all fields first" : ""
+            }
           >
             {isSubmitting ? "Processing..." : "Get Feedback"}
           </button>
           <button
-            onClick={() => handleSubmit(true)} // Submit Entry - isFormalSubmission is true
+            onClick={() => handleSubmit(true)} // Submit Entry
             disabled={
-              isSubmitting || !topic || !code.trim() || !explanation.trim()
+              isSubmitting || // Disable if submitting
+              !canAttemptInteraction || // Disable if fields empty
+              !hasEverReceivedFeedback // Disable if no feedback cycle ever completed
             }
             className={styles.reflectionSubmitBtn}
+            title={
+              !canAttemptInteraction
+                ? "Please fill in all fields first"
+                : !hasEverReceivedFeedback
+                ? "Please click 'Get Feedback' at least once first"
+                : "Submit this entry to your journal"
+            }
           >
             {isSubmitting ? "Processing..." : "Submit Entry to Journal"}
           </button>
@@ -314,7 +307,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                       </span>
                     )}
                   </div>
-                  <h5>Topic: {getTopicName(entry.submission.topic)}</h5>
+                  <h5>{getTopicNameForDisplay(entry.submission.topic)}</h5>
                   <details>
                     <summary style={{ cursor: "pointer", fontWeight: "500" }}>
                       Show Code & Explanation
@@ -351,17 +344,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                     <p>{entry.response.feedback}</p>
                   </div>
                 )}
-                {!entry.response &&
-                  isSubmitting &&
-                  // Check if this history entry is the one currently being submitted
-                  entry.submission.timestamp ===
-                    Math.max(...history.map((h) => h.submission.timestamp)) && (
-                    <div className={styles.reflectionResponse}>
-                      <p>
-                        <i>Getting feedback...</i>
-                      </p>
-                    </div>
-                  )}
               </div>
             ))
           )}

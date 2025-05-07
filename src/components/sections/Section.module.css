@@ -999,6 +999,28 @@
   color: #444;
 }
 
+.topicInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem; /* Add some space below */
+}
+.topicInput:focus {
+  border-color: #4b8bbe;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(75, 139, 190, 0.2);
+}
+
+.feedbackOnlyBadge {
+  background-color: #6c757d; /* Example: Grey color */
+  /* Or maybe just a different border/text */
+  /* border: 1px solid #5a6268; */
+  /* color: #eee; */
+}
+
 /* --- Styles for Turtle Section (Approach 3) --- */
 
 .turtleInstructions,
