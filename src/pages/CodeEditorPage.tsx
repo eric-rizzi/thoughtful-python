@@ -1,14 +1,13 @@
 // src/pages/CodeEditorPage.tsx
 import React, { useState, useCallback, useEffect } from "react";
 import CodeEditor from "../components/CodeEditor";
-import ActiveTestItem from "../components/ActiveTestItem"; // IMPORT THE NEW COMPONENT
-import { useActiveTestSuite } from "../hooks/useActiveTestSuite"; // IMPORT THE NEW HOOK
+import ActiveTestItem from "../components/ActiveTestItem";
+import { useActiveTestSuite } from "../hooks/useActiveTestSuite";
 import { loadProgress, saveProgress } from "../lib/localStorageUtils";
 import styles from "./CodeEditorPage.module.css";
 
 const MAIN_CODE_STORAGE_KEY = "codeEditorPage_mainCode_v2";
 const TEST_DRAFT_STORAGE_KEY = "codeEditorPage_testDraftCode_v2";
-// ACTIVE_TESTS_STORAGE_KEY is now managed inside useActiveTestSuite
 
 const CodeEditorPage: React.FC = () => {
   const [mainCode, setMainCode] = useState<string>(
@@ -28,11 +27,10 @@ const CodeEditorPage: React.FC = () => {
     deleteTestFromSuite,
     runActiveTests,
     isRunningTests,
-    isPyodideReady, // From the hook
-    pyodideHookError, // From the hook
+    isPyodideReady,
+    pyodideHookError,
   } = useActiveTestSuite();
 
-  // Persist mainCode and testDraftCode
   useEffect(() => {
     saveProgress(MAIN_CODE_STORAGE_KEY, mainCode);
   }, [mainCode]);
@@ -41,8 +39,8 @@ const CodeEditorPage: React.FC = () => {
   }, [testDraftCode]);
 
   const handleAddDraftToSuite = () => {
-    addTestToSuite(testDraftCode); // The hook will extract the name
-    setTestDraftCode(""); // Clear draft editor
+    addTestToSuite(testDraftCode);
+    setTestDraftCode("");
   };
 
   const handleExecuteTests = () => {
@@ -56,7 +54,9 @@ const CodeEditorPage: React.FC = () => {
         <div className={styles.mainActions}>
           <button
             onClick={handleAddDraftToSuite}
-            disabled={!testDraftCode.trim() || !isPyodideReady} // Disable if Pyodide not ready
+            disabled={
+              !testDraftCode.trim() || !isPyodideReady || isRunningTests
+            }
             className={styles.addTestButton}
             title="Add current test from middle pane to the Active Test Suite"
           >
@@ -79,48 +79,61 @@ const CodeEditorPage: React.FC = () => {
         </p>
       )}
 
+      {/* Updated Layout Structure */}
       <div className={styles.contentPanes}>
-        <div className={styles.pane}>
-          <div className={styles.paneHeader}>Main Code (code.py)</div>
-          <div className={styles.editorWrapper}>
-            <CodeEditor
-              value={mainCode}
-              onChange={setMainCode}
-              readOnly={isRunningTests || !isPyodideReady}
-            />
+        {/* Left Column: Main Code */}
+        <div className={styles.leftColumn}>
+          <div className={styles.pane}>
+            {" "}
+            {/* Pane for Main Code */}
+            <div className={styles.paneHeader}>Main Code (code.py)</div>
+            <div className={styles.editorWrapper}>
+              <CodeEditor
+                value={mainCode}
+                onChange={setMainCode}
+                readOnly={isRunningTests || !isPyodideReady}
+              />
+            </div>
           </div>
         </div>
 
-        <div className={styles.pane}>
-          <div className={styles.paneHeader}>
-            Test Creation Area (test_draft.py)
+        {/* Right Column: Test Creation and Active Suite */}
+        <div className={styles.rightColumn}>
+          {/* Top Row in Right Column: Test Creation Area */}
+          <div className={`${styles.pane} ${styles.testCreationPane}`}>
+            <div className={styles.paneHeader}>
+              Test Creation Area (test_draft.py)
+            </div>
+            <div className={styles.editorWrapper}>
+              <CodeEditor
+                value={testDraftCode}
+                onChange={setTestDraftCode}
+                readOnly={isRunningTests || !isPyodideReady}
+              />
+            </div>
           </div>
-          <div className={styles.editorWrapper}>
-            <CodeEditor
-              value={testDraftCode}
-              onChange={setTestDraftCode}
-              readOnly={isRunningTests || !isPyodideReady}
-            />
-          </div>
-        </div>
 
-        <div className={styles.pane}>
-          <div className={styles.paneHeader}>Active Test Suite</div>
-          <div className={styles.activeTestSuitePane}>
-            {activeTests.length === 0 ? (
-              <p className={styles.noActiveTests}>
-                No tests added to the suite yet. Write tests in the middle pane
-                and click "Add Test to Suite".
-              </p>
-            ) : (
-              activeTests.map((test) => (
-                <ActiveTestItem
-                  key={test.id}
-                  test={test}
-                  onDelete={deleteTestFromSuite}
-                />
-              ))
-            )}
+          {/* Bottom Row in Right Column: Active Test Suite */}
+          <div className={`${styles.pane} ${styles.activeTestSuiteOuterPane}`}>
+            <div className={styles.paneHeader}>Active Test Suite</div>
+            <div className={styles.activeTestSuitePane}>
+              {" "}
+              {/* This div is for scrolling content */}
+              {activeTests.length === 0 ? (
+                <p className={styles.noActiveTests}>
+                  No tests added to the suite yet. Write tests in the middle
+                  pane and click "Add Test to Suite".
+                </p>
+              ) : (
+                activeTests.map((test) => (
+                  <ActiveTestItem
+                    key={test.id}
+                    test={test}
+                    onDelete={deleteTestFromSuite}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
