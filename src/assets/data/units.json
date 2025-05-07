@@ -5,14 +5,14 @@
       "title": "Introduction to Python",
       "description": "Learn the fundamentals of Python programming through interactive lessons that run directly in your browser.",
       "lessons": [
-        "lesson_1",
-        "lesson_2",
-        "lesson_3",
-        "lesson_4",
-        "lesson_5",
-        "lesson_6",
-        "lesson_7",
-        "lesson_8"
+        "intro/lesson_1",
+        "intro/lesson_2",
+        "intro/lesson_3",
+        "intro/lesson_4",
+        "intro/lesson_5",
+        "intro/lesson_6",
+        "intro/lesson_7",
+        "intro/lesson_8"
       ],
       "image": "python-logo.png"
     },
@@ -20,7 +20,12 @@
       "id": "python_strings",
       "title": "Python Strings Deep Dive",
       "description": "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
-      "lessons": ["lesson_9", "lesson_10", "lesson_11", "lesson_12"],
+      "lessons": [
+        "strings/lesson_1",
+        "strings/lesson_2",
+        "strings/lesson_3",
+        "strings/lesson_4"
+      ],
       "image": "python-logo.svg"
     }
   ]

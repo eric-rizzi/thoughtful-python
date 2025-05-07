@@ -2,31 +2,69 @@
 
 .lessonContainer {
   display: grid;
-  /* Adjust column widths as needed: sidebar fixed/flexible, content flexible */
-  grid-template-columns: 260px 1fr; /* Example: 260px sidebar, rest for content */
-  gap: 2rem; /* Space between sidebar and content */
-  align-items: start; /* Align items to the top */
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
 }
 
 .lessonSidebar {
-  position: sticky; /* Make sidebar sticky */
-  top: 2rem; /* Adjust top spacing as needed */
-  height: calc(
-    100vh - 4rem
-  ); /* Example height, adjust based on header/footer */
-  overflow-y: auto; /* Allow sidebar scrolling if content overflows */
-  /* Add background, padding, border-radius etc. later in Step 10 */
-  /* background-color: #f8f9fa; */
-  /* padding: 1rem; */
-  /* border-radius: 8px; */
+  position: sticky;
+  top: 2rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+  /* Styles moved to LessonSidebar.module.css */
+}
+
+/* Style for the link back to unit */
+.backToUnitLink {
+  display: block;
+  margin: 0 0 1rem 0; /* Adjust margin as needed */
+  padding: 0.5rem 1rem; /* Match sidebar padding? */
+  color: #4b8bbe;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  background-color: #f8f9fa; /* Give it a slight background */
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+.backToUnitLink:hover {
+  background-color: #eef6ff;
+  text-decoration: underline;
 }
 
 .lessonContent {
-  /* Add background, padding etc. as needed */
-  /* background-color: white; */
-  /* padding: 2rem; */
-  /* border-radius: 8px; */
-  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); */
+  /* No specific background/padding needed here now */
+}
+
+/* NEW: Styles for the header within the content area */
+.lessonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping */
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eee; /* Stronger separator */
+  gap: 1rem; /* Gap between title and nav if they wrap */
+}
+
+.lessonTitle {
+  color: #306998;
+  margin: 0; /* Remove default margins */
+  font-size: 2.2rem; /* Make title prominent */
+  font-weight: 600;
+  line-height: 1.2;
+  /* Allow title to shrink if needed, but prioritize it */
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 200px; /* Prevent title from becoming too small */
+}
+
+/* Optional: Ensure LessonNavigation component aligns well */
+.lessonHeader > :global(.navigationContainer) {
+  /* Target LessonNavigation's root */
+  flex-shrink: 0; /* Prevent nav from shrinking */
 }
 
 /* Loading and Error States */

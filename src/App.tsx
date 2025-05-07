@@ -13,7 +13,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="unit/:unitId" element={<UnitPage />} />
-        <Route path="lesson/:lessonId" element={<LessonPage />} />
+        <Route path="lesson/*" element={<LessonPage />} />
         <Route path="editor" element={<CodeEditorPage />} />{" "}
         <Route path="learning-entries" element={<LearningEntriesPage />} />
         {/* Other routes go here */}

@@ -1,69 +1,67 @@
 /* src/components/LessonNavigation.module.css */
 
+/* REMOVED .navigationContainer background/padding */
 .navigationContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Adjust as needed: space-between or center */
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
   gap: 0.75rem;
-  padding: 0.75rem 1.5rem; /* Add padding */
-  margin-bottom: 1.5rem; /* Space below the navigation bar */
-  border-radius: 6px; /* Optional rounded corners */
-
-  /* Key appearance styles */
-  background-color: #4b8bbe; /* Header blue background */
-  color: white; /* Default text color */
+  flex-wrap: wrap; /* Allow wrapping if space is tight */
+  /* Remove margin-bottom if spacing handled by parent */
+  /* margin-bottom: 1.5rem; */
 }
 
-/* Base link style */
+/* Base link style - Adapt colors for page background */
 .navLink {
-  color: white;
+  color: #4b8bbe; /* Use theme's link color */
   text-decoration: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.6rem; /* Slightly adjusted padding */
   border-radius: 4px;
-  transition: background-color 0.3s, opacity 0.3s;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  display: inline-block; /* Ensures padding is applied correctly */
+  transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+  font-size: 0.9rem; /* Slightly smaller */
+  line-height: 1.4;
+  display: inline-block;
+  border: 1px solid transparent; /* For hover consistency */
+  font-weight: 500;
 }
 
 /* Hover effect for enabled links */
 .navLink:hover:not(.navLinkDisabled) {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #eef6ff; /* Light blue background on hover */
+  color: #306998; /* Darker blue text on hover */
+  border-color: #cce0ff;
 }
 
 /* Style for disabled links/spans */
 .navLinkDisabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
-  color: rgba(255, 255, 255, 0.7); /* Slightly more visible disabled text */
+  color: #777; /* Grey out disabled text */
 }
-/* Ensure no background change on hover for disabled */
 .navLinkDisabled:hover {
-  background-color: transparent;
+  background-color: transparent; /* No background change on hover */
+  color: #777;
 }
 
 /* Current lesson indicator */
 .lessonCurrentIndicator {
-  font-size: 0.95rem; /* Match link size */
-  font-weight: 600; /* Make it bolder */
+  font-size: 0.9rem;
+  font-weight: 600;
   padding: 0 0.75rem;
-  color: #ffd43b; /* Highlight color */
-  /* Optional: Add borders if desired */
-  /* border-left: 1px solid rgba(255, 255, 255, 0.3); */
-  /* border-right: 1px solid rgba(255, 255, 255, 0.3); */
-  text-align: center;
+  color: #555; /* Darker text for indicator */
   white-space: nowrap;
+  text-align: center;
+  border-left: 1px solid #ddd; /* Separator lines */
+  border-right: 1px solid #ddd;
+  margin: 0 0.25rem; /* Slight margin */
 }
 
-/* Responsive adjustments if needed */
+/* Responsive adjustments */
 @media (max-width: 600px) {
   .navigationContainer {
-    flex-direction: column; /* Stack controls vertically */
-    align-items: center;
-    padding: 0.5rem;
+    justify-content: center; /* Center items when stacked */
   }
   .lessonCurrentIndicator {
-    margin: 0.5rem 0; /* Add space when stacked */
+    margin: 0.5rem 0;
+    width: 100%; /* Take full width if needed */
   }
 }

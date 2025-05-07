@@ -1,10 +1,10 @@
 // src/pages/LessonPage.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams, Link, useLocation } from "react-router-dom"; // Added useLocation
-import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader"; // Added fetchUnitsData
+import { useParams, Link } from "react-router-dom";
+import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader";
 import type { Lesson, LessonSection } from "../types/data";
 
-import LessonSidebar from "../components/LessonSidebar";
+// Import Section Components
 import InformationSection from "../components/sections/InformationSection";
 import ObservationSection from "../components/sections/ObservationSection";
 import TestingSection from "../components/sections/TestingSection";
@@ -14,30 +14,37 @@ import MultipleSelectionSection from "../components/sections/MultipleSelectionSe
 import TurtleSection from "../components/sections/TurtleSection";
 import ReflectionSection from "../components/sections/ReflectionSection";
 import CoverageSection from "../components/sections/CoverageSection";
-import PRIMMSection from "../components/sections/PRIMMSection"; // Assuming this exists now
-import LessonNavigation from "../components/LessonNavigation"; // IMPORT LessonNavigation
+import PRIMMSection from "../components/sections/PRIMMSection";
+
+// Import LessonNavigation (it's rendered here now)
+import LessonNavigation from "../components/LessonNavigation";
+import LessonSidebar from "../components/LessonSidebar";
 
 import styles from "./LessonPage.module.css";
 import { useCompletedSectionsForLesson } from "../stores/progressStore";
 import { BASE_PATH } from "../config";
 
 const LessonPage: React.FC = () => {
-  const { lessonId } = useParams<{ lessonId: string }>();
+  const params = useParams();
+  const lessonPath = params["*"];
+
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [parentUnitId, setParentUnitId] = useState<string | null>(null);
   const [unitLessons, setUnitLessons] = useState<string[]>([]);
   const [currentIndexInUnit, setCurrentIndexInUnit] = useState<number>(-1);
-  const [parentUnitId, setParentUnitId] = useState<string | null>(null); // Optional: Store parent unit ID
 
-  const completedSectionsArray = useCompletedSectionsForLesson(lessonId);
+  // Use lessonPath (derived from params['*']) in the dependency array and logic
+  const completedSectionsArray = useCompletedSectionsForLesson(lessonPath);
 
   useEffect(() => {
     let isMounted = true;
     const loadData = async () => {
-      if (!lessonId) {
+      // Use lessonPath here
+      if (!lessonPath) {
         if (isMounted) {
-          setError("No Lesson ID provided in URL.");
+          setError("No Lesson Path provided in URL.");
           setIsLoading(false);
         }
         return;
@@ -46,32 +53,31 @@ const LessonPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       setLesson(null);
-      setUnitLessons([]); // Reset unit context
+      setUnitLessons([]);
       setCurrentIndexInUnit(-1);
       setParentUnitId(null);
 
-      console.log(`LessonPage: Attempting to fetch lesson ${lessonId}`);
+      // Use lessonPath when logging and fetching
+      console.log(`LessonPage: Attempting to fetch lesson ${lessonPath}`);
       try {
-        // Fetch lesson and unit data concurrently
         const [fetchedLesson, unitsData] = await Promise.all([
-          fetchLessonData(lessonId),
+          fetchLessonData(lessonPath), // Pass the full path here
           fetchUnitsData(),
         ]);
 
-        if (!isMounted) return; // Check mount status after awaits
+        if (!isMounted) return;
 
-        // Process lesson data
         setLesson(fetchedLesson);
         document.title = `${fetchedLesson.title} - Python Lesson`;
-        console.log(`LessonPage: Successfully fetched ${lessonId}`);
+        console.log(`LessonPage: Successfully fetched ${lessonPath}`);
 
-        // Find unit context
         let foundUnitLessons: string[] | null = null;
         let foundIndex = -1;
         let foundUnitId: string | null = null;
 
         for (const unit of unitsData.units) {
-          const index = unit.lessons.indexOf(lessonId);
+          // Use lessonPath when searching the unit's lessons array
+          const index = unit.lessons.indexOf(lessonPath);
           if (index !== -1) {
             foundUnitLessons = unit.lessons;
             foundIndex = index;
@@ -85,18 +91,18 @@ const LessonPage: React.FC = () => {
           setCurrentIndexInUnit(foundIndex);
           setParentUnitId(foundUnitId);
           console.log(
-            `LessonPage: Found unit context for ${lessonId} in unit ${foundUnitId}`
+            `LessonPage: Found unit context for ${lessonPath} in unit ${foundUnitId}`
           );
         } else {
-          console.warn(`Could not find unit context for lesson ${lessonId}`);
+          console.warn(`Could not find unit context for lesson ${lessonPath}`);
         }
       } catch (err) {
-        console.error(`LessonPage Error fetching data for ${lessonId}:`, err);
+        console.error(`LessonPage Error fetching data for ${lessonPath}:`, err);
         if (isMounted) {
           setError(
             err instanceof Error
               ? err.message
-              : `An unknown error occurred loading lesson ${lessonId}`
+              : `An unknown error occurred loading lesson ${lessonPath}`
           );
         }
       } finally {
@@ -108,37 +114,36 @@ const LessonPage: React.FC = () => {
     loadData();
     return () => {
       isMounted = false;
-      console.log(
-        `LessonPage: Unmounting or lessonId changing (${lessonId}), cleanup fetch.`
-      );
     };
-  }, [lessonId]); // Rerun effect if lessonId changes
+  }, [lessonPath]); // Dependency is now lessonPath
 
-  const completedSectionsSet = useMemo(() => {
-    return new Set(completedSectionsArray);
-  }, [completedSectionsArray]);
+  // ... (rest of the component logic: completedSectionsSet, informationSections, prev/next calculation, renderSection) ...
+  // Ensure lessonPath is passed down correctly where lessonId was previously used
+  // e.g., to section components if needed, although most use the lessonId prop for keys/storage
 
+  const completedSectionsSet = useMemo(
+    () => new Set(completedSectionsArray),
+    [completedSectionsArray]
+  );
   const informationSections: Set<string> = useMemo(() => {
     if (!lesson) return new Set<string>();
     return new Set(
-      lesson.sections
-        .filter((section) => section.kind === "Information")
-        .map((infoSection) => infoSection.id)
+      lesson.sections.filter((s) => s.kind === "Information").map((s) => s.id)
     );
   }, [lesson]);
 
-  // Calculate prev/next based on unit context
   const prevLessonId =
     currentIndexInUnit > 0 ? unitLessons[currentIndexInUnit - 1] : null;
   const nextLessonId =
     currentIndexInUnit !== -1 && currentIndexInUnit < unitLessons.length - 1
       ? unitLessons[currentIndexInUnit + 1]
       : null;
-  const currentPositionInUnit = currentIndexInUnit + 1; // 1-based index for display
+  const currentPositionInUnit = currentIndexInUnit + 1;
   const totalLessonsInUnit = unitLessons.length;
 
-  // Helper function to render the correct section component
   const renderSection = (section: LessonSection) => {
+    // Pass lessonPath as lessonId prop to children
+    const currentLessonId = lessonPath || "unknown"; // Fallback if lessonPath is somehow undefined
     switch (section.kind) {
       case "Information":
         return <InformationSection key={section.id} section={section} />;
@@ -146,7 +151,7 @@ const LessonPage: React.FC = () => {
         return (
           <ObservationSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section}
           />
         );
@@ -154,7 +159,7 @@ const LessonPage: React.FC = () => {
         return (
           <TestingSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section}
           />
         );
@@ -162,15 +167,15 @@ const LessonPage: React.FC = () => {
         return (
           <PredictionSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
-        ); // Use specific types if available
+        );
       case "MultipleChoice":
         return (
           <MultipleChoiceSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
         );
@@ -178,7 +183,7 @@ const LessonPage: React.FC = () => {
         return (
           <MultipleSelectionSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
         );
@@ -186,7 +191,7 @@ const LessonPage: React.FC = () => {
         return (
           <TurtleSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
         );
@@ -194,7 +199,7 @@ const LessonPage: React.FC = () => {
         return (
           <ReflectionSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
         );
@@ -202,7 +207,7 @@ const LessonPage: React.FC = () => {
         return (
           <CoverageSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
         );
@@ -210,10 +215,10 @@ const LessonPage: React.FC = () => {
         return (
           <PRIMMSection
             key={section.id}
-            lessonId={lessonId!}
+            lessonId={currentLessonId}
             section={section as any}
           />
-        ); // Added PRIMM
+        );
       default:
         console.warn(`Unknown section kind: ${section.kind}`);
         return (
@@ -224,23 +229,22 @@ const LessonPage: React.FC = () => {
     }
   };
 
+  // --- Render Logic ---
   if (isLoading) {
-    // ... loading state JSX ...
+    /* ... loading JSX ... */
     return (
       <div className={styles.loading}>
-        <p>Loading lesson content for '{lessonId}'...</p>
+        <p>Loading lesson content for '{lessonPath}'...</p>
         <div className={styles.spinner}></div>
       </div>
     );
   }
-
   if (error) {
-    // ... error state JSX ...
+    /* ... error JSX ... */
     return (
       <div className={styles.error}>
         <h2>Error Loading Lesson</h2>
         <p>{error}</p>
-        {/* Link back to the unit page if possible, otherwise home */}
         {parentUnitId ? (
           <Link
             to={`${BASE_PATH}unit/${parentUnitId}`}
@@ -256,13 +260,12 @@ const LessonPage: React.FC = () => {
       </div>
     );
   }
-
   if (!lesson) {
-    // ... not found state JSX ...
+    /* ... not found JSX ... */
     return (
       <div className={styles.error}>
         <h2>Lesson Not Found</h2>
-        <p>Could not find data for lesson '{lessonId}'.</p>
+        <p>Could not find data for lesson '{lessonPath}'.</p>
         {parentUnitId ? (
           <Link
             to={`${BASE_PATH}unit/${parentUnitId}`}
@@ -279,11 +282,9 @@ const LessonPage: React.FC = () => {
     );
   }
 
-  // --- Render Main Lesson Layout ---
   return (
     <div className={styles.lessonContainer}>
       <aside className={styles.lessonSidebar}>
-        {/* Optional: Link back to Unit Page */}
         {parentUnitId && (
           <Link
             to={`${BASE_PATH}unit/${parentUnitId}`}
@@ -299,27 +300,39 @@ const LessonPage: React.FC = () => {
         />
       </aside>
       <div className={styles.lessonContent}>
-        {/* Render LessonNavigation AT THE TOP of the content area */}
-        {totalLessonsInUnit > 0 && ( // Only render if unit context was found
-          <LessonNavigation
-            lessonId={lessonId!} // Pass current lessonId for potential highlighting
-            prevLessonId={prevLessonId}
-            nextLessonId={nextLessonId}
-            currentPosition={currentPositionInUnit}
-            totalInUnit={totalLessonsInUnit}
-          />
-        )}
+        <div className={styles.lessonHeader}>
+          <h1 className={styles.lessonTitle}>{lesson.title}</h1>
+          {totalLessonsInUnit > 0 && (
+            <LessonNavigation
+              lessonId={lessonPath!}
+              prevLessonId={prevLessonId}
+              nextLessonId={nextLessonId}
+              currentPosition={currentPositionInUnit}
+              totalInUnit={totalLessonsInUnit}
+            />
+          )}
+        </div>
 
-        {/* Render Lesson Sections */}
+        {/* Render Lesson Sections Below Header */}
         {lesson.sections.map((section) => renderSection(section))}
 
-        {/* Optionally render LessonNavigation at the bottom as well */}
+        {/* Optional: Bottom Navigation */}
         {totalLessonsInUnit > 0 && (
-          <div style={{ marginTop: "2rem" }}>
+          <div
+            className={styles.lessonHeader}
+            style={{
+              marginTop: "2rem",
+              borderTop: "2px solid #eee",
+              borderBottom: "none",
+              paddingBottom: 0,
+            }}
+          >
             {" "}
-            {/* Add spacing */}
+            {/* Reuse header style for layout */}
+            {/* Invisible spacer to push nav right if title isn't needed */}
+            <div style={{ flexGrow: 1 }}></div>
             <LessonNavigation
-              lessonId={lessonId!}
+              lessonId={lessonPath!}
               prevLessonId={prevLessonId}
               nextLessonId={nextLessonId}
               currentPosition={currentPositionInUnit}
