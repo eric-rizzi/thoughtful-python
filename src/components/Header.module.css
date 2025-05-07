@@ -2,40 +2,32 @@
 .header {
   background-color: #4b8bbe;
   color: white;
-  /* padding for the bar itself is removed, handled by .headerContent if needed */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  flex-shrink: 0;
 }
 
 .headerContent {
-  /* This div now controls the header's content layout */
   width: 100%;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  /* Add padding for the header content here, e.g.: */
-  padding: 1rem; /* Adjust as desired */
+  padding: 1rem;
   box-sizing: border-box;
-  /* If you want a max-width for header content on very large screens,
-     but still more than the old .container, you could add it here:
-     max-width: 1600px;
-     margin: 0 auto;
-     But for truly full-width, just width: 100% and padding is enough.
-  */
 }
 
 .title {
   font-size: 1.8rem;
   margin: 0;
-  margin-right: 2rem; /* Space between title and nav */
+  margin-right: 2rem;
   white-space: nowrap;
 }
 
 .nav {
   display: flex;
-  flex-grow: 1;
+  flex-grow: 1; /* Allows .lessonNavigation to be pushed to the right if it's the last child */
   align-items: center;
+  flex-wrap: wrap; /* Allow nav items and lesson nav to wrap */
 }
 
 .navList {
@@ -45,7 +37,7 @@
   padding: 0;
   margin: 0;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allow primary nav items to wrap */
 }
 
 .navLink {
@@ -55,10 +47,12 @@
   border-radius: 4px;
   transition: background-color 0.3s, opacity 0.3s;
   font-size: 0.95rem;
-  display: block;
+  display: inline-block; /* Changed from block to inline-block for better flow with prev/next */
+  line-height: 1.5; /* Ensure consistent vertical alignment */
 }
 
-.navLink:hover {
+.navLink:hover:not(.navLinkDisabled) {
+  /* Only apply hover if not disabled */
   background-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -68,24 +62,59 @@
 }
 
 .navLinkDisabled {
-  composes: navLink;
+  /* composes: navLink; */ /* Not directly supported, apply base styles manually or ensure they are general enough */
   opacity: 0.6;
   cursor: not-allowed;
+  color: rgba(
+    255,
+    255,
+    255,
+    0.6
+  ); /* Ensure text color reflects disabled state */
+  background-color: transparent !important; /* Ensure no background on hover for disabled */
 }
 .navLinkDisabled:hover {
   background-color: transparent;
 }
 
+/* Lesson Navigation Specific Styles */
 .lessonNavigation {
-  margin-left: auto; /* Pushes lesson nav to the right */
-  color: rgba(255, 255, 255, 0.8);
+  margin-left: auto; /* Pushes lesson nav to the right of other nav items */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Space between prev, current, next */
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
+  padding: 0.25rem 0; /* Add some vertical padding */
 }
 
-/* Responsive adjustments for header if needed */
+.lessonCurrentIndicator {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0 0.5rem; /* Add some horizontal padding around the text */
+  color: #ffd43b; /* Highlight current lesson indicator */
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  /* Adjust breakpoint if nav wraps too early */
+  .nav {
+    width: 100%; /* Allow nav to take full width on smaller screens */
+    justify-content: center; /* Center all nav items including lesson nav */
+    margin-top: 0.5rem; /* Add space if title is above */
+  }
+  .lessonNavigation {
+    margin-left: 0; /* Remove margin-left when centered */
+    margin-top: 0.5rem; /* Add space if primary nav is above */
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
   .headerContent {
-    /* Target the content wrapper for responsive changes */
     flex-direction: column;
     align-items: stretch;
   }
@@ -94,15 +123,10 @@
     margin-right: 0;
     margin-bottom: 1rem;
   }
-  .nav {
-    justify-content: center;
-  }
   .navList {
+    /* Primary nav items */
+    width: 100%;
     justify-content: center;
-  }
-  .lessonNavigation {
-    margin-left: 0;
-    margin-top: 0.5rem;
-    text-align: center;
+    margin-bottom: 0.5rem; /* Space before lesson nav if it wraps below */
   }
 }
