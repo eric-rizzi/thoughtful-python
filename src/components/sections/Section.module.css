@@ -138,6 +138,7 @@
   overflow-y: auto; /* Allow scrolling */
   white-space: pre-wrap; /* Wrap long lines */
   border: 1px solid #444; /* Darker border */
+  width: 100;
 }
 
 .outputArea pre {
@@ -724,4 +725,276 @@
   font-weight: 500;
   min-width: 120px; /* Ensure text doesn't wrap too soon */
   text-align: right;
+}
+
+/* --- New/Refined Styles for Reflection Section --- */
+
+/* =====================================
+   Styles for Reflection Section
+   (Adapted from original project)
+   ===================================== */
+
+.reflectionContainer {
+  background-color: #f8f9fa; /* Light grey background */
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0; /* Keep or adjust margin */
+  border: 1px solid #e1e4e8; /* Subtle border */
+}
+
+.reflectionInputGroup {
+  margin-bottom: 1.5rem;
+}
+
+.reflectionLabel {
+  display: block;
+  margin-bottom: 0.75rem; /* Original h4 margin */
+  font-weight: 600; /* Make labels stand out */
+  color: #306998; /* Original heading blue */
+}
+
+.topicSelector {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem; /* Add small top margin */
+  margin-bottom: 1.5rem; /* Original margin */
+  border: 1px solid #ddd; /* Original border */
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white; /* Ensure background */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.reflectionCodeEditorWrapper {
+  border: 1px solid #ddd; /* Original border */
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1.5rem; /* Original margin */
+}
+/* Ensure CodeMirror inside takes up space and min-height */
+.reflectionCodeEditorWrapper :global(.cm-editor) {
+  min-height: 150px; /* Original min-height for editor area */
+}
+
+.reflectionExplanation {
+  width: 100%;
+  min-height: 150px; /* Original min-height */
+  padding: 1rem; /* Original padding */
+  font-family: inherit; /* Use page font */
+  font-size: 1rem;
+  line-height: 1.6; /* Original line-height */
+  resize: vertical;
+  border: 1px solid #ddd; /* Original border */
+  border-radius: 4px;
+  margin-bottom: 1.5rem; /* Original margin */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.reflectionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem; /* Original margin */
+  margin-top: 0.5rem; /* Add some space above buttons */
+}
+
+.reflectionFeedbackBtn,
+.reflectionSubmitBtn {
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  flex: 1; /* Make buttons share space */
+  font-size: 1rem; /* Ensure readable text */
+  text-align: center;
+}
+
+.reflectionFeedbackBtn {
+  background-color: #4b8bbe; /* Original blue */
+  color: white;
+}
+.reflectionFeedbackBtn:hover:not(:disabled) {
+  background-color: #306998; /* Original hover */
+}
+
+.reflectionSubmitBtn {
+  background-color: #28a745; /* Original green */
+  color: white;
+}
+.reflectionSubmitBtn:hover:not(:disabled) {
+  background-color: #218838; /* Original hover */
+}
+
+.reflectionFeedbackBtn:disabled,
+.reflectionSubmitBtn:disabled {
+  opacity: 0.6; /* Original approx */
+  cursor: not-allowed;
+  /* Explicitly set disabled background if needed */
+  /* background-color: #a8c7e0; for feedback btn */
+  /* background-color: #8ed7a5; for submit btn */
+}
+
+.apiError {
+  color: #dc3545; /* Bootstrap danger color */
+  margin-top: 1rem;
+  background-color: #f8d7da; /* Light red background */
+  border: 1px solid #f5c6cb; /* Red border */
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.25rem;
+}
+
+.reflectionHistory {
+  margin-top: 2.5rem;
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+}
+.reflectionHistory h4 {
+  color: #555; /* Original color */
+  margin-bottom: 1rem;
+}
+
+.noHistory {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+  background-color: #f0f0f0; /* Add subtle background */
+  border-radius: 4px;
+}
+
+.reflectionCard {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem; /* Original padding */
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Original shadow */
+  border: none; /* Remove default border */
+  border-left: 4px solid #eee; /* Original default left border */
+}
+
+/* Assessment-based border colors for the card */
+/* NOTE: Apply these classes in your JSX: className={`${styles.reflectionCard} ${styles[`cardAssessment${entry.response.assessment}`] || ''}`} */
+.cardAssessmentdeveloping {
+  border-left-color: #ffc107 !important;
+} /* Use !important if needed to override base */
+.cardAssessmentmeets {
+  border-left-color: #28a745 !important;
+}
+.cardAssessmentexceeds {
+  border-left-color: #4b8bbe !important;
+}
+
+.reflectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem; /* Increased margin */
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Add gap for wrapping */
+}
+
+.reflectionDate {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.submissionBadge {
+  display: inline-block;
+  background-color: #28a745; /* Original green */
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.reflectionSubmission h5 {
+  /* Topic title */
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.3rem; /* Match original */
+}
+
+/* Ensure details/summary has spacing */
+.reflectionSubmission details {
+  margin: 1rem 0;
+}
+.reflectionSubmission summary {
+  cursor: pointer;
+  font-weight: 600; /* Make summary stand out */
+  color: #306998;
+  margin-bottom: 0.5rem;
+}
+
+.reflectionCodeDisplay {
+  background-color: #f8f8f8; /* Original background */
+  padding: 1rem; /* Original padding */
+  border-radius: 4px;
+  margin-top: 0.5rem; /* Space below summary */
+  margin-bottom: 1rem; /* Space before explanation */
+  overflow-x: auto;
+  border: 1px solid #eee; /* Add subtle border */
+}
+.reflectionCodeDisplay pre {
+  margin: 0;
+  font-family: "Courier New", monospace; /* Ensure monospace */
+  font-size: 0.9rem;
+}
+
+.reflectionExplanationDisplay {
+  margin-top: 0.5rem; /* Space below summary or code */
+}
+
+.reflectionExplanationDisplay p {
+  margin: 0;
+  line-height: 1.6;
+  color: #444; /* Match general content color */
+}
+
+.reflectionResponse {
+  margin-top: 1.5rem; /* More space */
+  padding-top: 1.5rem; /* More space */
+  border-top: 1px dashed #ccc; /* Dashed separator */
+}
+.reflectionResponse h5 {
+  /* Feedback title */
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.1rem; /* Slightly smaller than topic */
+}
+
+/* Assessment Badges - using original names adapted for CSS Modules */
+/* Apply in JSX like: className={styles[`assessmentBadge${entry.response.assessment}`]} */
+.assessmentBadgeDeveloping,
+.assessmentBadgeMeets,
+.assessmentBadgeExceeds {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem; /* More space */
+  text-transform: uppercase;
+  line-height: 1.2; /* Ensure proper line height */
+}
+.assessmentBadgeDeveloping {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.assessmentBadgeMeets {
+  background-color: #d4edda;
+  color: #155724;
+}
+.assessmentBadgeExceeds {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.reflectionResponse p {
+  margin: 0;
+  line-height: 1.6;
+  color: #444;
 }
