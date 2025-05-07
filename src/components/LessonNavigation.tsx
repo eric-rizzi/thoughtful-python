@@ -3,7 +3,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 // Import the new CSS Module
 import styles from "./LessonNavigation.module.css";
-import { BASE_PATH } from "../config";
 
 interface LessonNavigationProps {
   lessonId: string;
@@ -38,7 +37,8 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
     <div className={styles.navigationContainer}>
       {prevLessonId ? (
         <NavLink
-          to={`${BASE_PATH}lesson/${prevLessonId}`}
+          // Use path relative to basename
+          to={`/lesson/${prevLessonId}`}
           className={getNavLinkClass(true)}
           aria-label="Previous Lesson"
         >
@@ -55,7 +55,8 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
 
       {nextLessonId ? (
         <NavLink
-          to={`${BASE_PATH}lesson/${nextLessonId}`}
+          // Use path relative to basename
+          to={`/lesson/${nextLessonId}`}
           className={getNavLinkClass(true)}
           aria-label="Next Lesson"
         >

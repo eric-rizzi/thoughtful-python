@@ -22,7 +22,6 @@ import LessonSidebar from "../components/LessonSidebar";
 
 import styles from "./LessonPage.module.css";
 import { useCompletedSectionsForLesson } from "../stores/progressStore";
-import { BASE_PATH } from "../config";
 
 const LessonPage: React.FC = () => {
   const params = useParams();
@@ -246,14 +245,11 @@ const LessonPage: React.FC = () => {
         <h2>Error Loading Lesson</h2>
         <p>{error}</p>
         {parentUnitId ? (
-          <Link
-            to={`${BASE_PATH}unit/${parentUnitId}`}
-            className={styles.backLink}
-          >
+          <Link to={`/unit/${parentUnitId}`} className={styles.backLink}>
             &larr; Back to Unit
           </Link>
         ) : (
-          <Link to={`${BASE_PATH}/`} className={styles.backLink}>
+          <Link to="/" className={styles.backLink}>
             &larr; Back to Home
           </Link>
         )}
@@ -267,14 +263,11 @@ const LessonPage: React.FC = () => {
         <h2>Lesson Not Found</h2>
         <p>Could not find data for lesson '{lessonPath}'.</p>
         {parentUnitId ? (
-          <Link
-            to={`${BASE_PATH}unit/${parentUnitId}`}
-            className={styles.backLink}
-          >
+          <Link to={`/unit/${parentUnitId}`} className={styles.backLink}>
             &larr; Back to Unit
           </Link>
         ) : (
-          <Link to={`${BASE_PATH}/`} className={styles.backLink}>
+          <Link to="/" className={styles.backLink}>
             &larr; Back to Home
           </Link>
         )}
@@ -286,10 +279,7 @@ const LessonPage: React.FC = () => {
     <div className={styles.lessonContainer}>
       <aside className={styles.lessonSidebar}>
         {parentUnitId && (
-          <Link
-            to={`${BASE_PATH}unit/${parentUnitId}`}
-            className={styles.backToUnitLink}
-          >
+          <Link to={`/unit/${parentUnitId}`} className={styles.backToUnitLink}>
             &larr; Back to Unit Overview
           </Link>
         )}

@@ -2,13 +2,25 @@
 import React from "react";
 import { NavLink } from "react-router-dom"; // Removed useLocation
 import styles from "./Header.module.css";
-import { BASE_PATH } from "../config";
 
 const Header: React.FC = () => {
   // Removed useLocation and isLessonPage check
 
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
+
+  const getLearningPathsClass = ({
+    isActive,
+  }: {
+    isActive: boolean;
+  }): string => {
+    let classes = styles.navLink;
+    // Check if current path starts with /unit/ (relative to basename)
+    if (isActive || location.pathname.startsWith(`/unit/`)) {
+      classes += ` ${styles.navLinkActive}`;
+    }
+    return classes;
+  };
 
   return (
     <header className={styles.header}>
@@ -17,34 +29,25 @@ const Header: React.FC = () => {
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             <li>
-              <NavLink to={`${BASE_PATH}`} className={getNavLinkClass} end>
+              <NavLink to="/" className={getNavLinkClass} end>
                 Home
               </NavLink>
             </li>
             <li>
               <NavLink
-                to={`${BASE_PATH}unit/intro_python`} // Example link
-                className={(navData) =>
-                  getNavLinkClass(navData) +
-                  (location.pathname.startsWith(`${BASE_PATH}unit/`)
-                    ? ` ${styles.navLinkActive}`
-                    : "")
-                } // Highlight if on any unit page
+                to="/unit/intro_python"
+                className={getLearningPathsClass}
               >
                 Learning Paths
               </NavLink>
             </li>
             <li>
-              {/* This can always be shown now, or hidden based on other criteria */}
-              <NavLink to={`${BASE_PATH}editor`} className={getNavLinkClass}>
+              <NavLink to="/editor" className={getNavLinkClass}>
                 Code Editor
               </NavLink>
             </li>
             <li>
-              <NavLink
-                to={`${BASE_PATH}learning-entries`}
-                className={getNavLinkClass}
-              >
+              <NavLink to="/learning-entries" className={getNavLinkClass}>
                 Learning Entries
               </NavLink>
             </li>

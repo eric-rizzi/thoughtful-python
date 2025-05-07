@@ -8,7 +8,6 @@ import {
 } from "../lib/dataLoader";
 import type { Unit, Lesson } from "../types/data";
 import styles from "./UnitPage.module.css";
-import { BASE_PATH } from "../config";
 import { useAllCompletions } from "../stores/progressStore";
 
 type CompletionStatus = {
@@ -161,7 +160,7 @@ const UnitPage: React.FC = () => {
     return (
       <div className={styles.error}>
         <p>Error loading unit: {error}</p>
-        <Link to={`${BASE_PATH}/`} className={styles.backLink}>
+        <Link to="/" className={styles.backLink}>
           &larr; Back to Learning Paths
         </Link>
       </div>
@@ -179,7 +178,7 @@ const UnitPage: React.FC = () => {
 
   return (
     <div className={styles.unitContainer}>
-      <Link to={`${BASE_PATH}/`} className={styles.backLink}>
+      <Link to="/" className={styles.backLink}>
         &larr; Back to Learning Paths
       </Link>
       <div className={styles.unitHeader}>
@@ -187,9 +186,9 @@ const UnitPage: React.FC = () => {
         <p className={styles.unitDescription}>{unit.description}</p>
       </div>
       <div className={styles.lessonsList}>
-        {unit.lessons.map((lessonId, index) => {
-          const lesson = lessonsData.get(lessonId);
-          const status = lessonStatuses.get(lessonId) || {
+        {unit.lessons.map((lessonPath, index) => {
+          const lesson = lessonsData.get(lessonPath);
+          const status = lessonStatuses.get(lessonPath) || {
             text: "Loading...",
             class: "not-started",
           };
@@ -198,13 +197,13 @@ const UnitPage: React.FC = () => {
           if (lesson === null) {
             return (
               <div
-                key={lessonId}
+                key={lessonPath}
                 className={`${styles.lessonCard} ${styles.lessonCardError}`}
               >
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>Lesson Unavailable</h3>
                 <p className={styles.lessonDescription}>
-                  Could not load data for {lessonId}.
+                  Could not load data for {lessonPath}.
                 </p>
               </div>
             );
@@ -212,7 +211,7 @@ const UnitPage: React.FC = () => {
           // Handle case where lesson data is still loading (should be brief)
           if (!lesson) {
             return (
-              <div key={lessonId} className={styles.lessonCard}>
+              <div key={lessonPath} className={styles.lessonCard}>
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>Loading...</h3>
               </div>
@@ -222,8 +221,10 @@ const UnitPage: React.FC = () => {
           // Render normal lesson card
           return (
             <Link
-              to={`${BASE_PATH}lesson/${lessonId}`}
-              key={lessonId}
+              // lessonPath is used here to build the link URL
+              to={`/lesson/${lessonPath}`}
+              // lessonPath is used here as the unique React key
+              key={lessonPath}
               className={styles.lessonCardLink}
             >
               <div className={styles.lessonCard}>
