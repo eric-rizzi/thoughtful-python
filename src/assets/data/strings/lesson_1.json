@@ -6,25 +6,25 @@
       "kind": "Information",
       "id": "lesson9-intro",
       "title": "Introduction: Formatting Strings",
-      "content": "Printing messages that include variable values is a common task. Python's f-strings (formatted string literals) provide a powerful and readable way to do this. Let's predict how different approaches work before running the code."
+      "content": "Printing messages that include variable values is common. Python's f-strings provide a powerful way to do this. In this section, you'll predict the output of specific lines before running the code to see if you're correct."
     },
     {
       "kind": "PRIMM",
       "id": "primm-print-analysis",
       "title": "Predict, Run, Investigate: Print Statements",
-      "introduction": "Below is Python code that takes a user's name and attempts to print a greeting in several ways. Follow the PRIMM steps for the example.",
+      "introduction": "Below is Python code that attempts to print greetings using different methods. Focus on the code, predict the output for the specified line, then run it to check.",
       "examples": [
         {
-          "id": "primm-greetings",
-          "code": "name = \"Alex\" # Assume user input is 'Alex' for prediction\nprint(f\"Hello {name}it's nice to meet you!\") # Line 1\nprint(\"Hello {name} it's nice to meet you!\") # Line 2\nprint(f\"Hello {name} it's nice to meet you!\") # Line 3\nprint(f\"Hello name it's nice to meet you!\") # Line 4",
-          "predictPrompt": "Look closely at Line 3 (`print(f\"Hello {name} it's nice to meet you!\")`). What exact text will this line print?",
+          "id": "primm-greetings-line3",
+          "code": "# We'll use a fixed name for prediction\nname = \"Alex\"\n\nprint(f\"Hello {name}it's nice to meet you!\") # Line 1\nprint(\"Hello {name} it's nice to meet you!\") # Line 2\nprint(f\"Hello {name} it's nice to meet you!\") # Line 3\nprint(f\"Hello name it's nice to meet you!\") # Line 4",
+          "predictPrompt": "Look closely at Line 3 (`print(f\"Hello {name} it's nice to meet you!\")`). What exact text will this line output?",
           "expectedPrediction": "Hello Alex it's nice to meet you!",
-          "predictionTargetDescription": "The output of the third print statement",
-          "explanationPrompt": "If your prediction was different, why did the code produce the actual output? Consider how f-strings handle variables inside `{}` and how spacing works.",
+          "predictionTargetDescription": "Exact output of the third print statement",
+          "explanationPrompt": "Your prediction didn't match the actual output from Line 3. Why did the code produce the output it did? Consider how the `f` prefix and curly braces `{}` affect the string.",
           "minExplanationLength": 40
         }
       ],
-      "conclusion": "Did running the code confirm your prediction? Notice how the `f` prefix enables variable substitution within `{}` and how spacing inside the string matters. Lines without the `f` or without `{}` around the variable behave differently."
+      "conclusion": "Running the code reveals how different print statements behave. Only the f-string with `{name}` correctly substituted the variable. The other lines either missed the `f`, lacked braces, or had spacing issues. Understanding f-strings is key for clean output!"
     },
     {
       "kind": "MultipleChoice",
@@ -70,12 +70,12 @@
             {
               "input": null,
               "expected": "Hello Alex, it's nice to meet you!",
-              "description": "Test with name Alex"
+              "description": "Test with name Alex (assuming name='Alex')"
             },
             {
               "input": null,
               "expected": "Hello Sam, it's nice to meet you!",
-              "description": "Test with name Sam (Requires modifying the hardcoded name in test setup)"
+              "description": "Test with name Sam (assuming name='Sam')"
             }
           ],
           "functionToTest": null

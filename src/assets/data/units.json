@@ -27,6 +27,19 @@
         "strings/lesson_4"
       ],
       "image": "python-logo.svg"
+    },
+    {
+      "id": "python_conditionals",
+      "title": "Python Conditionals (If/Else)",
+      "description": "Learn how to control the flow of your programs using `if`, `else`, and `elif` statements.",
+      "lessons": [
+        "conditionals/lesson_1",
+        "conditionals/lesson_2",
+        "conditionals/lesson_3",
+        "conditionals/lesson_4",
+        "conditionals/lesson_5"
+      ],
+      "image": "python-logo.svg"
     }
   ]
 }
