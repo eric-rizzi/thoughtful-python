@@ -6,37 +6,37 @@ import styles from "./ConfigurationPage.module.css";
 
 const ConfigurationPage: React.FC = () => {
   // Get current settings and actions from the Zustand store
-  const currentSettings = useSettingsStore((state) => ({
-    profileImageUrl: state.profileImageUrl,
-    progressApiGateway: state.progressApiGateway,
-    chatBotApiKey: state.chatBotApiKey,
-    chatBotModelId: state.chatBotModelId,
-  }));
-  const { updateSettings } = useSettingsActions();
+  // const currentSettings = useSettingsStore((state) => ({
+  //   profileImageUrl: state.profileImageUrl,
+  //   progressApiGateway: state.progressApiGateway,
+  //   chatBotApiKey: state.chatBotApiKey,
+  //   chatBotModelId: state.chatBotModelId,
+  // }));
+  // const { updateSettings } = useSettingsActions();
 
   // Local form state, initialized from the store
-  const [formState, setFormState] = useState<UserSettings>(currentSettings);
+  // const [formState, setFormState] = useState<UserSettings>(currentSettings);
   const [saveStatus, setSaveStatus] = useState<string>(""); // For user feedback
 
-  useEffect(() => {
-    // Sync local form state if store changes (e.g., loaded from localStorage initially)
-    setFormState(currentSettings);
-  }, [currentSettings]);
+  // useEffect(() => {
+  //   // Sync local form state if store changes (e.g., loaded from localStorage initially)
+  //   setFormState(currentSettings);
+  // }, [currentSettings]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    // setFormState((prevState) => ({
+    //   ...prevState,
+    //   [name]: value,
+    // }));
     setSaveStatus(""); // Clear save status on new change
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateSettings(formState);
+    // updateSettings(formState);
     setSaveStatus("Settings saved successfully!");
     setTimeout(() => setSaveStatus(""), 3000); // Clear status after 3 seconds
   };
@@ -60,16 +60,10 @@ const ConfigurationPage: React.FC = () => {
               type="url"
               id="profileImageUrl"
               name="profileImageUrl"
-              value={formState.profileImageUrl || ""}
+              value={""}
               onChange={handleChange}
               placeholder="https://example.com/your-image.png"
             />
-            {formState.profileImageUrl && (
-              <div className={styles.imagePreview}>
-                <p>Current Preview:</p>
-                <img src={formState.profileImageUrl} alt="Profile Preview" />
-              </div>
-            )}
             <small>
               Enter the URL of an image to use as your profile picture in the
               header.
@@ -88,7 +82,7 @@ const ConfigurationPage: React.FC = () => {
               type="url"
               id="progressApiGateway"
               name="progressApiGateway"
-              value={formState.progressApiGateway || ""}
+              value={""}
               onChange={handleChange}
               placeholder="https://api.example.com/submit-progress"
             />
@@ -109,7 +103,7 @@ const ConfigurationPage: React.FC = () => {
               type="password" // Use password type for sensitive keys
               id="chatBotApiKey"
               name="chatBotApiKey"
-              value={formState.chatBotApiKey || ""}
+              value={""}
               onChange={handleChange}
               placeholder="Enter your AI provider API Key"
             />
@@ -120,7 +114,7 @@ const ConfigurationPage: React.FC = () => {
               type="text"
               id="chatBotModelId"
               name="chatBotModelId"
-              value={formState.chatBotModelId || ""}
+              value={""}
               onChange={handleChange}
               placeholder="e.g., gpt-4, claude-3-opus"
             />

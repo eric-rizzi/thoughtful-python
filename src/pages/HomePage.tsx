@@ -1,10 +1,10 @@
 // src/pages/HomePage.tsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fetchUnitsData } from "../lib/dataLoader"; // Step 6 utility
-import type { Unit } from "../types/data"; // Step 6 types
-import styles from "./HomePage.module.css"; // Step 7 CSS Module
-import { BASE_PATH } from "../config"; // Import BASE_PATH
+import { fetchUnitsData } from "../lib/dataLoader";
+import type { Unit } from "../types/data";
+import styles from "./HomePage.module.css";
+import { BASE_PATH } from "../config";
 
 const HomePage: React.FC = () => {
   const [units, setUnits] = useState<Unit[]>([]);
