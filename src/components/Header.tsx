@@ -26,19 +26,6 @@ const Header: React.FC = () => {
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
 
-  const getLearningPathsClass = ({
-    isActive,
-  }: {
-    isActive: boolean;
-  }): string => {
-    let classes = styles.navLink;
-    // Check if current path starts with /unit/ (relative to basename)
-    if (isActive || location.pathname.startsWith(`/unit/`)) {
-      classes += ` ${styles.navLinkActive}`;
-    }
-    return classes;
-  };
-
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
@@ -48,14 +35,6 @@ const Header: React.FC = () => {
             <li>
               <NavLink to="/" className={getNavLinkClass} end>
                 Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/unit/intro_python"
-                className={getLearningPathsClass}
-              >
-                Learning Paths
               </NavLink>
             </li>
             <li>
