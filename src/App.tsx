@@ -4,6 +4,7 @@ import UnitPage from "./pages/UnitPage";
 import LessonPage from "./pages/LessonPage";
 import CodeEditorPage from "./pages/CodeEditorPage";
 import LearningEntriesPage from "./pages/LearningEntriesPage";
+import ConfigurationPage from "./pages/ConfigurationPage";
 import Layout from "./components/Layout";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="lesson/*" element={<LessonPage />} />
         <Route path="editor" element={<CodeEditorPage />} />{" "}
         <Route path="learning-entries" element={<LearningEntriesPage />} />
+        <Route path="configure" element={<ConfigurationPage />} />
         {/* Other routes go here */}
         <Route
           path="*"

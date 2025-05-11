@@ -1,0 +1,118 @@
+/* src/pages/ConfigurationPage.module.css */
+.configPageContainer {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.configPageContainer h2 {
+  text-align: center;
+  color: #306998;
+  margin-bottom: 2rem;
+}
+
+.configForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.configSection {
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.configSection h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #4b8bbe;
+  border-bottom: 1px solid #d0d0d0;
+  padding-bottom: 0.75rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="url"],
+.formGroup input[type="password"],
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input[type="text"]:focus,
+.formGroup input[type="url"]:focus,
+.formGroup input[type="password"]:focus,
+.formGroup textarea:focus {
+  border-color: #4b8bbe;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(75, 139, 190, 0.2);
+}
+
+.formGroup small {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.imagePreview {
+  margin-top: 1rem;
+}
+.imagePreview p {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.imagePreview img {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 50%; /* Make it circular */
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.saveButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #28a745; /* Green */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  align-self: flex-start; /* Don't stretch full width */
+}
+
+.saveButton:hover {
+  background-color: #218838;
+}
+
+.saveStatus {
+  margin-top: 1rem;
+  color: #155724; /* Green */
+  font-weight: 500;
+}

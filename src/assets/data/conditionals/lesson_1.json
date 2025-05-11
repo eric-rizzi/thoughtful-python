@@ -6,7 +6,7 @@
       "kind": "Information",
       "id": "cond1-intro",
       "title": "Making Decisions in Code",
-      "content": "Often, we want our programs to do different things based on certain conditions. Python uses `if` and `else` statements to control this flow. Let's look at a simple password checker."
+      "content": "Often, <h1>we</h1> want our programs to do different things based on certain conditions. Python uses `if` and `else` statements to control this flow. Let's look at a simple password checker."
     },
     {
       "kind": "PRIMM",

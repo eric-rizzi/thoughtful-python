@@ -113,6 +113,42 @@
   }
 }
 
+.settingsArea {
+  margin-left: auto; /* Pushes this to the far right after .nav */
+  padding-left: 1rem; /* Space from other nav items or lesson nav */
+}
+
+.settingsLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white; /* Icon/text color */
+  text-decoration: none;
+  padding: 0.5rem; /* Clickable area */
+  border-radius: 50%; /* Make it circular if it's just an icon */
+  transition: background-color 0.3s;
+}
+
+.settingsLink:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.profileImage {
+  width: 32px; /* Adjust size as needed */
+  height: 32px;
+  border-radius: 50%; /* Circular image */
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.5); /* Optional subtle border */
+}
+
+/* Adjustments for lessonNavigation if needed to ensure it doesn't collide */
+/* LessonNavigation itself will use LessonNavigation.module.css */
+/* This targets the container of LessonNavigation if it's directly in .nav */
+.nav > :global(.navigationContainer) {
+  margin-left: 1rem; /* Example: space before lesson nav if it's not pushed by settingsArea alone */
+  /* Or it might be fine as .nav is flex-grow 1 */
+}
+
 @media (max-width: 768px) {
   .headerContent {
     flex-direction: column;
@@ -128,5 +164,9 @@
     width: 100%;
     justify-content: center;
     margin-bottom: 0.5rem; /* Space before lesson nav if it wraps below */
+  }
+  .settingsArea {
+    margin-top: 0.75rem;
+    align-self: center; /* Center when stacked */
   }
 }
