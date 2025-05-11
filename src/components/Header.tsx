@@ -2,7 +2,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom"; // Removed useLocation
 import styles from "./Header.module.css";
-import { useSettingsStore } from "../stores/settingsStore";
+// import { useSettingsStore } from "../stores/settingsStore";
 
 const SettingsIcon = () => (
   <svg
@@ -22,7 +22,8 @@ const SettingsIcon = () => (
 );
 
 const Header: React.FC = () => {
-  const profileImageUrl = useSettingsStore((state) => state.profileImageUrl);
+  // const profileImageUrl = useSettingsStore((state) => state.profileImageUrl);
+  const profileImageUrl = null;
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
 
