@@ -201,30 +201,65 @@
 }
 
 .simulationCodeDisplay {
-  /* Area to display the user's code during simulation */
-  /* If you use CodeEditor here, it will have its own styles */
-  /* If it's just a pre, style it similar to traceOutput */
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 1rem;
+  padding: 0.5rem; /* Reduced padding to make gutter fit better */
   font-family: "Menlo", "Consolas", "Courier New", monospace;
   font-size: 0.9rem;
-  line-height: 1.4;
+  line-height: 1.5; /* Consistent line height */
   max-height: 400px;
   overflow: auto;
-  white-space: pre; /* Preserve exact formatting of code */
+  white-space: pre;
 }
 .simulationCodeDisplay h4 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   color: #306998;
+  padding-left: 0.5rem; /* Align with code content padding */
 }
 
-/* For highlighting the current line (simple text approach for now) */
-.highlightedLine {
-  background-color: #fffbdd; /* Light yellow highlight */
-  display: block; /* Make it take full width */
-  margin: -0.2em; /* Adjust to cover padding of pre */
-  padding: 0.2em; /* Adjust to cover padding of pre */
+.codeLine {
+  display: flex;
+  align-items: flex-start; /* Align items at the start of the flex line */
+  min-height: 1.5em; /* Match line-height for consistent spacing */
+}
+
+.lineNumberGutter {
+  width: 40px; /* Width for line numbers and breakpoint dot */
+  text-align: right;
+  padding-right: 10px;
+  color: #888;
+  cursor: pointer;
+  user-select: none; /* Prevent text selection on line numbers */
+  display: flex; /* For aligning breakpoint dot and number */
+  align-items: center;
+  justify-content: flex-end; /* Push content (dot, number) to the right */
+}
+
+.breakpointIndicator {
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px; /* Space between dot and number */
+  visibility: hidden; /* Hidden by default */
+}
+
+.breakpointIndicator.active {
+  visibility: visible;
+}
+
+.codeContent {
+  flex-grow: 1;
+  white-space: pre; /* Preserve spaces within the code line */
+  padding-left: 5px; /* Small space after gutter */
+}
+
+.highlightedLine .codeContent {
+  /* Apply highlight only to code content part */
+  background-color: #fffbdd;
+  display: inline; /* Keep highlight tight to content */
+  border-radius: 2px;
 }

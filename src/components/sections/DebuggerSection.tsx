@@ -1,10 +1,12 @@
 // src/components/sections/DebuggerSection.tsx
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import styles from "./DebuggerSection.module.css";
 import sectionStyles from "./Section.module.css";
 
+// PYTHON_TRACE_SCRIPT_TEMPLATE (use the one from Step 6/7 that includes USER_CODE_FILENAME and stack_depth)
+// ... (ensure the full, correct Python script template from the previous step is here) ...
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
@@ -17,7 +19,7 @@ USER_CODE_FILENAME = '/user_temp_script.py'
 user_code_to_execute = """
 # Placeholder for user's actual code
 """
-# ... (rest of the Python script template from Step 6 response)
+# ... (rest of the Python script template from Step 6/7 response)
 try:
     with open(USER_CODE_FILENAME, 'w') as f:
         f.write(user_code_to_execute)
@@ -187,7 +189,6 @@ except Exception as e:
     print("---DEBUGGER_TRACE_END---")
 `;
 
-// TypeScript constant for the filename used in Python script
 const USER_CODE_VIRTUAL_FILENAME = "/user_temp_script.py";
 
 interface TraceEvent {
@@ -208,13 +209,15 @@ const DebuggerSection: React.FC = () => {
   const [userCode, setUserCode] = useState<string>(
     "def greet(name):\n" +
       '    message = "Hello, " + name\n' +
-      "    # print(message) # Print output not yet captured per step\n" +
+      "    # print(message)\n" +
       "    return len(message)\n" +
       "\n" +
       "def main():\n" +
+      '    print("Starting main") # Add a print to see its effect (or lack thereof in step-by-step for now)\n' +
       '    val1 = greet("Debugger")\n' +
       "    val2 = 0\n" +
       "    for i in range(2):\n" +
+      '        print(f"Loop iteration {i}")\n' +
       "        val2 += greet(str(i)) + val1\n" +
       "    return val2\n" +
       "\n" +
@@ -229,6 +232,7 @@ const DebuggerSection: React.FC = () => {
   const [isTracing, setIsTracing] = useState<boolean>(false);
   const [pyodideError, setPyodideError] = useState<string | null>(null);
   const [simulationActive, setSimulationActive] = useState<boolean>(false);
+  const [breakpoints, setBreakpoints] = useState<Set<number>>(new Set()); // Stores 1-indexed line numbers
 
   const {
     runPythonCode,
@@ -256,7 +260,7 @@ const DebuggerSection: React.FC = () => {
     setParsedTraceEvents(null);
     setCurrentStepIndex(-1);
     setPyodideError(null);
-    setSimulationActive(false);
+    setSimulationActive(false); // Breakpoints persist
 
     const scriptToRun = PYTHON_TRACE_SCRIPT_TEMPLATE.replace(
       "# Placeholder for user's actual code",
@@ -316,12 +320,10 @@ const DebuggerSection: React.FC = () => {
     parsedTraceEvents && currentStepIndex === parsedTraceEvents.length - 1;
 
   const handleStepInto = () => {
-    if (canStep) {
-      setCurrentStepIndex((prevIndex) => prevIndex + 1);
-    }
+    if (canStep) setCurrentStepIndex((prevIndex) => prevIndex + 1);
   };
-
   const handleStepOver = useCallback(() => {
+    /* ... (same as before) ... */
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -375,11 +377,11 @@ const DebuggerSection: React.FC = () => {
       }
       setCurrentStepIndex(parsedTraceEvents.length - 1);
     } else {
-      if (canStep) setCurrentStepIndex((prevIndex) => prevIndex + 1); // Behave like Step Into
+      if (canStep) setCurrentStepIndex((prevIndex) => prevIndex + 1);
     }
   }, [parsedTraceEvents, currentStepIndex, canStep]);
-
   const handleStepOut = useCallback(() => {
+    /* ... (same as before) ... */
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -393,7 +395,6 @@ const DebuggerSection: React.FC = () => {
       if (canStep) setCurrentStepIndex(parsedTraceEvents.length - 1);
       return;
     }
-
     let nextIndex = currentStepIndex + 1;
     let foundCorrectReturn = false;
     while (nextIndex < parsedTraceEvents.length) {
@@ -421,9 +422,29 @@ const DebuggerSection: React.FC = () => {
   }, [parsedTraceEvents, currentStepIndex, canStep]);
 
   const handleContinue = () => {
-    if (parsedTraceEvents) {
-      // For now, "Continue" goes to the end of the trace.
-      // Later, this will go to the next breakpoint or end.
+    if (!parsedTraceEvents || currentStepIndex >= parsedTraceEvents.length - 1)
+      return;
+
+    let nextBreakStepIndex = -1;
+    // Start searching from the step *after* the current one
+    for (let i = currentStepIndex + 1; i < parsedTraceEvents.length; i++) {
+      const event = parsedTraceEvents[i];
+      // We want to stop *at* a line that has a breakpoint.
+      // The event itself should be a 'line' event for a consistent stop.
+      if (
+        event.event === "line" &&
+        breakpoints.has(event.line_no) &&
+        event.file_name === USER_CODE_VIRTUAL_FILENAME
+      ) {
+        nextBreakStepIndex = i;
+        break;
+      }
+    }
+
+    if (nextBreakStepIndex !== -1) {
+      setCurrentStepIndex(nextBreakStepIndex);
+    } else {
+      // No breakpoint found, go to the end of the trace
       setCurrentStepIndex(parsedTraceEvents.length - 1);
     }
   };
@@ -431,11 +452,20 @@ const DebuggerSection: React.FC = () => {
   const handleStop = () => {
     setSimulationActive(false);
     setCurrentStepIndex(-1);
-    // parsedTraceEvents and rawTraceOutput can remain for inspection if desired,
-    // they will be overwritten on the next "Run & Generate Trace"
-    // setParsedTraceEvents(null);
-    // setRawTraceOutput(null);
-    setPyodideError(null); // Clear any Python execution errors from the simulation display
+    setPyodideError(null);
+  };
+
+  const toggleBreakpoint = (lineNumber: number) => {
+    // lineNumber is 1-indexed
+    setBreakpoints((prevBreakpoints) => {
+      const newBreakpoints = new Set(prevBreakpoints);
+      if (newBreakpoints.has(lineNumber)) {
+        newBreakpoints.delete(lineNumber);
+      } else {
+        newBreakpoints.add(lineNumber);
+      }
+      return newBreakpoints;
+    });
   };
 
   const currentTraceEvent =
@@ -445,26 +475,64 @@ const DebuggerSection: React.FC = () => {
       ? parsedTraceEvents[currentStepIndex]
       : null;
 
-  const getHighlightedCode = () => {
-    if (!simulationActive || !currentTraceEvent) return userCode.split("\n");
-    const lines = userCode.split("\n");
-    const displayLines = [...lines];
-    const traceLineNo = currentTraceEvent.line_no;
-    if (
-      currentTraceEvent.file_name === USER_CODE_VIRTUAL_FILENAME &&
-      traceLineNo > 0 &&
-      traceLineNo <= displayLines.length
-    ) {
-      displayLines[traceLineNo - 1] = `<span class="${
-        styles.highlightedLine
-      }">${displayLines[traceLineNo - 1]}</span>`;
-    }
-    return displayLines;
+  // Render user code with line numbers and breakpoint toggles
+  const renderSimulatedCode = () => {
+    if (!simulationActive && !userCode) return <pre>Enter code to debug.</pre>;
+    // Use userCode for displaying lines, even if simulation isn't active (for setting breakpoints)
+    const codeToDisplay = userCode || "";
+    const lines = codeToDisplay.split("\n");
+
+    return (
+      <div className={styles.simulationCodeDisplay}>
+        <h4>
+          Your Code {simulationActive ? "(Simulating)" : "(Set Breakpoints)"}:
+        </h4>
+        {lines.map((lineText, index) => {
+          const lineNumber = index + 1; // 1-indexed
+          const isCurrentExecLine =
+            simulationActive &&
+            currentTraceEvent &&
+            currentTraceEvent.line_no === lineNumber &&
+            currentTraceEvent.file_name === USER_CODE_VIRTUAL_FILENAME;
+          const hasBreakpoint = breakpoints.has(lineNumber);
+
+          return (
+            <div
+              key={lineNumber}
+              className={`${styles.codeLine} ${
+                isCurrentExecLine ? styles.highlightedLineWrapper : ""
+              }`}
+            >
+              <div
+                className={styles.lineNumberGutter}
+                onClick={() => toggleBreakpoint(lineNumber)}
+                title={`Toggle breakpoint on line ${lineNumber}`}
+              >
+                <span
+                  className={`${styles.breakpointIndicator} ${
+                    hasBreakpoint ? styles.active : ""
+                  }`}
+                ></span>
+                {lineNumber}
+              </div>
+              <div
+                className={`${styles.codeContent} ${
+                  isCurrentExecLine ? styles.highlightedLine : ""
+                }`}
+              >
+                {lineText || "\u00A0"}{" "}
+                {/* Render non-breaking space for empty lines */}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
     <div className={`${styles.debuggerSection} ${sectionStyles.section}`}>
-      <h2 className={styles.title}>Python Debugger (Step 7 Implemented)</h2>
+      <h2 className={styles.title}>Python Debugger (Step 8 Implemented)</h2>
       <div className={styles.editorContainer}>
         <CodeEditor
           value={userCode}
@@ -493,13 +561,11 @@ const DebuggerSection: React.FC = () => {
         )}
       </div>
 
-      {pyodideError &&
-        !isTracing &&
-        simulationActive && ( // Only show Python exec errors if simulation was active or attempted
-          <div className={styles.errorMessage}>
-            <pre>{pyodideError}</pre>
-          </div>
-        )}
+      {pyodideError && !isTracing && simulationActive && (
+        <div className={styles.errorMessage}>
+          <pre>{pyodideError}</pre>
+        </div>
+      )}
 
       {simulationActive && parsedTraceEvents && (
         <>
@@ -544,7 +610,7 @@ const DebuggerSection: React.FC = () => {
           <div className={styles.simulationArea}>
             <div>
               {" "}
-              {/* Left Column for Variables */}
+              {/* Left Column for Variables & Info */}
               {currentTraceEvent && (
                 <div className={styles.currentStepInfo}>
                   Step: {currentTraceEvent.step}/{parsedTraceEvents.length} |
@@ -582,15 +648,8 @@ const DebuggerSection: React.FC = () => {
             </div>
             <div>
               {" "}
-              {/* Right Column for Code & Raw Trace */}
-              <div className={styles.simulationCodeDisplay}>
-                <h4>Your Code (Simulating):</h4>
-                <pre
-                  dangerouslySetInnerHTML={{
-                    __html: getHighlightedCode().join("\n"),
-                  }}
-                />
-              </div>
+              {/* Right Column for Code Display & Raw Trace */}
+              {renderSimulatedCode()}
               {rawTraceOutput && (
                 <div
                   className={styles.traceOutputContainer}
@@ -604,7 +663,6 @@ const DebuggerSection: React.FC = () => {
           </div>
         </>
       )}
-      {/* Show general pyodide errors if they occurred outside of active simulation/tracing feedback */}
       {pyodideError && !simulationActive && !isTracing && (
         <div className={styles.errorMessage}>
           <pre>{pyodideError}</pre>
