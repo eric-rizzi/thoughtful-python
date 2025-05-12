@@ -1,5 +1,7 @@
 // src/components/sections/PredictionSection.tsx
 import React, { useCallback, useMemo } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { PredictionSection as PredictionSectionData } from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
@@ -151,7 +153,11 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
 
       {/* Display the function code */}
       {section.functionDisplay && (

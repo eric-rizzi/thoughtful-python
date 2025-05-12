@@ -33,6 +33,56 @@
   white-space: pre-wrap; /* Preserve newlines from JSON content */
 }
 
+/* Styles for HTML elements RENDERED BY MARKDOWN within .content */
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+  color: #306998; /* Example: Apply your brand color to headings */
+  margin-top: 1.5em; /* Add vertical spacing for headings */
+  margin-bottom: 0.5em;
+  font-weight: 600; /* Make them bold */
+}
+
+.content p {
+  margin-bottom: 1em; /* Spacing between paragraphs */
+}
+
+.content ul,
+.content ol {
+  margin-left: 1.5em; /* Indent lists */
+  margin-bottom: 1em;
+}
+
+.content li {
+  margin-bottom: 0.5em; /* Spacing between list items */
+}
+
+.content code {
+  /* Inline code snippets */
+  background-color: #f0f0f0;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+.content pre {
+  /* Code blocks (```) */
+  background-color: #2e3440; /* Dark background for code blocks */
+  color: #d8dee9; /* Light text for dark background */
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto; /* Enable horizontal scrolling for long lines */
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
 /* Placeholder for sections where interactive part isn't built yet */
 .interactivePlaceholder {
   border: 1px dashed #ccc;

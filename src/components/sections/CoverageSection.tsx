@@ -1,5 +1,7 @@
 // src/components/sections/CoverageSection.tsx
 import React, { useCallback, useMemo } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type {
   CoverageSection as CoverageSectionData,
   SavedCoverageState, // This will be our TState
@@ -220,7 +222,11 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
 
       <div className={styles.coverageCodeDisplayContainer}>
         <h4 className={styles.coverageCodeDisplayTitle}>Code to Analyze:</h4>

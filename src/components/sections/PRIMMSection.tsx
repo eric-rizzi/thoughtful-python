@@ -1,5 +1,7 @@
 // src/components/sections/PRIMMSection.tsx
 import React, { useState, useCallback, useMemo } from "react"; // Added useState for local running state
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type {
   PRIMMSection as PRIMMSectionData,
   PRIMMCodeExample,
@@ -327,7 +329,9 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
     >
       <h2 className={styles.title}>{section.title}</h2>
       <div className={`${styles.content} ${primmStyles.introduction}`}>
-        {section.introduction}
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.introduction}
+        </ReactMarkdown>
       </div>
 
       {section.examples.map((example) => {

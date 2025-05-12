@@ -1,5 +1,7 @@
 // src/components/sections/TestingSection.tsx
 import React, { useState, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { LessonSection, LessonExample } from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext"; // To run the test script
@@ -252,7 +254,11 @@ const TestingSection: React.FC<TestingSectionProps> = ({
     return (
       <section id={section.id} className={styles.section}>
         <h2 className={styles.title}>{section.title}</h2>
-        <div className={styles.content}>{section.content}</div>
+        <div className={styles.content}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {section.content}
+          </ReactMarkdown>
+        </div>
         <p>No examples for this testing section.</p>
       </section>
     );
@@ -261,7 +267,11 @@ const TestingSection: React.FC<TestingSectionProps> = ({
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
       {section.examples.map((example: LessonExample) => (
         <TestableExample
           key={example.id}

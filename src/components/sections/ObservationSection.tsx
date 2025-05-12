@@ -1,10 +1,12 @@
 // src/components/sections/ObservationSection.tsx
-import React from "react"; // Removed unused useState, useEffect, useCallback
+import React from "react";
 import type { LessonSection, LessonExample } from "../../types/data";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import styles from "./Section.module.css";
 import { useProgressActions } from "../../stores/progressStore";
-import { useInteractiveExample } from "../../hooks/useInteractiveExample"; // IMPORT NEW HOOK
-import InteractiveExampleDisplay from "./InteractiveExampleDisplay"; // IMPORT NEW COMPONENT
+import { useInteractiveExample } from "../../hooks/useInteractiveExample";
+import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface ObservationSectionProps {
   section: LessonSection; // Expects a generic LessonSection, but examples are key
@@ -64,7 +66,11 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
       {section.examples.map((example: LessonExample) => (
         <ObservationExample
           key={example.id}

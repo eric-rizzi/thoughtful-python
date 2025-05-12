@@ -1,5 +1,7 @@
 // src/components/sections/MultipleChoiceSection.tsx
 import React, { useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { MultipleChoiceSection as MultipleChoiceSectionData } from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
@@ -76,7 +78,11 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
 
       <form
         className={`${styles.quizForm} ${

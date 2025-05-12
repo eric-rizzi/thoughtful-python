@@ -1,7 +1,9 @@
 // src/components/sections/InformationSection.tsx
 import React from "react";
+import ReactMarkdown from "react-markdown"; // Import ReactMarkdown
+import remarkGfm from "remark-gfm"; // Import remarkGfm for GitHub Flavored Markdown
 import type { LessonSection } from "../../types/data";
-import styles from "./Section.module.css"; // Use the common style
+import styles from "./Section.module.css"; // Import your CSS module
 
 interface InformationSectionProps {
   section: LessonSection;
@@ -9,11 +11,13 @@ interface InformationSectionProps {
 
 const InformationSection: React.FC<InformationSectionProps> = ({ section }) => {
   return (
-    // Set the ID for sidebar navigation
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      {/* CSS white-space: pre-wrap handles newlines */}
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
     </section>
   );
 };
