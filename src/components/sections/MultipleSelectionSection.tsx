@@ -11,9 +11,8 @@ interface MultipleSelectionSectionProps {
   lessonId: string;
 }
 
-// This interface defines the shape of the state managed by the hook AND saved to localStorage
 interface MultiSelectState {
-  selected: number[]; // Store selected indexes as an array for JSON compatibility
+  selected: number[];
   submitted: boolean;
   correct: boolean | null;
 }
@@ -29,7 +28,6 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     correct: null,
   };
 
-  // Define the completion check function for this section type
   const checkMultiSelectCompletion = useCallback(
     (state: MultiSelectState): boolean => {
       return state.correct === true;
@@ -37,7 +35,6 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     []
   );
 
-  // Use the new hook
   const [multiSelectState, setMultiSelectState] =
     useSectionProgress<MultiSelectState>(
       lessonId,
@@ -53,7 +50,6 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     correct: isCorrect,
   } = multiSelectState;
 
-  // For efficient checking and binding to checkboxes, convert the persisted array to a Set
   const selectedOptionsSet = React.useMemo(
     () => new Set(selectedIndexArray),
     [selectedIndexArray]
@@ -61,7 +57,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
 
   const handleOptionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (isSubmitted) return; // Don't allow changes after submission
+      if (isSubmitted) return;
 
       const index = parseInt(event.target.value, 10);
       const isChecked = event.target.checked;
@@ -75,11 +71,26 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
         }
         return {
           ...prevState,
-          selected: Array.from(currentSelectedSet), // Save back as an array
+          selected: Array.from(currentSelectedSet),
         };
       });
     },
     [isSubmitted, setMultiSelectState]
+  );
+
+  // Handle click on the entire quiz option div
+  const handleQuizOptionClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (isSubmitted) return;
+      // Find the checkbox input within the clicked div and programmatically click it
+      const inputElement = event.currentTarget.querySelector(
+        'input[type="checkbox"]'
+      );
+      if (inputElement) {
+        (inputElement as HTMLInputElement).click(); // Cast to HTMLInputElement to access .click()
+      }
+    },
+    [isSubmitted]
   );
 
   const handleSubmit = useCallback(() => {
@@ -97,8 +108,6 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
       correct: isAnswerCorrect,
       submitted: true,
     }));
-    // The hook's useEffect will now pick up this state change,
-    // run checkMultiSelectCompletion, and call completeSection if multiSelectState.correct becomes true.
   }, [
     selectedOptionsSet,
     isSubmitted,
@@ -127,17 +136,28 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
             className={`${styles.quizOption} ${
               isSubmitted ? styles.optionDisabled : ""
             }`}
+            onClick={handleQuizOptionClick} // Add onClick to the div
+            aria-checked={selectedOptionsSet.has(index)} // For accessibility, indicate checked state
+            role="checkbox" // For accessibility, indicate it's a checkbox
+            tabIndex={isSubmitted ? -1 : 0} // Make div focusable unless submitted
           >
-            <input
-              type="checkbox"
-              name={`${section.id}-option-${index}`}
-              value={index}
-              id={`${section.id}-option-${index}`}
-              checked={selectedOptionsSet.has(index)}
-              onChange={handleOptionChange}
-              disabled={isSubmitted}
-            />
-            <label htmlFor={`${section.id}-option-${index}`}>{option}</label>
+            <label
+              htmlFor={`${section.id}-option-${index}`}
+              className={styles.quizOptionLabel}
+            >
+              <input
+                type="checkbox"
+                name={`${section.id}-option-${index}`}
+                value={index}
+                id={`${section.id}-option-${index}`}
+                checked={selectedOptionsSet.has(index)}
+                onChange={handleOptionChange}
+                disabled={isSubmitted}
+                // Ensure the input itself is not tab-focusable to prevent double tabbing
+                tabIndex={-1}
+              />
+              {option}
+            </label>
           </div>
         ))}
 
@@ -153,7 +173,6 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
         )}
       </form>
 
-      {/* Feedback Area */}
       {isSubmitted && section.feedback && (
         <div
           className={

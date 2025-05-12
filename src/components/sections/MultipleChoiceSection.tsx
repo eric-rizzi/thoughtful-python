@@ -12,7 +12,6 @@ interface MultipleChoiceSectionProps {
 }
 
 interface QuizState {
-  // Renamed from SavedQuizState for clarity within component context
   selected: number | null;
   submitted: boolean;
   correct: boolean | null;
@@ -29,7 +28,6 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     correct: null,
   };
 
-  // Define the completion check function for this section type
   const checkQuizCompletion = useCallback((state: QuizState): boolean => {
     return state.correct === true;
   }, []);
@@ -61,6 +59,21 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     [isSubmitted, setQuizState]
   );
 
+  // Handle click on the entire quiz option div
+  const handleQuizOptionClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (isSubmitted) return;
+      // Find the radio input within the clicked div and programmatically click it
+      const inputElement = event.currentTarget.querySelector(
+        'input[type="radio"]'
+      );
+      if (inputElement) {
+        (inputElement as HTMLInputElement).click(); // Cast to HTMLInputElement to access .click()
+      }
+    },
+    [isSubmitted]
+  );
+
   const handleSubmit = useCallback(() => {
     if (selectedOption === null || isSubmitted) return;
 
@@ -71,8 +84,6 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
       correct: isAnswerCorrect,
       submitted: true,
     }));
-    // The hook's useEffect will now pick up this state change,
-    // run checkQuizCompletion, and call completeSection if quizState.correct becomes true.
   }, [selectedOption, isSubmitted, section.correctAnswer, setQuizState]);
 
   return (
@@ -96,17 +107,28 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
             className={`${styles.quizOption} ${
               isSubmitted ? styles.optionDisabled : ""
             }`}
+            onClick={handleQuizOptionClick} // Add onClick to the div
+            aria-checked={selectedOption === index} // For accessibility, indicate checked state
+            role="radio" // For accessibility, indicate it's a radio button
+            tabIndex={isSubmitted ? -1 : 0} // Make div focusable unless submitted
           >
-            <input
-              type="radio"
-              name={section.id}
-              value={index}
-              id={`${section.id}-option-${index}`}
-              checked={selectedOption === index}
-              onChange={handleOptionChange}
-              disabled={isSubmitted}
-            />
-            <label htmlFor={`${section.id}-option-${index}`}>{option}</label>
+            <label
+              htmlFor={`${section.id}-option-${index}`}
+              className={styles.quizOptionLabel}
+            >
+              <input
+                type="radio"
+                name={section.id}
+                value={index}
+                id={`${section.id}-option-${index}`}
+                checked={selectedOption === index}
+                onChange={handleOptionChange}
+                disabled={isSubmitted}
+                // Ensure the input itself is not tab-focusable to prevent double tabbing
+                tabIndex={-1}
+              />
+              {option}
+            </label>
           </div>
         ))}
 
@@ -122,7 +144,6 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
         )}
       </form>
 
-      {/* Feedback Area */}
       {isSubmitted && section.feedback && (
         <div
           className={
