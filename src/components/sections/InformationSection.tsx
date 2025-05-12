@@ -1,9 +1,9 @@
 // src/components/sections/InformationSection.tsx
 import React from "react";
-import ReactMarkdown from "react-markdown"; // Import ReactMarkdown
-import remarkGfm from "remark-gfm"; // Import remarkGfm for GitHub Flavored Markdown
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { LessonSection } from "../../types/data";
-import styles from "./Section.module.css"; // Import your CSS module
+import styles from "./Section.module.css";
 
 interface InformationSectionProps {
   section: LessonSection;

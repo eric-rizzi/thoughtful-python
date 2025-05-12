@@ -1,7 +1,7 @@
 // src/components/sections/TurtleSection.tsx
-// Simplified version focusing on basic commands (Approach 3)
-
 import React, { useRef, useEffect, useState, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type {
   TurtleSection as TurtleSectionData,
   JsTurtleCommand,
@@ -597,7 +597,11 @@ json.dumps(_js_turtle_commands_)
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
 
       {/* Instructions */}
       <div className={styles.turtleInstructions}>
