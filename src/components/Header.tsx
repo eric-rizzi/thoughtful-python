@@ -43,6 +43,9 @@ const Header: React.FC = () => {
                 Code Editor
               </NavLink>
             </li>
+            <NavLink to="/progress" className={getNavLinkClass}>
+              Progress
+            </NavLink>
             <li>
               <NavLink to="/learning-entries" className={getNavLinkClass}>
                 Learning Entries
