@@ -9,6 +9,7 @@ import sectionStyles from "./Section.module.css"; // Common section styles
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
+import inspect
 
 trace_data = []
 MAX_TRACE_EVENTS = 1000
@@ -29,15 +30,51 @@ def python_tracer(frame, event, arg):
     
     local_vars_snapshot = {}
     try:
+        # More robustly capture locals using repr(), especially for complex objects
+        # common in module-level scope (globals).
         current_locals = frame.f_locals
         for key, value in current_locals.items():
+            # Skip common module/function references that cause noise and circularity issues
+            # You can expand this list if needed
+            if key in ['__name__', '__doc__', '__package__', '__loader__', 
+                       '__spec__', '__builtins__', '__file__', 
+                       'python_tracer', 'trace_data', 'user_code_to_execute',
+                       'MAX_TRACE_EVENTS', 'json', 'sys', 'execution_exception',
+                       'output_payload', 'serialized_output_payload', 'e', 'arg', 'frame', 'event',
+                       'local_vars_snapshot', 'line_no', 'func_name', 'file_name', 'current_locals',
+                       'key', 'value', 'event_details' # self-references to tracer's own variables
+                       ]: # Add other global/builtin names you want to exclude
+                continue
+            
+            # Also skip if the value is a module or the tracer function itself
+            if hasattr(value, '__name__') and inspect.ismodule(value): # Requires import inspect
+                 local_vars_snapshot[key] = f"<module '{value.__name__}'>"
+                 continue
+            if value is python_tracer: # Skip self-reference
+                 local_vars_snapshot[key] = "<tracer_function>"
+                 continue
+            
             try:
-                json.dumps({key: value}) 
-                local_vars_snapshot[key] = value
-            except (TypeError, OverflowError):
-                local_vars_snapshot[key] = repr(value)
-    except Exception as e:
-        local_vars_snapshot = {"_tracer_error": f"Error copying locals: {repr(e)}"}
+                # For simpler types, attempt direct assignment if they are JSON serializable by default.
+                # This helps keep numbers as numbers, bools as bools in the JSON.
+                if isinstance(value, (int, float, str, bool, list, dict, type(None))):
+                    # Further check for list/dict contents' serializability if desired,
+                    # or just let repr() handle complex ones.
+                    # For simplicity here, we assume if it's one of these types, it's "simple enough"
+                    # or repr() will be fine.
+                    try:
+                        json.dumps(value) # Test outer serializability
+                        local_vars_snapshot[key] = value
+                    except (TypeError, OverflowError):
+                         local_vars_snapshot[key] = repr(value) # Fallback for non-serializable content within list/dict
+                else:
+                    local_vars_snapshot[key] = repr(value) # Use repr for other complex types
+            except Exception: # Catch any error during repr or type checking
+                local_vars_snapshot[key] = "<unrepresentable_object>"
+
+    except Exception as e_locals: # Catch errors during the iteration itself
+        local_vars_snapshot = {"_tracer_error": f"Error iterating/processing locals: {repr(e_locals)}"}
+
 
     event_details = {
         "step": len(trace_data) + 1,
@@ -45,9 +82,11 @@ def python_tracer(frame, event, arg):
         "line_no": line_no,
         "event": event,
         "func_name": func_name,
-        "locals": local_vars_snapshot,
+        "locals": local_vars_snapshot, # Now contains string representations primarily
     }
     
+    # (Rest of your event handling logic: 'line', 'call', 'return', 'exception')
+    # This part can remain largely the same, as the primary change is how locals are captured.
     if event == 'line':
         trace_data.append(event_details)
     elif event == 'call':
@@ -55,19 +94,22 @@ def python_tracer(frame, event, arg):
     elif event == 'return':
         return_value_repr = ""
         try:
-            json.dumps({"retval": arg})
-            return_value_repr = arg
+            # For return value, direct assignment is fine if simple, else repr()
+            if isinstance(arg, (int, float, str, bool, list, dict, type(None))):
+                 json.dumps(arg) # Test serializability
+                 return_value_repr = arg
+            else:
+                return_value_repr = repr(arg)
         except (TypeError, OverflowError):
             return_value_repr = repr(arg)
         trace_data.append({**event_details, "type_specific": "function_returned", "return_value": return_value_repr})
     elif event == 'exception':
         exc_type, exc_value, exc_traceback_obj = arg
-        # Format the traceback if needed, or just send type and value
         trace_data.append({
             **event_details,
             "type_specific": "exception_raised",
             "exception_type": exc_type.__name__ if hasattr(exc_type, '__name__') else repr(exc_type),
-            "exception_value": repr(exc_value)
+            "exception_value": str(exc_value) # Using str() for exception value is often cleaner
         })
     
     return python_tracer
