@@ -1,15 +1,15 @@
 // src/components/sections/DebuggerSection.tsx
-import React, { useState, useCallback } from "react";
-import CodeEditor from "../CodeEditor"; // Assuming path is correct
+import React, { useState, useCallback, useEffect } from "react";
+import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
-import styles from "./DebuggerSection.module.css"; // Your new CSS module
-import sectionStyles from "./Section.module.css"; // Common section styles
+import styles from "./DebuggerSection.module.css";
+import sectionStyles from "./Section.module.css";
 
-// The Python script (from above) as a template string
+// Python trace script template remains the same as your last working version
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
-import inspect
+import inspect # Make sure inspect is imported
 
 trace_data = []
 MAX_TRACE_EVENTS = 1000
@@ -30,51 +30,39 @@ def python_tracer(frame, event, arg):
     
     local_vars_snapshot = {}
     try:
-        # More robustly capture locals using repr(), especially for complex objects
-        # common in module-level scope (globals).
         current_locals = frame.f_locals
         for key, value in current_locals.items():
-            # Skip common module/function references that cause noise and circularity issues
-            # You can expand this list if needed
             if key in ['__name__', '__doc__', '__package__', '__loader__', 
                        '__spec__', '__builtins__', '__file__', 
                        'python_tracer', 'trace_data', 'user_code_to_execute',
-                       'MAX_TRACE_EVENTS', 'json', 'sys', 'execution_exception',
+                       'MAX_TRACE_EVENTS', 'json', 'sys', 'inspect', 'execution_exception',
                        'output_payload', 'serialized_output_payload', 'e', 'arg', 'frame', 'event',
                        'local_vars_snapshot', 'line_no', 'func_name', 'file_name', 'current_locals',
-                       'key', 'value', 'event_details' # self-references to tracer's own variables
-                       ]: # Add other global/builtin names you want to exclude
+                       'key', 'value', 'event_details'
+                       ]: 
                 continue
             
-            # Also skip if the value is a module or the tracer function itself
-            if hasattr(value, '__name__') and inspect.ismodule(value): # Requires import inspect
+            if hasattr(value, '__name__') and inspect.ismodule(value):
                  local_vars_snapshot[key] = f"<module '{value.__name__}'>"
                  continue
-            if value is python_tracer: # Skip self-reference
+            if value is python_tracer: 
                  local_vars_snapshot[key] = "<tracer_function>"
                  continue
             
             try:
-                # For simpler types, attempt direct assignment if they are JSON serializable by default.
-                # This helps keep numbers as numbers, bools as bools in the JSON.
                 if isinstance(value, (int, float, str, bool, list, dict, type(None))):
-                    # Further check for list/dict contents' serializability if desired,
-                    # or just let repr() handle complex ones.
-                    # For simplicity here, we assume if it's one of these types, it's "simple enough"
-                    # or repr() will be fine.
                     try:
-                        json.dumps(value) # Test outer serializability
+                        json.dumps(value) 
                         local_vars_snapshot[key] = value
                     except (TypeError, OverflowError):
-                         local_vars_snapshot[key] = repr(value) # Fallback for non-serializable content within list/dict
+                         local_vars_snapshot[key] = repr(value)
                 else:
-                    local_vars_snapshot[key] = repr(value) # Use repr for other complex types
-            except Exception: # Catch any error during repr or type checking
+                    local_vars_snapshot[key] = repr(value)
+            except Exception:
                 local_vars_snapshot[key] = "<unrepresentable_object>"
 
-    except Exception as e_locals: # Catch errors during the iteration itself
+    except Exception as e_locals:
         local_vars_snapshot = {"_tracer_error": f"Error iterating/processing locals: {repr(e_locals)}"}
-
 
     event_details = {
         "step": len(trace_data) + 1,
@@ -82,11 +70,9 @@ def python_tracer(frame, event, arg):
         "line_no": line_no,
         "event": event,
         "func_name": func_name,
-        "locals": local_vars_snapshot, # Now contains string representations primarily
+        "locals": local_vars_snapshot,
     }
     
-    # (Rest of your event handling logic: 'line', 'call', 'return', 'exception')
-    # This part can remain largely the same, as the primary change is how locals are captured.
     if event == 'line':
         trace_data.append(event_details)
     elif event == 'call':
@@ -94,9 +80,8 @@ def python_tracer(frame, event, arg):
     elif event == 'return':
         return_value_repr = ""
         try:
-            # For return value, direct assignment is fine if simple, else repr()
             if isinstance(arg, (int, float, str, bool, list, dict, type(None))):
-                 json.dumps(arg) # Test serializability
+                 json.dumps(arg)
                  return_value_repr = arg
             else:
                 return_value_repr = repr(arg)
@@ -109,7 +94,7 @@ def python_tracer(frame, event, arg):
             **event_details,
             "type_specific": "exception_raised",
             "exception_type": exc_type.__name__ if hasattr(exc_type, '__name__') else repr(exc_type),
-            "exception_value": str(exc_value) # Using str() for exception value is often cleaner
+            "exception_value": str(exc_value) 
         })
     
     return python_tracer
@@ -117,25 +102,15 @@ def python_tracer(frame, event, arg):
 final_result_of_main = None
 execution_exception = None
 
-# This is where user_code_to_execute will be defined by replacing the above placeholder
-# For safety, ensure user_code_to_execute is defined before this point.
-# If it's defined from a string replacement, it needs to be syntactically valid Python.
-
-# Example: If user_code_to_execute was a multi-line string passed from JS:
-# user_code_to_execute_parsed = user_code_to_execute
-
 sys.settrace(python_tracer)
 try:
-    # The user_code_to_execute string (after replacement) is directly executed
     exec(user_code_to_execute, globals()) 
 except Exception as e:
     execution_exception = e
-    # Capture exception info directly if not caught by tracer's 'exception' event
-    # This might happen for syntax errors before tracing properly starts for lines.
     if not any(ev.get('event') == 'exception' for ev in trace_data):
         trace_data.append({
             "step": len(trace_data) + 1,
-            "file_name": "<user_code>", # Or appropriate
+            "file_name": "<user_code>",
             "line_no": getattr(e, 'lineno', 'N/A'),
             "event": "script_exception",
             "func_name": "<module>",
@@ -147,9 +122,7 @@ except Exception as e:
 finally:
     sys.settrace(None)
 
-output_payload = {
-    "trace": trace_data
-}
+output_payload = { "trace": trace_data }
 if execution_exception:
      output_payload["execution_error"] = {
         "type": execution_exception.__class__.__name__,
@@ -169,19 +142,31 @@ except Exception as e:
     print("---DEBUGGER_TRACE_END---")
 `;
 
-interface DebuggerSectionProps {
-  // Props for title, initial code etc. can be added if this becomes part of a lesson structure
-  // For now, it's standalone for the PoC.
-  // section: { id: string; title: string; initialCode?: string }; // Example
+interface TraceEvent {
+  step: number;
+  file_name: string;
+  line_no: number;
+  event: string;
+  func_name: string;
+  locals: Record<string, any>;
+  type_specific?: string;
+  return_value?: any;
+  exception_type?: string;
+  exception_value?: string;
 }
 
-const DebuggerSection: React.FC<DebuggerSectionProps> = () => {
+const DebuggerSection: React.FC = () => {
   const [userCode, setUserCode] = useState<string>(
-    '# Enter your Python code here\n\nname = "Debugger"\nfor i in range(3):\n    print(f"Hello, {name} - Step {i+1}")\n    age = i * 10\n\nif True:\n    x=10\n    y=20\n    z=x+y\n\ndef my_func(a,b):\n    internal_var = a * b\n    return internal_var\n\nres = my_func(x,2)'
+    'def my_func(a,b):\n    internal_var = a * b\n    return internal_var\n\nx = 5\nres = my_func(x,2)\nprint(f"Result is {res}")'
   );
-  const [traceOutput, setTraceOutput] = useState<string | null>(null);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [rawTraceOutput, setRawTraceOutput] = useState<string | null>(null); // For displaying the raw JSON
+  const [parsedTraceEvents, setParsedTraceEvents] = useState<
+    TraceEvent[] | null
+  >(null);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
+  const [isTracing, setIsTracing] = useState<boolean>(false); // Renamed from isRunning for clarity
   const [pyodideError, setPyodideError] = useState<string | null>(null);
+  const [simulationActive, setSimulationActive] = useState<boolean>(false);
 
   const {
     runPythonCode,
@@ -198,18 +183,20 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = () => {
             : "(Still loading...)"
         }`
       );
-      setTraceOutput(null);
+      setRawTraceOutput(null);
+      setParsedTraceEvents(null);
+      setCurrentStepIndex(-1);
+      setSimulationActive(false);
       return;
     }
 
-    setIsRunning(true);
-    setTraceOutput("Generating trace...");
+    setIsTracing(true);
+    setRawTraceOutput("Generating trace...");
+    setParsedTraceEvents(null);
+    setCurrentStepIndex(-1);
     setPyodideError(null);
+    setSimulationActive(false);
 
-    // Inject user code into the script template
-    // Basic replacement; ensure userCode doesn't break the Python string literal.
-    // More robust: escape userCode properly or pass it as a separate argument to a Python function within the script.
-    // For `exec()`, the raw string is fine.
     const scriptToRun = PYTHON_TRACE_SCRIPT_TEMPLATE.replace(
       "# Placeholder for user's actual code",
       userCode
@@ -219,60 +206,111 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = () => {
 
     if (error) {
       setPyodideError(`Error during Python execution: ${error}`);
-      setTraceOutput(null);
+      setRawTraceOutput(null);
     } else {
       const traceJsonMatch = output.match(
         /---DEBUGGER_TRACE_START---([\s\S]*?)---DEBUGGER_TRACE_END---/
       );
       if (traceJsonMatch && traceJsonMatch[1]) {
+        const rawTraceString = traceJsonMatch[1].trim();
+        setRawTraceOutput(rawTraceString);
         try {
-          // The output is already indented JSON from the Python script
-          setTraceOutput(traceJsonMatch[1].trim());
+          const parsedData = JSON.parse(rawTraceString);
+          if (parsedData && Array.isArray(parsedData.trace)) {
+            setParsedTraceEvents(parsedData.trace);
+            setCurrentStepIndex(0); // Start at the first trace event
+            setSimulationActive(true);
+            if (parsedData.execution_error) {
+              // Display execution error if present in payload
+              setPyodideError(
+                `Python Execution Error: ${parsedData.execution_error.type} - ${
+                  parsedData.execution_error.message
+                } (approx. line ${parsedData.execution_error.line_no || "N/A"})`
+              );
+            }
+          } else {
+            setPyodideError(
+              "Trace data is missing the 'trace' array property or is malformed."
+            );
+            setParsedTraceEvents(null);
+          }
         } catch (e) {
           setPyodideError(
             `Error parsing trace JSON: ${
               e instanceof Error ? e.message : String(e)
             }`
           );
-          setTraceOutput(
-            "Failed to parse trace output. See console for details."
-          );
-          console.error(
-            "Raw output causing parse error:",
-            traceJsonMatch[1].trim()
-          );
+          setParsedTraceEvents(null);
+          console.error("Raw output causing parse error:", rawTraceString);
         }
       } else {
         setPyodideError("Could not find trace markers in Pyodide output.");
-        setTraceOutput("Trace markers not found. Raw output:\n" + output);
+        setRawTraceOutput("Trace markers not found. Raw output:\n" + output);
       }
     }
-    setIsRunning(false);
+    setIsTracing(false);
   }, [userCode, runPythonCode, isPyodideLoading, pyodideHookError]);
+
+  const handleStepInto = () => {
+    if (parsedTraceEvents && currentStepIndex < parsedTraceEvents.length - 1) {
+      setCurrentStepIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  const currentTraceEvent =
+    parsedTraceEvents &&
+    currentStepIndex >= 0 &&
+    currentStepIndex < parsedTraceEvents.length
+      ? parsedTraceEvents[currentStepIndex]
+      : null;
+
+  // For displaying code with highlighted line (simplified)
+  const getHighlightedCode = () => {
+    if (!simulationActive || !currentTraceEvent) return userCode.split("\n");
+    const lines = userCode.split("\n");
+    // Line numbers in trace are 1-indexed relative to the user_code_to_execute string,
+    // which has user's code starting after a comment line, effectively making user's line 1 become trace line 2.
+    // Adjust if your placeholder setup is different. The provided trace has line_no referring to line within `user_code_to_execute`.
+    // The `python_tracer` in the template replaces `# Placeholder...` with `userCode`.
+    // So, `line_no` in trace for `userCode` should be 1-indexed for `userCode` itself.
+    const traceLineNo = currentTraceEvent.line_no; // This is 1-indexed from the trace
+
+    // Check if the event is from the user's code (you'll refine this in Step 4)
+    // For now, assume if file_name is <string> or similar, it's user code.
+    // file_name in trace is currently always "<string>" for user code part.
+    if (traceLineNo > 0 && traceLineNo <= lines.length) {
+      lines[traceLineNo - 1] = `<span class="${styles.highlightedLine}">${
+        lines[traceLineNo - 1]
+      }</span>`;
+    }
+    return lines;
+  };
 
   return (
     <div className={`${styles.debuggerSection} ${sectionStyles.section}`}>
-      {" "}
-      {/* Combine styles */}
-      <h2 className={styles.title}>Python Debugger PoC</h2>
+      <h2 className={styles.title}>Python Debugger PoC (Steps 2 & 3)</h2>
+
       <div className={styles.editorContainer}>
         <CodeEditor
           value={userCode}
           onChange={setUserCode}
-          readOnly={isRunning || isPyodideLoading}
+          readOnly={isTracing || isPyodideLoading || simulationActive}
           height="200px"
           minHeight="150px"
+          // Add a class when readOnly for visual feedback
+          className={simulationActive ? styles.readOnlyEditor : ""}
         />
       </div>
+
       <div className={styles.controls}>
         <button
           onClick={handleRunAndTrace}
-          disabled={isRunning || isPyodideLoading}
+          disabled={isTracing || isPyodideLoading}
           className={styles.runButton}
         >
           {isPyodideLoading
             ? "Pyodide Loading..."
-            : isRunning
+            : isTracing
             ? "Tracing..."
             : "Run & Generate Trace"}
         </button>
@@ -280,15 +318,87 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = () => {
           <span className={styles.errorMessage}>Pyodide Init Error!</span>
         )}
       </div>
-      {pyodideError && (
-        <div className={styles.errorMessage}>
-          <pre>{pyodideError}</pre>
-        </div>
-      )}
-      {traceOutput && (
-        <div className={styles.traceOutputContainer}>
-          <h4>Raw Trace Output:</h4>
-          <pre className={styles.traceOutput}>{traceOutput}</pre>
+
+      {pyodideError &&
+        !isTracing && ( // Show Python execution errors if not currently tracing
+          <div className={styles.errorMessage}>
+            <pre>{pyodideError}</pre>
+          </div>
+        )}
+
+      {simulationActive && parsedTraceEvents && (
+        <div className={styles.simulationArea}>
+          {/* Left side: Variables and Controls */}
+          <div>
+            <div className={styles.simulationControls}>
+              <button
+                onClick={handleStepInto}
+                disabled={
+                  !currentTraceEvent ||
+                  currentStepIndex >= parsedTraceEvents.length - 1
+                }
+                className={styles.stepButton}
+              >
+                Step Into
+              </button>
+              {currentTraceEvent && (
+                <span className={styles.currentStepInfo}>
+                  Step: {currentTraceEvent.step}/{parsedTraceEvents.length} |
+                  Line: {currentTraceEvent.line_no} | Event:{" "}
+                  {currentTraceEvent.event} | Func:{" "}
+                  {currentTraceEvent.func_name}
+                </span>
+              )}
+            </div>
+            <div className={styles.variablesDisplay}>
+              <h4>Variables in Scope:</h4>
+              {currentTraceEvent &&
+              currentTraceEvent.locals &&
+              Object.keys(currentTraceEvent.locals).length > 0 ? (
+                <pre>
+                  {Object.entries(currentTraceEvent.locals)
+                    .map(
+                      ([key, value]) =>
+                        `${key}: ${
+                          typeof value === "object"
+                            ? JSON.stringify(value, null, 2)
+                            : value
+                        }`
+                    )
+                    .join("\n")}
+                </pre>
+              ) : (
+                <p className={styles.noVariables}>
+                  {currentTraceEvent
+                    ? "No local variables captured or available."
+                    : "Trace not started or no current step."}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Right side: Code display and Raw Trace (optional) */}
+          <div>
+            <div className={styles.simulationCodeDisplay}>
+              <h4>Your Code (Simulating):</h4>
+              {/* Simple line highlighting for now */}
+              <pre
+                dangerouslySetInnerHTML={{
+                  __html: getHighlightedCode().join("\n"),
+                }}
+              />
+            </div>
+
+            {rawTraceOutput && ( // Optionally keep displaying raw trace for debugging
+              <div
+                className={styles.traceOutputContainer}
+                style={{ marginTop: "1rem" }}
+              >
+                <h4>Raw Trace (JSON):</h4>
+                <pre className={styles.traceOutput}>{rawTraceOutput}</pre>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

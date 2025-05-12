@@ -85,3 +85,123 @@
   font-weight: bold;
   white-space: pre-wrap;
 }
+
+.simulationArea {
+  margin-top: 1.5rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr; /* Default to single column */
+  gap: 1.5rem;
+}
+
+/* On wider screens, make it two columns */
+@media (min-width: 768px) {
+  .simulationArea {
+    grid-template-columns: auto 1fr; /* Variables on left, code/output on right */
+  }
+}
+
+.simulationControls {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem; /* Reduced gap for controls */
+  align-items: center;
+}
+
+.stepButton {
+  background-color: #007bff; /* Blue for step controls */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem; /* Slightly smaller padding */
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500; /* Normal weight */
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.stepButton:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.stepButton:disabled {
+  background-color: #6c757d; /* Grey when disabled */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.currentStepInfo {
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.variablesDisplay {
+  padding: 1rem;
+  background-color: #f0f4f8; /* Light blueish background */
+  border-radius: 4px;
+  border: 1px solid #d1dce5;
+  min-height: 100px;
+  max-height: 400px; /* Or adjust as needed */
+  overflow-y: auto;
+}
+
+.variablesDisplay h4 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.1rem;
+}
+
+.variablesDisplay pre {
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  color: #111; /* Darker text for variables */
+}
+
+.variablesDisplay .noVariables {
+  color: #666;
+  font-style: italic;
+}
+
+/* Read-only editor style */
+.readOnlyEditor {
+  opacity: 0.8; /* Visually indicate it's not active for editing */
+}
+
+.simulationCodeDisplay {
+  /* Area to display the user's code during simulation */
+  /* If you use CodeEditor here, it will have its own styles */
+  /* If it's just a pre, style it similar to traceOutput */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  max-height: 400px;
+  overflow: auto;
+  white-space: pre; /* Preserve exact formatting of code */
+}
+.simulationCodeDisplay h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #306998;
+}
+
+/* For highlighting the current line (simple text approach for now) */
+.highlightedLine {
+  background-color: #fffbdd; /* Light yellow highlight */
+  display: block; /* Make it take full width */
+  margin: -0.2em; /* Adjust to cover padding of pre */
+  padding: 0.2em; /* Adjust to cover padding of pre */
+}
