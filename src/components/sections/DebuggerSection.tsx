@@ -5,8 +5,6 @@ import { usePyodide } from "../../contexts/PyodideContext";
 import styles from "./DebuggerSection.module.css";
 import sectionStyles from "./Section.module.css";
 
-// PYTHON_TRACE_SCRIPT_TEMPLATE (use the one from Step 6 that includes USER_CODE_FILENAME = '/user_temp_script.py')
-// ... (ensure the full, correct Python script template is here) ...
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
@@ -189,13 +187,16 @@ except Exception as e:
     print("---DEBUGGER_TRACE_END---")
 `;
 
+// TypeScript constant for the filename used in Python script
+const USER_CODE_VIRTUAL_FILENAME = "/user_temp_script.py";
+
 interface TraceEvent {
   step: number;
   file_name: string;
   line_no: number;
   event: string;
   func_name: string;
-  stack_depth: number; // Added stack_depth
+  stack_depth: number;
   locals: Record<string, any>;
   type_specific?: string;
   return_value?: any;
@@ -203,14 +204,11 @@ interface TraceEvent {
   exception_value?: string;
 }
 
-// *** ADD THIS CONSTANT ***
-const USER_CODE_VIRTUAL_FILENAME = "/user_temp_script.py";
-
 const DebuggerSection: React.FC = () => {
   const [userCode, setUserCode] = useState<string>(
     "def greet(name):\n" +
       '    message = "Hello, " + name\n' +
-      "    print(message) # This print output won't be captured per step yet\n" +
+      "    # print(message) # Print output not yet captured per step\n" +
       "    return len(message)\n" +
       "\n" +
       "def main():\n" +
@@ -221,7 +219,7 @@ const DebuggerSection: React.FC = () => {
       "    return val2\n" +
       "\n" +
       "result = main()\n" +
-      'print(f"Final result: {result}") # This print output won\'t be captured per step yet'
+      '# print(f"Final result: {result}")'
   );
   const [rawTraceOutput, setRawTraceOutput] = useState<string | null>(null);
   const [parsedTraceEvents, setParsedTraceEvents] = useState<
@@ -239,7 +237,6 @@ const DebuggerSection: React.FC = () => {
   } = usePyodide();
 
   const handleRunAndTrace = useCallback(async () => {
-    // ... (this function remains the same as in Step 6 response)
     if (isPyodideLoading || pyodideHookError) {
       setPyodideError(
         `Pyodide is not ready. ${
@@ -315,16 +312,16 @@ const DebuggerSection: React.FC = () => {
 
   const canStep =
     parsedTraceEvents && currentStepIndex < parsedTraceEvents.length - 1;
+  const isAtLastStep =
+    parsedTraceEvents && currentStepIndex === parsedTraceEvents.length - 1;
 
   const handleStepInto = () => {
-    // ... (this function remains the same)
     if (canStep) {
       setCurrentStepIndex((prevIndex) => prevIndex + 1);
     }
   };
 
   const handleStepOver = useCallback(() => {
-    // ... (this function remains the same)
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -341,7 +338,6 @@ const DebuggerSection: React.FC = () => {
         nextEvent.stack_depth > initialDepth &&
         nextEvent.file_name === USER_CODE_VIRTUAL_FILENAME
       ) {
-        // Check filename
         isFunctionCallLine = true;
       }
     }
@@ -379,12 +375,11 @@ const DebuggerSection: React.FC = () => {
       }
       setCurrentStepIndex(parsedTraceEvents.length - 1);
     } else {
-      handleStepInto();
+      if (canStep) setCurrentStepIndex((prevIndex) => prevIndex + 1); // Behave like Step Into
     }
-  }, [parsedTraceEvents, currentStepIndex]); // handleStepInto is stable if defined with useCallback or outside
+  }, [parsedTraceEvents, currentStepIndex, canStep]);
 
   const handleStepOut = useCallback(() => {
-    // ... (this function remains the same)
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -393,24 +388,24 @@ const DebuggerSection: React.FC = () => {
       return;
     const currentEvent = parsedTraceEvents[currentStepIndex];
     const initialDepth = currentEvent.stack_depth;
-    const initialFuncName = currentEvent.func_name; // Capture the function name we are stepping out of
-
-    if (initialDepth === 0) return;
+    const initialFuncName = currentEvent.func_name;
+    if (initialDepth === 0) {
+      if (canStep) setCurrentStepIndex(parsedTraceEvents.length - 1);
+      return;
+    }
 
     let nextIndex = currentStepIndex + 1;
     let foundCorrectReturn = false;
     while (nextIndex < parsedTraceEvents.length) {
       const event = parsedTraceEvents[nextIndex];
-      // We are looking for a 'return' event from the *current function* at a shallower depth
       if (
         event.event === "return" &&
         event.func_name === initialFuncName &&
-        event.stack_depth === initialDepth - 1 && // Return to caller's depth
+        event.stack_depth === initialDepth - 1 &&
         event.file_name === USER_CODE_VIRTUAL_FILENAME
       ) {
         foundCorrectReturn = true;
       }
-      // After that specific return, find the next 'line' event in the caller
       if (
         foundCorrectReturn &&
         event.event === "line" &&
@@ -423,7 +418,25 @@ const DebuggerSection: React.FC = () => {
       nextIndex++;
     }
     setCurrentStepIndex(parsedTraceEvents.length - 1);
-  }, [parsedTraceEvents, currentStepIndex]);
+  }, [parsedTraceEvents, currentStepIndex, canStep]);
+
+  const handleContinue = () => {
+    if (parsedTraceEvents) {
+      // For now, "Continue" goes to the end of the trace.
+      // Later, this will go to the next breakpoint or end.
+      setCurrentStepIndex(parsedTraceEvents.length - 1);
+    }
+  };
+
+  const handleStop = () => {
+    setSimulationActive(false);
+    setCurrentStepIndex(-1);
+    // parsedTraceEvents and rawTraceOutput can remain for inspection if desired,
+    // they will be overwritten on the next "Run & Generate Trace"
+    // setParsedTraceEvents(null);
+    // setRawTraceOutput(null);
+    setPyodideError(null); // Clear any Python execution errors from the simulation display
+  };
 
   const currentTraceEvent =
     parsedTraceEvents &&
@@ -437,8 +450,6 @@ const DebuggerSection: React.FC = () => {
     const lines = userCode.split("\n");
     const displayLines = [...lines];
     const traceLineNo = currentTraceEvent.line_no;
-
-    // *** USE THE TYPESCRIPT CONSTANT HERE ***
     if (
       currentTraceEvent.file_name === USER_CODE_VIRTUAL_FILENAME &&
       traceLineNo > 0 &&
@@ -451,11 +462,9 @@ const DebuggerSection: React.FC = () => {
     return displayLines;
   };
 
-  // ... (JSX for rendering the component remains the same as in Step 6 response)
-  // Ensure you use the updated `getHighlightedCode`
   return (
     <div className={`${styles.debuggerSection} ${sectionStyles.section}`}>
-      <h2 className={styles.title}>Python Debugger (Step 6 Implemented)</h2>
+      <h2 className={styles.title}>Python Debugger (Step 7 Implemented)</h2>
       <div className={styles.editorContainer}>
         <CodeEditor
           value={userCode}
@@ -470,112 +479,135 @@ const DebuggerSection: React.FC = () => {
       <div className={styles.controls}>
         <button
           onClick={handleRunAndTrace}
-          disabled={isTracing || isPyodideLoading}
+          disabled={isTracing || isPyodideLoading || simulationActive}
           className={styles.runButton}
         >
           {isPyodideLoading
             ? "Pyodide Loading..."
             : isTracing
             ? "Tracing..."
-            : "Run & Generate Trace"}
+            : "Run & Trace"}
         </button>
         {pyodideHookError && !isPyodideLoading && (
           <span className={styles.errorMessage}>Pyodide Init Error!</span>
         )}
       </div>
 
-      {pyodideError && !isTracing && (
-        <div className={styles.errorMessage}>
-          <pre>{pyodideError}</pre>
-        </div>
-      )}
+      {pyodideError &&
+        !isTracing &&
+        simulationActive && ( // Only show Python exec errors if simulation was active or attempted
+          <div className={styles.errorMessage}>
+            <pre>{pyodideError}</pre>
+          </div>
+        )}
 
       {simulationActive && parsedTraceEvents && (
-        <div className={styles.simulationArea}>
-          <div>
-            {" "}
-            {/* Left Column for Controls & Variables */}
-            <div className={styles.simulationControls}>
-              <button
-                onClick={handleStepInto}
-                disabled={!canStep}
-                className={styles.stepButton}
-              >
-                Step Into (F11)
-              </button>
-              <button
-                onClick={handleStepOver}
-                disabled={!canStep}
-                className={styles.stepButton}
-              >
-                Step Over (F10)
-              </button>
-              <button
-                onClick={handleStepOut}
-                disabled={
-                  !canStep ||
-                  (currentTraceEvent && currentTraceEvent.stack_depth === 0)
-                }
-                className={styles.stepButton}
-              >
-                Step Out (Shift+F11)
-              </button>
-            </div>
-            {currentTraceEvent && (
-              <div className={styles.currentStepInfo}>
-                Step: {currentTraceEvent.step}/{parsedTraceEvents.length} |
-                Line: {currentTraceEvent.line_no} | Event:{" "}
-                {currentTraceEvent.event} | Func: {currentTraceEvent.func_name}{" "}
-                | Depth: {currentTraceEvent.stack_depth}
+        <>
+          <div className={styles.simulationControls}>
+            <button
+              onClick={handleContinue}
+              disabled={!canStep || isAtLastStep}
+              className={styles.stepButton}
+            >
+              Continue (F5)
+            </button>
+            <button onClick={handleStop} className={styles.stopButton}>
+              Stop (Shift+F5)
+            </button>
+            <button
+              onClick={handleStepInto}
+              disabled={!canStep || isAtLastStep}
+              className={styles.stepButton}
+            >
+              Step Into (F11)
+            </button>
+            <button
+              onClick={handleStepOver}
+              disabled={!canStep || isAtLastStep}
+              className={styles.stepButton}
+            >
+              Step Over (F10)
+            </button>
+            <button
+              onClick={handleStepOut}
+              disabled={
+                !canStep ||
+                isAtLastStep ||
+                (currentTraceEvent && currentTraceEvent.stack_depth === 0)
+              }
+              className={styles.stepButton}
+            >
+              Step Out (Shift+F11)
+            </button>
+          </div>
+
+          <div className={styles.simulationArea}>
+            <div>
+              {" "}
+              {/* Left Column for Variables */}
+              {currentTraceEvent && (
+                <div className={styles.currentStepInfo}>
+                  Step: {currentTraceEvent.step}/{parsedTraceEvents.length} |
+                  Line: {currentTraceEvent.line_no} | Event:{" "}
+                  {currentTraceEvent.event} | Func:{" "}
+                  {currentTraceEvent.func_name} | Depth:{" "}
+                  {currentTraceEvent.stack_depth}
+                </div>
+              )}
+              <div className={styles.variablesDisplay}>
+                <h4>Variables in Scope:</h4>
+                {currentTraceEvent &&
+                currentTraceEvent.locals &&
+                Object.keys(currentTraceEvent.locals).length > 0 ? (
+                  <pre>
+                    {Object.entries(currentTraceEvent.locals)
+                      .map(
+                        ([key, value]) =>
+                          `${key}: ${
+                            typeof value === "object"
+                              ? JSON.stringify(value, null, 2)
+                              : String(value)
+                          }`
+                      )
+                      .join("\n")}
+                  </pre>
+                ) : (
+                  <p className={styles.noVariables}>
+                    {currentTraceEvent
+                      ? "No local variables captured."
+                      : "Trace not active."}
+                  </p>
+                )}
               </div>
-            )}
-            <div className={styles.variablesDisplay}>
-              <h4>Variables in Scope:</h4>
-              {currentTraceEvent &&
-              currentTraceEvent.locals &&
-              Object.keys(currentTraceEvent.locals).length > 0 ? (
-                <pre>
-                  {Object.entries(currentTraceEvent.locals)
-                    .map(
-                      ([key, value]) =>
-                        `${key}: ${
-                          typeof value === "object"
-                            ? JSON.stringify(value, null, 2)
-                            : String(value)
-                        }`
-                    )
-                    .join("\n")}
-                </pre>
-              ) : (
-                <p className={styles.noVariables}>
-                  {currentTraceEvent
-                    ? "No local variables captured."
-                    : "Trace not active."}
-                </p>
+            </div>
+            <div>
+              {" "}
+              {/* Right Column for Code & Raw Trace */}
+              <div className={styles.simulationCodeDisplay}>
+                <h4>Your Code (Simulating):</h4>
+                <pre
+                  dangerouslySetInnerHTML={{
+                    __html: getHighlightedCode().join("\n"),
+                  }}
+                />
+              </div>
+              {rawTraceOutput && (
+                <div
+                  className={styles.traceOutputContainer}
+                  style={{ marginTop: "1rem" }}
+                >
+                  <h4>Raw Trace (JSON):</h4>
+                  <pre className={styles.traceOutput}>{rawTraceOutput}</pre>
+                </div>
               )}
             </div>
           </div>
-          <div>
-            {" "}
-            {/* Right Column for Code & Raw Trace */}
-            <div className={styles.simulationCodeDisplay}>
-              <h4>Your Code (Simulating):</h4>
-              <pre
-                dangerouslySetInnerHTML={{
-                  __html: getHighlightedCode().join("\n"),
-                }}
-              />
-            </div>
-            {rawTraceOutput && ( // Optionally keep displaying raw trace for debugging
-              <div
-                className={styles.traceOutputContainer}
-                style={{ marginTop: "1rem" }}
-              >
-                <h4>Raw Trace (JSON):</h4>
-                <pre className={styles.traceOutput}>{rawTraceOutput}</pre>
-              </div>
-            )}
-          </div>
+        </>
+      )}
+      {/* Show general pyodide errors if they occurred outside of active simulation/tracing feedback */}
+      {pyodideError && !simulationActive && !isTracing && (
+        <div className={styles.errorMessage}>
+          <pre>{pyodideError}</pre>
         </div>
       )}
     </div>

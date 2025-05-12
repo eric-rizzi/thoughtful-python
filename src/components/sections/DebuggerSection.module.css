@@ -132,6 +132,28 @@
   opacity: 0.7;
 }
 
+.stopButton {
+  background-color: #dc3545; /* Red for stop/reset */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.stopButton:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.stopButton:disabled {
+  background-color: #e77580; /* Lighter red when disabled */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .currentStepInfo {
   font-family: "Menlo", "Consolas", "Courier New", monospace;
   font-size: 0.9rem;
