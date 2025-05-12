@@ -1,5 +1,5 @@
 // src/components/sections/ReflectionSection.tsx
-import React, { useState, useCallback } from "react"; // Removed useEffect no longer needed for hasFeedback flag
+import React, { useState, useCallback, useEffect } from "react";
 import type {
   ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,
@@ -11,43 +11,123 @@ import type {
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
+import { loadProgress } from "../../lib/localStorageUtils"; // Import loadProgress
 
-// --- Simulated API Call ---
-async function getSimulatedFeedback(
-  submission: ReflectionSubmission,
-  rubric?: ReflectionSectionData["rubric"]
-): Promise<ReflectionResponse> {
-  // Simulate network delay
-  await new Promise((resolve) =>
-    setTimeout(resolve, 1500 + Math.random() * 100)
-  );
-
-  let assessment: AssessmentLevel = "developing";
-  let feedback = "";
-
-  if (submission.code.length < 20 || submission.explanation.length < 40) {
-    assessment = "developing";
-    feedback =
-      rubric?.developing ||
-      "Your code example or explanation seems a bit brief. Try elaborating more on the concept and how your code demonstrates it.";
-  } else if (
-    submission.explanation.length > 100 &&
-    submission.code.length > 30 &&
-    submission.topic.length > 3 // Check if topic is somewhat descriptive
-  ) {
-    assessment = "exceeds";
-    feedback =
-      rubric?.exceeds ||
-      "Excellent! Your code is clear, and your explanation thoroughly demonstrates a strong understanding of the topic described in your title. You've connected the code well to the concept.";
-  } else {
-    assessment = "meets";
-    feedback =
-      rubric?.meets ||
-      "Good job! Your code example works and your explanation covers the main points of the topic described in your title.";
-  }
-  return { feedback, assessment, timestamp: Date.now() };
+// Define the interface for ChatBot configuration as saved by ConfigurationPage
+interface ChatBotConfig {
+  progressApiGateway: string;
+  chatbotVersion: string;
+  chatbotApiKey: string;
 }
-// --- End Simulated API Call ---
+
+const CONFIG_STORAGE_KEY = "chatbot_config";
+
+// --- Refactored API Call Function ---
+async function sendFeedbackToChatBot(
+  submission: ReflectionSubmission,
+  rubric: ReflectionSectionData["rubric"] | undefined, // Pass rubric for context
+  chatbotVersion: string,
+  chatbotApiKey: string
+): Promise<ReflectionResponse> {
+  if (!chatbotVersion || !chatbotApiKey) {
+    throw new Error(
+      "ChatBot version or API Key not configured. Please go to the Configuration page."
+    );
+  }
+
+  const API_BASE_URL =
+    "https://generativelanguage.googleapis.com/v1beta/models/";
+  const modelId = chatbotVersion; // Use the configured version as the model ID
+  const endpoint = `${API_BASE_URL}${modelId}:generateContent?key=${chatbotApiKey}`;
+
+  const prompt = `
+    You are an automated Python code assessor. Your task is to evaluate a student's Python code example and explanation based on a specified topic. Provide constructive feedback and an assessment level.
+
+    **Topic:** ${submission.topic}
+
+    **Student's Code:**
+    \`\`\`python
+    ${submission.code}
+    \`\`\`
+
+    **Student's Explanation:**
+    ${submission.explanation}
+
+    **Rubric for Assessment Levels:**
+    - **developing**: The code is incomplete, has significant errors, or the explanation doesn't clearly show how requirements were met. Feedback should guide the student to address fundamental issues.
+    - **meets**: The code is functional and the explanation adequately describes how the concept was implemented. Feedback should confirm understanding and suggest minor improvements.
+    - **exceeds**: The code is well-structured, creative, and the explanation clearly and thoroughly details how multiple requirements were met, possibly highlighting clever solutions or insights. Feedback should commend strong understanding and suggest advanced considerations.
+
+    **Provide your response in a concise format. Start with the assessment level, then provide the feedback. For example:
+    Assessment: meets
+    Feedback: Your code is clear and your explanation is accurate. Consider adding more comments to your code for readability.**
+
+    Based on the provided submission and rubric, assess the student's work and provide feedback.
+    `;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("ChatBot API Error:", errorData);
+      throw new Error(
+        `ChatBot API request failed: ${
+          errorData.error?.message || response.statusText
+        }`
+      );
+    }
+
+    const data = await response.json();
+    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!generatedText) {
+      throw new Error("ChatBot did not return any content.");
+    }
+
+    // --- Simplified Parsing of LLM Response for Assessment ---
+    // A more robust solution would involve more sophisticated NLP or a structured API response.
+    let assessment: AssessmentLevel = "developing"; // Default
+    let feedbackMessage = generatedText.trim(); // Use full text as feedback by default
+
+    const lowerCaseText = generatedText.toLowerCase();
+    if (lowerCaseText.includes("assessment: exceeds")) {
+      assessment = "exceeds";
+    } else if (lowerCaseText.includes("assessment: meets")) {
+      assessment = "meets";
+    } else if (lowerCaseText.includes("assessment: developing")) {
+      assessment = "developing";
+    }
+
+    // Attempt to extract feedback by looking for "Feedback:" marker
+    const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
+    if (feedbackMatch && feedbackMatch[1]) {
+      feedbackMessage = feedbackMatch[1].trim();
+    } else {
+      // If "Feedback:" marker not found, assume the whole text is feedback
+      feedbackMessage = generatedText.trim();
+    }
+    // --- End Simplified Parsing ---
+
+    return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
+  } catch (error) {
+    console.error("Error communicating with ChatBot API:", error);
+    throw new Error(
+      `Failed to get feedback from ChatBot: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
+}
+// --- End Refactored API Call Function ---
 
 interface ReflectionSectionProps {
   section: ReflectionSectionData;
@@ -67,12 +147,22 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // REMOVED hasFeedbackForCurrentContent state and associated useEffect
+  // State for ChatBot configuration
+  const [chatbotVersion, setChatbotVersion] = useState<string>("");
+  const [chatbotApiKey, setChatbotApiKey] = useState<string>("");
+
+  // Load ChatBot configuration on mount
+  useEffect(() => {
+    const savedConfig = loadProgress<ChatBotConfig>(CONFIG_STORAGE_KEY);
+    if (savedConfig) {
+      setChatbotVersion(savedConfig.chatbotVersion || "");
+      setChatbotApiKey(savedConfig.chatbotApiKey || "");
+    }
+  }, []);
 
   const storageKey = `reflectState_${lessonId}_${section.id}`;
   const initialState: SavedReflectionState = { history: [] };
 
-  // Completion check still requires a formally submitted entry with good assessment
   const checkReflectionCompletion = useCallback(
     (currentHookState: SavedReflectionState): boolean => {
       return currentHookState.history.some(
@@ -94,7 +184,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       checkReflectionCompletion
     );
 
-  // Get history directly from the hook state
   const history = reflectionState.history;
   const hasEverReceivedFeedback = history.length > 0;
 
@@ -114,6 +203,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         return;
       }
 
+      if (!chatbotVersion || !chatbotApiKey) {
+        setError(
+          "ChatBot configuration missing. Please set the ChatBot Version and API Key on the Configuration page."
+        );
+        return;
+      }
+
       setIsSubmitting(true);
       setError(null);
 
@@ -126,7 +222,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       };
 
       try {
-        const response = await getSimulatedFeedback(submission, section.rubric);
+        // Use the refactored function to send feedback to the ChatBot
+        const response = await sendFeedbackToChatBot(
+          submission,
+          section.rubric, // Pass rubric for context
+          chatbotVersion,
+          chatbotApiKey
+        );
         const newHistoryEntry: ReflectionHistoryEntry = {
           submission,
           response,
@@ -137,10 +239,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         }));
 
         if (isFormalSubmission) {
-          // Optional: Clear inputs? Maybe better not to, let user decide.
-          // setTopic("");
-          // setCode("");
-          // setExplanation("");
           alert("Your entry has been submitted and saved to your journal!");
         } else {
           alert(
@@ -165,10 +263,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       section.rubric,
       setReflectionState,
       hasEverReceivedFeedback,
+      chatbotVersion, // Add as dependency
+      chatbotApiKey, // Add as dependency
     ]
   );
 
-  // ... (getTopicNameForDisplay, formatDate functions remain the same) ...
   const getTopicNameForDisplay = (topicValue: string): string => {
     if (!topicValue) return "Untitled Entry";
     return topicValue.charAt(0).toUpperCase() + topicValue.slice(1);
@@ -176,7 +275,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const formatDate = (timestamp: number): string =>
     new Date(timestamp).toLocaleString();
 
-  // Determine if base requirements for enabling *any* button are met
   const canAttemptInteraction =
     !!topic.trim() && !!code.trim() && !!explanation.trim();
 
@@ -238,10 +336,19 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         <div className={styles.reflectionButtons}>
           <button
             onClick={() => handleSubmit(false)} // Get Feedback
-            disabled={isSubmitting || !canAttemptInteraction}
+            disabled={
+              isSubmitting ||
+              !canAttemptInteraction ||
+              !chatbotVersion ||
+              !chatbotApiKey
+            }
             className={styles.reflectionFeedbackBtn}
             title={
-              !canAttemptInteraction ? "Please fill in all fields first" : ""
+              !canAttemptInteraction
+                ? "Please fill in all fields first"
+                : !chatbotVersion || !chatbotApiKey
+                ? "Please configure ChatBot API Key and Version in settings"
+                : ""
             }
           >
             {isSubmitting ? "Processing..." : "Get Feedback"}
@@ -251,7 +358,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             disabled={
               isSubmitting || // Disable if submitting
               !canAttemptInteraction || // Disable if fields empty
-              !hasEverReceivedFeedback // Disable if no feedback cycle ever completed
+              !hasEverReceivedFeedback || // Disable if no feedback cycle ever completed
+              !chatbotVersion ||
+              !chatbotApiKey // Disable if ChatBot not configured
             }
             className={styles.reflectionSubmitBtn}
             title={
@@ -259,6 +368,8 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 ? "Please fill in all fields first"
                 : !hasEverReceivedFeedback
                 ? "Please click 'Get Feedback' at least once first"
+                : !chatbotVersion || !chatbotApiKey
+                ? "Please configure ChatBot API Key and Version in settings"
                 : "Submit this entry to your journal"
             }
           >
