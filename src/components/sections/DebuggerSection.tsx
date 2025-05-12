@@ -1,16 +1,17 @@
 // src/components/sections/DebuggerSection.tsx
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import styles from "./DebuggerSection.module.css";
 import sectionStyles from "./Section.module.css";
 
-// PYTHON_TRACE_SCRIPT_TEMPLATE (use the one from Step 6/7 that includes USER_CODE_FILENAME and stack_depth)
-// ... (ensure the full, correct Python script template from the previous step is here) ...
+// PYTHON_TRACE_SCRIPT_TEMPLATE (use the one from THIS response, with io.StringIO for stdout)
+// ... (paste the full updated PYTHON_TRACE_SCRIPT_TEMPLATE here) ...
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
 import inspect
+import io # NEW IMPORT for StringIO
 
 trace_data = []
 MAX_TRACE_EVENTS = 1000
@@ -19,7 +20,7 @@ USER_CODE_FILENAME = '/user_temp_script.py'
 user_code_to_execute = """
 # Placeholder for user's actual code
 """
-# ... (rest of the Python script template from Step 6/7 response)
+
 try:
     with open(USER_CODE_FILENAME, 'w') as f:
         f.write(user_code_to_execute)
@@ -66,7 +67,9 @@ def python_tracer(frame, event, arg):
                        'python_tracer', 'trace_data', 'user_code_to_execute', 'USER_CODE_FILENAME',
                        'compiled_user_code', 'source_code_to_compile', 'initial_setup_error',
                        'get_stack_depth', 
-                       'MAX_TRACE_EVENTS', 'json', 'sys', 'inspect', 'execution_exception',
+                       'MAX_TRACE_EVENTS', 'json', 'sys', 'inspect', 'io', 
+                       'user_stdout_capture', 'original_stdout', 
+                       'execution_exception',
                        'output_payload', 'serialized_output_payload', 'e_setup', 'e', 'f', 'arg', 'frame', 'event',
                        'local_vars_snapshot', 'line_no', 'func_name', 'stack_depth', 
                        'current_frame_filename', 'next_tracer_for_this_scope',
@@ -129,8 +132,9 @@ def python_tracer(frame, event, arg):
     
     return next_tracer_for_this_scope
 
-final_result_of_main = None
 execution_error_details = None
+user_stdout_capture = io.StringIO() 
+original_stdout = sys.stdout
 
 if initial_setup_error:
     execution_error_details = initial_setup_error
@@ -142,6 +146,7 @@ if initial_setup_error:
         "exception_value": initial_setup_error["message"]
     })
 elif compiled_user_code:
+    sys.stdout = user_stdout_capture 
     sys.settrace(python_tracer)
     try:
         exec(compiled_user_code, globals()) 
@@ -157,8 +162,11 @@ elif compiled_user_code:
             })
     finally:
         sys.settrace(None)
-
-output_payload = { "trace": trace_data }
+        sys.stdout = original_stdout 
+output_payload = { 
+    "trace": trace_data,
+    "user_stdout": user_stdout_capture.getvalue() 
+}
 if execution_error_details:
      output_payload["execution_error"] = execution_error_details
 
@@ -175,7 +183,6 @@ except Exception as e:
             safe_trace.append(item)
         except:
             safe_trace.append({"error": "Unserializable item", "original_step": item.get("step"), "line_no": item.get("line_no")}) 
-    
     error_output_content = {
         "error": "Failed to serialize full trace_data for output", 
         "details": str(e),
@@ -183,6 +190,7 @@ except Exception as e:
     }
     if execution_error_details: 
         error_output_content["execution_error"] = execution_error_details
+    error_output_content["user_stdout_capture_on_error"] = user_stdout_capture.getvalue()
     error_output = json.dumps(error_output_content)
     print("---DEBUGGER_TRACE_START---")
     print(error_output)
@@ -192,7 +200,7 @@ except Exception as e:
 const USER_CODE_VIRTUAL_FILENAME = "/user_temp_script.py";
 
 interface TraceEvent {
-  step: number;
+  /* ... (same as before, including stack_depth) ... */ step: number;
   file_name: string;
   line_no: number;
   event: string;
@@ -205,24 +213,36 @@ interface TraceEvent {
   exception_value?: string;
 }
 
+interface PythonExecutionPayload {
+  // For parsing the JSON from Python
+  trace: TraceEvent[];
+  user_stdout?: string;
+  execution_error?: {
+    type: string;
+    message: string;
+    line_no?: number | string;
+  };
+}
+
 const DebuggerSection: React.FC = () => {
   const [userCode, setUserCode] = useState<string>(
     "def greet(name):\n" +
       '    message = "Hello, " + name\n' +
-      "    # print(message)\n" +
+      '    print("Greeting: " + message) # Added print\n' +
       "    return len(message)\n" +
       "\n" +
       "def main():\n" +
-      '    print("Starting main") # Add a print to see its effect (or lack thereof in step-by-step for now)\n' +
-      '    val1 = greet("Debugger")\n' +
+      '    print("Starting main function...")\n' +
+      '    val1 = greet("World")\n' +
       "    val2 = 0\n" +
-      "    for i in range(2):\n" +
-      '        print(f"Loop iteration {i}")\n' +
-      "        val2 += greet(str(i)) + val1\n" +
+      "    for i in range(1, 3): # Loop 2 times\n" +
+      '        print(f"Loop iteration {i}, val1={val1}")\n' +
+      "        val2 += greet(str(i * 10)) + val1\n" +
+      '    print("Main function ending.")\n' +
       "    return val2\n" +
       "\n" +
       "result = main()\n" +
-      '# print(f"Final result: {result}")'
+      'print(f"Final script result: {result}")'
   );
   const [rawTraceOutput, setRawTraceOutput] = useState<string | null>(null);
   const [parsedTraceEvents, setParsedTraceEvents] = useState<
@@ -232,7 +252,11 @@ const DebuggerSection: React.FC = () => {
   const [isTracing, setIsTracing] = useState<boolean>(false);
   const [pyodideError, setPyodideError] = useState<string | null>(null);
   const [simulationActive, setSimulationActive] = useState<boolean>(false);
-  const [breakpoints, setBreakpoints] = useState<Set<number>>(new Set()); // Stores 1-indexed line numbers
+  const [breakpoints, setBreakpoints] = useState<Set<number>>(new Set());
+
+  // New state for stdout
+  const [capturedUserStdout, setCapturedUserStdout] = useState<string>("");
+  const [displayedStdout, setDisplayedStdout] = useState<string>("");
 
   const {
     runPythonCode,
@@ -241,6 +265,7 @@ const DebuggerSection: React.FC = () => {
   } = usePyodide();
 
   const handleRunAndTrace = useCallback(async () => {
+    // ... (initial checks and state resets remain the same) ...
     if (isPyodideLoading || pyodideHookError) {
       setPyodideError(
         `Pyodide is not ready. ${
@@ -253,6 +278,8 @@ const DebuggerSection: React.FC = () => {
       setParsedTraceEvents(null);
       setCurrentStepIndex(-1);
       setSimulationActive(false);
+      setCapturedUserStdout("");
+      setDisplayedStdout(""); // Reset stdout states
       return;
     }
     setIsTracing(true);
@@ -260,7 +287,9 @@ const DebuggerSection: React.FC = () => {
     setParsedTraceEvents(null);
     setCurrentStepIndex(-1);
     setPyodideError(null);
-    setSimulationActive(false); // Breakpoints persist
+    setSimulationActive(false);
+    setCapturedUserStdout("");
+    setDisplayedStdout(""); // Reset stdout states
 
     const scriptToRun = PYTHON_TRACE_SCRIPT_TEMPLATE.replace(
       "# Placeholder for user's actual code",
@@ -279,16 +308,21 @@ const DebuggerSection: React.FC = () => {
         const rawTraceString = traceJsonMatch[1].trim();
         setRawTraceOutput(rawTraceString);
         try {
-          const parsedData = JSON.parse(rawTraceString);
-          if (parsedData && Array.isArray(parsedData.trace)) {
-            setParsedTraceEvents(parsedData.trace as TraceEvent[]);
+          const parsedPayload = JSON.parse(
+            rawTraceString
+          ) as PythonExecutionPayload; // Use new interface
+          if (parsedPayload && Array.isArray(parsedPayload.trace)) {
+            setParsedTraceEvents(parsedPayload.trace);
+            setCapturedUserStdout(parsedPayload.user_stdout || ""); // Store captured stdout
             setCurrentStepIndex(0);
             setSimulationActive(true);
-            if (parsedData.execution_error) {
+            if (parsedPayload.execution_error) {
               setPyodideError(
-                `Python Execution Error: ${parsedData.execution_error.type} - ${
-                  parsedData.execution_error.message
-                } (line ${parsedData.execution_error.line_no || "N/A"})`
+                `Python Execution Error: ${
+                  parsedPayload.execution_error.type
+                } - ${parsedPayload.execution_error.message} (line ${
+                  parsedPayload.execution_error.line_no || "N/A"
+                })`
               );
             }
           } else {
@@ -319,11 +353,12 @@ const DebuggerSection: React.FC = () => {
   const isAtLastStep =
     parsedTraceEvents && currentStepIndex === parsedTraceEvents.length - 1;
 
+  // handleStepInto, handleStepOver, handleStepOut remain the same as Step 8
   const handleStepInto = () => {
     if (canStep) setCurrentStepIndex((prevIndex) => prevIndex + 1);
   };
   const handleStepOver = useCallback(() => {
-    /* ... (same as before) ... */
+    /* ... (same as Step 8) ... */
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -381,7 +416,7 @@ const DebuggerSection: React.FC = () => {
     }
   }, [parsedTraceEvents, currentStepIndex, canStep]);
   const handleStepOut = useCallback(() => {
-    /* ... (same as before) ... */
+    /* ... (same as Step 8) ... */
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -425,38 +460,37 @@ const DebuggerSection: React.FC = () => {
     if (!parsedTraceEvents || currentStepIndex >= parsedTraceEvents.length - 1)
       return;
 
-    let nextBreakStepIndex = -1;
-    // Start searching from the step *after* the current one
+    let nextStopIndex = -1;
     for (let i = currentStepIndex + 1; i < parsedTraceEvents.length; i++) {
       const event = parsedTraceEvents[i];
-      // We want to stop *at* a line that has a breakpoint.
-      // The event itself should be a 'line' event for a consistent stop.
       if (
         event.event === "line" &&
         breakpoints.has(event.line_no) &&
         event.file_name === USER_CODE_VIRTUAL_FILENAME
       ) {
-        nextBreakStepIndex = i;
+        nextStopIndex = i;
         break;
       }
     }
 
-    if (nextBreakStepIndex !== -1) {
-      setCurrentStepIndex(nextBreakStepIndex);
-    } else {
-      // No breakpoint found, go to the end of the trace
-      setCurrentStepIndex(parsedTraceEvents.length - 1);
-    }
+    const finalIndex =
+      nextStopIndex !== -1 ? nextStopIndex : parsedTraceEvents.length - 1;
+    setCurrentStepIndex(finalIndex);
+
+    // Display all captured stdout when continue stops (at breakpoint or end)
+    setDisplayedStdout(capturedUserStdout);
   };
 
   const handleStop = () => {
     setSimulationActive(false);
     setCurrentStepIndex(-1);
     setPyodideError(null);
+    setDisplayedStdout(""); // Clear displayed stdout on stop
+    // Keep capturedUserStdout and parsedTraceEvents if you want the user to be able to re-inspect
   };
 
   const toggleBreakpoint = (lineNumber: number) => {
-    // lineNumber is 1-indexed
+    /* ... (same as Step 8) ... */
     setBreakpoints((prevBreakpoints) => {
       const newBreakpoints = new Set(prevBreakpoints);
       if (newBreakpoints.has(lineNumber)) {
@@ -475,27 +509,24 @@ const DebuggerSection: React.FC = () => {
       ? parsedTraceEvents[currentStepIndex]
       : null;
 
-  // Render user code with line numbers and breakpoint toggles
   const renderSimulatedCode = () => {
+    /* ... (same as Step 8) ... */
     if (!simulationActive && !userCode) return <pre>Enter code to debug.</pre>;
-    // Use userCode for displaying lines, even if simulation isn't active (for setting breakpoints)
     const codeToDisplay = userCode || "";
     const lines = codeToDisplay.split("\n");
-
     return (
       <div className={styles.simulationCodeDisplay}>
         <h4>
           Your Code {simulationActive ? "(Simulating)" : "(Set Breakpoints)"}:
         </h4>
         {lines.map((lineText, index) => {
-          const lineNumber = index + 1; // 1-indexed
+          const lineNumber = index + 1;
           const isCurrentExecLine =
             simulationActive &&
             currentTraceEvent &&
             currentTraceEvent.line_no === lineNumber &&
             currentTraceEvent.file_name === USER_CODE_VIRTUAL_FILENAME;
           const hasBreakpoint = breakpoints.has(lineNumber);
-
           return (
             <div
               key={lineNumber}
@@ -520,8 +551,7 @@ const DebuggerSection: React.FC = () => {
                   isCurrentExecLine ? styles.highlightedLine : ""
                 }`}
               >
-                {lineText || "\u00A0"}{" "}
-                {/* Render non-breaking space for empty lines */}
+                {lineText || "\u00A0"}
               </div>
             </div>
           );
@@ -530,9 +560,17 @@ const DebuggerSection: React.FC = () => {
     );
   };
 
+  // Update useEffect to clear displayedStdout if simulation becomes inactive
+  useEffect(() => {
+    if (!simulationActive) {
+      setDisplayedStdout("");
+    }
+  }, [simulationActive]);
+
   return (
     <div className={`${styles.debuggerSection} ${sectionStyles.section}`}>
-      <h2 className={styles.title}>Python Debugger (Step 8 Implemented)</h2>
+      <h2 className={styles.title}>Python Debugger (Step 9 Implemented)</h2>
+      {/* ... (Editor and Run & Trace button - same as Step 8) ... */}
       <div className={styles.editorContainer}>
         <CodeEditor
           value={userCode}
@@ -543,7 +581,6 @@ const DebuggerSection: React.FC = () => {
           className={simulationActive ? styles.readOnlyEditor : ""}
         />
       </div>
-
       <div className={styles.controls}>
         <button
           onClick={handleRunAndTrace}
@@ -560,7 +597,6 @@ const DebuggerSection: React.FC = () => {
           <span className={styles.errorMessage}>Pyodide Init Error!</span>
         )}
       </div>
-
       {pyodideError && !isTracing && simulationActive && (
         <div className={styles.errorMessage}>
           <pre>{pyodideError}</pre>
@@ -570,6 +606,7 @@ const DebuggerSection: React.FC = () => {
       {simulationActive && parsedTraceEvents && (
         <>
           <div className={styles.simulationControls}>
+            {/* ... (Step, Over, Out, Continue, Stop buttons - same as Step 8, ensure Continue calls new handleContinue) ... */}
             <button
               onClick={handleContinue}
               disabled={!canStep || isAtLastStep}
@@ -610,9 +647,10 @@ const DebuggerSection: React.FC = () => {
           <div className={styles.simulationArea}>
             <div>
               {" "}
-              {/* Left Column for Variables & Info */}
+              {/* Left Column: Variables & Info & Program Output */}
               {currentTraceEvent && (
                 <div className={styles.currentStepInfo}>
+                  {/* ... (same as Step 8) ... */}
                   Step: {currentTraceEvent.step}/{parsedTraceEvents.length} |
                   Line: {currentTraceEvent.line_no} | Event:{" "}
                   {currentTraceEvent.event} | Func:{" "}
@@ -621,6 +659,7 @@ const DebuggerSection: React.FC = () => {
                 </div>
               )}
               <div className={styles.variablesDisplay}>
+                {/* ... (same as Step 8) ... */}
                 <h4>Variables in Scope:</h4>
                 {currentTraceEvent &&
                 currentTraceEvent.locals &&
@@ -645,10 +684,18 @@ const DebuggerSection: React.FC = () => {
                   </p>
                 )}
               </div>
+              {/* NEW: Program Output Display Area */}
+              {displayedStdout && (
+                <div className={styles.programOutputDisplay}>
+                  <h4>Program Output:</h4>
+                  <pre>{displayedStdout}</pre>
+                </div>
+              )}
             </div>
+
             <div>
               {" "}
-              {/* Right Column for Code Display & Raw Trace */}
+              {/* Right Column: Code Display & Raw Trace */}
               {renderSimulatedCode()}
               {rawTraceOutput && (
                 <div

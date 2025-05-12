@@ -253,13 +253,40 @@
 
 .codeContent {
   flex-grow: 1;
-  white-space: pre; /* Preserve spaces within the code line */
-  padding-left: 5px; /* Small space after gutter */
+  white-space: pre; /* Crucial to preserve leading spaces and formatting */
+  padding-left: 5px;
 }
 
-.highlightedLine .codeContent {
-  /* Apply highlight only to code content part */
-  background-color: #fffbdd;
-  display: inline; /* Keep highlight tight to content */
-  border-radius: 2px;
+/* This is the class that applies the highlight */
+.highlightedLine {
+  background-color: #fffbdd; /* Light yellow highlight */
+  /* If applied to .codeContent, it doesn't need display:block */
+  border-radius: 2px; /* Optional nice touch */
+}
+.programOutputDisplay {
+  margin-top: 1rem; /* Space above the output box */
+  /* Similar styling to variablesDisplay or traceOutput */
+}
+
+.programOutputDisplay h4 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.1rem;
+}
+
+.programOutputDisplay pre {
+  background-color: #f8f9fa; /* Lighter background for program output */
+  color: #212529; /* Standard dark text */
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 60px;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word; /* Or break-all if preferred */
 }
