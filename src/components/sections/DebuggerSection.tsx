@@ -6,6 +6,7 @@ import styles from "./DebuggerSection.module.css";
 import sectionStyles from "./Section.module.css";
 
 // Python trace script template remains the same as your last working version
+
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
@@ -24,21 +25,41 @@ def python_tracer(frame, event, arg):
         sys.settrace(None)
         return None
 
+    # Determine the filename of the current frame
+    current_frame_filename = frame.f_code.co_filename
+
+    # Default tracer to return (continue tracing in the current scope)
+    next_tracer_for_this_scope = python_tracer
+
+    # --- Step 4: Filtering Logic ---
+    # We only care about events happening within the user's directly executed code,
+    # which typically has a filename of '<string>' when run with exec().
+    if current_frame_filename != '<string>':
+        # If the event is from a different file (e.g., a library),
+        # we don't want to trace any further *into* it.
+        next_tracer_for_this_scope = None 
+        # And we also won't record this specific event from the non-user code.
+        return next_tracer_for_this_scope
+
+
+    # If we are here, current_frame_filename == '<string>', so it's an event from user code.
+    # Proceed to capture details for this event.
     line_no = frame.f_lineno
     func_name = frame.f_code.co_name
-    file_name = frame.f_code.co_filename 
     
     local_vars_snapshot = {}
     try:
         current_locals = frame.f_locals
         for key, value in current_locals.items():
+            # (Keep your existing robust locals capturing logic here)
             if key in ['__name__', '__doc__', '__package__', '__loader__', 
                        '__spec__', '__builtins__', '__file__', 
                        'python_tracer', 'trace_data', 'user_code_to_execute',
                        'MAX_TRACE_EVENTS', 'json', 'sys', 'inspect', 'execution_exception',
                        'output_payload', 'serialized_output_payload', 'e', 'arg', 'frame', 'event',
-                       'local_vars_snapshot', 'line_no', 'func_name', 'file_name', 'current_locals',
-                       'key', 'value', 'event_details'
+                       'local_vars_snapshot', 'line_no', 'func_name', 
+                       'current_frame_filename', 'next_tracer_for_this_scope', # Add new vars here
+                       'key', 'value', 'event_details' 
                        ]: 
                 continue
             
@@ -60,22 +81,32 @@ def python_tracer(frame, event, arg):
                     local_vars_snapshot[key] = repr(value)
             except Exception:
                 local_vars_snapshot[key] = "<unrepresentable_object>"
-
     except Exception as e_locals:
         local_vars_snapshot = {"_tracer_error": f"Error iterating/processing locals: {repr(e_locals)}"}
 
     event_details = {
         "step": len(trace_data) + 1,
-        "file_name": file_name,
+        "file_name": current_frame_filename, # Will be '<string>' for recorded events
         "line_no": line_no,
         "event": event,
         "func_name": func_name,
         "locals": local_vars_snapshot,
     }
     
+    # Record the event since it's from user code ('<string>')
     if event == 'line':
         trace_data.append(event_details)
     elif event == 'call':
+        # If this 'call' is to a function defined in a *different* file (not '<string>'),
+        # we still record the 'call' event itself (as it originates from user code),
+        # but we must ensure we don't trace *into* that other function.
+        # We get the callee's frame information from the 'arg' in some Python versions/scenarios,
+        # or more reliably by inspecting the function object being called if possible.
+        # However, for \`sys.settrace\`, the \`frame\` in a 'call' event is the *new frame being entered*.
+        # So, \`current_frame_filename\` for a 'call' event *is* the filename of the function being entered.
+        # The filtering \`if current_frame_filename != '<string>': return None\` at the top
+        # already handles not tracing into non-'<string>' functions.
+        # Thus, if we reach here for a 'call' event, it's a call to a function *within* '<string>'.
         trace_data.append({**event_details, "type_specific": "function_call_started"})
     elif event == 'return':
         return_value_repr = ""
@@ -97,8 +128,10 @@ def python_tracer(frame, event, arg):
             "exception_value": str(exc_value) 
         })
     
-    return python_tracer
+    return next_tracer_for_this_scope # This will be python_tracer if in user code, None otherwise.
 
+# ... (rest of the script: final_result_of_main, exec block, output_payload, print block) ...
+# This part remains unchanged:
 final_result_of_main = None
 execution_exception = None
 
@@ -110,11 +143,11 @@ except Exception as e:
     if not any(ev.get('event') == 'exception' for ev in trace_data):
         trace_data.append({
             "step": len(trace_data) + 1,
-            "file_name": "<user_code>",
-            "line_no": getattr(e, 'lineno', 'N/A'),
-            "event": "script_exception",
+            "file_name": "<user_code>", # Or appropriate for exec errors
+            "line_no": getattr(e, 'lineno', 'N/A'), # Error line in user_code_to_execute
+            "event": "script_exception", # Distinguish from tracer's 'exception' event
             "func_name": "<module>",
-            "locals": {},
+            "locals": {}, # Locals might not be relevant or available for a script-level syntax error
             "type_specific": "script_execution_error",
             "exception_type": e.__class__.__name__,
             "exception_value": str(e)
@@ -127,7 +160,7 @@ if execution_exception:
      output_payload["execution_error"] = {
         "type": execution_exception.__class__.__name__,
         "message": str(execution_exception),
-        "line_no": getattr(execution_exception, 'lineno', None)
+        "line_no": getattr(execution_exception, 'lineno', None) # Error line in user_code_to_execute
     }
 
 try:
@@ -136,7 +169,24 @@ try:
     print(serialized_output_payload)
     print("---DEBUGGER_TRACE_END---")
 except Exception as e:
-    error_output = json.dumps({"error": "Failed to serialize trace_data for output", "details": str(e)})
+    # Attempt to serialize individual trace events if the whole list fails
+    safe_trace = []
+    for item in trace_data:
+        try:
+            json.dumps(item)
+            safe_trace.append(item)
+        except:
+            safe_trace.append({"error": "Unserializable item", "original_step": item.get("step")})
+    
+    error_output_content = {
+        "error": "Failed to serialize full trace_data for output", 
+        "details": str(e),
+        "partial_trace_head": safe_trace[:5] # First 5 safe/marked items
+    }
+    if execution_exception:
+        error_output_content["execution_error"] = output_payload["execution_error"]
+
+    error_output = json.dumps(error_output_content)
     print("---DEBUGGER_TRACE_START---")
     print(error_output)
     print("---DEBUGGER_TRACE_END---")
