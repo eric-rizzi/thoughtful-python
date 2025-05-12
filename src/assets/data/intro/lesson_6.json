@@ -14,12 +14,39 @@
       "title": "Challenge 1: Draw a Rectangle",
       "content": "Your first challenge is to draw a rectangle that is exactly 100 pixels wide and 50 pixels high using the turtle. The rectangle can be positioned anywhere on the canvas, but it must have the exact dimensions specified.",
       "instructions": "Use the turtle commands to draw your rectangle. Remember that a rectangle has 4 sides, with opposite sides of equal length.",
-      "initialCode": "# Use the turtle to draw a rectangle 100x50 pixels\nfrom animated_turtle import Turtle\n\n# Create a turtle\nt = Turtle()\n\n# Your code here...\n",
+      "initialCode": "# Use the turtle to draw a rectangle 100x50 pixels\nimport turtle\nt = turtle.Turtle()\nt.forward(100)\nt.left(90)\nt.forward(50)\nt.left(90)\nt.forward(100)\nt.left(90)\nt.forward(50)\n",
       "validationCriteria": {
-        "type": "shape",
-        "shape": "rectangle",
-        "width": 100,
-        "height": 50
+        "type": "commands",
+        "expectedJsCommands": [
+          { "type": "clear" },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 90 },
+          {
+            "type": "forward",
+            "distance": 50,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 90 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 90 },
+          {
+            "type": "forward",
+            "distance": 50,
+            "penDown": true,
+            "color": "black"
+          }
+        ]
       },
       "turtleCommands": [
         {
@@ -48,8 +75,8 @@
         }
       ],
       "feedback": {
-        "correct": "Great job! You've successfully drawn a 100×50 pixel rectangle. Notice how you need to turn 90 degrees at each corner of the rectangle.",
-        "incorrect": "Your drawing doesn't appear to be a 100×50 pixel rectangle. Remember that a rectangle has 4 sides with opposite sides of equal length. Try again!"
+        "correct": "Great job! You've successfully drawn a 100x50 pixel rectangle. Notice how you need to turn 90 degrees at each corner of the rectangle.",
+        "incorrect": "Your drawing doesn't appear to be a 100x50 pixel rectangle. Remember that a rectangle has 4 sides with opposite sides of equal length. Try again!"
       }
     },
     {
@@ -58,11 +85,68 @@
       "title": "Challenge 2: Draw an Octagon",
       "content": "Your second challenge is to draw a regular octagon (an 8-sided shape with all sides of equal length and all interior angles equal). Each side should be exactly 100 pixels long.",
       "instructions": "Use the turtle commands to draw your octagon. A regular octagon has 8 equal sides and 8 equal interior angles of 135 degrees. Think about how many degrees the turtle needs to turn at each vertex to create an octagon.",
-      "initialCode": "# Use the turtle to draw a regular octagon with sides of 100 pixels each\nfrom animated_turtle import Turtle\n\n# Create a turtle\nt = Turtle()\n\n# Your code here...\n",
+      "initialCode": "# Use the turtle to draw a regular octagon with sides of 100 pixels each\nimport turtle\nt = turtle.Turtle()\nfor _ in range(8):\n    t.forward(100)\n    t.left(45)\n",
       "validationCriteria": {
-        "type": "shape",
-        "shape": "octagon",
-        "sideLength": 100
+        "type": "commands",
+        "expectedJsCommands": [
+          { "type": "clear" },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 },
+          {
+            "type": "forward",
+            "distance": 100,
+            "penDown": true,
+            "color": "black"
+          },
+          { "type": "left", "angle": 45 }
+        ]
       },
       "turtleCommands": [
         {

@@ -1,7 +1,5 @@
 // src/types/data.ts
 
-import { UserPoolIdentityProviderSamlMetadata } from "aws-cdk-lib/aws-cognito";
-
 // --- Base Structures ---
 
 export interface LessonExample {
@@ -97,26 +95,34 @@ export interface MultipleSelectionSection extends LessonSection {
   };
 }
 
-export interface TurtlePathSegment {
-  type: "segment" | "move"; // 'segment' = line drawn, 'move' = penup move
-  start: { x: number; y: number };
-  end: { x: number; y: number };
-  // Add color, pensize if needed later
-}
+// Define the new structured command types for JavaScript turtle
+export type JsTurtleCommand =
+  | { type: "goto"; x: number; y: number }
+  | { type: "forward"; distance: number; penDown: boolean; color: string } // forward now captures current pen state and color
+  | { type: "left"; angle: number }
+  | { type: "right"; angle: number }
+  | { type: "penup" }
+  | { type: "pendown" }
+  | { type: "clear" }
+  | { type: "setPenColor"; color: string }; // New command for color
 
 export interface TurtleSection extends LessonSection {
   kind: "Turtle";
   instructions: string;
   initialCode: string;
   validationCriteria: {
-    type: string; // e.g., 'shape'
+    type: string; // e.g., 'shape', 'commands'
+    // For 'shape' validation (optional, could be done in JS comparison)
     shape?: string;
     width?: number;
     height?: number;
     sideLength?: number;
-    [key: string]: any;
+    // For 'commands' validation (the primary method for this refactor)
+    expectedJsCommands?: JsTurtleCommand[]; // Array of expected JS turtle commands
+    [key: string]: any; // Allow other properties
   };
   turtleCommands?: Array<{
+    // This is just for display in the UI, not functional
     name: string;
     description: string;
   }>;
