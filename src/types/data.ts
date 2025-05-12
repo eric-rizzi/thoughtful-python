@@ -60,7 +60,8 @@ export type SectionKind =
   | "Turtle"
   | "Reflection"
   | "Coverage"
-  | "PRIMM";
+  | "PRIMM"
+  | "Debugger";
 
 export interface PredictionSection extends LessonSection {
   kind: "Prediction";

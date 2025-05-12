@@ -15,6 +15,7 @@ import TurtleSection from "../components/sections/TurtleSection";
 import ReflectionSection from "../components/sections/ReflectionSection";
 import CoverageSection from "../components/sections/CoverageSection";
 import PRIMMSection from "../components/sections/PRIMMSection";
+import DebuggerSection from "../components/sections/DebuggerSection";
 
 // Import LessonNavigation (it's rendered here now)
 import LessonNavigation from "../components/LessonNavigation";
@@ -218,6 +219,8 @@ const LessonPage: React.FC = () => {
             section={section as any}
           />
         );
+      case "Debugger":
+        return <DebuggerSection key={section.id} />;
       default:
         console.warn(`Unknown section kind: ${section.kind}`);
         return (

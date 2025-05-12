@@ -1,0 +1,87 @@
+/* src/components/sections/DebuggerSection.module.css */
+.debuggerSection {
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0; /* A distinct border */
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Light background */
+}
+
+.title {
+  color: #306998; /* Dark blue for titles */
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.editorContainer {
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden; /* Ensures CodeMirror border-radius is applied */
+}
+
+.controls {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.runButton {
+  background-color: #28a745; /* Green */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.runButton:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.runButton:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+.statusMessage {
+  font-style: italic;
+  color: #555;
+}
+
+.traceOutputContainer {
+  margin-top: 1.5rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.traceOutputContainer h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.traceOutput {
+  background-color: #2e3440; /* Dark background for trace */
+  color: #d8dee9; /* Light text */
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  max-height: 500px; /* Limit height */
+  overflow: auto; /* Allow scrolling */
+  white-space: pre-wrap; /* Wrap long lines but preserve formatting */
+  word-break: break-all;
+}
+
+.errorMessager {
+  color: red;
+  font-weight: bold;
+  white-space: pre-wrap;
+}
