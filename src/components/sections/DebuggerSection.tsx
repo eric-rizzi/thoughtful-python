@@ -5,6 +5,8 @@ import { usePyodide } from "../../contexts/PyodideContext";
 import styles from "./DebuggerSection.module.css";
 import sectionStyles from "./Section.module.css";
 
+// PYTHON_TRACE_SCRIPT_TEMPLATE (use the one from Step 10 - no changes here for this specific tweak)
+// ... (ensure the full, correct Python script template is here) ...
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import sys
 import json
@@ -13,11 +15,12 @@ import io
 
 trace_data = []
 MAX_TRACE_EVENTS = 1000
-USER_CODE_FILENAME = '/user_temp_script.py'
+USER_CODE_FILENAME = '/user_temp_script.py' 
 
 user_code_to_execute = """
 # Placeholder for user's actual code
 """
+# ... (rest of the Python script template from Step 10 response)
 try:
     with open(USER_CODE_FILENAME, 'w') as f:
         f.write(user_code_to_execute)
@@ -219,75 +222,58 @@ interface PythonExecutionPayload {
     line_no?: number | string;
   };
 }
-
-// Helper function to find the initial step index
 const findInitialStartStepIndex = (
   traceEvents: TraceEvent[],
   sourceCode: string
 ): number => {
+  /* ... (same as Step 10) ... */
   if (!traceEvents || traceEvents.length === 0) {
-    return 0; // Or -1 if no events
+    return 0;
   }
-
   const sourceLines = sourceCode.split("\n");
   let firstPlausibleExecutableLineIndex = -1;
   let ifNameMainIndex = -1;
-
   for (let i = 0; i < traceEvents.length; i++) {
     const event = traceEvents[i];
     if (
       event.event === "line" &&
       event.stack_depth === 0 &&
-      event.func_name === "<module>" && // Ensure it's module-level execution
+      event.func_name === "<module>" &&
       event.file_name === USER_CODE_VIRTUAL_FILENAME
     ) {
-      const lineIndexInSource = event.line_no - 1; // Convert 1-based to 0-based
+      const lineIndexInSource = event.line_no - 1;
       if (lineIndexInSource >= 0 && lineIndexInSource < sourceLines.length) {
-        const lineText = sourceLines[lineIndexInSource];
-
-        // Check for if __name__ == "__main__":
+        const lineText = sourceLines[lineIndexInSource].trim();
         if (
-          lineText.startsWith('if __name__ == "__main__"') ||
-          lineText.startsWith("if __name__ == '__main__'")
+          lineText.includes('if __name__ == "__main__":') ||
+          lineText.includes("if __name__ == '__main__':")
         ) {
-          // We want the first line *inside* this block if possible, or this line itself.
-          // For simplicity, let's target this 'if' line. User can step into it.
           ifNameMainIndex = i;
-          console.log("Found main hook at", ifNameMainIndex);
-          break; // Prioritize this and stop searching
+          break;
         }
-
-        // If not the special main block, check for other executable lines
         if (firstPlausibleExecutableLineIndex === -1) {
-          // Only find the *first*
           if (
             lineText !== "" &&
             !lineText.startsWith("#") &&
             !lineText.startsWith("def ") &&
             !lineText.startsWith("class ") &&
             !lineText.startsWith("import ") &&
-            !lineText.startsWith("from ") &&
-            !lineText.startsWith(" ")
+            !lineText.startsWith("from ")
           ) {
-            console.log("Plausible line", lineText);
             firstPlausibleExecutableLineIndex = i;
           }
         }
       }
     }
   }
-
-  if (ifNameMainIndex !== -1) {
-    return ifNameMainIndex;
-  }
-  if (firstPlausibleExecutableLineIndex !== -1) {
+  if (ifNameMainIndex !== -1) return ifNameMainIndex;
+  if (firstPlausibleExecutableLineIndex !== -1)
     return firstPlausibleExecutableLineIndex;
-  }
-
-  return 0; // Default to the very first event if no better starting point is found
+  return 0;
 };
 
 const DebuggerSection: React.FC = () => {
+  // ... (all state variables from Step 10 remain the same) ...
   const [userCode, setUserCode] = useState<string>(
     "# Optional: Add imports here if needed for your code\n" +
       'print("Script setup phase (imports, global constants)")\n\n' +
@@ -296,10 +282,13 @@ const DebuggerSection: React.FC = () => {
       '    print("Inside helper_function")\n' +
       "    return GLOBAL_VAR * 2\n\n" +
       "class MyClass:\n" +
+      '    dunder_class_var = "test_class_dunder"\n' +
       "    def __init__(self, value):\n" +
       "        self.value = value\n" +
+      "        self.__private_val = value * 10 # Example of a name-mangled dunder\n" +
       '        print(f"MyClass instance created with {value}")\n\n' +
       "    def get_value(self):\n" +
+      '        print(f"Accessing private val: {self.__private_val}")\n' +
       "        return self.value\n\n" +
       'print("Main execution starting...")\n' +
       "x = 10\n" +
@@ -311,7 +300,6 @@ const DebuggerSection: React.FC = () => {
       "    final_result = obj.get_value() * 2\n" +
       '    print(f"Result from main block: {final_result}")\n'
   );
-  // ... (other state variables: rawTraceOutput, parsedTraceEvents, etc. remain the same)
   const [rawTraceOutput, setRawTraceOutput] = useState<string | null>(null);
   const [parsedTraceEvents, setParsedTraceEvents] = useState<
     TraceEvent[] | null
@@ -332,8 +320,9 @@ const DebuggerSection: React.FC = () => {
     error: pyodideHookError,
   } = usePyodide();
 
+  // ... (handleRunAndTrace, stepping functions, toggleBreakpoint, useEffects - all same as Step 10) ...
   const handleRunAndTrace = useCallback(async () => {
-    // ... (initial state resets as before, including clearing breakpoints: setBreakpoints(new Set());) ...
+    /* ... (same as Step 10) ... */
     if (isPyodideLoading || pyodideHookError) {
       setPyodideError(
         `Pyodide is not ready. ${
@@ -351,9 +340,8 @@ const DebuggerSection: React.FC = () => {
       setWarningMessage(null);
       return;
     }
-
     setIsTracing(true);
-    setRawTraceOutput(null); // Clear raw trace from previous run
+    setRawTraceOutput(null);
     setParsedTraceEvents(null);
     setCurrentStepIndex(-1);
     setPyodideError(null);
@@ -361,13 +349,11 @@ const DebuggerSection: React.FC = () => {
     setCapturedUserStdout("");
     setDisplayedStdout("");
     setWarningMessage(null);
-    setBreakpoints(new Set()); // Clear breakpoints for a new trace run
-
+    setBreakpoints(new Set());
     const scriptToRun = PYTHON_TRACE_SCRIPT_TEMPLATE.replace(
       "# Placeholder for user's actual code",
       userCode
     );
-
     const { output, error } = await runPythonCode(scriptToRun);
     if (error) {
       setPyodideError(
@@ -389,19 +375,17 @@ const DebuggerSection: React.FC = () => {
             const traceEvents = parsedPayload.trace as TraceEvent[];
             setParsedTraceEvents(traceEvents);
             setCapturedUserStdout(parsedPayload.user_stdout || "");
-
             if (traceEvents.length > 0) {
               const initialIndex = findInitialStartStepIndex(
                 traceEvents,
                 userCode
-              ); // Use helper
+              );
               setCurrentStepIndex(initialIndex);
               setSimulationActive(true);
             } else {
               setCurrentStepIndex(-1);
               setSimulationActive(false);
             }
-
             if (parsedPayload.execution_error) {
               setPyodideError(
                 `Python Execution Error: ${parsedPayload.execution_error.type} - ${parsedPayload.execution_error.message} ` +
@@ -437,8 +421,6 @@ const DebuggerSection: React.FC = () => {
     }
     setIsTracing(false);
   }, [userCode, runPythonCode, isPyodideLoading, pyodideHookError]);
-
-  // ... (All stepping functions: handleStepInto, handleStepOver, handleStepOut, handleContinue, handleStop, toggleBreakpoint remain the same as previous step)
   const canStep =
     parsedTraceEvents && currentStepIndex < parsedTraceEvents.length - 1;
   const isAtLastStep =
@@ -447,7 +429,7 @@ const DebuggerSection: React.FC = () => {
     if (canStep) setCurrentStepIndex((prevIndex) => prevIndex + 1);
   };
   const handleStepOver = useCallback(() => {
-    /* ... (same as Step 9) ... */
+    /* ... (same as Step 10) ... */
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -505,7 +487,7 @@ const DebuggerSection: React.FC = () => {
     }
   }, [parsedTraceEvents, currentStepIndex, canStep]);
   const handleStepOut = useCallback(() => {
-    /* ... (same as Step 9) ... */
+    /* ... (same as Step 10) ... */
     if (
       !parsedTraceEvents ||
       currentStepIndex < 0 ||
@@ -549,7 +531,7 @@ const DebuggerSection: React.FC = () => {
     setDisplayedStdout(capturedUserStdout);
   }, [parsedTraceEvents, currentStepIndex, canStep, capturedUserStdout]);
   const handleContinue = () => {
-    /* ... (same as Step 9) ... */
+    /* ... (same as Step 10) ... */
     if (!parsedTraceEvents || currentStepIndex >= parsedTraceEvents.length - 1)
       return;
     let nextStopIndex = -1;
@@ -570,7 +552,7 @@ const DebuggerSection: React.FC = () => {
     setDisplayedStdout(capturedUserStdout);
   };
   const handleStop = () => {
-    /* ... (same as before, from "final change" request) ... */
+    /* ... (same as Step 10) ... */
     setSimulationActive(false);
     setCurrentStepIndex(-1);
     setPyodideError(null);
@@ -578,7 +560,7 @@ const DebuggerSection: React.FC = () => {
     setDisplayedStdout("");
   };
   const toggleBreakpoint = (lineNumber: number) => {
-    /* ... (same as Step 8) ... */
+    /* ... (same as Step 10) ... */
     setBreakpoints((prevBreakpoints) => {
       const newBreakpoints = new Set(prevBreakpoints);
       if (newBreakpoints.has(lineNumber)) {
@@ -589,14 +571,12 @@ const DebuggerSection: React.FC = () => {
       return newBreakpoints;
     });
   };
-
   const currentTraceEvent =
     parsedTraceEvents &&
     currentStepIndex >= 0 &&
     currentStepIndex < parsedTraceEvents.length
       ? parsedTraceEvents[currentStepIndex]
       : null;
-
   useEffect(() => {
     /* ... (auto-scroll, same as Step 10) ... */
     if (simulationActive && currentTraceEvent && codeDisplayRef.current) {
@@ -610,10 +590,9 @@ const DebuggerSection: React.FC = () => {
     }
   }, [currentStepIndex, simulationActive, currentTraceEvent]);
   useEffect(() => {
-    /* ... (clear displayedStdout, same as Step 9) ... */
+    /* ... (clear displayedStdout, same as Step 10) ... */
     if (!simulationActive) setDisplayedStdout("");
   }, [simulationActive]);
-
   const renderSimulatedCodeWithGutter = () => {
     /* ... (same as Step 10) ... */
     const codeToDisplay = userCode || "";
@@ -670,7 +649,6 @@ const DebuggerSection: React.FC = () => {
   return (
     <div className={`${styles.debuggerSection} ${sectionStyles.section}`}>
       <h2 className={styles.title}>Python Debugger</h2>
-      {/* ... (Editor, Run & Trace Button, Error/Warning Messages - same structure as Step 10) ... */}
       <div className={styles.editorContainer}>
         <CodeEditor
           value={userCode}
@@ -712,7 +690,6 @@ const DebuggerSection: React.FC = () => {
         </div>
       )}
 
-      {/* Simulation UI: Visible if there are parsed events (even if !simulationActive after a "Stop") */}
       {parsedTraceEvents && parsedTraceEvents.length > 0 && (
         <>
           <div className={styles.simulationControls}>
@@ -784,6 +761,9 @@ const DebuggerSection: React.FC = () => {
                 Object.keys(currentTraceEvent.locals).length > 0 ? (
                   <pre>
                     {Object.entries(currentTraceEvent.locals)
+                      .filter(
+                        ([key]) => !(key.startsWith("_") || key.endsWith("_"))
+                      )
                       .map(([key, value]) => {
                         let displayValue =
                           typeof value === "object"
@@ -799,7 +779,7 @@ const DebuggerSection: React.FC = () => {
                 ) : (
                   <p className={styles.noVariables}>
                     {simulationActive && currentTraceEvent
-                      ? "No locals."
+                      ? "No user variables in scope."
                       : "N/A"}
                   </p>
                 )}
