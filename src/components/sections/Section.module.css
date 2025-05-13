@@ -424,6 +424,41 @@
   cursor: not-allowed;
 }
 
+.penaltyMessageActive {
+  background-color: #fff3cd; /* Light yellow */
+  color: #856404; /* Dark yellow text */
+  padding: 1rem;
+  border: 1px solid #ffeeba; /* Yellow border */
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.penaltyFormDisabled {
+  opacity: 0.5;
+  pointer-events: none; /* Prevents interaction with form elements */
+}
+
+/* Ensure disabled options also look clearly disabled */
+.optionDisabled {
+  opacity: 0.6;
+  cursor: not-allowed !important; /* Override any hover cursor */
+}
+
+.optionDisabled:hover {
+  background-color: transparent !important; /* No hover effect */
+  border-color: transparent !important;
+}
+
+.optionDisabled label {
+  cursor: not-allowed !important;
+}
+
+.optionDisabled input {
+  cursor: not-allowed !important;
+}
+
 /* Feedback Area */
 .quizFeedback {
   margin-top: 1.5rem; /* Space above feedback */

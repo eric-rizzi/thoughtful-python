@@ -1,10 +1,15 @@
 // src/components/sections/MultipleSelectionSection.tsx
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { MultipleSelectionSection as MultipleSelectionSectionData } from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
+import {
+  useProgressActions,
+  useIsPenaltyActive,
+  useRemainingPenaltyTime,
+} from "../../stores/progressStore";
 
 interface MultipleSelectionSectionProps {
   section: MultipleSelectionSectionData;
@@ -27,6 +32,16 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     submitted: false,
     correct: null,
   };
+
+  const { startPenalty } = useProgressActions();
+  const isPenaltyActiveGlobally = useIsPenaltyActive();
+  const remainingPenaltyTime = useRemainingPenaltyTime();
+
+  const [isLocallyDisabled, setIsLocallyDisabled] = useState(false);
+
+  useEffect(() => {
+    setIsLocallyDisabled(isPenaltyActiveGlobally);
+  }, [isPenaltyActiveGlobally]);
 
   const checkMultiSelectCompletion = useCallback(
     (state: MultiSelectState): boolean => {
@@ -57,7 +72,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
 
   const handleOptionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (isSubmitted) return;
+      if (isSubmitted || isLocallyDisabled) return;
 
       const index = parseInt(event.target.value, 10);
       const isChecked = event.target.checked;
@@ -75,26 +90,25 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
         };
       });
     },
-    [isSubmitted, setMultiSelectState]
+    [isSubmitted, setMultiSelectState, isLocallyDisabled]
   );
 
-  // Handle click on the entire quiz option div
   const handleQuizOptionClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      if (isSubmitted) return;
-      // Find the checkbox input within the clicked div and programmatically click it
+      if (isSubmitted || isLocallyDisabled) return;
       const inputElement = event.currentTarget.querySelector(
         'input[type="checkbox"]'
       );
       if (inputElement) {
-        (inputElement as HTMLInputElement).click(); // Cast to HTMLInputElement to access .click()
+        (inputElement as HTMLInputElement).click();
       }
     },
-    [isSubmitted]
+    [isSubmitted, isLocallyDisabled]
   );
 
   const handleSubmit = useCallback(() => {
-    if (selectedOptionsSet.size === 0 || isSubmitted) return;
+    if (selectedOptionsSet.size === 0 || isSubmitted || isLocallyDisabled)
+      return;
 
     const correctAnswersSet = new Set(section.correctAnswers);
     const isAnswerCorrect =
@@ -108,11 +122,17 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
       correct: isAnswerCorrect,
       submitted: true,
     }));
+
+    if (!isAnswerCorrect) {
+      startPenalty();
+    }
   }, [
     selectedOptionsSet,
     isSubmitted,
     section.correctAnswers,
     setMultiSelectState,
+    startPenalty,
+    isLocallyDisabled,
   ]);
 
   return (
@@ -124,22 +144,28 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
         </ReactMarkdown>
       </div>
 
+      {isLocallyDisabled && (
+        <div className={styles.penaltyMessageActive}>
+          Oops! Time penalty active. Please wait {remainingPenaltyTime} seconds.
+        </div>
+      )}
+
       <form
         className={`${styles.quizForm} ${
           isSubmitted ? styles.quizFormSubmitted : ""
-        }`}
+        } ${isLocallyDisabled ? styles.penaltyFormDisabled : ""}`}
         onSubmit={(e) => e.preventDefault()}
       >
         {section.options.map((option, index) => (
           <div
             key={index}
             className={`${styles.quizOption} ${
-              isSubmitted ? styles.optionDisabled : ""
+              isSubmitted || isLocallyDisabled ? styles.optionDisabled : ""
             }`}
-            onClick={handleQuizOptionClick} // Add onClick to the div
-            aria-checked={selectedOptionsSet.has(index)} // For accessibility, indicate checked state
-            role="checkbox" // For accessibility, indicate it's a checkbox
-            tabIndex={isSubmitted ? -1 : 0} // Make div focusable unless submitted
+            onClick={handleQuizOptionClick}
+            aria-checked={selectedOptionsSet.has(index)}
+            role="checkbox"
+            tabIndex={isSubmitted || isLocallyDisabled ? -1 : 0}
           >
             <label
               htmlFor={`${section.id}-option-${index}`}
@@ -152,8 +178,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
                 id={`${section.id}-option-${index}`}
                 checked={selectedOptionsSet.has(index)}
                 onChange={handleOptionChange}
-                disabled={isSubmitted}
-                // Ensure the input itself is not tab-focusable to prevent double tabbing
+                disabled={isSubmitted || isLocallyDisabled}
                 tabIndex={-1}
               />
               {option}
@@ -165,7 +190,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={selectedOptionsSet.size === 0}
+            disabled={selectedOptionsSet.size === 0 || isLocallyDisabled}
             className={styles.quizSubmitButton}
           >
             Submit Answer
