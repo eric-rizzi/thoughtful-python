@@ -90,6 +90,7 @@
   color: #555;
   line-height: 1.5;
   flex-grow: 1; /* Push status down */
+  text-align: right;
   margin-bottom: 1rem;
 }
 

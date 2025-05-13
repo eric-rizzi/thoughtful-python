@@ -5,15 +5,15 @@
       "title": "Introduction to Python",
       "description": "Learn the fundamentals of Python programming through interactive lessons that run directly in your browser.",
       "lessons": [
-        "intro/lesson_1",
-        "intro/lesson_2",
-        "intro/lesson_3",
-        "intro/lesson_4",
-        "intro/lesson_5",
-        "intro/lesson_6",
-        "intro/lesson_7",
-        "intro/lesson_8",
-        "intro/lesson_9"
+        "00_intro/lesson_1",
+        "00_intro/lesson_2",
+        "00_intro/lesson_3",
+        "00_intro/lesson_4",
+        "00_intro/lesson_5",
+        "00_intro/lesson_6",
+        "00_intro/lesson_7",
+        "00_intro/lesson_8",
+        "00_intro/lesson_9"
       ],
       "image": "python-logo.png"
     },
@@ -22,10 +22,10 @@
       "title": "Python Strings Deep Dive",
       "description": "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
       "lessons": [
-        "strings/lesson_1",
-        "strings/lesson_2",
-        "strings/lesson_3",
-        "strings/lesson_4"
+        "01_strings/lesson_1",
+        "01_strings/lesson_2",
+        "01_strings/lesson_3",
+        "01_strings/lesson_4"
       ],
       "image": "python-logo.svg"
     },
@@ -34,11 +34,31 @@
       "title": "Python Conditionals (If/Else)",
       "description": "Learn how to control the flow of your programs using `if`, `else`, and `elif` statements.",
       "lessons": [
-        "conditionals/lesson_1",
-        "conditionals/lesson_2",
-        "conditionals/lesson_3",
-        "conditionals/lesson_4",
-        "conditionals/lesson_5"
+        "02_conditionals/lesson_1",
+        "02_conditionals/lesson_2",
+        "02_conditionals/lesson_3",
+        "02_conditionals/lesson_4",
+        "02_conditionals/lesson_5"
+      ],
+      "image": "python-logo.svg"
+    },
+    {
+      "id": "python_lists_intro",
+      "title": "Python Lists (Intro)",
+      "description": "Learn the basics of Python lists.",
+      "lessons": ["03_lists_intro/lesson_1"],
+      "image": "python-logo.svg"
+    },
+    {
+      "id": "python_lists_advanced",
+      "title": "Python Lists (Advanced)",
+      "description": "Stretch your understand of lists with an ethical puzzle.",
+      "lessons": [
+        "04_lists_advanced/lesson_1",
+        "04_lists_advanced/lesson_2",
+        "04_lists_advanced/lesson_3",
+        "04_lists_advanced/lesson_4",
+        "04_lists_advanced/lesson_5"
       ],
       "image": "python-logo.svg"
     }
