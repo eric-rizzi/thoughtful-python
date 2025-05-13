@@ -5,40 +5,27 @@ import remarkGfm from "remark-gfm";
 import type {
   TurtleSection as TurtleSectionData,
   JsTurtleCommand,
-} from "../../types/data"; // Import JsTurtleCommand
-import styles from "./Section.module.css"; // Assuming styles are in Section.module.css
+} from "../../types/data";
+import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import { useProgressActions } from "../../stores/progressStore";
 
-// Import the real-turtle library (assuming it's installed via npm)
-// The real-turtle library might not directly export a single 'Turtle' class for canvas.
-// It's more of a command processing library. We'll need to integrate it.
-// If 'real-turtle' itself directly draws to a canvas, it would have a specific setup.
-// Based on typical JS turtle libs, they often take a canvas context.
-
-// A helper to manage the real-turtle instance and drawing
 interface RealTurtleInstance {
-  // This is a simplified interface for what real-turtle might expose
-  // to execute commands on a canvas. You might need to adapt based on its API.
   execute: (commands: JsTurtleCommand[]) => Promise<void>;
   reset: () => void;
   clear: () => void;
-  // Other methods like setSpeed, etc.
 }
 
-// Helper to setup the JavaScript turtle context.
-// This function will be responsible for initializing the JS turtle library
-// and providing an interface to execute commands on the canvas.
 const setupJsTurtle = (canvas: HTMLCanvasElement): RealTurtleInstance => {
   const ctx = canvas.getContext("2d");
   if (!ctx) {
     throw new Error("Could not get 2D rendering context for canvas.");
   }
 
-  let x = canvas.width / 2; // Current turtle X position
-  let y = canvas.height / 2; // Current turtle Y position
-  let heading = 0; // Current turtle heading in degrees (0 = East, 90 = North)
+  let x = canvas.width / 2;
+  let y = canvas.height / 2;
+  let heading = 0;
   let penDown = true;
   let penColor = "black";
   let penSize = 1;
@@ -52,36 +39,35 @@ const setupJsTurtle = (canvas: HTMLCanvasElement): RealTurtleInstance => {
     penSize = 1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
-    ctx.moveTo(x, y); // Move to start position
+    ctx.moveTo(x, y);
   };
 
-  resetTurtleState(); // Initial setup
+  resetTurtleState();
 
-  // Function to execute a single JS turtle command
   const executeCommand = (command: JsTurtleCommand) => {
-    const oldX = x;
-    const oldY = y;
+    // const oldX = x; // Not directly used in this simplified version
+    // const oldY = y; // Not directly used
 
     switch (command.type) {
       case "goto":
         x = command.x;
         y = command.y;
-        ctx.stroke(); // Finish any path segment
-        ctx.beginPath(); // Start a new path
-        ctx.moveTo(x, y); // Move pen to new location
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
         break;
       case "forward":
         const distance = command.distance;
         const rad = heading * (Math.PI / 180);
         x += distance * Math.cos(rad);
-        y += distance * Math.sin(rad);
+        y += distance * Math.sin(rad); // Canvas Y is typically top-down
 
         if (penDown) {
           ctx.lineTo(x, y);
         } else {
-          ctx.stroke(); // Finish previous path if pen was down
-          ctx.beginPath(); // Start new path
-          ctx.moveTo(x, y); // Move pen
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(x, y);
         }
         break;
       case "left":
@@ -92,12 +78,12 @@ const setupJsTurtle = (canvas: HTMLCanvasElement): RealTurtleInstance => {
         break;
       case "penup":
         penDown = false;
-        ctx.stroke(); // Finish any path segment before lifting pen
+        ctx.stroke();
         break;
       case "pendown":
         penDown = true;
-        ctx.beginPath(); // Start new path conceptually
-        ctx.moveTo(x, y); // Move to current location
+        ctx.beginPath();
+        ctx.moveTo(x, y);
         break;
       case "clear":
         resetTurtleState();
@@ -114,45 +100,41 @@ const setupJsTurtle = (canvas: HTMLCanvasElement): RealTurtleInstance => {
   const executeAllCommands = async (
     commands: JsTurtleCommand[]
   ): Promise<void> => {
-    resetTurtleState(); // Clear canvas and reset state before executing a new sequence
-    ctx.lineWidth = penSize; // Ensure line width is set
-    ctx.strokeStyle = penColor; // Ensure pen color is set
+    resetTurtleState();
+    ctx.lineWidth = penSize;
+    ctx.strokeStyle = penColor;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
     for (const command of commands) {
       executeCommand(command);
-      // Optional: Add a small delay to animate, if needed
-      // await new Promise(resolve => setTimeout(resolve, 10));
     }
-    ctx.stroke(); // Ensure the final path is drawn
+    ctx.stroke();
   };
 
   return {
     execute: executeAllCommands,
     reset: resetTurtleState,
-    clear: resetTurtleState, // Clear is essentially reset for this simplified model
+    clear: resetTurtleState,
   };
 };
 
-// --- Python Capture Module Code (as a string to be injected) ---
 const pythonCaptureModuleCode = `
 import sys
 import json
 import math
 
-# List to store captured commands (JavaScript equivalent)
 global _js_turtle_commands_
 _js_turtle_commands_ = []
 
 class CaptureTurtle:
     def __init__(self):
-        self._heading = 0.0 # degrees, 0=East. (Pyodide's turtle starts east, matches JS canvas x-axis)
+        self._heading = 0.0
         self._x = 0.0
         self._y = 0.0
         self._pen_down = True
-        self._color = "black" # Default color
-        _js_turtle_commands_.clear() # Clear commands on new instance
+        self._color = "black"
+        _js_turtle_commands_.clear()
 
     def _add_command(self, command_dict):
         _js_turtle_commands_.append(command_dict)
@@ -167,32 +149,19 @@ class CaptureTurtle:
     def forward(self, distance):
         if not isinstance(distance, (int, float)):
             raise TypeError("Distance must be a number")
-        rad = math.radians(self._heading)
-        new_x = self._x + distance * math.cos(rad)
-        new_y = self._y - distance * math.sin(rad) # Y-axis inversion for screen coords vs math coords (turtle default is often positive Y up, canvas is positive Y down)
-        # Note: The original JS canvas drawOnCanvas expects Y to increase downwards.
-        # If Python's turtle defaults to Y-up, we need to invert the Y coordinate here.
-        # Assuming Python's turtle \`forward\` will affect its internal (x,y) consistently.
-        # If not explicitly stated, python's turtle usually has (0,0) at center, and +Y is up.
-        # HTML Canvas has (0,0) at top-left, +Y is down. So, Y inversion might be needed for accurate translation.
-        # Let's assume the \`drawOnCanvas\` will correctly interpret +Y downwards from its \`y\` (canvas origin).
-        # The \`forward\` command itself just says "move", the canvas library will draw.
-        # For \`real-turtle\` or similar, they usually handle internal coordinate systems.
-        # My \`setupJsTurtle\` uses a canvas where Y increases downwards, so Pyodide's Y should reflect that.
-        # If Python's internal turtle world assumes +Y is UP, then new_y for canvas should be \`_y - distance * math.sin(rad)\` or \`canvas_center_y - (_y_in_python_coords)\`.
-        # For simplicity here, let's assume Pyodide's internal turtle \`_y\` is mapped to screen \`y\` where \`+y\` is down.
-        # If not, the JS execution will need to adjust or Python needs to output absolute canvas coordinates.
-        # For \`forward\`, the distance is just distance. \`goto\` would be the main place to map coordinates.
-        # For now, \`forward\` just reports distance. The JS side will handle actual coord changes.
-
+        # Python turtle's internal position update (not directly used for JS command generation here)
+        # rad = math.radians(self._heading)
+        # new_x = self._x + distance * math.cos(rad)
+        # new_y = self._y - distance * math.sin(rad) # Assuming Y inversion for screen
+        
         self._add_command({'type': 'forward', 'distance': float(distance), 'penDown': self._pen_down, 'color': self._color})
-        self._x = new_x
-        self._y = new_y # This tracks Pythons internal position for subsequent commands.
+        # self._x = new_x # Update internal state
+        # self._y = new_y
 
     def backward(self, distance):
         if not isinstance(distance, (int, float)):
             raise TypeError("Distance must be a number")
-        self.forward(-distance) # Backward is just forward with negative distance
+        self.forward(-distance)
 
     def left(self, angle):
         if not isinstance(angle, (int, float)):
@@ -215,22 +184,20 @@ class CaptureTurtle:
         self._add_command({'type': 'pendown'})
 
     def clear(self):
-        # Reset Python's internal state and then record the clear command
         self._heading = 0.0
         self._x = 0.0
         self._y = 0.0
         self._pen_down = True
         self._color = "black"
-        _js_turtle_commands_.clear() # Also clear Python's command list
+        _js_turtle_commands_.clear()
         self._add_command({'type': 'clear'})
 
-    def set_pen_color(self, color):
+    def set_pen_color(self, color): # Renamed from setPenColor for Python convention
         if not isinstance(color, str):
             raise TypeError("Color must be a string")
         self._color = color
         self._add_command({'type': 'setPenColor', 'color': color})
 
-    # Aliases for common turtle commands for natural user code
     def fd(self, distance): self.forward(distance)
     def bk(self, distance): self.backward(distance)
     def back(self, distance): self.backward(distance)
@@ -239,14 +206,12 @@ class CaptureTurtle:
     def pu(self): self.penup()
     def pd(self): self.pendown()
 
-# --- Module Setup: Create a dummy turtle module for Pyodide ---
 class TurtleModule:
     def __init__(self):
         self.Turtle = CaptureTurtle
-        self.Screen = self._dummy_screen # Provide a dummy Screen for compatibility
+        self.Screen = self._dummy_screen
 
     def _dummy_screen(self):
-        # Return a dummy object for Screen for basic compatibility
         return type('DummyScreen', (object,), {
             'setup': lambda *a, **kw: None,
             'tracer': lambda *a, **kw: None,
@@ -258,22 +223,18 @@ class TurtleModule:
             'reset': lambda *a, **kw: None,
         })()
 
-# Inject our custom turtle module into Pyodide's sys.modules
 sys.modules['turtle'] = TurtleModule()
-sys.modules['animated_turtle'] = sys.modules['turtle'] # Alias for animated_turtle
+sys.modules['animated_turtle'] = sys.modules['turtle']
 
-# Final line executed by Pyodide will return the JSON representation of commands
-# This relies on runPythonAsync returning the last expression's value.
 json.dumps(_js_turtle_commands_)
 `;
 
-// --- Component ---
 const TurtleSection: React.FC<{
   section: TurtleSectionData;
   lessonId: string;
 }> = ({ section, lessonId }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const jsTurtleRef = useRef<RealTurtleInstance | null>(null); // Ref to hold the JS turtle instance
+  const jsTurtleRef = useRef<RealTurtleInstance | null>(null);
 
   const {
     runPythonCode,
@@ -294,29 +255,25 @@ const TurtleSection: React.FC<{
     JsTurtleCommand[]
   >([]);
 
-  // Effect to initialize the JS turtle when the canvas is ready
   useEffect(() => {
     if (canvasRef.current && !jsTurtleRef.current) {
       jsTurtleRef.current = setupJsTurtle(canvasRef.current);
     }
   }, []);
 
-  // Effect to trigger JS turtle drawing when commands change
   useEffect(() => {
     if (jsTurtleRef.current && capturedJsCommands.length > 0) {
       jsTurtleRef.current.execute(capturedJsCommands);
     } else if (jsTurtleRef.current && capturedJsCommands.length === 0) {
-      // If commands are empty, ensure canvas is cleared
       jsTurtleRef.current.clear();
     }
   }, [capturedJsCommands]);
 
-  // --- Execution Logic ---
-  const runCode = useCallback(
+  const runCodeInternal = useCallback(
+    // Renamed to avoid conflict if runCode is exposed
     async (codeToRun: string, isValidationRun: boolean = false) => {
       if (isPyodideLoading || !pyodide) {
         const message = "Python environment not ready.";
-        console.warn(message);
         if (!isValidationRun) setFeedback({ message, type: "error" });
         return { commands: [], error: message };
       }
@@ -324,11 +281,9 @@ const TurtleSection: React.FC<{
       if (!isValidationRun) {
         setIsRunning(true);
         setFeedback(null);
-        setCapturedJsCommands([]); // Clear commands & canvas visually
-        if (jsTurtleRef.current) {
-          jsTurtleRef.current.clear(); // Ensure JS turtle is cleared immediately
-        }
-        await new Promise((resolve) => requestAnimationFrame(resolve)); // Wait for render cycle
+        setCapturedJsCommands([]);
+        if (jsTurtleRef.current) jsTurtleRef.current.clear();
+        await new Promise((resolve) => requestAnimationFrame(resolve));
       } else {
         setIsChecking(true);
       }
@@ -336,78 +291,98 @@ const TurtleSection: React.FC<{
       let pyError: string | null = null;
       let parsedJsCommands: JsTurtleCommand[] = [];
 
-      // Construct the full Python script to inject
       const fullPythonScript = `
 ${pythonCaptureModuleCode}
-# --- User Code (indented to be part of the script) ---
+# --- User Code ---
 try:
     ${codeToRun
       .split("\n")
-      .map((line) => `    ${line}`)
+      .map((line) => `    ${line}`) // Basic indentation
       .join("\n")}
 except Exception as e:
     import traceback
+    # Print a specific marker for Python execution errors
     print(f"PYTHON_EXECUTION_ERROR:: {e}\\n{traceback.format_exc()}")
-    # Ensure commands list is cleared if there's a user code error
-    _js_turtle_commands_ = [] # Reset for error state
+    _js_turtle_commands_ = [] # Clear commands on error
 finally:
-    pass # Commands are collected in _js_turtle_commands_
+    pass
 
-# Output the commands as a JSON string
+# Output the commands as a JSON string (this will be the last expression)
 import json
 json.dumps(_js_turtle_commands_)
 `;
 
       try {
-        console.log(`Running Python code (Validation: ${isValidationRun})...`);
         const resultProxy = await pyodide.runPythonAsync(fullPythonScript);
 
-        // The result should be a JSON string of the commands
+        // Check if the output contains our error marker
+        let actualOutputString = "";
         if (typeof resultProxy === "string") {
-          parsedJsCommands = JSON.parse(resultProxy) as JsTurtleCommand[];
-        } else if (resultProxy && typeof resultProxy.toJs === "function") {
-          // If it's a PyProxy, convert to JS object
-          parsedJsCommands = resultProxy.toJs({
-            dict_converter: Object.fromEntries,
-            list_converter: Array.from,
-          }) as JsTurtleCommand[];
-          resultProxy.destroy(); // Clean up PyProxy
-        } else {
-          throw new Error("Unexpected Python output format from Pyodide.");
+          actualOutputString = resultProxy;
+        } else if (resultProxy && typeof resultProxy.toString === "function") {
+          actualOutputString = resultProxy.toString();
         }
-      } catch (error) {
-        console.error("Python execution error:", error);
-        pyError = error instanceof Error ? error.message : String(error);
-        // Check for our custom error marker
-        const errorMatch = pyError.match(/PYTHON_EXECUTION_ERROR:: ([\s\S]*)/);
+
+        const errorMatch = actualOutputString.match(
+          /PYTHON_EXECUTION_ERROR:: ([\s\S]*)/
+        );
         if (errorMatch && errorMatch[1]) {
           pyError = errorMatch[1].trim();
+          parsedJsCommands = []; // Ensure no commands if user code had runtime error
+        } else {
+          // If no PYTHON_EXECUTION_ERROR, attempt to parse as JSON command list
+          try {
+            if (typeof resultProxy === "string") {
+              parsedJsCommands = JSON.parse(resultProxy) as JsTurtleCommand[];
+            } else if (resultProxy && typeof resultProxy.toJs === "function") {
+              parsedJsCommands = resultProxy.toJs({
+                dict_converter: Object.fromEntries,
+                list_converter: Array.from,
+              }) as JsTurtleCommand[];
+              resultProxy.destroy();
+            } else {
+              throw new Error("Unexpected Python output format from Pyodide.");
+            }
+          } catch (jsonParseError) {
+            // This catch is for if the string isn't JSON (e.g. if user code prints something unexpected)
+            console.error(
+              "Error parsing command JSON from Pyodide:",
+              jsonParseError,
+              "Raw output:",
+              actualOutputString
+            );
+            pyError = `Unexpected output from script (not valid JSON command list): ${actualOutputString.substring(
+              0,
+              200
+            )}`;
+            parsedJsCommands = [];
+          }
         }
-        parsedJsCommands = []; // Ensure no commands are processed on error
+      } catch (error) {
+        // This catches errors in runPythonAsync itself or major script issues
+        console.error("Outer Python execution error:", error);
+        pyError = error instanceof Error ? error.message : String(error);
+        parsedJsCommands = [];
       } finally {
         if (!isValidationRun) setIsRunning(false);
         else setIsChecking(false);
       }
 
-      console.log(
-        `Captured ${parsedJsCommands.length} commands. Error: ${pyError}`
-      );
       if (!isValidationRun && !pyError) {
-        setCapturedJsCommands(parsedJsCommands); // This triggers the JS turtle drawing via useEffect
+        setCapturedJsCommands(parsedJsCommands);
       } else if (!isValidationRun && pyError) {
         setFeedback({ message: `Error:\n${pyError}`, type: "error" });
       }
 
       return { commands: parsedJsCommands, error: pyError };
     },
-    [pyodide, isPyodideLoading] // Dependencies
+    [pyodide, isPyodideLoading]
   );
 
-  // --- Grading Logic ---
   const checkSolution = useCallback(async () => {
     setFeedback(null);
     setIsChecking(true);
-    const executionResult = await runCode(code, true); // isValidationRun = true
+    const executionResult = await runCodeInternal(code, true);
     setIsChecking(false);
 
     if (executionResult.error) {
@@ -428,9 +403,10 @@ json.dumps(_js_turtle_commands_)
 
     const expectedCommands =
       section.validationCriteria?.expectedJsCommands || [];
-    if (expectedCommands.length === 0) {
+    if (expectedCommands.length === 0 && userCommands.length > 0) {
+      // Allow empty expected if user also does nothing
       setFeedback({
-        message: `Validation criteria missing (expectedJsCommands) for this challenge in lesson data.`,
+        message: `Validation criteria missing (expectedJsCommands) for this challenge.`,
         type: "error",
       });
       return;
@@ -449,15 +425,12 @@ json.dumps(_js_turtle_commands_)
     if (isCorrect) {
       completeSection(lessonId, section.id);
     }
-  }, [code, runCode, section, lessonId, completeSection]);
+  }, [code, runCodeInternal, section, lessonId, completeSection]);
 
-  // --- Comparison Function for JS Turtle Commands ---
   const compareJsTurtleCommandLists = (
     userCmds: JsTurtleCommand[],
     expectedCmds: JsTurtleCommand[]
   ): { isCorrect: boolean; message?: string } => {
-    // console.log("Comparing JS Turtle Command Lists - User:", userCmds, "Expected:", expectedCmds);
-
     if (userCmds.length !== expectedCmds.length) {
       return {
         isCorrect: false,
@@ -465,7 +438,7 @@ json.dumps(_js_turtle_commands_)
       };
     }
 
-    const tolerance = 1e-5; // Tolerance for floating point comparisons
+    const tolerance = 1e-5;
 
     for (let i = 0; i < expectedCmds.length; i++) {
       const userCmd = userCmds[i];
@@ -480,7 +453,6 @@ json.dumps(_js_turtle_commands_)
         };
       }
 
-      // Compare based on command type
       switch (userCmd.type) {
         case "goto":
           const expGoto = expectedCmd as Extract<
@@ -518,8 +490,8 @@ json.dumps(_js_turtle_commands_)
           >;
           if (
             Math.abs(userForward.distance - expForward.distance) > tolerance ||
-            userForward.penDown !== expForward.penDown ||
-            userForward.color !== expForward.color
+            userForward.penDown !== expForward.penDown || // Compare penDown state
+            userForward.color !== expForward.color // Compare color
           ) {
             return {
               isCorrect: false,
@@ -561,36 +533,35 @@ json.dumps(_js_turtle_commands_)
             JsTurtleCommand,
             { type: "setPenColor" }
           >;
-          const userColor = userCmd as Extract<
+          const userColorCmd = userCmd as Extract<
             JsTurtleCommand,
             { type: "setPenColor" }
           >;
-          if (userColor.color !== expColor.color) {
+          if (userColorCmd.color !== expColor.color) {
             return {
               isCorrect: false,
               message: `Action ${i + 1} (setPenColor) mismatch: Expected '${
                 expColor.color
-              }', Got '${userColor.color}'.`,
+              }', Got '${userColorCmd.color}'.`,
             };
           }
           break;
         case "penup":
         case "pendown":
         case "clear":
-          // No additional properties to compare for these simple commands
           break;
         default:
-          // Should not happen if JsTurtleCommand is exhaustive
           return {
             isCorrect: false,
-            message: `Unknown command type encountered during comparison: ${userCmd.type}`,
+            message: `Unknown command type encountered during comparison: ${
+              (userCmd as any).type
+            }`,
           };
       }
     }
     return { isCorrect: true, message: section.feedback.correct };
   };
 
-  // --- Render ---
   const canvasWidth = 400;
   const canvasHeight = 300;
 
@@ -603,70 +574,58 @@ json.dumps(_js_turtle_commands_)
         </ReactMarkdown>
       </div>
 
-      {/* Instructions */}
       <div className={styles.turtleInstructions}>
         <h4>Instructions:</h4>
         <p>{section.instructions}</p>
       </div>
-      {/* Optional: Simplified command reference */}
       <div className={styles.turtleCommandsReference}>
-        <h4>Available Turtle Commands:</h4>
+        <h4>Available Turtle Commands (Python):</h4>
         <ul>
           <li>
-            <code>turtle.Turtle().goto(x, y)</code>: Move turtle to absolute
-            position.
+            <code>t = turtle.Turtle()</code>
           </li>
           <li>
-            <code>turtle.Turtle().forward(distance)</code> /{" "}
-            <code>turtle.Turtle().fd(distance)</code>: Move turtle forward.
+            <code>t.forward(distance)</code> or <code>t.fd(distance)</code>
           </li>
           <li>
-            <code>turtle.Turtle().backward(distance)</code> /{" "}
-            <code>turtle.Turtle().bk(distance)</code>: Move turtle backward.
+            <code>t.backward(distance)</code> or <code>t.bk(distance)</code>
           </li>
           <li>
-            <code>turtle.Turtle().left(angle)</code> /{" "}
-            <code>turtle.Turtle().lt(angle)</code>: Turn turtle left.
+            <code>t.left(angle)</code> or <code>t.lt(angle)</code>
           </li>
           <li>
-            <code>turtle.Turtle().right(angle)</code> /{" "}
-            <code>turtle.Turtle().rt(angle)</code>: Turn turtle right.
+            <code>t.right(angle)</code> or <code>t.rt(angle)</code>
           </li>
           <li>
-            <code>turtle.Turtle().penup()</code> /{" "}
-            <code>turtle.Turtle().pu()</code>: Lift the pen (stop drawing).
+            <code>t.penup()</code> or <code>t.pu()</code>
           </li>
           <li>
-            <code>turtle.Turtle().pendown()</code> /{" "}
-            <code>turtle.Turtle().pd()</code>: Put the pen down (start drawing).
+            <code>t.pendown()</code> or <code>t.pd()</code>
           </li>
           <li>
-            <code>turtle.Turtle().clear()</code>: Clear the drawing and reset
-            turtle to center.
+            <code>t.goto(x, y)</code>
           </li>
           <li>
-            <code>turtle.Turtle().set_pen_color("color_name")</code>: Set the
-            pen color (e.g., "red", "blue", "#FF0000").
+            <code>t.set_pen_color("color_name")</code> (e.g., "red", "blue")
           </li>
           <li>
-            <code>t = turtle.Turtle()</code>: Remember to create a turtle
-            instance!
+            <code>t.clear()</code>
           </li>
         </ul>
       </div>
 
-      {/* Editor and Controls */}
       <div className={styles.turtleEditorContainer}>
         <h4>Your Code:</h4>
         <CodeEditor
           value={code}
           onChange={setCode}
           readOnly={isRunning || isChecking}
-          minHeight="150px" // Can be shorter for simpler code
+          minHeight="150px"
+          preventPaste={true} // Prevent paste in TurtleSection CodeEditor
         />
         <div className={styles.editorControls}>
           <button
-            onClick={() => runCode(code)}
+            onClick={() => runCodeInternal(code)}
             disabled={
               isRunning || isChecking || isPyodideLoading || !!pyodideError
             }
@@ -683,7 +642,6 @@ json.dumps(_js_turtle_commands_)
           >
             {isChecking ? "Checking..." : "Check Solution"}
           </button>
-          {/* Status Indicators */}
           {(isPyodideLoading || isRunning || isChecking) && (
             <span className={styles.pyodideStatus}>
               {isPyodideLoading
@@ -701,15 +659,15 @@ json.dumps(_js_turtle_commands_)
         </div>
       </div>
 
-      {/* Feedback Area */}
       {feedback && (
         <div
           className={`${styles.quizFeedback} ${
+            // Reusing quizFeedback for general feedback box style
             feedback.type === "correct"
               ? styles.correctFeedback
               : feedback.type === "incorrect"
               ? styles.incorrectFeedback
-              : styles.errorFeedback
+              : styles.errorFeedback // General error style
           }`}
         >
           <pre
@@ -720,7 +678,6 @@ json.dumps(_js_turtle_commands_)
         </div>
       )}
 
-      {/* Canvas Container */}
       <h4>Turtle Output:</h4>
       <div className={styles.turtleCanvasContainer}>
         <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight}>

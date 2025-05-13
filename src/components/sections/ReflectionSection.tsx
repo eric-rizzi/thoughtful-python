@@ -11,9 +11,8 @@ import type {
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
-import { loadProgress } from "../../lib/localStorageUtils"; // Import loadProgress
+import { loadProgress } from "../../lib/localStorageUtils";
 
-// Define the interface for ChatBot configuration as saved by ConfigurationPage
 interface ChatBotConfig {
   progressApiGateway: string;
   chatbotVersion: string;
@@ -22,10 +21,9 @@ interface ChatBotConfig {
 
 const CONFIG_STORAGE_KEY = "chatbot_config";
 
-// --- Refactored API Call Function ---
 async function sendFeedbackToChatBot(
   submission: ReflectionSubmission,
-  rubric: ReflectionSectionData["rubric"] | undefined, // Pass rubric for context
+  rubric: ReflectionSectionData["rubric"] | undefined,
   chatbotVersion: string,
   chatbotApiKey: string
 ): Promise<ReflectionResponse> {
@@ -36,8 +34,8 @@ async function sendFeedbackToChatBot(
   }
 
   const API_BASE_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/";
-  const modelId = chatbotVersion; // Use the configured version as the model ID
+    "[https://generativelanguage.googleapis.com/v1beta/models/](https://generativelanguage.googleapis.com/v1beta/models/)";
+  const modelId = chatbotVersion;
   const endpoint = `${API_BASE_URL}${modelId}:generateContent?key=${chatbotApiKey}`;
 
   const prompt = `
@@ -93,10 +91,8 @@ async function sendFeedbackToChatBot(
       throw new Error("ChatBot did not return any content.");
     }
 
-    // --- Simplified Parsing of LLM Response for Assessment ---
-    // A more robust solution would involve more sophisticated NLP or a structured API response.
-    let assessment: AssessmentLevel = "developing"; // Default
-    let feedbackMessage = generatedText.trim(); // Use full text as feedback by default
+    let assessment: AssessmentLevel = "developing";
+    let feedbackMessage = generatedText.trim();
 
     const lowerCaseText = generatedText.toLowerCase();
     if (lowerCaseText.includes("assessment: exceeds")) {
@@ -107,15 +103,12 @@ async function sendFeedbackToChatBot(
       assessment = "developing";
     }
 
-    // Attempt to extract feedback by looking for "Feedback:" marker
     const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
     if (feedbackMatch && feedbackMatch[1]) {
       feedbackMessage = feedbackMatch[1].trim();
     } else {
-      // If "Feedback:" marker not found, assume the whole text is feedback
       feedbackMessage = generatedText.trim();
     }
-    // --- End Simplified Parsing ---
 
     return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
   } catch (error) {
@@ -127,7 +120,6 @@ async function sendFeedbackToChatBot(
     );
   }
 }
-// --- End Refactored API Call Function ---
 
 interface ReflectionSectionProps {
   section: ReflectionSectionData;
@@ -138,20 +130,14 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   section,
   lessonId,
 }) => {
-  // Input field state remains local
   const [topic, setTopic] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [explanation, setExplanation] = useState<string>("");
-
-  // Runtime state remains local
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // State for ChatBot configuration
   const [chatbotVersion, setChatbotVersion] = useState<string>("");
   const [chatbotApiKey, setChatbotApiKey] = useState<string>("");
 
-  // Load ChatBot configuration on mount
   useEffect(() => {
     const savedConfig = loadProgress<ChatBotConfig>(CONFIG_STORAGE_KEY);
     if (savedConfig) {
@@ -222,10 +208,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       };
 
       try {
-        // Use the refactored function to send feedback to the ChatBot
         const response = await sendFeedbackToChatBot(
           submission,
-          section.rubric, // Pass rubric for context
+          section.rubric,
           chatbotVersion,
           chatbotApiKey
         );
@@ -263,8 +248,8 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       section.rubric,
       setReflectionState,
       hasEverReceivedFeedback,
-      chatbotVersion, // Add as dependency
-      chatbotApiKey, // Add as dependency
+      chatbotVersion,
+      chatbotApiKey,
     ]
   );
 
@@ -277,6 +262,12 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
   const canAttemptInteraction =
     !!topic.trim() && !!code.trim() && !!explanation.trim();
+
+  const handlePaste = (event: React.ClipboardEvent) => {
+    // console.log("Paste event intercepted in textarea");
+    event.preventDefault();
+    alert("Pasting is disabled for this text area.");
+  };
 
   return (
     <section id={section.id} className={styles.section}>
@@ -299,6 +290,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onChange={(e) => setTopic(e.target.value)}
             disabled={isSubmitting}
             placeholder="Enter a descriptive title (e.g., Using Loops for Lists)"
+            onPaste={handlePaste} // Prevent paste
           />
         </div>
 
@@ -312,6 +304,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               onChange={setCode}
               readOnly={isSubmitting}
               minHeight="150px"
+              preventPaste={true} // Prevent paste in CodeEditor
             />
           </div>
         </div>
@@ -330,12 +323,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onChange={(e) => setExplanation(e.target.value)}
             disabled={isSubmitting}
             placeholder="Explain your code example here (3-4 sentences)..."
+            onPaste={handlePaste} // Prevent paste in textarea
           />
         </div>
 
         <div className={styles.reflectionButtons}>
           <button
-            onClick={() => handleSubmit(false)} // Get Feedback
+            onClick={() => handleSubmit(false)}
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
@@ -354,13 +348,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             {isSubmitting ? "Processing..." : "Get Feedback"}
           </button>
           <button
-            onClick={() => handleSubmit(true)} // Submit Entry
+            onClick={() => handleSubmit(true)}
             disabled={
-              isSubmitting || // Disable if submitting
-              !canAttemptInteraction || // Disable if fields empty
-              !hasEverReceivedFeedback || // Disable if no feedback cycle ever completed
+              isSubmitting ||
+              !canAttemptInteraction ||
+              !hasEverReceivedFeedback ||
               !chatbotVersion ||
-              !chatbotApiKey // Disable if ChatBot not configured
+              !chatbotApiKey
             }
             className={styles.reflectionSubmitBtn}
             title={
@@ -405,7 +399,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                     <span className={styles.reflectionDate}>
                       {formatDate(entry.submission.timestamp)}
                     </span>
-                    {/* Display distinct visual cue for "Get Feedback" vs "Submitted to Journal" */}
                     {entry.submission.submitted ? (
                       <span className={styles.submissionBadge}>
                         Submitted to Journal

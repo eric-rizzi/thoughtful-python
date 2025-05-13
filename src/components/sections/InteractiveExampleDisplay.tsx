@@ -1,7 +1,7 @@
-// src/components/sections/InteractiveExampleDisplay.tsx (NEW FILE)
+// src/components/sections/InteractiveExampleDisplay.tsx
 import React from "react";
 import CodeEditor from "../CodeEditor";
-import styles from "./Section.module.css"; // Assuming common styles
+import styles from "./Section.module.css";
 import type { LessonExample } from "../../types/data";
 
 interface InteractiveExampleDisplayProps {
@@ -14,8 +14,9 @@ interface InteractiveExampleDisplayProps {
   pyodideError: Error | null;
   onCodeChange: (newCode: string) => void;
   onRunCode: () => Promise<{ output: string; error: string | null }>;
-  renderExtraControls?: () => React.ReactNode; // For "Test Solution" button etc.
-  renderExtraOutput?: () => React.ReactNode; // For test results area
+  renderExtraControls?: () => React.ReactNode;
+  renderExtraOutput?: () => React.ReactNode;
+  preventPasteInEditor?: boolean; // New prop
 }
 
 const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
@@ -30,6 +31,7 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
   onRunCode,
   renderExtraControls,
   renderExtraOutput,
+  preventPasteInEditor = false, // Default to false
 }) => {
   const canRun = !isPyodideLoading && !pyodideError && !isRunning;
 
@@ -40,7 +42,8 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
       <CodeEditor
         value={code}
         onChange={onCodeChange}
-        readOnly={isRunning} // Optionally make read-only while running
+        readOnly={isRunning}
+        preventPaste={preventPasteInEditor} // Pass down the prop
       />
       <div className={styles.editorControls}>
         <div>
@@ -63,7 +66,7 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
         </div>
       </div>
 
-      {(isRunning || hasBeenRun || output) && ( // Ensure output area shows if output is set (e.g., by tests)
+      {(isRunning || hasBeenRun || output) && (
         <div className={styles.outputArea}>
           <pre>
             {output ||

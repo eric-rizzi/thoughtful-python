@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { LessonSection, LessonExample } from "../../types/data";
 import styles from "./Section.module.css";
-import { usePyodide } from "../../contexts/PyodideContext"; // To run the test script
+import { usePyodide } from "../../contexts/PyodideContext";
 import {
   generateTestCode,
   parseTestResults,
@@ -15,12 +15,10 @@ import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface TestingSectionProps {
-  section: LessonSection; // Should ideally be a more specific TestingSectionData type
+  section: LessonSection;
   lessonId: string;
-  // onSectionComplete is handled internally by TestableExample using useProgressActions
 }
 
-// Helper component for each testable example
 const TestableExample: React.FC<{
   example: LessonExample;
   lessonId: string;
@@ -31,15 +29,15 @@ const TestableExample: React.FC<{
     runPythonCode: pyodideDirectRunner,
     isLoading: isPyodideDirectLoading,
     error: pyodideDirectError,
-  } = usePyodide(); // For running the test script
+  } = usePyodide();
 
   const exampleHook = useInteractiveExample({
     exampleId: example.id,
     initialCode: example.code,
-    lessonId, // For potential future code persistence keying, though not used now
+    lessonId,
     sectionId,
-    persistCode: false, // Typically, test solutions aren't persisted, but this could be a prop
-    storageKeyPrefix: "testCodeAttempt", // If you ever enable persistCode
+    persistCode: true, // Testing sections often benefit from persisting attempts
+    storageKeyPrefix: "testCodeAttempt",
   });
 
   const [isTesting, setIsTesting] = useState<boolean>(false);
@@ -49,7 +47,7 @@ const TestableExample: React.FC<{
   const [testRunHasBeenAttempted, setTestRunHasBeenAttempted] =
     useState<boolean>(false);
 
-  const functionNameToTest = example.functionToTest || "celsius_to_fahrenheit"; // Get from JSON or use a default
+  const functionNameToTest = example.functionToTest || "celsius_to_fahrenheit";
 
   const handleTestSolution = useCallback(async () => {
     if (isPyodideDirectLoading || pyodideDirectError) {
@@ -68,7 +66,6 @@ const TestableExample: React.FC<{
     setIsTesting(true);
     setTestResults(null);
     setTestRunHasBeenAttempted(true);
-    // exampleHook.setOutput('Testing solution...'); // Optionally update main output
 
     try {
       const testScript = generateTestCode(
@@ -76,7 +73,7 @@ const TestableExample: React.FC<{
         functionNameToTest,
         example.testCases
       );
-      const result = await pyodideDirectRunner(testScript); // Use direct runner for test script
+      const result = await pyodideDirectRunner(testScript);
 
       let parsed: TestResult[] | { test_error: string };
       let allPassed = false;
@@ -110,9 +107,6 @@ const TestableExample: React.FC<{
       setTestResults(parsed);
 
       if (allPassed) {
-        console.log(
-          `Testing section ${sectionId} - example ${example.id} PASSED all tests. Marking complete.`
-        );
         completeSection(lessonId, sectionId);
       }
     } catch (err) {
@@ -126,7 +120,7 @@ const TestableExample: React.FC<{
       setIsTesting(false);
     }
   }, [
-    exampleHook.code, // User's current code from the editor
+    exampleHook.code,
     example.testCases,
     functionNameToTest,
     pyodideDirectRunner,
@@ -136,7 +130,6 @@ const TestableExample: React.FC<{
     lessonId,
     sectionId,
     example.id,
-    // exampleHook.setOutput // if using it
   ]);
 
   const renderTestResultsDisplay = () => {
@@ -173,8 +166,6 @@ const TestableExample: React.FC<{
               <p>
                 Your solution passed {passedCount} out of {totalCount} tests.
               </p>
-              {/* You can add more detailed table rendering here if needed */}
-              {/* For brevity, showing only the summary. Original TestingSection had a table. */}
               {(() => {
                 const firstFailed = testResults.find((r) => !r.passed);
                 if (!firstFailed) return null;
@@ -220,10 +211,10 @@ const TestableExample: React.FC<{
   return (
     <InteractiveExampleDisplay
       example={example}
-      {...exampleHook} // Spreads code, onCodeChange, default onRunCode, output, isRunning etc.
-      // The onRunCode from exampleHook will be for the "Run Code" button (general execution)
-      isRunning={exampleHook.isRunning || isTesting} // Combine running states
+      {...exampleHook}
+      isRunning={exampleHook.isRunning || isTesting}
       hasBeenRun={exampleHook.hasBeenRun || testRunHasBeenAttempted}
+      preventPasteInEditor={true} // Prevent paste in TestingSection CodeEditor
       renderExtraControls={() =>
         example.testCases &&
         example.testCases.length > 0 && (
