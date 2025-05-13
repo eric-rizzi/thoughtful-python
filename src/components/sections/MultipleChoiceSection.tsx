@@ -77,6 +77,13 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
   const handleQuizOptionClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (isSubmitted || isLocallyDisabled) return;
+      // If the click target is the input itself, let its own onChange handle it.
+      if (
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "radio"
+      ) {
+        return;
+      }
       const inputElement = event.currentTarget.querySelector(
         'input[type="radio"]'
       );

@@ -96,6 +96,14 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
   const handleQuizOptionClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (isSubmitted || isLocallyDisabled) return;
+      // If the click target is the input itself, let its own onChange handle it.
+      // This prevents the programmatic click from potentially interfering or causing double events.
+      if (
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "checkbox"
+      ) {
+        return;
+      }
       const inputElement = event.currentTarget.querySelector(
         'input[type="checkbox"]'
       );
