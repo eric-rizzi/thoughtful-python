@@ -160,7 +160,11 @@ export interface ReflectionSubmission {
   submitted: boolean; // Was this submitted to the 'journal'?
 }
 
-export type AssessmentLevel = "developing" | "meets" | "exceeds";
+export type AssessmentLevel =
+  | "achieves"
+  | "mostly"
+  | "developing"
+  | "insufficient";
 
 export interface ReflectionResponse {
   feedback: string; // Text feedback (simulated AI)
@@ -175,12 +179,6 @@ export interface ReflectionSection extends LessonSection {
     topic: string; // Label for topic dropdown
     code: string; // Label for code input
     explanation: string; // Label for explanation input
-  };
-  // Rubric is optional, used by simulated feedback
-  rubric?: {
-    developing: string; // Description for 'developing'
-    meets: string; // Description for 'meets'
-    exceeds: string; // Description for 'exceeds'
   };
   // apiEndpoint?: string; // Optional: If using a real backend later
 }

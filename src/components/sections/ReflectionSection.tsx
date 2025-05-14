@@ -23,7 +23,6 @@ const CONFIG_STORAGE_KEY = "chatbot_config";
 
 async function sendFeedbackToChatBot(
   submission: ReflectionSubmission,
-  rubric: ReflectionSectionData["rubric"] | undefined,
   chatbotVersion: string,
   chatbotApiKey: string
 ): Promise<ReflectionResponse> {
@@ -53,7 +52,7 @@ async function sendFeedbackToChatBot(
 
     **Rubric for Assessment Levels:**
 
-    | Objective | Requirements/Specifications | Achieves | Mostly There | Developing | Not Demonstrated |
+    | Objective | Requirements/Specifications | Achieves | Mostly | Developing | Insufficient |
     | :---- | :---- | :---- | :---- | :---- | :---- |
     | Well-written: Entry is well-written and displays level of care expected in other, writing-centered classes | Entry is brief and to the point: it is no longer than it has to be. Entry uses proper terminology. Entry has no obvious spelling mistakes Entry uses proper grammar  | Entry is of high quality without any obvious errors or extraneous information | Entry contains one or two errors and could only be shortened a little | Entry contains many errors and has a lot of unnecessary, repetitive information. |  |
     | Thoughtful: Entry includes analysis that is easy to understand and could prove useful in the future | Analysis is about a topic that could conceivably come up in a future CS class. Analysis identifies single possible point of confusion. Analysis eliminates all possible confusion on the topic. Analysis references example. The phrase “as seen in the example” present in entry. | All requirements met. | Entry contains all but one of the requirements. | Entry's analysis is superficial an unfocused. |  |
@@ -101,11 +100,11 @@ async function sendFeedbackToChatBot(
     if (lowerCaseText.includes("assessment: achieves")) {
       assessment = "achieves";
     } else if (lowerCaseText.includes("assessment: mostly there")) {
-      assessment = "mostly there";
+      assessment = "mostly";
     } else if (lowerCaseText.includes("assessment: developing")) {
       assessment = "developing";
-    } else if (lowerCaseText.includes("assessment: not demonstrated")) {
-      assessment = "not demonstrated";
+    } else if (lowerCaseText.includes("assessment: insufficient")) {
+      assessment = "insufficient";
     }
 
     const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
@@ -215,7 +214,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       try {
         const response = await sendFeedbackToChatBot(
           submission,
-          section.rubric,
           chatbotVersion,
           chatbotApiKey
         );
@@ -250,7 +248,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       topic,
       code,
       explanation,
-      section.rubric,
       setReflectionState,
       hasEverReceivedFeedback,
       chatbotVersion,
@@ -447,7 +444,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                           ] || ""
                         }`}
                       >
-                        {entry.response.assessment}
+                        AI Prediction: {entry.response.assessment}
                       </div>
                     )}
                     <p>{entry.response.feedback}</p>

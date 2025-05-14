@@ -5,8 +5,8 @@
    ============================ */
 
 .section {
-  margin-bottom: 2.5rem; /* Spacing between sections */
-  padding-bottom: 2rem;
+  margin-bottom: 1rem; /* Spacing between sections */
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee; /* Separator line */
 }
 
@@ -28,7 +28,7 @@
 
 .content {
   margin-bottom: 1.5rem;
-  line-height: 1.7; /* Good readability */
+  line-height: 1.6; /* Good readability */
   color: #444; /* Dark gray for text */
   white-space: pre-wrap; /* Preserve newlines from JSON content */
 }
@@ -960,13 +960,16 @@
 
 /* Assessment-based border colors for the card */
 /* NOTE: Apply these classes in your JSX: className={`${styles.reflectionCard} ${styles[`cardAssessment${entry.response.assessment}`] || ''}`} */
+.cardAssessmentinsufficient {
+  border-left-color: #ffc107 !important;
+}
 .cardAssessmentdeveloping {
   border-left-color: #ffc107 !important;
-} /* Use !important if needed to override base */
-.cardAssessmentmeets {
+}
+.cardAssessmentmostly {
   border-left-color: #28a745 !important;
 }
-.cardAssessmentexceeds {
+.cardAssessmentachieves {
   border-left-color: #4b8bbe !important;
 }
 
@@ -1053,9 +1056,10 @@
 
 /* Assessment Badges - using original names adapted for CSS Modules */
 /* Apply in JSX like: className={styles[`assessmentBadge${entry.response.assessment}`]} */
+.assessmentBadgeInsufficient,
 .assessmentBadgeDeveloping,
-.assessmentBadgeMeets,
-.assessmentBadgeExceeds {
+.assessmentBadgeMostly,
+.assessmentBadgeAchieves {
   display: inline-block;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -1065,17 +1069,21 @@
   text-transform: uppercase;
   line-height: 1.2; /* Ensure proper line height */
 }
+.assessmentBadgeInsufficient {
+  background-color: #d4300f;
+  color: #edde38;
+}
 .assessmentBadgeDeveloping {
   background-color: #fff3cd;
   color: #856404;
 }
-.assessmentBadgeMeets {
+.assessmentBadgeMostly {
   background-color: #d4edda;
-  color: #155724;
+  color: #1d94ae;
 }
-.assessmentBadgeExceeds {
+.assessmentBadgeAchieves {
   background-color: #cce5ff;
-  color: #004085;
+  color: #008500;
 }
 
 .reflectionResponse p {
