@@ -34,7 +34,7 @@ async function sendFeedbackToChatBot(
   }
 
   const API_BASE_URL =
-    "[https://generativelanguage.googleapis.com/v1beta/models/](https://generativelanguage.googleapis.com/v1beta/models/)";
+    "https://generativelanguage.googleapis.com/v1beta/models/";
   const modelId = chatbotVersion;
   const endpoint = `${API_BASE_URL}${modelId}:generateContent?key=${chatbotApiKey}`;
 
@@ -52,12 +52,15 @@ async function sendFeedbackToChatBot(
     ${submission.explanation}
 
     **Rubric for Assessment Levels:**
-    - **developing**: The code is incomplete, has significant errors, or the explanation doesn't clearly show how requirements were met. Feedback should guide the student to address fundamental issues.
-    - **meets**: The code is functional and the explanation adequately describes how the concept was implemented. Feedback should confirm understanding and suggest minor improvements.
-    - **exceeds**: The code is well-structured, creative, and the explanation clearly and thoroughly details how multiple requirements were met, possibly highlighting clever solutions or insights. Feedback should commend strong understanding and suggest advanced considerations.
+
+    | Objective | Requirements/Specifications | Achieves | Mostly There | Developing | Not Demonstrated |
+    | :---- | :---- | :---- | :---- | :---- | :---- |
+    | Well-written: Entry is well-written and displays level of care expected in other, writing-centered classes | Entry is brief and to the point: it is no longer than it has to be. Entry uses proper terminology. Entry has no obvious spelling mistakes Entry uses proper grammar  | Entry is of high quality without any obvious errors or extraneous information | Entry contains one or two errors and could only be shortened a little | Entry contains many errors and has a lot of unnecessary, repetitive information. |  |
+    | Thoughtful: Entry includes analysis that is easy to understand and could prove useful in the future | Analysis is about a topic that could conceivably come up in a future CS class. Analysis identifies single possible point of confusion. Analysis eliminates all possible confusion on the topic. Analysis references example. The phrase “as seen in the example” present in entry. | All requirements met. | Entry contains all but one of the requirements. | Entry's analysis is superficial an unfocused. |  |
+    | Grounded: Entry includes a pertinent example that gets to the heart of the topic being discussed. | Example highlights issue being discussed. Example doesn't include unnecessary, extraneous details or complexity. Example is properly formatted. Example doesn't include any obvious programming errors. | All requirements met | Entry contains all but one or two of the requirements. | Entry's example is difficult to understand or doesn't relate to the topic being discussed. |  | 
 
     **Provide your response in a concise format. Start with the assessment level, then provide the feedback. For example:
-    Assessment: meets
+    Assessment: Mostly There
     Feedback: Your code is clear and your explanation is accurate. Consider adding more comments to your code for readability.**
 
     Based on the provided submission and rubric, assess the student's work and provide feedback.
@@ -95,12 +98,14 @@ async function sendFeedbackToChatBot(
     let feedbackMessage = generatedText.trim();
 
     const lowerCaseText = generatedText.toLowerCase();
-    if (lowerCaseText.includes("assessment: exceeds")) {
-      assessment = "exceeds";
-    } else if (lowerCaseText.includes("assessment: meets")) {
-      assessment = "meets";
+    if (lowerCaseText.includes("assessment: achieves")) {
+      assessment = "achieves";
+    } else if (lowerCaseText.includes("assessment: mostly there")) {
+      assessment = "mostly there";
     } else if (lowerCaseText.includes("assessment: developing")) {
       assessment = "developing";
+    } else if (lowerCaseText.includes("assessment: not demonstrated")) {
+      assessment = "not demonstrated";
     }
 
     const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
@@ -155,7 +160,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         (entry) =>
           entry.submission.submitted === true &&
           entry.response?.assessment &&
-          ["meets", "exceeds"].includes(entry.response.assessment)
+          ["achieves"].includes(entry.response.assessment)
       );
     },
     []
@@ -304,7 +309,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               onChange={setCode}
               readOnly={isSubmitting}
               minHeight="150px"
-              preventPaste={true} // Prevent paste in CodeEditor
+              preventPaste={false} // Prevent paste in CodeEditor
             />
           </div>
         </div>
@@ -323,7 +328,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onChange={(e) => setExplanation(e.target.value)}
             disabled={isSubmitting}
             placeholder="Explain your code example here (3-4 sentences)..."
-            onPaste={handlePaste} // Prevent paste in textarea
+            // onPaste={handlePaste} // Prevent paste in textarea
           />
         </div>
 
