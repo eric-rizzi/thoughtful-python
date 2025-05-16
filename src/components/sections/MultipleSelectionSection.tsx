@@ -1,5 +1,4 @@
-// src/components/sections/MultipleSelectionSection.tsx
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { MultipleSelectionSection as MultipleSelectionSectionData } from "../../types/data";
@@ -27,7 +26,8 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
   lessonId,
 }) => {
   const storageKey = `quizState_${lessonId}_${section.id}`;
-  const initialState: MultiSelectState = {
+  const initialMultiSelectState: MultiSelectState = {
+    // Renamed for clarity
     selected: [],
     submitted: false,
     correct: null,
@@ -55,7 +55,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
       lessonId,
       section.id,
       storageKey,
-      initialState,
+      initialMultiSelectState, // Use renamed initial state
       checkMultiSelectCompletion
     );
 
@@ -70,6 +70,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     [selectedIndexArray]
   );
 
+  // This handler is for the input's own onChange event.
   const handleOptionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (isSubmitted || isLocallyDisabled) return;
@@ -93,25 +94,45 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     [isSubmitted, setMultiSelectState, isLocallyDisabled]
   );
 
+  // This handler is for clicks on the surrounding div.
   const handleQuizOptionClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (isSubmitted || isLocallyDisabled) return;
-      // If the click target is the input itself, let its own onChange handle it.
-      // This prevents the programmatic click from potentially interfering or causing double events.
+
+      // If the click was directly on the checkbox input, its own onChange
+      // (handleOptionChange) will handle the state update. So, do nothing here.
       if (
         event.target instanceof HTMLInputElement &&
         event.target.type === "checkbox"
       ) {
         return;
       }
+
+      // If the click was on the surrounding div (e.g., label text or padding),
+      // find the checkbox input and manually toggle its state.
       const inputElement = event.currentTarget.querySelector(
         'input[type="checkbox"]'
       );
       if (inputElement) {
-        (inputElement as HTMLInputElement).click();
+        const checkboxInput = inputElement as HTMLInputElement;
+        const optionIndex = parseInt(checkboxInput.value, 10);
+
+        // Manually update the state by toggling the selection for this optionIndex
+        setMultiSelectState((prevState) => {
+          const currentSelectedSet = new Set(prevState.selected);
+          if (currentSelectedSet.has(optionIndex)) {
+            currentSelectedSet.delete(optionIndex); // Unselect if already selected
+          } else {
+            currentSelectedSet.add(optionIndex); // Select if not selected
+          }
+          return {
+            ...prevState,
+            selected: Array.from(currentSelectedSet),
+          };
+        });
       }
     },
-    [isSubmitted, isLocallyDisabled]
+    [isSubmitted, isLocallyDisabled, setMultiSelectState]
   );
 
   const handleSubmit = useCallback(() => {
@@ -143,6 +164,17 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     isLocallyDisabled,
   ]);
 
+  const handleTryAgain = useCallback(() => {
+    // Reset the multi-select state for this section
+    setMultiSelectState({
+      selected: [],
+      submitted: false,
+      correct: null,
+    });
+  }, [setMultiSelectState]);
+
+  const showTryAgainButton = isSubmitted && !isCorrect && !isLocallyDisabled;
+
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
@@ -152,11 +184,13 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
         </ReactMarkdown>
       </div>
 
-      {isLocallyDisabled && (
-        <div className={styles.penaltyMessageActive}>
-          Oops! Time penalty active. Please wait {remainingPenaltyTime} seconds.
-        </div>
-      )}
+      {isLocallyDisabled &&
+        !isCorrect && ( // Show penalty message only if not already correct
+          <div className={styles.penaltyMessageActive}>
+            Oops! Time penalty active. Please wait {remainingPenaltyTime}{" "}
+            seconds.
+          </div>
+        )}
 
       <form
         className={`${styles.quizForm} ${
@@ -170,7 +204,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
             className={`${styles.quizOption} ${
               isSubmitted || isLocallyDisabled ? styles.optionDisabled : ""
             }`}
-            onClick={handleQuizOptionClick}
+            onClick={handleQuizOptionClick} // Click handler on the div
             aria-checked={selectedOptionsSet.has(index)}
             role="checkbox"
             tabIndex={isSubmitted || isLocallyDisabled ? -1 : 0}
@@ -185,7 +219,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
                 value={index}
                 id={`${section.id}-option-${index}`}
                 checked={selectedOptionsSet.has(index)}
-                onChange={handleOptionChange}
+                onChange={handleOptionChange} // onChange on the input itself
                 disabled={isSubmitted || isLocallyDisabled}
                 tabIndex={-1}
               />
@@ -212,8 +246,22 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
             isCorrect ? styles.correctFeedback : styles.incorrectFeedback
           }
         >
-          {isCorrect ? section.feedback.correct : section.feedback.incorrect}
+          {isCorrect
+            ? section.feedback.correct
+            : section.feedback.incorrect
+            ? section.feedback.incorrect
+            : "Incorrect!"}
         </div>
+      )}
+
+      {showTryAgainButton && (
+        <button
+          type="button"
+          onClick={handleTryAgain}
+          className={styles.tryAgainButton}
+        >
+          Try Again
+        </button>
       )}
     </section>
   );

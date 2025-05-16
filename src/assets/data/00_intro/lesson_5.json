@@ -21,8 +21,7 @@
       ],
       "correctAnswer": 1,
       "feedback": {
-        "correct": "Correct! The print() function is used to display output to the console.",
-        "incorrect": "Incorrect. The print() function is used to display output to the console."
+        "correct": "Correct! The print() function is used to display output to the console."
       }
     },
     {
@@ -38,8 +37,7 @@
       ],
       "correctAnswer": 1,
       "feedback": {
-        "correct": "Correct! In Python, functions are defined using the 'def' keyword followed by the function name and parentheses.",
-        "incorrect": "Incorrect. In Python, functions are defined using the 'def' keyword followed by the function name and parentheses."
+        "correct": "Correct! In Python, functions are defined using the 'def' keyword followed by the function name and parentheses."
       }
     },
     {
@@ -50,8 +48,7 @@
       "options": ["0", "32", "100", "273.15"],
       "correctAnswer": 1,
       "feedback": {
-        "correct": "Correct! When converting 0°C to Fahrenheit using the formula F = (C × 9/5) + 32, we get 32°F.",
-        "incorrect": "Incorrect. When converting 0°C to Fahrenheit using the formula F = (C × 9/5) + 32, we get 32°F."
+        "correct": "Correct! When converting 0°C to Fahrenheit using the formula F = (C × 9/5) + 32, we get 32°F."
       }
     },
     {
@@ -67,8 +64,7 @@
       ],
       "correctAnswer": 2,
       "feedback": {
-        "correct": "Correct! Lists in Python are created using square brackets [].",
-        "incorrect": "Incorrect. Lists in Python are created using square brackets []."
+        "correct": "Correct! Lists in Python are created using square brackets []."
       }
     },
     {
@@ -86,8 +82,7 @@
       ],
       "correctAnswers": [0, 1, 3, 4],
       "feedback": {
-        "correct": "Correct! Lists, dictionaries, sets, and tuples are all built-in data structures in Python.",
-        "incorrect": "Incorrect. The built-in data structures in Python are lists, dictionaries, sets, and tuples. Arrays are part of the NumPy library, and structs don't exist in Python natively."
+        "correct": "Correct! Lists, dictionaries, sets, and tuples are all built-in data structures in Python."
       }
     },
     {
@@ -104,8 +99,7 @@
       ],
       "correctAnswers": [1, 3],
       "feedback": {
-        "correct": "Correct! In Python, you can use the # symbol for single-line comments and triple quotes (''' or \"\"\") for multi-line comments or docstrings.",
-        "incorrect": "Incorrect. In Python, comments are created using the # symbol for single-line comments and triple quotes (''' or \"\"\") for multi-line comments or docstrings."
+        "correct": "Correct! In Python, you can use the # symbol for single-line comments and triple quotes (''' or \"\"\") for multi-line comments or docstrings."
       }
     },
     {

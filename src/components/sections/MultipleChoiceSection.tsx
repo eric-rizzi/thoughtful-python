@@ -1,4 +1,3 @@
-// src/components/sections/MultipleChoiceSection.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -27,7 +26,8 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
   lessonId,
 }) => {
   const storageKey = `quizState_${lessonId}_${section.id}`;
-  const initialState: QuizState = {
+  const initialQuizSectionState: QuizState = {
+    // Renamed for clarity
     selected: null,
     submitted: false,
     correct: null,
@@ -51,7 +51,7 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     lessonId,
     section.id,
     storageKey,
-    initialState,
+    initialQuizSectionState, // Use renamed initial state
     checkQuizCompletion
   );
 
@@ -61,6 +61,9 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     correct: isCorrect,
   } = quizState;
 
+  // This handler is for the input's own onChange event.
+  // It will be triggered by direct user interaction with the radio button
+  // or by native label behavior.
   const handleOptionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!isSubmitted && !isLocallyDisabled) {
@@ -74,24 +77,37 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     [isSubmitted, setQuizState, isLocallyDisabled]
   );
 
+  // This handler is for clicks on the surrounding div.
   const handleQuizOptionClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (isSubmitted || isLocallyDisabled) return;
-      // If the click target is the input itself, let its own onChange handle it.
+
+      // If the click was directly on the radio input, its own onChange
+      // (handleOptionChange) will handle the state update. So, do nothing here.
       if (
         event.target instanceof HTMLInputElement &&
         event.target.type === "radio"
       ) {
         return;
       }
+
+      // If the click was on the surrounding div (e.g., label text or padding),
+      // find the radio input and manually update the state.
       const inputElement = event.currentTarget.querySelector(
         'input[type="radio"]'
       );
       if (inputElement) {
-        (inputElement as HTMLInputElement).click();
+        const radioInput = inputElement as HTMLInputElement;
+        const newSelectedOption = parseInt(radioInput.value, 10);
+
+        // Manually set the state, similar to what handleOptionChange does
+        setQuizState((prevState) => ({
+          ...prevState,
+          selected: newSelectedOption,
+        }));
       }
     },
-    [isSubmitted, isLocallyDisabled]
+    [isSubmitted, isLocallyDisabled, setQuizState]
   );
 
   const handleSubmit = useCallback(() => {
@@ -117,6 +133,17 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     isLocallyDisabled,
   ]);
 
+  const handleTryAgain = useCallback(() => {
+    // Reset the quiz state for this section to allow another attempt
+    setQuizState({
+      selected: null,
+      submitted: false,
+      correct: null,
+    });
+  }, [setQuizState]);
+
+  const showTryAgainButton = isSubmitted && !isCorrect && !isLocallyDisabled;
+
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
@@ -126,11 +153,13 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
         </ReactMarkdown>
       </div>
 
-      {isLocallyDisabled && (
-        <div className={styles.penaltyMessageActive}>
-          Oops! Time penalty active. Please wait {remainingPenaltyTime} seconds.
-        </div>
-      )}
+      {isLocallyDisabled &&
+        !isCorrect && ( // Show penalty message only if not already correct
+          <div className={styles.penaltyMessageActive}>
+            Oops! Time penalty active. Please wait {remainingPenaltyTime}{" "}
+            seconds.
+          </div>
+        )}
 
       <form
         className={`${styles.quizForm} ${
@@ -144,7 +173,7 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
             className={`${styles.quizOption} ${
               isSubmitted || isLocallyDisabled ? styles.optionDisabled : ""
             }`}
-            onClick={handleQuizOptionClick}
+            onClick={handleQuizOptionClick} // Click handler on the div
             aria-checked={selectedOption === index}
             role="radio"
             tabIndex={isSubmitted || isLocallyDisabled ? -1 : 0}
@@ -159,7 +188,7 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
                 value={index}
                 id={`${section.id}-option-${index}`}
                 checked={selectedOption === index}
-                onChange={handleOptionChange}
+                onChange={handleOptionChange} // onChange on the input itself
                 disabled={isSubmitted || isLocallyDisabled}
                 tabIndex={-1}
               />
@@ -186,8 +215,22 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
             isCorrect ? styles.correctFeedback : styles.incorrectFeedback
           }
         >
-          {isCorrect ? section.feedback.correct : section.feedback.incorrect}
+          {isCorrect
+            ? section.feedback.correct
+            : section.feedback.incorrect
+            ? section.feedback.incorrect
+            : "Incorrect!"}
         </div>
+      )}
+
+      {showTryAgainButton && (
+        <button
+          type="button"
+          onClick={handleTryAgain}
+          className={styles.tryAgainButton}
+        >
+          Try Again
+        </button>
       )}
     </section>
   );
