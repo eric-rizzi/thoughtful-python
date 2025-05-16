@@ -1,5 +1,6 @@
-// src/components/sections/ReflectionSection.tsx
 import React, { useState, useCallback, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type {
   ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,
@@ -447,7 +448,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                         AI Prediction: {entry.response.assessment}
                       </div>
                     )}
-                    <p>{entry.response.feedback}</p>
+                    <p>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {entry.response.feedback}
+                      </ReactMarkdown>
+                    </p>
                   </div>
                 )}
               </div>
