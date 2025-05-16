@@ -18,6 +18,12 @@ interface DisplayEntry {
 
 const REFLECTION_KEY_REGEX = /^reflectState_(.+)_([^_]+)$/;
 
+const getTopicNameForDisplay = (topicValue: string): string => {
+  if (!topicValue || !topicValue.trim()) return "Untitled Entry";
+  const trimmedTopic = topicValue.trim();
+  return trimmedTopic.charAt(0).toUpperCase() + trimmedTopic.slice(1);
+};
+
 const LearningEntriesPage: React.FC = () => {
   const [entries, setEntries] = useState<DisplayEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -172,20 +178,29 @@ const LearningEntriesPage: React.FC = () => {
             >
               <div className={styles.entryHeader}>
                 <div className={styles.entryMeta}>
-                  <span className={styles.entryLesson}>
-                    <Link to={`/lesson/${entry.lessonPath}`}>{`Lesson ${
-                      entry.lessonDisplayNumber || entry.lessonPath
-                    }`}</Link>
+                  <span className={styles.entryTopic}>
+                    {entry.topic
+                      ? entry.topic.charAt(0).toUpperCase() +
+                        entry.topic.slice(1)
+                      : "Untitled Entry"}
                   </span>
+                  {entry.assessment && (
+                    <h3
+                      className={`${styles.assessmentBadge} ${getBadgeClass(
+                        // getBadgeClass now for the badge itself
+                        entry.assessment
+                      )} ${styles.entryHeaderAssessmentBadge}`}
+                    >
+                      AI Prediction:{" "}
+                      {entry.assessment.charAt(0).toUpperCase() +
+                        entry.assessment.slice(1)}
+                    </h3>
+                  )}
                   <span className={styles.entryDate}>
                     {formatDate(entry.timestamp)}
                   </span>
                 </div>
-                <h3 className={styles.entryTopic}>
-                  {entry.topic
-                    ? entry.topic.charAt(0).toUpperCase() + entry.topic.slice(1)
-                    : "Untitled Entry"}
-                </h3>
+                <h3 className={styles.entryTopic}></h3>
               </div>
               <div className={styles.entryContent}>
                 {entry.code && (
@@ -202,20 +217,6 @@ const LearningEntriesPage: React.FC = () => {
                     <p>{entry.explanation}</p>
                   </div>
                 )}
-                {entry.assessment && ( // Only show this block if there's an assessment
-                  <div className={styles.entryFeedback}>
-                    <h4>AI Assessment:</h4> {/* Changed title */}
-                    <div
-                      className={`${styles.assessmentBadge} ${getBadgeClass(
-                        entry.assessment
-                      )}`}
-                    >
-                      {entry.assessment}
-                    </div>
-                    {/* The detailed entry.feedback paragraph is now removed */}
-                  </div>
-                )}
-                {/* --- END MODIFIED SECTION --- */}
               </div>
             </div>
           ))}

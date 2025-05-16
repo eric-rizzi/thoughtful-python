@@ -204,6 +204,50 @@
   color: #666;
 }
 
+.entryFeedbackInternalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem; /* Space before the badge */
+}
+
+.entryFeedbackInternalTitle {
+  margin: 0;
+  font-size: 1.1rem; /* Or match reflection page's feedback title size */
+  font-weight: 600;
+  color: #333; /* Or match reflection page's feedback title color */
+}
+
+.entryFeedbackInternalDate {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* Ensure the badge has some margin if it's directly after the header */
+.entryFeedback .assessmentBadge {
+  margin-top: 0.5rem;
+}
+
+/* Update/add assessment level styles for consistency with ReflectionSection */
+/* These ensure getBadgeClass(entry.assessment) works as expected */
+
+.insufficient {
+  background-color: #d4300f; /* Consistent with ReflectionSection.assessmentBadgeInsufficient */
+  color: #ffffff; /* Adjusted for better readability on dark red */
+}
+.developing {
+  background-color: #fff3cd; /* Consistent with ReflectionSection.assessmentBadgeDeveloping */
+  color: #856404;
+}
+.mostly {
+  background-color: #d4edda; /* Consistent with ReflectionSection.assessmentBadgeMostly */
+  color: #1d94ae;
+}
+.achieves {
+  background-color: #cce5ff; /* Consistent with ReflectionSection.assessmentBadgeAchieves */
+  color: #008500;
+}
+
 /* Responsive styling for content grid */
 @media (min-width: 768px) {
   .entryContent {
