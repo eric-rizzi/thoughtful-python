@@ -1,33 +1,27 @@
-// src/pages/LearningEntriesPage.tsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./LearningEntriesPage.module.css";
 import type { ReflectionHistoryEntry, AssessmentLevel } from "../types/data";
 
-// DisplayEntry interface remains mostly the same
 interface DisplayEntry {
   id: string;
   timestamp: number;
-  lessonPath: string; // Store the full path found in the key
-  lessonDisplayNumber?: string; // Optional display number extracted from path
-  sectionId: string; // Store the section ID found in the key
+  lessonPath: string;
+  lessonDisplayNumber?: string;
+  sectionId: string;
   topic: string;
   code: string;
   explanation: string;
   assessment?: AssessmentLevel;
-  feedback?: string;
+  feedback?: string; // Keep in type, but won't render
 }
 
-// Regex to match the keys used by ReflectionSection and capture parts
-// Pattern: starts with 'reflectState_', then captures lessonPath (non-greedy), ends with '_', captures sectionId
-// Note: This assumes lessonPath and sectionId don't contain underscores themselves in a problematic way.
-// If they can, the regex might need refinement (e.g., matching known section ID patterns at the end).
 const REFLECTION_KEY_REGEX = /^reflectState_(.+)_([^_]+)$/;
 
 const LearningEntriesPage: React.FC = () => {
   const [entries, setEntries] = useState<DisplayEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null); // Keep error state
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadEntriesFromLocalStorage = () => {
@@ -37,23 +31,18 @@ const LearningEntriesPage: React.FC = () => {
       console.log("Scanning localStorage for reflection entries...");
 
       try {
-        // Iterate through all keys in localStorage
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
 
           if (key) {
-            // Check if the key matches our reflection state pattern
             const match = key.match(REFLECTION_KEY_REGEX);
 
             if (match) {
-              const lessonPath = match[1]; // Captured lesson path (e.g., "lesson_7", "strings/lesson_11")
-              const sectionId = match[2]; // Captured section ID (e.g., "python-reflection")
-              // console.log(`Found potential reflection key: ${key}, Path: ${lessonPath}, Section: ${sectionId}`);
-
+              const lessonPath = match[1];
+              const sectionId = match[2];
               const savedStateJson = localStorage.getItem(key);
               if (savedStateJson) {
                 try {
-                  // Parse the stored JSON
                   const savedState: { history: ReflectionHistoryEntry[] } =
                     JSON.parse(savedStateJson);
 
@@ -61,22 +50,20 @@ const LearningEntriesPage: React.FC = () => {
                     savedState?.history &&
                     Array.isArray(savedState.history)
                   ) {
-                    // Filter for entries formally submitted
                     savedState.history
                       .filter(
                         (historyEntry) =>
                           historyEntry.submission.submitted === true
                       )
                       .forEach((historyEntry, index) => {
-                        // Attempt to extract a simple lesson number for display
                         const lessonNumMatch =
                           lessonPath.match(/lesson_(\d+)$/);
                         const lessonDisplayNumber = lessonNumMatch
                           ? lessonNumMatch[1]
-                          : lessonPath; // Fallback to full path
+                          : lessonPath;
 
                         allEntries.push({
-                          id: `${lessonPath}-${sectionId}-${index}-${historyEntry.submission.timestamp}`, // Unique key
+                          id: `${lessonPath}-${sectionId}-${index}-${historyEntry.submission.timestamp}`,
                           timestamp: historyEntry.submission.timestamp,
                           lessonPath: lessonPath,
                           lessonDisplayNumber: lessonDisplayNumber,
@@ -94,20 +81,16 @@ const LearningEntriesPage: React.FC = () => {
                     `Error parsing localStorage key ${key}:`,
                     parseError
                   );
-                  // Decide how to handle parse errors: skip key, show error?
-                  // For now, we just log it and continue.
                 }
               }
             }
           }
         }
 
-        // Sort entries by timestamp, newest first
         allEntries.sort((a, b) => b.timestamp - a.timestamp);
         setEntries(allEntries);
         console.log(`Found ${allEntries.length} submitted reflection entries.`);
       } catch (scanError) {
-        // Catch potential errors during the scan itself (less likely)
         console.error("Error scanning localStorage:", scanError);
         setError(
           scanError instanceof Error
@@ -120,9 +103,8 @@ const LearningEntriesPage: React.FC = () => {
     };
 
     loadEntriesFromLocalStorage();
-  }, []); // Run only on mount
+  }, []);
 
-  // ... (Helper functions: formatDate, getTopicName, getAssessmentClass, getBadgeClass remain the same) ...
   const formatDate = (timestamp: number): string => {
     return new Date(timestamp).toLocaleString();
   };
@@ -138,7 +120,6 @@ const LearningEntriesPage: React.FC = () => {
     return styles[assessment] || "";
   };
 
-  // --- Render Logic (remains the same as previous version) ---
   if (isLoading) {
     return (
       <div className={styles.learningEntriesSection}>
@@ -153,6 +134,8 @@ const LearningEntriesPage: React.FC = () => {
     return (
       <div className={styles.learningEntriesSection}>
         <div className={styles.errorFeedback}>
+          {" "}
+          {/* Ensure this class exists or use a generic error style */}
           Error loading entries: {error}
         </div>
       </div>
@@ -164,7 +147,7 @@ const LearningEntriesPage: React.FC = () => {
       <h2>Your Learning Entries</h2>
       <p className={styles.introText}>
         This page collects all your formally submitted reflections and
-        explanations from the lessons.
+        explanations from the lessons, along with the AI's assessment level.
       </p>
 
       {entries.length === 0 ? (
@@ -219,21 +202,20 @@ const LearningEntriesPage: React.FC = () => {
                     <p>{entry.explanation}</p>
                   </div>
                 )}
-                {(entry.feedback || entry.assessment) && (
+                {entry.assessment && ( // Only show this block if there's an assessment
                   <div className={styles.entryFeedback}>
-                    <h4>Feedback:</h4>
-                    {entry.assessment && (
-                      <div
-                        className={`${styles.assessmentBadge} ${getBadgeClass(
-                          entry.assessment
-                        )}`}
-                      >
-                        {entry.assessment}
-                      </div>
-                    )}
-                    {entry.feedback && <p>{entry.feedback}</p>}
+                    <h4>AI Assessment:</h4> {/* Changed title */}
+                    <div
+                      className={`${styles.assessmentBadge} ${getBadgeClass(
+                        entry.assessment
+                      )}`}
+                    >
+                      {entry.assessment}
+                    </div>
+                    {/* The detailed entry.feedback paragraph is now removed */}
                   </div>
                 )}
+                {/* --- END MODIFIED SECTION --- */}
               </div>
             </div>
           ))}
