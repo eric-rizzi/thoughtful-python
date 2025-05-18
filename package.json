@@ -12,6 +12,7 @@
   "dependencies": {
     "@codemirror/lang-python": "^6.2.0",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@react-oauth/google": "^0.12.2",
     "@uiw/react-codemirror": "^4.23.12",
     "react": "^19.0.0",
     "react-devtools": "^6.1.1",

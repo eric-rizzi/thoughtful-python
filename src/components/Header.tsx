@@ -2,7 +2,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom"; // Removed useLocation
 import styles from "./Header.module.css";
-// import { useSettingsStore } from "../stores/settingsStore";
+import { useAuthStore, useAuthActions } from "../stores/authStore";
+import {
+  GoogleLogin,
+  googleLogout,
+  CredentialResponse,
+} from "@react-oauth/google";
 
 const SettingsIcon = () => (
   <svg
@@ -22,15 +27,68 @@ const SettingsIcon = () => (
 );
 
 const Header: React.FC = () => {
-  // const profileImageUrl = useSettingsStore((state) => state.profileImageUrl);
-  const profileImageUrl = null;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
+  const { login, logout } = useAuthActions(); // Get actions
+
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
+
+  const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
+    if (credentialResponse.credential) {
+      const idToken = credentialResponse.credential;
+      // Decode token to get user info (for client-side display only)
+      // IMPORTANT: Real verification of the ID token MUST happen on your backend.
+      try {
+        const base64Url = idToken.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+        );
+        const decodedToken = JSON.parse(jsonPayload);
+
+        const userProfile = {
+          id: decodedToken.sub, // Google User ID
+          name: decodedToken.name,
+          email: decodedToken.email,
+          picture: decodedToken.picture,
+        };
+        login(userProfile, idToken); // Save to Zustand store
+        console.log("Login successful, user profile:", userProfile);
+      } catch (e) {
+        console.error("Error decoding ID token or processing login:", e);
+        // Handle error, maybe show a message to the user
+      }
+    } else {
+      console.error("Login failed: No credential returned.");
+      // Handle error
+    }
+  };
+
+  const handleLoginError = () => {
+    console.error("Google Login Failed");
+    // Optionally, show an error message to the user
+  };
+
+  const handleLogout = () => {
+    googleLogout(); // Clears Google's session
+    logout(); // Clears your app's session in Zustand
+    console.log("User logged out");
+  };
 
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        <h1 className={styles.title}>Thoughtful Python</h1>
+        <NavLink to="/" className={styles.titleLink}>
+          {" "}
+          {/* Wrap title in NavLink */}
+          <h1 className={styles.title}>Thoughtful Python</h1>
+        </NavLink>
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             <li>
@@ -43,9 +101,13 @@ const Header: React.FC = () => {
                 Code Editor
               </NavLink>
             </li>
-            <NavLink to="/progress" className={getNavLinkClass}>
-              Progress
-            </NavLink>
+            <li>
+              {" "}
+              {/* Added <li> wrapper for consistency */}
+              <NavLink to="/progress" className={getNavLinkClass}>
+                Progress
+              </NavLink>
+            </li>
             <li>
               <NavLink to="/learning-entries" className={getNavLinkClass}>
                 Learning Entries
@@ -53,21 +115,42 @@ const Header: React.FC = () => {
             </li>
           </ul>
         </nav>
+
+        {/* Authentication Section */}
+        <div className={styles.authSection}>
+          {isAuthenticated && user ? (
+            <>
+              {user.picture && (
+                <img
+                  src={user.picture}
+                  alt={user.name || "User"}
+                  className={styles.profileImage}
+                />
+              )}
+              <span className={styles.userName}>{user.name || user.email}</span>
+              <button onClick={handleLogout} className={styles.authButton}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginError}
+              useOneTap // Optional: enable One Tap sign-in
+              shape="rectangular" // Other options: "circle", "pill"
+              theme="outline" // Other options: "filled_blue", "filled_black"
+              size="medium" // Other options: "large", "small"
+            />
+          )}
+        </div>
+
         <div className={styles.settingsArea}>
           <NavLink
             to="/configure"
             className={styles.settingsLink}
             title="Configure Settings"
           >
-            {profileImageUrl ? (
-              <img
-                src={profileImageUrl}
-                alt="Profile"
-                className={styles.profileImage}
-              />
-            ) : (
-              <SettingsIcon /> // Or use text: "Settings"
-            )}
+            <SettingsIcon />
           </NavLink>
         </div>
       </div>

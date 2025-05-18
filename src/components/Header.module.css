@@ -97,25 +97,52 @@
   border-right: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Responsive adjustments */
-@media (max-width: 992px) {
-  /* Adjust breakpoint if nav wraps too early */
-  .nav {
-    width: 100%; /* Allow nav to take full width on smaller screens */
-    justify-content: center; /* Center all nav items including lesson nav */
-    margin-top: 0.5rem; /* Add space if title is above */
-  }
-  .lessonNavigation {
-    margin-left: 0; /* Remove margin-left when centered */
-    margin-top: 0.5rem; /* Add space if primary nav is above */
-    width: 100%;
-    justify-content: center;
-  }
+.titleLink {
+  /* Style for the title if you make it a NavLink */
+  text-decoration: none;
+  color: inherit; /* Inherit color from .header or .title */
+}
+
+.authSection {
+  margin-left: auto; /* Pushes this section to the right, before settings */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: 1rem; /* Space from other nav items */
+}
+
+.profileImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.userName {
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.authButton {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.authButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .settingsArea {
-  margin-left: auto; /* Pushes this to the far right after .nav */
-  padding-left: 1rem; /* Space from other nav items or lesson nav */
+  padding-left: 0.5rem; /* Adjust spacing from auth button */
 }
 
 .settingsLink {
@@ -149,6 +176,33 @@
   /* Or it might be fine as .nav is flex-grow 1 */
 }
 
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .nav {
+    order: 1; /* Example: if you want nav first when stacked */
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .authSection {
+    order: 2; /* Example order */
+    width: 100%;
+    justify-content: center;
+    margin-left: 0; /* Reset margin */
+    margin-top: 0.75rem;
+    padding-left: 0;
+  }
+  .settingsArea {
+    order: 3; /* Example order */
+    align-self: center;
+    margin-top: 0.75rem;
+    padding-left: 0;
+  }
+  .headerContent {
+    flex-direction: column; /* Stack all items */
+  }
+}
+
 @media (max-width: 768px) {
   .headerContent {
     flex-direction: column;
@@ -160,10 +214,9 @@
     margin-bottom: 1rem;
   }
   .navList {
-    /* Primary nav items */
     width: 100%;
     justify-content: center;
-    margin-bottom: 0.5rem; /* Space before lesson nav if it wraps below */
+    margin-bottom: 0.5rem;
   }
   .settingsArea {
     margin-top: 0.75rem;

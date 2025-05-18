@@ -28,3 +28,6 @@ export const LESSON_TITLES: { [key: string]: string } = {
 };
 
 export const TOTAL_LESSONS = 8; // Make sure this matches your actual number of lessons
+
+export const GOOGLE_CLIENT_ID =
+  "111269738814-64jdhnq0krkbgdk7f1lubtf7oc1fkr8n.apps.googleusercontent.com";
