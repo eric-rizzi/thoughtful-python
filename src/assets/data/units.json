@@ -45,8 +45,13 @@
     {
       "id": "python_lists_intro",
       "title": "Python Lists (Intro)",
-      "description": "Learn the basics of Python lists.",
-      "lessons": ["03_lists_intro/lesson_1"],
+      "description": "This worksheet is intended to show you how lists work in Python and how they compare with strings.",
+      "lessons": [
+        "03_lists_intro/lesson_1",
+        "03_lists_intro/lesson_2",
+        "03_lists_intro/lesson_3",
+        "03_lists_intro/lesson_4"
+      ],
       "image": "python-logo.svg"
     },
     {

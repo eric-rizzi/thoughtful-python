@@ -19,9 +19,10 @@
         "explanation": "Explain how your example works (3-4 sentences)"
       },
       "rubric": {
+        "not demonstrated": "The explanation shows almost no effort and provides no insights or analysis.",
         "developing": "The explanation is brief or contains misconceptions about how the code works.",
-        "meets": "The explanation correctly describes how the code works and demonstrates understanding of the core concept.",
-        "exceeds": "The explanation shows deep understanding of the concept, including nuances or connections to other concepts."
+        "mostly there": "The explanation correctly describes how the code works and demonstrates understanding of the core concept.",
+        "achieves": "The explanation shows deep understanding of the concept, including nuances or connections to other concepts."
       }
     },
     {

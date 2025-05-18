@@ -12,8 +12,14 @@
       "kind": "Observation",
       "id": "print-function",
       "title": "The Print Function",
-      "content": "The `print()` function displays output to the console. It's one of the most basic and frequently used functions in Python.",
+      "content": "The `print()` function displays output to the console.\n\nIt's one of the most basic and frequently used functions in Python.",
       "examples": [
+        {
+          "id": "hello-world",
+          "title": "Hello World",
+          "description": "Let's start with the classic 'Hello, World!' example:",
+          "code": "print(\"Hello, World!\")\nprint(\"Welcome to Python in the browser!\")"
+        },
         {
           "id": "hello-world",
           "title": "Hello World",
