@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
+// src/components/sections/ReflectionSection.tsx
+import React, { useState, useCallback, useEffect, useMemo } from "react"; // Added useMemo
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+// ... other imports
 import type {
   ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,
@@ -14,12 +15,14 @@ import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import { loadProgress } from "../../lib/localStorageUtils";
 
+// Define initial state outside the component or use useMemo for stable reference
+const STABLE_INITIAL_REFLECTION_STATE: SavedReflectionState = { history: [] };
+
 interface ChatBotConfig {
   progressApiGateway: string;
   chatbotVersion: string;
   chatbotApiKey: string;
 }
-
 const CONFIG_STORAGE_KEY = "chatbot_config";
 
 async function sendFeedbackToChatBot(
@@ -27,6 +30,7 @@ async function sendFeedbackToChatBot(
   chatbotVersion: string,
   chatbotApiKey: string
 ): Promise<ReflectionResponse> {
+  // ... (sendFeedbackToChatBot implementation remains the same)
   if (!chatbotVersion || !chatbotApiKey) {
     throw new Error(
       "ChatBot version or API Key not configured. Please go to the Configuration page."
@@ -94,25 +98,33 @@ async function sendFeedbackToChatBot(
       throw new Error("ChatBot did not return any content.");
     }
 
-    let assessment: AssessmentLevel = "developing";
+    let assessment: AssessmentLevel = "developing"; // Default
     let feedbackMessage = generatedText.trim();
 
-    const lowerCaseText = generatedText.toLowerCase();
-    if (lowerCaseText.includes("assessment: achieves")) {
-      assessment = "achieves";
-    } else if (lowerCaseText.includes("assessment: mostly there")) {
-      assessment = "mostly";
-    } else if (lowerCaseText.includes("assessment: developing")) {
-      assessment = "developing";
-    } else if (lowerCaseText.includes("assessment: insufficient")) {
-      assessment = "insufficient";
+    // More robust parsing for Assessment Level
+    const assessmentMatch = generatedText.match(
+      /Assessment:\s*(achieves|mostly there|mostly|developing|insufficient)/i
+    );
+    if (assessmentMatch && assessmentMatch[1]) {
+      const level = assessmentMatch[1].toLowerCase();
+      if (level === "mostly there") {
+        assessment = "mostly";
+      } else if (
+        ["achieves", "mostly", "developing", "insufficient"].includes(level)
+      ) {
+        assessment = level as AssessmentLevel;
+      }
     }
 
     const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
     if (feedbackMatch && feedbackMatch[1]) {
       feedbackMessage = feedbackMatch[1].trim();
-    } else {
-      feedbackMessage = generatedText.trim();
+    }
+    // If no "Feedback:" prefix, use the whole text after trying to extract assessment
+    else if (assessmentMatch) {
+      feedbackMessage = generatedText
+        .substring(assessmentMatch[0].length)
+        .trim();
     }
 
     return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
@@ -140,6 +152,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const [explanation, setExplanation] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
   const [chatbotVersion, setChatbotVersion] = useState<string>("");
   const [chatbotApiKey, setChatbotApiKey] = useState<string>("");
 
@@ -152,15 +165,17 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   }, []);
 
   const storageKey = `reflectState_${lessonId}_${section.id}`;
-  const initialState: SavedReflectionState = { history: [] };
+  // Use the stable reference for initialState
+  // const initialState = useMemo((): SavedReflectionState => ({ history: [] }), []);
 
   const checkReflectionCompletion = useCallback(
     (currentHookState: SavedReflectionState): boolean => {
+      // ... (rest of the function is fine)
       return currentHookState.history.some(
         (entry) =>
-          entry.submission.submitted === true &&
+          entry.submission.submitted === true && // Check if it was a formal journal submission
           entry.response?.assessment &&
-          ["achieves"].includes(entry.response.assessment)
+          ["achieves", "mostly"].includes(entry.response.assessment) // Consider "mostly" as complete too
       );
     },
     []
@@ -171,12 +186,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       lessonId,
       section.id,
       storageKey,
-      initialState,
+      STABLE_INITIAL_REFLECTION_STATE, // Pass the stable initial state
       checkReflectionCompletion
     );
 
+  // ... rest of your ReflectionSection component is likely fine ...
   const history = reflectionState.history;
-  const hasEverReceivedFeedback = history.length > 0;
+  const hasEverReceivedFeedback = history.some((entry) => entry.response);
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
@@ -186,18 +202,17 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         );
         return;
       }
-
       if (isFormalSubmission && !hasEverReceivedFeedback) {
         alert(
-          "Please click 'Get Feedback' at least once before submitting to the journal."
+          "Please click 'Get Feedback' at least once before submitting this version to the journal."
         );
         return;
       }
-
       if (!chatbotVersion || !chatbotApiKey) {
         setError(
           "ChatBot configuration missing. Please set the ChatBot Version and API Key on the Configuration page."
         );
+        setIsSubmitting(false); // Ensure button is re-enabled
         return;
       }
 
@@ -229,10 +244,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
         if (isFormalSubmission) {
           alert("Your entry has been submitted and saved to your journal!");
-        } else {
-          alert(
-            "Feedback received! Review the feedback below. You can now submit this version (or an edited one) to your journal."
-          );
         }
       } catch (err) {
         console.error("Feedback submission error:", err);
@@ -266,16 +277,21 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const canAttemptInteraction =
     !!topic.trim() && !!code.trim() && !!explanation.trim();
 
-  const handlePaste = (event: React.ClipboardEvent) => {
-    // console.log("Paste event intercepted in textarea");
+  const handlePaste = (
+    event: React.ClipboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     event.preventDefault();
-    alert("Pasting is disabled for this text area.");
+    alert("Pasting is disabled for this field.");
   };
 
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>{section.content}</div>
+      <div className={styles.content}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {section.content}
+        </ReactMarkdown>
+      </div>
 
       <div className={styles.reflectionContainer}>
         <div className={styles.reflectionInputGroup}>
@@ -293,7 +309,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onChange={(e) => setTopic(e.target.value)}
             disabled={isSubmitting}
             placeholder="Enter a descriptive title (e.g., Using Loops for Lists)"
-            onPaste={handlePaste} // Prevent paste
+            onPaste={handlePaste}
           />
         </div>
 
@@ -307,7 +323,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               onChange={setCode}
               readOnly={isSubmitting}
               minHeight="150px"
-              preventPaste={false} // Prevent paste in CodeEditor
+              preventPaste={true}
             />
           </div>
         </div>
@@ -326,13 +342,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onChange={(e) => setExplanation(e.target.value)}
             disabled={isSubmitting}
             placeholder="Explain your code example here (3-4 sentences)..."
-            // onPaste={handlePaste} // Prevent paste in textarea
+            onPaste={handlePaste}
           />
         </div>
 
         <div className={styles.reflectionButtons}>
           <button
-            onClick={() => handleSubmit(false)}
+            onClick={() => handleSubmit(false)} // Get Feedback button
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
@@ -345,17 +361,17 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 ? "Please fill in all fields first"
                 : !chatbotVersion || !chatbotApiKey
                 ? "Please configure ChatBot API Key and Version in settings"
-                : ""
+                : "Get AI feedback on your current entry"
             }
           >
             {isSubmitting ? "Processing..." : "Get Feedback"}
           </button>
           <button
-            onClick={() => handleSubmit(true)}
+            onClick={() => handleSubmit(true)} // Submit to Journal button
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
-              !hasEverReceivedFeedback ||
+              !hasEverReceivedFeedback || // Must get feedback at least once for THIS version
               !chatbotVersion ||
               !chatbotApiKey
             }
@@ -364,7 +380,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               !canAttemptInteraction
                 ? "Please fill in all fields first"
                 : !hasEverReceivedFeedback
-                ? "Please click 'Get Feedback' at least once first"
+                ? "Please click 'Get Feedback' for this version first"
                 : !chatbotVersion || !chatbotApiKey
                 ? "Please configure ChatBot API Key and Version in settings"
                 : "Submit this entry to your journal"
@@ -381,7 +397,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             Submission History {isSectionComplete ? "(Section Complete ✓)" : ""}
           </h4>
           {history.length === 0 ? (
-            <p className={styles.noHistory}>No submissions yet.</p>
+            <p className={styles.noHistory}>
+              No submissions yet. Click "Get Feedback" to start.
+            </p>
           ) : (
             history.map((entry, index) => (
               <div
@@ -393,7 +411,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                           entry.response.assessment.charAt(0).toUpperCase() +
                           entry.response.assessment.slice(1)
                         }`
-                      ]
+                      ] || ""
                     : ""
                 }`}
               >
@@ -445,7 +463,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                           ] || ""
                         }`}
                       >
-                        AI Prediction: {entry.response.assessment}
+                        AI Prediction:{" "}
+                        {entry.response.assessment.charAt(0).toUpperCase() +
+                          entry.response.assessment.slice(1)}
                       </div>
                     )}
                     <p>

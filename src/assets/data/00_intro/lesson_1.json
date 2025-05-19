@@ -15,13 +15,13 @@
       "content": "The `print()` function displays output to the console.\n\nIt's one of the most basic and frequently used functions in Python.",
       "examples": [
         {
-          "id": "hello-world",
+          "id": "hello-world1",
           "title": "Hello World",
           "description": "Let's start with the classic 'Hello, World!' example:",
           "code": "print(\"Hello, World!\")\nprint(\"Welcome to Python in the browser!\")"
         },
         {
-          "id": "hello-world",
+          "id": "hello-world2",
           "title": "Hello World",
           "description": "Let's start with the classic 'Hello, World!' example:",
           "code": "print(\"Hello, World!\")\nprint(\"Welcome to Python in the browser!\")"

@@ -1,5 +1,5 @@
 // src/components/sections/PredictionSection.tsx
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react"; // Added useMemo
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { PredictionSection as PredictionSectionData } from "../../types/data";
@@ -12,8 +12,6 @@ interface PredictionSectionProps {
   lessonId: string;
 }
 
-// Type for the state storing user answers and correctness for each row
-// This will be our TState for useSectionProgress
 interface PredictionsMap {
   [rowIndex: number]: {
     userAnswer: string;
@@ -21,40 +19,41 @@ interface PredictionsMap {
   };
 }
 
+// Define initial state outside the component or use useMemo for stable reference
+const STABLE_INITIAL_PREDICTIONS_MAP: PredictionsMap = {};
+
 const PredictionSection: React.FC<PredictionSectionProps> = ({
   section,
   lessonId,
 }) => {
   const storageKey = `predictState_${lessonId}_${section.id}`;
-  const initialState: PredictionsMap = {};
+  // Use the stable reference for initialState
+  // const initialState = useMemo((): PredictionsMap => ({}), []); // Alternative if it needed to be dynamic but stable
 
-  // Define the completion check function for this section type
   const checkPredictionCompletion = useCallback(
     (currentPredictions: PredictionsMap): boolean => {
+      // ... (rest of the function is fine)
       const allRows = section.predictionTable.rows;
       if (allRows.length === 0) {
-        return false; // Or true, depending on desired behavior for empty sections
+        return false;
       }
       return allRows.every(
         (row, index) => currentPredictions[index]?.isCorrect === true
       );
     },
     [section.predictionTable.rows]
-  ); // Depends on the section data defining the rows
-
-  // Use the new hook
-  const [
-    predictions, // This is the PredictionsMap state
-    setPredictions,
-    isSectionComplete, // This boolean comes from the hook, derived from checkPredictionCompletion
-  ] = useSectionProgress<PredictionsMap>(
-    lessonId,
-    section.id,
-    storageKey,
-    initialState,
-    checkPredictionCompletion
   );
 
+  const [predictions, setPredictions, isSectionComplete] =
+    useSectionProgress<PredictionsMap>(
+      lessonId,
+      section.id,
+      storageKey,
+      STABLE_INITIAL_PREDICTIONS_MAP, // Pass the stable initial state
+      checkPredictionCompletion
+    );
+
+  // ... rest of your PredictionSection component is likely fine
   const handlePredictionChange = useCallback(
     (rowIndex: number, newValue: string) => {
       const expectedValue = section.predictionTable.rows[rowIndex].expected;
@@ -65,47 +64,42 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         isNowCorrect = null;
       } else {
         try {
-          // Convert both to string for a more robust general comparison,
-          // or add type-aware comparison if types are more varied.
-          // For this example, let's assume string comparison after trimming is a decent default.
-          // If expectedValue is numeric, convert user input to number if possible.
           const expectedStr = String(expectedValue).trim();
-          const userValueToCompare = trimmedValue;
+          let userValueToCompare = trimmedValue;
 
           if (typeof expectedValue === "number") {
             const userNum = parseFloat(trimmedValue);
             if (!isNaN(userNum)) {
-              // Using a small tolerance for float comparisons
               isNowCorrect = Math.abs(userNum - expectedValue) < 1e-9;
             } else {
-              isNowCorrect = false; // Cannot parse as number, so incorrect if number expected
+              isNowCorrect = false;
             }
+          } else if (typeof expectedValue === "boolean") {
+            userValueToCompare = trimmedValue.toLowerCase();
+            isNowCorrect =
+              userValueToCompare === String(expectedValue).toLowerCase();
           } else {
-            // For strings or other types, direct string comparison
             isNowCorrect = userValueToCompare === expectedStr;
           }
         } catch {
-          isNowCorrect = false; // Treat comparison errors as incorrect
+          isNowCorrect = false;
         }
       }
 
       setPredictions((prevPredictions) => ({
         ...prevPredictions,
         [rowIndex]: {
-          userAnswer: newValue, // Store the raw new value
+          userAnswer: newValue,
           isCorrect: isNowCorrect,
         },
       }));
-      // The hook's useEffect will automatically run checkPredictionCompletion
-      // with the new state and handle global progress updates.
     },
     [section.predictionTable.rows, setPredictions]
   );
 
-  // Memoize the rendering of the table body to optimize if section data doesn't change frequently
   const tableBody = useMemo(() => {
     return section.predictionTable.rows.map((row, rowIndex) => {
-      const rowState = predictions[rowIndex]; // Get state for the current row
+      const rowState = predictions[rowIndex];
       const rowClass =
         rowState?.isCorrect === true
           ? styles.correctRow
@@ -120,11 +114,9 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
           : styles.predictionInput;
       return (
         <tr key={rowIndex} className={rowClass}>
-          {/* Input Columns */}
           {row.inputs.map((inputVal, inputIndex) => (
             <td key={`input-${inputIndex}`}>{String(inputVal)}</td>
           ))}
-          {/* Prediction Input Column */}
           <td>
             <input
               type="text"
@@ -135,7 +127,6 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
               aria-label={`Prediction for inputs ${row.inputs.join(", ")}`}
             />
           </td>
-          {/* Status Column */}
           <td className={styles.statusCell}>
             {rowState?.isCorrect === true && (
               <span className={styles.statusIndicatorCorrect}></span>
@@ -143,7 +134,6 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
             {rowState?.isCorrect === false && (
               <span className={styles.statusIndicatorIncorrect}></span>
             )}
-            {/* No icon if isCorrect is null (i.e., not yet answered or empty) */}
           </td>
         </tr>
       );
@@ -159,7 +149,6 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         </ReactMarkdown>
       </div>
 
-      {/* Display the function code */}
       {section.functionDisplay && (
         <div className={styles.functionDisplayContainer}>
           <h4 className={styles.functionDisplayTitle}>
@@ -167,7 +156,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
           </h4>
           <CodeEditor
             value={section.functionDisplay.code}
-            onChange={() => {}} // No-op for readOnly
+            onChange={() => {}}
             readOnly={true}
             height="auto"
             minHeight="50px"
@@ -175,7 +164,6 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         </div>
       )}
 
-      {/* Prediction Table */}
       <div className={styles.predictionTableContainer}>
         <table className={styles.predictionTable}>
           <thead>

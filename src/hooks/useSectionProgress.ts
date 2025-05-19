@@ -1,35 +1,33 @@
 // src/hooks/useSectionProgress.ts
-import { useState, useEffect, useCallback, Dispatch } from "react";
-import { loadProgress, saveProgress } from "../lib/localStorageUtils";
-import { useProgressActions } from "../stores/progressStore";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  Dispatch,
+  SetStateAction,
+} from "react";
+import {
+  loadProgress as loadFromStorage,
+  saveProgress as saveToStorage,
+} from "../lib/localStorageUtils";
+import { useProgressActions } from "../stores/progressStore"; // Removed useAllCompletions as it's not used in this hook directly
+import { useAuthStore } from "../stores/authStore";
 
-type SetStateAction<S> = S | ((prevState: S) => S);
+type HookSetStateAction<S> = S | ((prevState: S) => S);
 
-/**
- * A custom hook to manage the state, persistence, and completion tracking for a lesson section.
- *
- * @param lessonId - The ID of the current lesson.
- * @param sectionId - The ID of the current section.
- * @param storageKey - The unique localStorage key for this section's state.
- * @param initialState - The initial state for the section if nothing is found in localStorage.
- * @param checkCompletion - A function that takes the current state and returns true if the section is considered complete.
- * @returns A tuple: [currentState, setStateAndUpdateProgress, isLocallyComplete]
- * - currentState: The current state of the section.
- * - setStateAndUpdateProgress: A function to update the state (also saves to localStorage and checks completion).
- * - isLocallyComplete: A boolean indicating if the current state meets the completion criteria.
- */
 export function useSectionProgress<TState>(
   lessonId: string,
   sectionId: string,
-  storageKey: string,
-  initialState: TState,
+  storageSubKey: string,
+  initialState: TState, // This prop must be a stable reference from the caller
   checkCompletion: (state: TState) => boolean
-): [TState, Dispatch<SetStateAction<TState>>, boolean] {
+): [TState, Dispatch<HookSetStateAction<TState>>, boolean] {
+  const authUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const userIdForEffect = authUser ? authUser.id : null;
+
   const [state, setStateInternal] = useState<TState>(() => {
-    const savedState = loadProgress<TState>(storageKey);
-    // Ensure that if savedState is loaded, it's a complete object.
-    // If initialState has more keys than a partially saved state, merge might be needed,
-    // but for now, we assume savedState is either complete or null.
+    const savedState = loadFromStorage<TState>(storageSubKey);
     return savedState !== null ? savedState : initialState;
   });
 
@@ -38,32 +36,59 @@ export function useSectionProgress<TState>(
     checkCompletion(state)
   );
 
-  // Wrapped setState to also save to localStorage
-  // Renamed to avoid confusion with the returned setState
   const setPersistedState = useCallback(
-    (valueOrFn: SetStateAction<TState>) => {
+    (valueOrFn: HookSetStateAction<TState>) => {
       setStateInternal((prevState) => {
         const newState =
           typeof valueOrFn === "function"
             ? (valueOrFn as (prevState: TState) => TState)(prevState)
             : valueOrFn;
-        saveProgress<TState>(storageKey, newState);
+        saveToStorage<TState>(storageSubKey, newState);
         return newState;
       });
     },
-    [storageKey]
+    [storageSubKey]
   );
 
-  // Effect to check completion status and update global progress store when state changes
   useEffect(() => {
     const isNowComplete = checkCompletion(state);
     setIsLocallyComplete(isNowComplete);
     if (isNowComplete) {
-      // console.log(`useSectionProgress: Section ${sectionId} in lesson ${lessonId} is complete. Marking in global store.`);
       completeSection(lessonId, sectionId);
     }
-    // This effect runs whenever 'state' changes, or if the criteria/identifiers change.
   }, [state, lessonId, sectionId, checkCompletion, completeSection]);
+
+  // CRITICAL: Effect to re-load state when authentication status changes
+  useEffect(() => {
+    // console.log(`Auth state or storageSubKey changed. Reloading state for subKey: ${storageSubKey}, User: ${userIdForEffect}, InitialStateRef: ${initialState}`);
+    const reloadedStateFromStorage = loadFromStorage<TState>(storageSubKey);
+    const newEffectiveState =
+      reloadedStateFromStorage !== null
+        ? reloadedStateFromStorage
+        : initialState;
+
+    setStateInternal((currentState) => {
+      // Only update if the new state is actually different to prevent infinite loops.
+      // This is a common pattern when dealing with states that might be objects/arrays.
+      // For complex states, a deep comparison library might be used,
+      // but for typical JSON-serializable state, stringify is a pragmatic approach.
+      if (
+        typeof newEffectiveState === "object" &&
+        newEffectiveState !== null &&
+        typeof currentState === "object" &&
+        currentState !== null
+      ) {
+        if (
+          JSON.stringify(newEffectiveState) === JSON.stringify(currentState)
+        ) {
+          return currentState; // No actual change in value, return current state reference
+        }
+      } else if (newEffectiveState === currentState) {
+        return currentState; // No change for primitives or identical references
+      }
+      return newEffectiveState; // Update with the new state
+    });
+  }, [isAuthenticated, userIdForEffect, storageSubKey, initialState]); // `initialState` here MUST be a stable reference from the calling component.
 
   return [state, setPersistedState, isLocallyComplete];
 }
