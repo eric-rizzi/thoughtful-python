@@ -1,11 +1,5 @@
 // src/hooks/useSectionProgress.ts
-import {
-  useState,
-  useEffect,
-  useCallback,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { useState, useEffect, useCallback, Dispatch } from "react";
 import {
   loadProgress as loadFromStorage,
   saveProgress as saveToStorage,

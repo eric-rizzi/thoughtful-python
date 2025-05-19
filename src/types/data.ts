@@ -20,8 +20,7 @@ export interface LessonSection {
   id: string;
   title: string;
   content: string;
-  examples?: LessonExample[]; // Primarily for Observation/Testing
-  [key: string]: any; // Allow other properties specific to kinds
+  example?: LessonExample; // Primarily for Observation/Testing
 }
 
 export interface Lesson {
@@ -140,12 +139,6 @@ export interface ReflectionSection extends LessonSection {
     code: string;
     explanation: string;
   };
-  rubric?: {
-    developing: string;
-    meets: string;
-    exceeds: string;
-  };
-  // apiEndpoint?: string; // Consider adding if needed later
 }
 
 // You might add specific interfaces for ObservationSection, TestingSection etc.
@@ -180,7 +173,6 @@ export interface ReflectionSection extends LessonSection {
     code: string; // Label for code input
     explanation: string; // Label for explanation input
   };
-  // apiEndpoint?: string; // Optional: If using a real backend later
 }
 
 // Type for the history entry combining submission and optional response

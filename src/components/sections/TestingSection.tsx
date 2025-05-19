@@ -241,19 +241,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
   section,
   lessonId,
 }) => {
-  if (!section.examples || section.examples.length === 0) {
-    return (
-      <section id={section.id} className={styles.section}>
-        <h2 className={styles.title}>{section.title}</h2>
-        <div className={styles.content}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {section.content}
-          </ReactMarkdown>
-        </div>
-        <p>No examples for this testing section.</p>
-      </section>
-    );
-  }
+  const currentSingleExample = section.example;
 
   return (
     <section id={section.id} className={styles.section}>
@@ -263,14 +251,16 @@ const TestingSection: React.FC<TestingSectionProps> = ({
           {section.content}
         </ReactMarkdown>
       </div>
-      {section.examples.map((example: LessonExample) => (
+      {currentSingleExample ? (
         <TestableExample
-          key={example.id}
-          example={example}
+          key={currentSingleExample.id}
+          example={currentSingleExample}
           lessonId={lessonId}
           sectionId={section.id}
         />
-      ))}
+      ) : (
+        <p>No example for this observation section.</p>
+      )}
     </section>
   );
 };

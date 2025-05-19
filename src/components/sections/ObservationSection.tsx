@@ -53,15 +53,7 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({
   section,
   lessonId,
 }) => {
-  if (!section.examples || section.examples.length === 0) {
-    return (
-      <section id={section.id} className={styles.section}>
-        <h2 className={styles.title}>{section.title}</h2>
-        <div className={styles.content}>{section.content}</div>
-        <p>No examples for this observation section.</p>
-      </section>
-    );
-  }
+  const currentSingleExample = section.example;
 
   return (
     <section id={section.id} className={styles.section}>
@@ -71,14 +63,17 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({
           {section.content}
         </ReactMarkdown>
       </div>
-      {section.examples.map((example: LessonExample) => (
+
+      {currentSingleExample ? (
         <ObservationExample
-          key={example.id}
-          example={example}
+          key={currentSingleExample.id}
+          example={currentSingleExample}
           lessonId={lessonId}
           sectionId={section.id}
         />
-      ))}
+      ) : (
+        <p>No example for this observation section.</p>
+      )}
     </section>
   );
 };
