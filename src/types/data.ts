@@ -7,12 +7,15 @@ export interface LessonExample {
   title: string;
   description: string;
   code: string;
+}
+
+export interface TestingExample extends LessonExample {
   testCases?: Array<{
     input: any;
     expected: any;
     description: string;
   }>;
-  functionToTest?: string;
+  functionToTest: string;
 }
 
 export interface LessonSection {
@@ -20,7 +23,6 @@ export interface LessonSection {
   id: string;
   title: string;
   content: string;
-  example?: LessonExample; // Primarily for Observation/Testing
 }
 
 export interface Lesson {
@@ -61,6 +63,21 @@ export type SectionKind =
   | "Coverage"
   | "PRIMM"
   | "Debugger";
+
+export interface ObservationSection extends LessonSection {
+  kind: "Observation";
+  example: LessonExample;
+}
+
+export interface TestingSection extends LessonSection {
+  kind: "Testing";
+  example: TestingExample;
+}
+
+export interface DebuggerSection extends LessonSection {
+  kind: "Debugger";
+  code: string;
+}
 
 export interface PredictionSection extends LessonSection {
   kind: "Prediction";

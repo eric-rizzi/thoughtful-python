@@ -1,6 +1,7 @@
 import type {
   Lesson,
   MultipleChoiceSection,
+  ObservationSection,
   PRIMMSection,
 } from "../../../types/data";
 
@@ -27,7 +28,7 @@ const lessonData: Lesson = {
         description: "",
         code: 'gl = []\ngl.append("eggs")\ngl.append("apples")\nprint(gl)',
       },
-    },
+    } as ObservationSection,
     {
       kind: "MultipleChoice",
       id: "question-1",

@@ -1,4 +1,8 @@
-import type { Lesson, ReflectionSection } from "../../../types/data";
+import type {
+  DebuggerSection,
+  Lesson,
+  ReflectionSection,
+} from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Lesson 9: Introduction to Debugging",
@@ -17,7 +21,7 @@ const lessonData: Lesson = {
       id: "first-debugging-challenge",
       title: "Debugger Challenge: Sum Calculator",
       code: 'def calculate_sum(limit):\n    total = 0\n    for i in range(1, limit + 1):\n        total += i\n    return total\n\nnum = 5\nresult = calculate_sum(num)\nprint(f"The sum up to {num} is {result}")',
-    },
+    } as DebuggerSection,
     {
       kind: "Reflection",
       id: "debugger-reflection",
@@ -29,14 +33,6 @@ const lessonData: Lesson = {
         code: "Paste the final code from the debugger here.",
         explanation:
           "Explain how observing the variables in the debugger helped you understand the `calculate_sum` function's execution flow, especially within the loop.",
-      },
-      rubric: {
-        developing:
-          "The explanation is brief or contains misconceptions about debugger usage or variable changes.",
-        meets:
-          "The explanation correctly describes how variables changed and how the debugger helped understand the execution flow.",
-        exceeds:
-          "The explanation provides insightful observations about the debugger's utility, potentially referencing the call stack or control flow in detail.",
       },
     } as ReflectionSection,
     {

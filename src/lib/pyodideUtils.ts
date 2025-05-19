@@ -1,18 +1,18 @@
 // src/lib/pyodideUtils.ts
 
 export interface TestCase {
-    input: any;
-    expected: any;
-    description: string;
+  input: any;
+  expected: any;
+  description: string;
 }
 
 export interface TestResult {
-    input: any;
-    expected: any;
-    actual: any;
-    passed: boolean;
-    description: string;
-    error?: boolean; // Flag if execution caused an error
+  input: any;
+  expected: any;
+  actual: any;
+  passed: boolean;
+  description: string;
+  error?: boolean; // Flag if execution caused an error
 }
 
 /**
@@ -29,7 +29,7 @@ export function generateTestCode(
   testCases: TestCase[]
 ): string {
   if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(functionName)) {
-      throw new Error("Invalid function name provided for testing.");
+    throw new Error("Invalid function name provided for testing.");
   }
 
   // 1. Generate standard JSON string directly from the test cases
@@ -39,12 +39,13 @@ export function generateTestCode(
   // Basic escaping for the user code within triple quotes
   // Handles existing triple quotes and backslashes simply. May need refinement for complex code.
   const escapeTripleQuotes = (str: string) =>
-      str.replace(/\\/g, '\\\\').replace(/"""/g, '\\"\\"\\"');
+    str.replace(/\\/g, "\\\\").replace(/"""/g, '\\"\\"\\"');
 
   const safeUserCode = escapeTripleQuotes(userCode);
   // Escape backslashes in the JSON string itself for Python literal
-  const safeTestCasesJson = testCasesJson.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-
+  const safeTestCasesJson = testCasesJson
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"');
 
   // 2. Embed using standard triple quotes (""") in Python, not raw (r""")
   //    And embed the escaped JSON string directly.
@@ -143,35 +144,44 @@ print("===END_PYTHON_TEST_RESULTS_JSON===")
 `;
 }
 
-
 /**
  * Parses the JSON test result block from Python output.
  * @param rawOutput - The complete stdout string from the Python execution.
  * @returns Parsed test results as an array or throws an error if parsing fails or results missing.
  */
-export function parseTestResults(rawOutput: string): TestResult[] | { test_error: string } {
-  const match = rawOutput.match(/===PYTHON_TEST_RESULTS_JSON===\s*([\s\S]*?)\s*===END_PYTHON_TEST_RESULTS_JSON===/);
+export function parseTestResults(
+  rawOutput: string
+): TestResult[] | { test_error: string } {
+  const match = rawOutput.match(
+    /===PYTHON_TEST_RESULTS_JSON===\s*([\s\S]*?)\s*===END_PYTHON_TEST_RESULTS_JSON===/
+  );
 
   if (match && match[1]) {
     try {
       const jsonStr = match[1].trim();
       const parsed = JSON.parse(jsonStr);
       // Check if it's the error object or the array of results
-      if (typeof parsed === 'object' && parsed !== null && parsed.test_error) {
+      if (typeof parsed === "object" && parsed !== null && parsed.test_error) {
         return parsed as { test_error: string };
       }
       if (Array.isArray(parsed)) {
         // TODO: Optionally add validation that items match TestResult structure
         return parsed as TestResult[];
       }
-      throw new Error("Parsed test result is not an array or a recognized error object.");
+      throw new Error(
+        "Parsed test result is not an array or a recognized error object."
+      );
     } catch (e) {
       console.error("Failed to parse test results JSON:", e);
       console.error("Raw JSON string was:", match[1].trim());
-      throw new Error(`Failed to parse test results from Python output. ${e instanceof Error ? e.message : ''}`);
+      throw new Error(
+        `Failed to parse test results from Python output. ${
+          e instanceof Error ? e.message : ""
+        }`
+      );
     }
   }
 
-  console.error('Test result markers not found in output:', rawOutput);
+  console.error("Test result markers not found in output:", rawOutput);
   throw new Error("Could not find test results block in Python output.");
 }

@@ -1,4 +1,4 @@
-import type { Lesson } from "../../../types/data";
+import type { Lesson, ObservationSection } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Data Structures",
@@ -18,7 +18,7 @@ const lessonData: Lesson = {
           "Lists in Python can be created using square brackets. Items are separated by commas.",
         code: "# Creating a list\nnumbers = [1, 2, 3, 4, 5]\nprint(numbers)\n\n# List with mixed data types\nmixed_list = [1, 'hello', 3.14, True]\nprint(mixed_list)\n\n# Empty list\nempty_list = []\nprint(empty_list)\n\n# Creating a list using the list() constructor\nconverted_list = list('Python')\nprint(converted_list)",
       },
-    },
+    } as ObservationSection,
     {
       kind: "Observation",
       id: "python-dictionaries",

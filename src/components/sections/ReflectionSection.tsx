@@ -1,7 +1,7 @@
 // src/components/sections/ReflectionSection.tsx
-import React, { useState, useCallback, useEffect, useMemo } from "react"; // Added useMemo
+import React, { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-// ... other imports
+import remarkGfm from "remark-gfm";
 import type {
   ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,

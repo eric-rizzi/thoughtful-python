@@ -1,4 +1,8 @@
-import type { Lesson, PRIMMSection } from "../../../types/data";
+import type {
+  Lesson,
+  ObservationSection,
+  PRIMMSection,
+} from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Python Lists (Basic)",
@@ -47,7 +51,7 @@ const lessonData: Lesson = {
           "Comments are used to explain code and make your programs more readable:",
         code: '# This is a comment\nprint("This code is executed") # This is an inline comment\n\n# The following line is not executed\n# print("This won\'t be printed")',
       },
-    },
+    } as ObservationSection,
     {
       kind: "Observation",
       id: "basic-math",

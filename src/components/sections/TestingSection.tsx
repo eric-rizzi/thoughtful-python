@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { LessonSection, LessonExample } from "../../types/data";
+import type { LessonSection, TestingExample } from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
 import {
@@ -20,7 +20,7 @@ interface TestingSectionProps {
 }
 
 const TestableExample: React.FC<{
-  example: LessonExample;
+  example: TestingExample;
   lessonId: string;
   sectionId: string;
 }> = React.memo(({ example, lessonId, sectionId }) => {
@@ -47,7 +47,7 @@ const TestableExample: React.FC<{
   const [testRunHasBeenAttempted, setTestRunHasBeenAttempted] =
     useState<boolean>(false);
 
-  const functionNameToTest = example.functionToTest || "celsius_to_fahrenheit";
+  const functionNameToTest = example.functionToTest;
 
   const handleTestSolution = useCallback(async () => {
     if (isPyodideDirectLoading || pyodideDirectError) {

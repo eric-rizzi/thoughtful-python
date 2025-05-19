@@ -1,6 +1,7 @@
 import type {
   Lesson,
   MultipleChoiceSection,
+  ObservationSection,
   ReflectionSection,
 } from "../../../types/data";
 
@@ -69,7 +70,7 @@ const lessonData: Lesson = {
           "Develop your Mad Libs code here. Test it by running it yourself!",
         code: '# Mad Libs! Get creative!\n\n# Example: Get some inputs\n# adjective = input("Enter an adjective: ")\n# noun_plural = input("Enter a plural noun: ")\n# number_str = input("Enter a number: ")\n# verb_ing = input("Enter a verb ending in -ing: ")\n\n# Remember to convert the number if you do math!\n# number_int = int(number_str)\n# calculated_number = number_int + 5 \n\n# Start writing your story using these (and more) variables!\n# print(f"Today I went to the zoo and saw many {adjective} {noun_plural}.")\n# print(f"One of them was {verb_ing} near a tree.")\n# print(f"It said, \\"I\'ve been here for {calculated_number} years!\\"") # Example of \' and "\n# print("What a day!")\n\nprint("Start your Mad Libs program here!")\n',
       },
-    },
+    } as ObservationSection,
     {
       kind: "Information",
       id: "madlibs-playtest-self",

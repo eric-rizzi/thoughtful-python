@@ -2,6 +2,7 @@ import type {
   Lesson,
   MultipleChoiceSection,
   PRIMMSection,
+  TestingSection,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -88,9 +89,9 @@ const lessonData: Lesson = {
             description: "Test with age 0",
           },
         ],
-        functionToTest: null,
+        functionToTest: "__main__",
       },
-    },
+    } as TestingSection,
   ],
 };
 

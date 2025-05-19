@@ -1,6 +1,7 @@
 import type {
   Lesson,
   MultipleChoiceSection,
+  ObservationSection,
   ReflectionSection,
 } from "../../../types/data";
 
@@ -55,7 +56,7 @@ const lessonData: Lesson = {
         description: "Develop and test your game here.",
         code: '# 2 Questions Game\n\nprint("Think of one of these four words: [Word1, Word2, Word3, Word4]") # Tell the user the options\n\n# --- Question 1 --- \nanswer1 = input("Question 1 text here? (y/n) ").lower()\n\nif answer1 == \'y\':\n  # --- Question 2 (Yes Path) ---\n  answer2_yes = input("Question 2 (Yes path) text here? (y/n) ").lower()\n  if answer2_yes == \'y\':\n    guess = "Word1" # Word for YY path\n  else:\n    guess = "Word2" # Word for YN path\nelse: # answer1 was \'n\'\n  # --- Question 2 (No Path) ---\n  answer2_no = input("Question 2 (No path) text here? (y/n) ").lower()\n  if answer2_no == \'y\':\n    guess = "Word3" # Word for NY path\n  else:\n    guess = "Word4" # Word for NN path\n\n# Final guess - ensure format It\'s \'WORD\'!\nprint(f"It\'s \'{guess}\'!") \n',
       },
-    },
+    } as ObservationSection,
     {
       kind: "Reflection",
       id: "cond4-reflection-on-creation",

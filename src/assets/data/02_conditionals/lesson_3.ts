@@ -2,6 +2,7 @@ import type {
   Lesson,
   MultipleChoiceSection,
   PRIMMSection,
+  TestingSection,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -113,9 +114,9 @@ const lessonData: Lesson = {
             description: "Input 'blue'",
           },
         ],
-        functionToTest: null,
+        functionToTest: "__main__",
       },
-    },
+    } as TestingSection,
     {
       kind: "Information",
       id: "cond3-elif-intro",

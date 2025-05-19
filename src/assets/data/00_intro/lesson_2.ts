@@ -1,4 +1,8 @@
-import type { Lesson } from "../../../types/data";
+import type {
+  Lesson,
+  ObservationSection,
+  TestingSection,
+} from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Functions and Temperature Conversion",
@@ -24,7 +28,7 @@ const lessonData: Lesson = {
         description: "Here's a simple function that greets a person by name.",
         code: 'def greet(name):\n    """This function greets the person passed in as a parameter"""\n    return f"Hello, {name}!"\n\n# Call the function\nmessage = greet("Alice")\nprint(message)\n\n# Call it again with a different name\nprint(greet("Bob"))',
       },
-    },
+    } as ObservationSection,
     {
       kind: "Observation",
       id: "temperature",
@@ -37,9 +41,8 @@ const lessonData: Lesson = {
         description:
           "This function converts a temperature from Celsius to Fahrenheit using the formula F = (C × 9/5) + 32.",
         code: 'def celsius_to_fahrenheit(celsius):\n    """Convert Celsius temperature to Fahrenheit"""\n    fahrenheit = (celsius * 9/5) + 32\n    return fahrenheit\n\n# Test the function with some values\nfreezing_c = 0\nfreezing_f = celsius_to_fahrenheit(freezing_c)\nprint(f"{freezing_c}°C is {freezing_f}°F")\n\nbody_temp_c = 37\nbody_temp_f = celsius_to_fahrenheit(body_temp_c)\nprint(f"{body_temp_c}°C is {body_temp_f}°F")\n\nboiling_c = 100\nboiling_f = celsius_to_fahrenheit(boiling_c)\nprint(f"{boiling_c}°C is {boiling_f}°F")',
-        functionToTest: "celsius_to_fahrenheit",
       },
-    },
+    } as ObservationSection,
     {
       kind: "Testing",
       id: "challenge",
@@ -84,8 +87,9 @@ const lessonData: Lesson = {
           },
           { input: 42, expected: 107.6, description: "Hot day (42°C)" },
         ],
+        functionToTest: "celsius_to_fahrenheit",
       },
-    },
+    } as TestingSection,
     {
       kind: "Information",
       id: "testing",
