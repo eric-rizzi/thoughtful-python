@@ -1,38 +1,46 @@
 // src/lib/localStorageUtils.ts
-import { useAuthStore } from "../stores/authStore"; // To get current user ID if logged in
-
-const ANONYMOUS_USER_ID_PLACEHOLDER = "anonymous";
+export const ANONYMOUS_USER_ID_PLACEHOLDER = "anonymous";
 
 /**
  * Constructs the full localStorage key.
- * It prepends with the current user's ID if authenticated,
- * otherwise uses an anonymous placeholder.
+ * It prepends with the provided user ID or an anonymous placeholder.
+ * @param userId The user's ID, or null/undefined for anonymous.
  * @param subKey The specific key for the piece of data (e.g., "quizState_lesson1_q1").
  * @returns The full key to be used for localStorage.
  */
-function getFullStorageKey(subKey: string): string {
-  const auth = useAuthStore.getState(); // Get current auth state
-  const userId = auth.isAuthenticated && auth.user ? auth.user.id : null;
+function getFullStorageKey(
+  userId: string | null | undefined,
+  subKey: string
+): string {
   const prefix = userId ? `${userId}_` : `${ANONYMOUS_USER_ID_PLACEHOLDER}_`;
   return `${prefix}${subKey}`;
 }
 
-export function saveProgress<T>(subKey: string, data: T): void {
+export function saveProgress<T>(
+  userId: string | null | undefined,
+  subKey: string,
+  data: T
+): void {
   try {
-    const fullKey = getFullStorageKey(subKey);
+    const fullKey = getFullStorageKey(userId, subKey);
     // console.log(`Saving to localStorage with key: ${fullKey}`);
     localStorage.setItem(fullKey, JSON.stringify(data));
   } catch (error) {
     console.error(
-      `Error saving progress to localStorage for subKey "${subKey}":`,
+      `Error saving progress to localStorage for subKey "${subKey}" (User: ${
+        userId || "anonymous"
+      }):`,
       error
     );
   }
 }
 
-export function loadProgress<T>(subKey: string): T | null {
+export function loadProgress<T>(
+  userId: string | null | undefined,
+  subKey: string
+): T | null {
   try {
-    const fullKey = getFullStorageKey(subKey);
+    const fullKey = getFullStorageKey(userId, subKey);
     // console.log(`Loading from localStorage with key: ${fullKey}`);
     const savedData = localStorage.getItem(fullKey);
     if (savedData === null) {
@@ -41,18 +49,17 @@ export function loadProgress<T>(subKey: string): T | null {
     return JSON.parse(savedData) as T;
   } catch (error) {
     console.error(
-      `Error loading progress from localStorage for subKey "${subKey}":`,
+      `Error loading progress from localStorage for subKey "${subKey}" (User: ${
+        userId || "anonymous"
+      }):`,
       error
     );
-    // Optional: Consider removing corrupted data if a parse error occurs
-    // localStorage.removeItem(fullKey);
     return null;
   }
 }
 
 /**
  * Clears all data stored under the anonymous prefix.
- * This is the primary function used in Strategy 3 when a user logs in.
  */
 export function clearAllAnonymousData(): void {
   const keysToRemove: string[] = [];
@@ -65,31 +72,12 @@ export function clearAllAnonymousData(): void {
   if (keysToRemove.length > 0) {
     console.log("Clearing anonymous data. Keys to remove:", keysToRemove);
     keysToRemove.forEach((key) => localStorage.removeItem(key));
-  } else {
-    // console.log("No anonymous data to clear.");
   }
-}
-
-// --- Functions primarily for future Strategy 1 (Prompt to Merge) ---
-
-/**
- * Checks if any data exists under the anonymous prefix.
- * Useful for determining if a merge prompt is needed in Strategy 1.
- */
-export function hasAnonymousData(): boolean {
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && key.startsWith(`${ANONYMOUS_USER_ID_PLACEHOLDER}_`)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 /**
  * Migrates all anonymous data to a specified user ID.
  * Copies data to new user-specific keys and then removes the old anonymous keys.
- * This will be used if you implement Strategy 1.
  */
 export function migrateAnonymousDataToUser(newUserId: string): {
   success: boolean;
@@ -121,19 +109,18 @@ export function migrateAnonymousDataToUser(newUserId: string): {
   }
 
   if (anonymousKeysToMigrate.length === 0) {
-    // console.log("No anonymous data to migrate for user:", newUserId);
-    return { success: true, migratedSubKeys: [] }; // Nothing to migrate
+    return { success: true, migratedSubKeys: [] };
   }
 
   const migratedSubKeys: string[] = [];
   try {
-    // console.log("Migrating anonymous data for user:", newUserId, "Keys:", anonymousKeysToMigrate.map(k => k.originalSubKey));
     anonymousKeysToMigrate.forEach(({ oldFullKey, originalSubKey }) => {
-      const data = localStorage.getItem(oldFullKey); // Data is already stringified JSON
+      const data = localStorage.getItem(oldFullKey);
       if (data !== null) {
-        const newUserFullKey = `${newUserId}_${originalSubKey}`;
-        localStorage.setItem(newUserFullKey, data); // Copy the stringified JSON
-        localStorage.removeItem(oldFullKey); // Remove the old anonymous key
+        // Construct new key using the modified getFullStorageKey logic implicitly
+        const newUserFullKey = getFullStorageKey(newUserId, originalSubKey);
+        localStorage.setItem(newUserFullKey, data);
+        localStorage.removeItem(oldFullKey);
         migratedSubKeys.push(originalSubKey);
       }
     });
@@ -146,4 +133,17 @@ export function migrateAnonymousDataToUser(newUserId: string): {
       migratedSubKeys,
     };
   }
+}
+
+/**
+ * Checks if any data exists under the anonymous prefix.
+ */
+export function hasAnonymousData(): boolean {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(`${ANONYMOUS_USER_ID_PLACEHOLDER}_`)) {
+      return true;
+    }
+  }
+  return false;
 }

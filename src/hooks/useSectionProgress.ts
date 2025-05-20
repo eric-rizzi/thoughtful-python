@@ -1,28 +1,43 @@
 // src/hooks/useSectionProgress.ts
-import { useState, useEffect, useCallback, Dispatch } from "react";
+import { useState, useEffect, useCallback, useMemo, Dispatch } from "react";
 import {
   loadProgress as loadFromStorage,
   saveProgress as saveToStorage,
+  ANONYMOUS_USER_ID_PLACEHOLDER,
 } from "../lib/localStorageUtils";
-import { useProgressActions } from "../stores/progressStore"; // Removed useAllCompletions as it's not used in this hook directly
+import { useProgressActions } from "../stores/progressStore";
 import { useAuthStore } from "../stores/authStore";
 
 type HookSetStateAction<S> = S | ((prevState: S) => S);
 
-export function useSectionProgress<TState>(
+export function useSectionProgress<TState extends object>(
   lessonId: string,
   sectionId: string,
   storageSubKey: string,
-  initialState: TState, // This prop must be a stable reference from the caller
+  initialState: TState,
   checkCompletion: (state: TState) => boolean
 ): [TState, Dispatch<HookSetStateAction<TState>>, boolean] {
   const authUser = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const userIdForEffect = authUser ? authUser.id : null;
+
+  // Determine the userId to be used for storage keys.
+  // This value will react to auth changes due to useAuthStore.
+  const currentStorageUserId = useMemo(() => {
+    return isAuthenticated && authUser
+      ? authUser.id
+      : ANONYMOUS_USER_ID_PLACEHOLDER;
+  }, [isAuthenticated, authUser]);
 
   const [state, setStateInternal] = useState<TState>(() => {
-    const savedState = loadFromStorage<TState>(storageSubKey);
-    return savedState !== null ? savedState : initialState;
+    // Pass currentStorageUserId at initialization time
+    const savedFromStorage = loadFromStorage<Partial<TState>>(
+      currentStorageUserId,
+      storageSubKey
+    );
+    if (savedFromStorage !== null && typeof savedFromStorage === "object") {
+      return { ...initialState, ...savedFromStorage } as TState;
+    }
+    return initialState;
   });
 
   const { completeSection } = useProgressActions();
@@ -32,16 +47,25 @@ export function useSectionProgress<TState>(
 
   const setPersistedState = useCallback(
     (valueOrFn: HookSetStateAction<TState>) => {
+      // currentStorageUserId from the hook's scope will be up-to-date here
+      // due to the nature of useCallback dependencies (though not explicitly needed for currentStorageUserId here
+      // as it's derived from store values that would trigger re-render of consumer, re-creating this callback if needed)
+      // However, to be absolutely sure it uses the latest, it could be a dependency, or obtained fresh if worried.
+      // For simplicity, assuming the component re-renders if currentStorageUserId changes, making this callback fresh.
+      // A safer approach is to pass currentStorageUserId to saveToStorage if it could change between renders
+      // without this callback being recreated.
+      // Let's ensure it uses the up-to-date ID by including currentStorageUserId in dependencies.
+
       setStateInternal((prevState) => {
         const newState =
           typeof valueOrFn === "function"
             ? (valueOrFn as (prevState: TState) => TState)(prevState)
             : valueOrFn;
-        saveToStorage<TState>(storageSubKey, newState);
+        saveToStorage<TState>(currentStorageUserId, storageSubKey, newState);
         return newState;
       });
     },
-    [storageSubKey]
+    [storageSubKey, currentStorageUserId] // Added currentStorageUserId as a dependency
   );
 
   useEffect(() => {
@@ -52,20 +76,28 @@ export function useSectionProgress<TState>(
     }
   }, [state, lessonId, sectionId, checkCompletion, completeSection]);
 
-  // CRITICAL: Effect to re-load state when authentication status changes
+  // Effect to re-load state when authentication status or relevant storage key parts change
   useEffect(() => {
-    // console.log(`Auth state or storageSubKey changed. Reloading state for subKey: ${storageSubKey}, User: ${userIdForEffect}, InitialStateRef: ${initialState}`);
-    const reloadedStateFromStorage = loadFromStorage<TState>(storageSubKey);
-    const newEffectiveState =
-      reloadedStateFromStorage !== null
-        ? reloadedStateFromStorage
-        : initialState;
+    // currentStorageUserId will be up-to-date here due to being derived from store values
+    const reloadedStateFromStorage = loadFromStorage<Partial<TState>>(
+      currentStorageUserId,
+      storageSubKey
+    );
+    let newEffectiveState: TState;
+
+    if (
+      reloadedStateFromStorage !== null &&
+      typeof reloadedStateFromStorage === "object"
+    ) {
+      newEffectiveState = {
+        ...initialState,
+        ...reloadedStateFromStorage,
+      } as TState;
+    } else {
+      newEffectiveState = initialState;
+    }
 
     setStateInternal((currentState) => {
-      // Only update if the new state is actually different to prevent infinite loops.
-      // This is a common pattern when dealing with states that might be objects/arrays.
-      // For complex states, a deep comparison library might be used,
-      // but for typical JSON-serializable state, stringify is a pragmatic approach.
       if (
         typeof newEffectiveState === "object" &&
         newEffectiveState !== null &&
@@ -75,14 +107,14 @@ export function useSectionProgress<TState>(
         if (
           JSON.stringify(newEffectiveState) === JSON.stringify(currentState)
         ) {
-          return currentState; // No actual change in value, return current state reference
+          return currentState;
         }
       } else if (newEffectiveState === currentState) {
-        return currentState; // No change for primitives or identical references
+        return currentState;
       }
-      return newEffectiveState; // Update with the new state
+      return newEffectiveState;
     });
-  }, [isAuthenticated, userIdForEffect, storageSubKey, initialState]); // `initialState` here MUST be a stable reference from the calling component.
+  }, [currentStorageUserId, storageSubKey, initialState]); // Use currentStorageUserId instead of isAuthenticated/userIdForEffect
 
   return [state, setPersistedState, isLocallyComplete];
 }
