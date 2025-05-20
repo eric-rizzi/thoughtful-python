@@ -4,7 +4,7 @@ import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import { useAuthStore } from "./authStore";
 import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 
-const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2";
+export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2";
 
 const EMPTY_COMPLETED_SECTIONS: string[] = [];
 const PENALTY_DURATION_MS = 15 * 1000;
