@@ -1,50 +1,73 @@
 // src/pages/ConfigurationPage.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react"; // Added useMemo
 import styles from "./ConfigurationPage.module.css";
-import { saveProgress, loadProgress } from "../lib/localStorageUtils";
+import {
+  saveProgress,
+  loadProgress,
+  ANONYMOUS_USER_ID_PLACEHOLDER,
+} from "../lib/localStorageUtils";
+import { useAuthStore } from "../stores/authStore"; // Import useAuthStore
 
 interface ChatBotConfig {
-  progressApiGateway: string; // Existing field
-  chatbotVersion: string; // New field for ChatBot version
-  chatbotApiKey: string; // New field for ChatBot API Key
+  progressApiGateway: string;
+  chatbotVersion: string;
+  chatbotApiKey: string;
 }
 
-const CONFIG_STORAGE_KEY = "chatbot_config"; // Changed to be more specific if needed, but can reuse
+const CONFIG_STORAGE_KEY = "chatbot_config";
 
 const ConfigurationPage: React.FC = () => {
-  const [progressApiGateway, setProgressApiGateway] = useState<string>(""); // Existing state
-  const [chatbotVersion, setChatbotVersion] = useState<string>(""); // New state for ChatBot version
-  const [chatbotApiKey, setChatbotApiKey] = useState<string>(""); // New state for ChatBot API Key
+  const authUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  const currentStorageUserId = useMemo(() => {
+    return isAuthenticated && authUser
+      ? authUser.id
+      : ANONYMOUS_USER_ID_PLACEHOLDER;
+  }, [isAuthenticated, authUser]);
+
+  const [progressApiGateway, setProgressApiGateway] = useState<string>("");
+  const [chatbotVersion, setChatbotVersion] = useState<string>("");
+  const [chatbotApiKey, setChatbotApiKey] = useState<string>("");
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   useEffect(() => {
-    const savedConfig = loadProgress<ChatBotConfig>(CONFIG_STORAGE_KEY);
+    // Load config auth-aware
+    const savedConfig = loadProgress<ChatBotConfig>(
+      currentStorageUserId,
+      CONFIG_STORAGE_KEY
+    );
     if (savedConfig) {
-      setProgressApiGateway(savedConfig.progressApiGateway || ""); // Ensure it's not undefined
-      setChatbotVersion(savedConfig.chatbotVersion || ""); // Load new field
-      setChatbotApiKey(savedConfig.chatbotApiKey || ""); // Load new field
+      setProgressApiGateway(savedConfig.progressApiGateway || "");
+      setChatbotVersion(savedConfig.chatbotVersion || "");
+      setChatbotApiKey(savedConfig.chatbotApiKey || "");
+    } else {
+      // Reset to defaults if no saved config for this user/anonymous
+      setProgressApiGateway("");
+      setChatbotVersion("");
+      setChatbotApiKey("");
     }
-  }, []);
+  }, [currentStorageUserId]); // Reload if user changes
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     const newConfig: ChatBotConfig = {
       progressApiGateway,
-      chatbotVersion, // Save new field
-      chatbotApiKey, // Save new field
+      chatbotVersion,
+      chatbotApiKey,
     };
-    saveProgress(CONFIG_STORAGE_KEY, newConfig);
+    // Save config auth-aware
+    saveProgress(currentStorageUserId, CONFIG_STORAGE_KEY, newConfig);
     setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000); // Hide saved message after 3 seconds
+    setTimeout(() => setIsSaved(false), 3000);
   };
 
   return (
     <div className={styles.configPageContainer}>
-      {" "}
-      {/* Use the new class for the container */}
       <h2>Configuration Settings</h2>
       <p className={styles.introText}>
-        Adjust the application's settings here.
+        Adjust the application's settings here. Settings are saved per-user or
+        for anonymous sessions.
       </p>
       <form onSubmit={handleSave} className={styles.configForm}>
         <div className={styles.configSection}>
@@ -64,10 +87,11 @@ const ConfigurationPage: React.FC = () => {
           </div>
         </div>
 
-        {/* New ChatBot Configuration Section */}
         <div className={styles.configSection}>
           <h3>ChatBot Configuration</h3>
-          <p className={styles.sectionDescription}>
+          <p /*className={styles.sectionDescription}*/>
+            {" "}
+            {/* Assuming this class may not exist or is not critical */}
             Configure the ChatBot version and API Key for assessing reflection
             sections and learning entries.
           </p>
@@ -78,11 +102,13 @@ const ConfigurationPage: React.FC = () => {
               id="chatbot-version"
               value={chatbotVersion}
               onChange={(e) => setChatbotVersion(e.target.value)}
-              placeholder="e.g., v1.0 or gpt-4o"
-              required
+              placeholder="e.g., models/gemini-1.5-flash or similar"
+              // Removed 'required' to allow saving even if empty,
+              // the reflection section can handle missing config.
             />
             <small>
-              Specify the version or model identifier of the ChatBot.
+              Specify the version or model identifier of the ChatBot (e.g., from
+              Google AI Studio).
             </small>
           </div>
           <div className={styles.formGroup}>
@@ -93,7 +119,7 @@ const ConfigurationPage: React.FC = () => {
               value={chatbotApiKey}
               onChange={(e) => setChatbotApiKey(e.target.value)}
               placeholder="Enter your API Key"
-              required
+              // Removed 'required'
             />
             <small>
               Your API key for authenticating with the ChatBot service.

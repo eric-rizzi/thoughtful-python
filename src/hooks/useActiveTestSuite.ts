@@ -2,7 +2,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { usePyodide } from "../contexts/PyodideContext";
-import { loadProgress, saveProgress } from "../lib/localStorageUtils";
+import { loadProgress, saveProgress } from "../lib/localStorageUtils"; // ANONYMOUS_USER_ID_PLACEHOLDER is used internally by localStorageUtils if userId is null/undefined
 
 const ACTIVE_TESTS_STORAGE_KEY = "codeEditorPage_activeTests_v3";
 
@@ -10,15 +10,14 @@ export type TestStatus = "pending" | "passed" | "failed" | "error";
 
 export interface ActiveTest {
   id: string;
-  name: string; // Display name, ideally the 'test_...' function name
-  code: string; // The actual Python code for this test
+  name: string;
+  code: string;
   status: TestStatus;
   output?: string;
 }
 
-// For parsing Pyodide results from the test runner
 export interface PytestSimResult {
-  name: string; // Name of the test function executed (e.g., test_addition)
+  name: string;
   status: "PASSED" | "FAILED" | "ERROR";
   output: string;
 }
@@ -28,9 +27,16 @@ const extractTestFunctionName = (code: string): string | null => {
   return match && match[1] ? match[1] : null;
 };
 
-export const useActiveTestSuite = () => {
+// Add currentStorageUserId as a parameter to the hook
+export const useActiveTestSuite = (
+  currentStorageUserId: string | null | undefined
+) => {
   const [activeTests, setActiveTests] = useState<ActiveTest[]>(
-    () => loadProgress<ActiveTest[]>(ACTIVE_TESTS_STORAGE_KEY) || []
+    () =>
+      loadProgress<ActiveTest[]>(
+        currentStorageUserId,
+        ACTIVE_TESTS_STORAGE_KEY
+      ) || []
   );
   const [isRunningTests, setIsRunningTests] = useState<boolean>(false);
   const {
@@ -39,10 +45,20 @@ export const useActiveTestSuite = () => {
     error: pyodideError,
   } = usePyodide();
 
-  // Persist activeTests to localStorage
+  // Persist activeTests to localStorage, now auth-aware
   useEffect(() => {
-    saveProgress(ACTIVE_TESTS_STORAGE_KEY, activeTests);
-  }, [activeTests]);
+    saveProgress(currentStorageUserId, ACTIVE_TESTS_STORAGE_KEY, activeTests);
+  }, [activeTests, currentStorageUserId]);
+
+  // Reload tests if the user/storage key changes
+  useEffect(() => {
+    setActiveTests(
+      loadProgress<ActiveTest[]>(
+        currentStorageUserId,
+        ACTIVE_TESTS_STORAGE_KEY
+      ) || []
+    );
+  }, [currentStorageUserId]);
 
   const addTestToSuite = useCallback(
     (testCode: string, userGivenName?: string) => {
@@ -54,7 +70,7 @@ export const useActiveTestSuite = () => {
 
       const newTest: ActiveTest = {
         id: uuidv4(),
-        name: displayName, // This name should match the `def test_...` for result mapping
+        name: displayName,
         code: testCode,
         status: "pending",
         output: "",
@@ -83,16 +99,13 @@ export const useActiveTestSuite = () => {
       }
 
       setIsRunningTests(true);
-      // Set all tests to 'pending' and clear previous specific outputs
-      let initialTestStates = activeTests.map((test) => ({
+      const initialTestStates = activeTests.map((test) => ({
         ...test,
         status: "pending" as TestStatus,
         output: "Queued...",
       }));
       setActiveTests(initialTestStates);
 
-      // Attempt to run mainCode once to catch syntax errors there first.
-      // Note: Definitions from this run will be available to subsequent runPythonCode calls in the same Pyodide session.
       try {
         const mainCodeResult = await runPythonCode(mainCode);
         if (mainCodeResult.error) {
@@ -113,25 +126,21 @@ export const useActiveTestSuite = () => {
       const updatedResults: ActiveTest[] = [];
 
       for (const currentTest of initialTestStates) {
-        // Iterate using the initial pending states
         setActiveTests((prev) =>
           prev.map((t) =>
             t.id === currentTest.id ? { ...t, output: "Running..." } : t
           )
         );
 
-        // The name used here MUST match the function name `def test_...():` inside currentTest.code
         const testFunctionToCall =
           extractTestFunctionName(currentTest.code) || currentTest.name;
 
-        // Script to define the current test's code AND run its specific test_ function
-        // mainCode has already been executed, so its definitions should be in the global scope
         const singleTestExecutionScript = `
+# ... (Python script for single test execution remains the same)
 import traceback
 import json
 
 # ==== Current Test Snippet Start ====
-# (This defines the test function in the global scope if not already defined by mainCode execution)
 ${currentTest.code}
 # ==== Current Test Snippet End ====
 
@@ -144,7 +153,6 @@ result_data = {"name": "${testFunctionToCall.replace(
           '\\"'
         )}' not found or not callable after executing its snippet."}
 
-# Check if the specific test function is now defined and callable
 if "${testFunctionToCall.replace(
           /"/g,
           '\\"'
@@ -153,10 +161,7 @@ if "${testFunctionToCall.replace(
           '\\"'
         )}"]):
     try:
-        globals()["${testFunctionToCall.replace(
-          /"/g,
-          '\\"'
-        )}"]() # Call the specific test function
+        globals()["${testFunctionToCall.replace(/"/g, '\\"')}"]()
         result_data["status"] = "PASSED"
         result_data["output"] = ""
     except AssertionError as e_assert:
@@ -166,8 +171,6 @@ if "${testFunctionToCall.replace(
         result_data["status"] = "ERROR"
         result_data["output"] = traceback.format_exc()
 else:
-    # This could also mean a syntax error in currentTest.code prevented its definition
-    # Check if there's an implicit error from Pyodide (less direct way)
     pass
 
 print("===PYTEST_SINGLE_RESULT_JSON===")
@@ -186,7 +189,6 @@ print("===END_PYTEST_SINGLE_RESULT_JSON===")
           } = await runPythonCode(singleTestExecutionScript);
 
           if (pyodideErrorForThisTest) {
-            // This error is from Pyodide failing to run `singleTestExecutionScript` (e.g. syntax error in test code itself)
             testStatus = "error";
             testOutputString = `Error executing test snippet: ${pyodideErrorForThisTest}`;
           } else {
@@ -198,7 +200,6 @@ print("===END_PYTEST_SINGLE_RESULT_JSON===")
                 const parsedResult = JSON.parse(
                   match[1].trim()
                 ) as PytestSimResult;
-                // Ensure the result name matches the function we tried to call for this activeTest
                 if (parsedResult.name === testFunctionToCall) {
                   testStatus = parsedResult.status.toLowerCase() as TestStatus;
                   testOutputString = parsedResult.output;
@@ -213,14 +214,12 @@ print("===END_PYTEST_SINGLE_RESULT_JSON===")
             }
           }
         } catch (e) {
-          // Catch any JS errors during the process for this test
           testStatus = "error";
           testOutputString = `Unexpected error running test '${
             currentTest.name
           }': ${e instanceof Error ? e.message : String(e)}`;
         }
 
-        // Update the specific test in the main state array immediately after it runs
         setActiveTests((prev) =>
           prev.map((t) =>
             t.id === currentTest.id
@@ -232,14 +231,12 @@ print("===END_PYTEST_SINGLE_RESULT_JSON===")
           ...currentTest,
           status: testStatus,
           output: testOutputString,
-        }); // Also collect for final state set if needed
-      } // End for loop
-
-      // setActiveTests(updatedResults); // Or rely on the individual updates within the loop
+        });
+      }
       setIsRunningTests(false);
     },
-    [activeTests, runPythonCode, isPyodideLoading, pyodideError, setActiveTests]
-  ); // Added setActiveTests
+    [activeTests, runPythonCode, isPyodideLoading, pyodideError] // Removed setActiveTests as it's part of the component's state cycle
+  );
 
   return {
     activeTests,
