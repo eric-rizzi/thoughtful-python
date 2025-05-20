@@ -38,41 +38,30 @@ export const useAuthStore = create<AuthState>()(
       ...initialAuthState,
       actions: {
         login: async (user, idToken) => {
+          // Keep async if there were other reasons
           console.log(
             "Login action: Clearing anonymous data from localStorage."
           );
-          clearAllAnonymousData(); // Deletes 'anonymous_...' keys from localStorage
+          clearAllAnonymousData();
 
           set({ isAuthenticated: true, user, idToken });
 
-          // After auth state is set, force progressStore to rehydrate.
-          // Its custom storage adapter will now use the new USER_ID prefixed key.
-          console.log(
-            "Login action: Forcing rehydration of progressStore for new user."
-          );
-          await useProgressStore.persist.rehydrate();
-          // If rehydrate doesn't clear old state, or if there's no data for the new user,
-          // you might still want to ensure a clean slate if that's the desired UX.
-          // However, rehydrate() should load the new user's data or the store's initial state if no data is found for that user.
-          // If no data for the new user, progressStore will have its initial state (empty completion).
+          // Instead of rehydrate, trigger a reload
+          window.location.reload();
         },
         logout: async () => {
+          // Keep async if there were other reasons
           console.log("Logout action: User logging out.");
           set({ ...initialAuthState }); // Reset auth state first
 
-          // After auth state is reset to anonymous, force progressStore to rehydrate.
-          // Its custom storage adapter will now use the 'anonymous_' prefixed key.
-          console.log(
-            "Logout action: Forcing rehydration of progressStore for anonymous state."
-          );
-          await useProgressStore.persist.rehydrate();
-          // If no anonymous data, progressStore will have its initial state (empty completion).
+          // Instead of rehydrate, trigger a reload
+          window.location.reload();
         },
         getIdToken: () => get().idToken,
       },
     }),
     {
-      name: "auth-storage", // This key itself is not user-specific by name
+      name: "auth-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
