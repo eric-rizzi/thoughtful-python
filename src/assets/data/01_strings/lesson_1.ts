@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  PRIMMSection,
-  TestingSection,
+  MultipleChoiceSectionData,
+  PRIMMSectionData,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -39,7 +39,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "Running the code reveals how different print statements behave. Only the f-string with `{name}` correctly substituted the variable. The other lines either missed the `f`, lacked braces, or had spacing issues. Understanding f-strings is key for clean output!",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
       id: "problem1-q1-datatype",
@@ -54,7 +54,7 @@ const lessonData: Lesson = {
         incorrect:
           "Remember that the `input()` function in Python always captures user input as a string.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "problem1-q3-quotes",
@@ -74,7 +74,7 @@ const lessonData: Lesson = {
         incorrect:
           "Consider what happens if you try to define a string like `'it's'` using only single quotes. Python allows both, but choosing the outer quote type wisely helps manage quotes inside the string.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Testing",
       id: "problem1-task-grammatical-greeting",
@@ -101,7 +101,7 @@ const lessonData: Lesson = {
         ],
         functionToTest: "__main__",
       },
-    } as TestingSection,
+    } as TestingSectionData,
   ],
 };
 

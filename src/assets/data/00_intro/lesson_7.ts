@@ -1,4 +1,4 @@
-import type { Lesson, ReflectionSection } from "../../../types/data";
+import type { Lesson, ReflectionSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Reflection and Self-Assessment",
@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         code: "Create a simple example that demonstrates this topic",
         explanation: "Explain how your example works (3-4 sentences)",
       },
-    } as ReflectionSection,
+    } as ReflectionSectionData,
     {
       kind: "Information",
       id: "reflection-conclusion",

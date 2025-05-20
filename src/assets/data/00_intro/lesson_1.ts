@@ -1,4 +1,4 @@
-import type { Lesson, ObservationSection } from "../../../types/data";
+import type { Lesson, ObservationSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Python Basics",
@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         description: "Let's start with the classic 'Hello, World!' example:",
         code: 'print("Hello, World!")\nprint("Welcome to Python in the browser!")',
       },
-    } as ObservationSection,
+    } as ObservationSectionData,
     {
       kind: "Observation",
       id: "comments",

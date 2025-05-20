@@ -1,7 +1,7 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  ReflectionSection,
+  MultipleChoiceSectionData,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -35,7 +35,7 @@ const lessonData: Lesson = {
         incorrect:
           "Think about the structure. The inner `if`/`else` is indented *inside* an outer `if` or `else` block, meaning it only executes as part of that outer block's path.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "cond6-q-binary-search",
@@ -55,7 +55,7 @@ const lessonData: Lesson = {
         incorrect:
           "Consider the core idea of binary search: comparing with the middle element eliminates half the search space. How does an `if`/`else` statement eliminate possibilities based on its condition?",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Reflection",
       id: "cond6-final-thoughts",
@@ -69,7 +69,7 @@ const lessonData: Lesson = {
         explanation:
           "Briefly explain what your code does and how the conditional statements control the output based on the variable's value.",
       },
-    } as ReflectionSection,
+    } as ReflectionSectionData,
     {
       kind: "Information",
       id: "cond-unit-conclusion",

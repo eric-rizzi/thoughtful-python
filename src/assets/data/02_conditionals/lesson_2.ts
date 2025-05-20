@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  PRIMMSection,
-  TestingSection,
+  MultipleChoiceSectionData,
+  PRIMMSectionData,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -38,7 +38,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "Python stops at the first `SyntaxError` it finds. Using a single equals sign `=` for comparison instead of `==` is a common mistake. Always use `==` when checking for equality in conditions!",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "Information",
       id: "cond2-explain-errors",
@@ -65,7 +65,7 @@ const lessonData: Lesson = {
         incorrect:
           "The `.lower()` method converts the string to all lowercase letters, making the comparison flexible regarding the user's input capitalization.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Testing",
       id: "cond2-task-fix",
@@ -101,7 +101,7 @@ const lessonData: Lesson = {
         ],
         functionToTest: "__main__",
       },
-    } as TestingSection,
+    } as TestingSectionData,
   ],
 };
 

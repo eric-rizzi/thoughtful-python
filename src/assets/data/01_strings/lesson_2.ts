@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  PRIMMSection,
-  TestingSection,
+  MultipleChoiceSectionData,
+  PRIMMSectionData,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -38,7 +38,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "Did you predict an error? Running the code confirms a `TypeError` occurs because you cannot directly add a string ('25') and an integer (1). You must convert the string to a number first using type casting.",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
       id: "problem2-q1-age-datatype",
@@ -52,7 +52,7 @@ const lessonData: Lesson = {
         incorrect:
           "Remember, the `input()` function *always* returns data as a string, regardless of what the user types.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Information",
       id: "problem2-type-casting",
@@ -91,7 +91,7 @@ const lessonData: Lesson = {
         ],
         functionToTest: "__main__",
       },
-    } as TestingSection,
+    } as TestingSectionData,
   ],
 };
 

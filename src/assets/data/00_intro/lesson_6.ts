@@ -1,4 +1,4 @@
-import type { Lesson, TurtleSection } from "../../../types/data";
+import type { Lesson, TurtleSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Turtle Graphics Challenge",
@@ -89,7 +89,7 @@ const lessonData: Lesson = {
         incorrect:
           "Your drawing doesn't appear to be a 100x50 pixel rectangle. Remember that a rectangle has 4 sides with opposite sides of equal length. Try again!",
       },
-    } as TurtleSection,
+    } as TurtleSectionData,
     {
       kind: "Turtle",
       id: "octagon-challenge",
@@ -196,7 +196,7 @@ const lessonData: Lesson = {
         incorrect:
           "Your drawing doesn't appear to be a regular octagon with 100-pixel sides. Remember that a regular octagon has 8 equal sides and requires turning 45 degrees at each corner. Try again!",
       },
-    } as TurtleSection,
+    } as TurtleSectionData,
     {
       kind: "Information",
       id: "turtle-conclusion",

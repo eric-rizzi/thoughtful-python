@@ -1,4 +1,4 @@
-import type { Lesson, PredictionSection } from "../../../types/data";
+import type { Lesson, PredictionSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Predicting Function Output",
@@ -59,7 +59,7 @@ const lessonData: Lesson = {
       },
       completionMessage:
         "Great job! You've correctly predicted all the function outputs. This shows you understand how the function evaluates different inputs.",
-    } as PredictionSection,
+    } as PredictionSectionData,
     {
       kind: "Information",
       id: "explanation",

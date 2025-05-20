@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  ObservationSection,
-  ReflectionSection,
+  MultipleChoiceSectionData,
+  ObservationSectionData,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -36,7 +36,7 @@ const lessonData: Lesson = {
         incorrect:
           "While all properties require attention, think about which one directly involves handling characters that also have special meaning in Python string syntax.",
       },
-    },
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "madlibs-q2-integer-op",
@@ -56,7 +56,7 @@ const lessonData: Lesson = {
         incorrect:
           'The `input()` function always returns a string. Consider what happens if you try to add `"5" + 1`.',
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Observation",
       id: "madlibs-creation-space",
@@ -70,7 +70,7 @@ const lessonData: Lesson = {
           "Develop your Mad Libs code here. Test it by running it yourself!",
         code: '# Mad Libs! Get creative!\n\n# Example: Get some inputs\n# adjective = input("Enter an adjective: ")\n# noun_plural = input("Enter a plural noun: ")\n# number_str = input("Enter a number: ")\n# verb_ing = input("Enter a verb ending in -ing: ")\n\n# Remember to convert the number if you do math!\n# number_int = int(number_str)\n# calculated_number = number_int + 5 \n\n# Start writing your story using these (and more) variables!\n# print(f"Today I went to the zoo and saw many {adjective} {noun_plural}.")\n# print(f"One of them was {verb_ing} near a tree.")\n# print(f"It said, \\"I\'ve been here for {calculated_number} years!\\"") # Example of \' and "\n# print("What a day!")\n\nprint("Start your Mad Libs program here!")\n',
       },
-    } as ObservationSection,
+    } as ObservationSectionData,
     {
       kind: "Information",
       id: "madlibs-playtest-self",
@@ -90,7 +90,7 @@ const lessonData: Lesson = {
         explanation:
           "Explain how your Mad Libs code meets AT LEAST THREE of the five requirements (e.g., how you handled number input and operations, how you printed on multiple lines, how you included quotes/apostrophes, or how you used variables).",
       },
-    } as ReflectionSection,
+    } as ReflectionSectionData,
   ],
 };
 

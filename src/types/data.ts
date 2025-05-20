@@ -19,42 +19,18 @@ export interface TestingExample extends LessonExample {
 }
 
 export interface LessonSection {
-  kind: SectionKind; // Use the SectionKind type
+  kind: SectionKind;
   id: string;
   title: string;
   content: string;
 }
 
-export interface Lesson {
-  title: string;
-  description: string;
-  sections: LessonSection[];
-}
-
-export interface Unit {
-  id: string;
-  title: string;
-  description: string;
-  lessons: string[]; // Array of lesson IDs (e.g., "lesson_1")
-  image?: string;
-}
-
-export interface UnitsData {
-  units: Unit[];
-}
-
 // --- Specific Section Kind Interfaces (Extending LessonSection) ---
-
-export interface PredictionTableRow {
-  inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
-  expected: number | string | boolean; // Allow different expected types
-  description: string;
-}
 
 export type SectionKind =
   | "Information"
-  | "Observation" // Uses examples
-  | "Testing" // Uses examples with testCases
+  | "Observation"
+  | "Testing"
   | "Prediction"
   | "MultipleChoice"
   | "MultipleSelection"
@@ -64,22 +40,32 @@ export type SectionKind =
   | "PRIMM"
   | "Debugger";
 
-export interface ObservationSection extends LessonSection {
+export interface InformationSectionData extends LessonSection {
+  kind: "Information";
+}
+
+export interface ObservationSectionData extends LessonSection {
   kind: "Observation";
   example: LessonExample;
 }
 
-export interface TestingSection extends LessonSection {
+export interface TestingSectionData extends LessonSection {
   kind: "Testing";
   example: TestingExample;
 }
 
-export interface DebuggerSection extends LessonSection {
+export interface DebuggerSectionData extends LessonSection {
   kind: "Debugger";
   code: string;
 }
 
-export interface PredictionSection extends LessonSection {
+export interface PredictionTableRow {
+  inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
+  expected: number | string | boolean; // Allow different expected types
+  description: string;
+}
+
+export interface PredictionSectionData extends LessonSection {
   kind: "Prediction";
   functionDisplay: {
     title: string;
@@ -92,54 +78,49 @@ export interface PredictionSection extends LessonSection {
   completionMessage?: string;
 }
 
-export interface MultipleChoiceSection extends LessonSection {
+export interface MultipleChoiceSectionData extends LessonSection {
   kind: "MultipleChoice";
   options: string[];
   correctAnswer: number;
   feedback: {
     correct: string;
-    incorrect: string;
   };
 }
 
-export interface MultipleSelectionSection extends LessonSection {
+export interface MultipleSelectionSectionData extends LessonSection {
   kind: "MultipleSelection";
   options: string[];
   correctAnswers: number[];
   feedback: {
     correct: string;
-    incorrect: string;
   };
 }
 
-// Define the new structured command types for JavaScript turtle
+// Define the structured command types for JavaScript turtle
 export type JsTurtleCommand =
   | { type: "goto"; x: number; y: number }
-  | { type: "forward"; distance: number; penDown: boolean; color: string } // forward now captures current pen state and color
+  | { type: "forward"; distance: number; penDown: boolean; color: string }
   | { type: "left"; angle: number }
   | { type: "right"; angle: number }
   | { type: "penup" }
   | { type: "pendown" }
   | { type: "clear" }
-  | { type: "setPenColor"; color: string }; // New command for color
+  | { type: "setPenColor"; color: string };
 
-export interface TurtleSection extends LessonSection {
+export interface TurtleSectionData extends LessonSection {
   kind: "Turtle";
   instructions: string;
   initialCode: string;
   validationCriteria: {
-    type: string; // e.g., 'shape', 'commands'
-    // For 'shape' validation (optional, could be done in JS comparison)
+    type: string;
     shape?: string;
     width?: number;
     height?: number;
     sideLength?: number;
-    // For 'commands' validation (the primary method for this refactor)
-    expectedJsCommands?: JsTurtleCommand[]; // Array of expected JS turtle commands
-    [key: string]: any; // Allow other properties
+    expectedJsCommands?: JsTurtleCommand[];
+    [key: string]: any;
   };
   turtleCommands?: Array<{
-    // This is just for display in the UI, not functional
     name: string;
     description: string;
   }>;
@@ -148,19 +129,6 @@ export interface TurtleSection extends LessonSection {
     incorrect: string;
   };
 }
-
-export interface ReflectionSection extends LessonSection {
-  kind: "Reflection";
-  prompts: {
-    topic: string;
-    code: string;
-    explanation: string;
-  };
-}
-
-// You might add specific interfaces for ObservationSection, TestingSection etc.
-// if they have unique properties beyond the base LessonSection and examples.
-// For now, they can just use LessonSection directly.
 
 export interface ReflectionSubmission {
   topic: string; // Value from the select dropdown
@@ -183,7 +151,7 @@ export interface ReflectionResponse {
 }
 
 // Update ReflectionSection interface slightly
-export interface ReflectionSection extends LessonSection {
+export interface ReflectionSectionData extends LessonSection {
   kind: "Reflection";
   prompts: {
     topic: string; // Label for topic dropdown
@@ -219,7 +187,7 @@ export interface InputParam {
   placeholder: string; // Placeholder text for the input field
 }
 
-export interface CoverageSection extends LessonSection {
+export interface CoverageSectionData extends LessonSection {
   kind: "Coverage";
   code: string; // The Python code snippet to analyze
   inputParams: InputParam[]; // Definitions of the inputs needed
@@ -254,7 +222,7 @@ export interface PRIMMCodeExample {
   minExplanationLength: number; // Minimum characters for the explanation
 }
 
-export interface PRIMMSection extends LessonSection {
+export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
   introduction: string; // General introduction to this PRIMM activity
   examples: PRIMMCodeExample[]; // Array of PRIMM blocks for this section
@@ -282,4 +250,36 @@ export interface SavedPRIMMSectionState {
     // But storing runError and output is useful for displaying state across sessions
     [exampleId: string]: PRIMMExampleState;
   };
+}
+
+// export interface SavedPRIMMSectionState { ... } (already defined and used)
+export type AnyLessonSectionData =
+  | InformationSectionData
+  | ObservationSectionData
+  | TestingSectionData
+  | DebuggerSectionData
+  | PredictionSectionData
+  | MultipleChoiceSectionData
+  | MultipleSelectionSectionData
+  | TurtleSectionData
+  | ReflectionSectionData
+  | CoverageSectionData
+  | PRIMMSectionData;
+
+export interface Lesson {
+  title: string;
+  description: string;
+  sections: LessonSection[];
+}
+
+export interface Unit {
+  id: string;
+  title: string;
+  description: string;
+  lessons: string[]; // Array of lesson IDs (e.g., "lesson_1")
+  image?: string;
+}
+
+export interface UnitsData {
+  units: Unit[];
 }

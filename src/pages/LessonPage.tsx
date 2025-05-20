@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader";
-import type { Lesson, LessonSection } from "../types/data";
+import type { Lesson, AnyLessonSectionData } from "../types/data";
 
 // Import Section Components
 import InformationSection from "../components/sections/InformationSection";
@@ -28,6 +28,8 @@ const LessonPage: React.FC = () => {
   const params = useParams();
   const lessonPath = params["*"];
 
+  // The 'lesson' state will now be of type Lesson | null,
+  // and lesson.sections will be AnyLessonSectionData[]
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,13 +37,11 @@ const LessonPage: React.FC = () => {
   const [unitLessons, setUnitLessons] = useState<string[]>([]);
   const [currentIndexInUnit, setCurrentIndexInUnit] = useState<number>(-1);
 
-  // Use lessonPath (derived from params['*']) in the dependency array and logic
   const completedSectionsArray = useCompletedSectionsForLesson(lessonPath);
 
   useEffect(() => {
     let isMounted = true;
     const loadData = async () => {
-      // Use lessonPath here
       if (!lessonPath) {
         if (isMounted) {
           setError("No Lesson Path provided in URL.");
@@ -57,11 +57,10 @@ const LessonPage: React.FC = () => {
       setCurrentIndexInUnit(-1);
       setParentUnitId(null);
 
-      // Use lessonPath when logging and fetching
       console.log(`LessonPage: Attempting to fetch lesson ${lessonPath}`);
       try {
         const [fetchedLesson, unitsData] = await Promise.all([
-          fetchLessonData(lessonPath), // Pass the full path here
+          fetchLessonData(lessonPath),
           fetchUnitsData(),
         ]);
 
@@ -76,7 +75,6 @@ const LessonPage: React.FC = () => {
         let foundUnitId: string | null = null;
 
         for (const unit of unitsData.units) {
-          // Use lessonPath when searching the unit's lessons array
           const index = unit.lessons.indexOf(lessonPath);
           if (index !== -1) {
             foundUnitLessons = unit.lessons;
@@ -115,16 +113,13 @@ const LessonPage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [lessonPath]); // Dependency is now lessonPath
-
-  // ... (rest of the component logic: completedSectionsSet, informationSections, prev/next calculation, renderSection) ...
-  // Ensure lessonPath is passed down correctly where lessonId was previously used
-  // e.g., to section components if needed, although most use the lessonId prop for keys/storage
+  }, [lessonPath]);
 
   const completedSectionsSet = useMemo(
     () => new Set(completedSectionsArray),
     [completedSectionsArray]
   );
+
   const informationSections: Set<string> = useMemo(() => {
     if (!lesson) return new Set<string>();
     return new Set(
@@ -141,11 +136,11 @@ const LessonPage: React.FC = () => {
   const currentPositionInUnit = currentIndexInUnit + 1;
   const totalLessonsInUnit = unitLessons.length;
 
-  const renderSection = (section: LessonSection) => {
-    // Pass lessonPath as lessonId prop to children
-    const currentLessonId = lessonPath || "unknown"; // Fallback if lessonPath is somehow undefined
+  const renderSection = (section: AnyLessonSectionData) => {
+    const currentLessonId = lessonPath || "unknown";
     switch (section.kind) {
       case "Information":
+        // TypeScript now knows 'section' is InformationSectionData
         return <InformationSection key={section.id} section={section} />;
       case "Observation":
         return (
@@ -168,7 +163,7 @@ const LessonPage: React.FC = () => {
           <PredictionSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "MultipleChoice":
@@ -176,7 +171,7 @@ const LessonPage: React.FC = () => {
           <MultipleChoiceSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "MultipleSelection":
@@ -184,7 +179,7 @@ const LessonPage: React.FC = () => {
           <MultipleSelectionSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "Turtle":
@@ -192,7 +187,7 @@ const LessonPage: React.FC = () => {
           <TurtleSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "Reflection":
@@ -200,7 +195,7 @@ const LessonPage: React.FC = () => {
           <ReflectionSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "Coverage":
@@ -208,7 +203,7 @@ const LessonPage: React.FC = () => {
           <CoverageSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "PRIMM":
@@ -216,24 +211,28 @@ const LessonPage: React.FC = () => {
           <PRIMMSection
             key={section.id}
             lessonId={currentLessonId}
-            section={section as any}
+            section={section}
           />
         );
       case "Debugger":
+        // As discussed, DebuggerSectionComponent currently doesn't take a 'section' prop with code.
+        // If you refactor DebuggerSectionComponent to accept `section: DebuggerSectionData`
+        // and use `section.code` as its initial code, then you would pass it:
+        // return <DebuggerSectionComponent key={section.id} section={section} />;
+        // For now, if it remains self-contained with its own state for code:
         return <DebuggerSection key={section.id} />;
       default:
-        console.warn(`Unknown section kind: ${section.kind}`);
+        const _exhaustiveCheck: never = section;
+        console.warn(`Unknown section kind: ${(_exhaustiveCheck as any).kind}`);
         return (
-          <div key={section.id} className={styles.error}>
-            Unsupported section
+          <div key={(_exhaustiveCheck as any).id} className={styles.error}>
+            Unsupported section kind: {(_exhaustiveCheck as any).kind}
           </div>
         );
     }
   };
 
-  // --- Render Logic ---
   if (isLoading) {
-    /* ... loading JSX ... */
     return (
       <div className={styles.loading}>
         <p>Loading lesson content for '{lessonPath}'...</p>
@@ -242,13 +241,15 @@ const LessonPage: React.FC = () => {
     );
   }
   if (error) {
-    /* ... error JSX ... */
     return (
       <div className={styles.error}>
         <h2>Error Loading Lesson</h2>
         <p>{error}</p>
         {parentUnitId ? (
-          <Link to={`/unit/${parentUnitId}`} className={styles.backLink}>
+          <Link
+            to={`/unit/${parentUnitId}`}
+            className={styles.backLink /* Assuming this class exists */}
+          >
             &larr; Back to Unit
           </Link>
         ) : (
@@ -260,7 +261,6 @@ const LessonPage: React.FC = () => {
     );
   }
   if (!lesson) {
-    /* ... not found JSX ... */
     return (
       <div className={styles.error}>
         <h2>Lesson Not Found</h2>
@@ -306,10 +306,8 @@ const LessonPage: React.FC = () => {
           )}
         </div>
 
-        {/* Render Lesson Sections Below Header */}
         {lesson.sections.map((section) => renderSection(section))}
 
-        {/* Optional: Bottom Navigation */}
         {totalLessonsInUnit > 0 && (
           <div
             className={styles.lessonHeader}
@@ -320,9 +318,6 @@ const LessonPage: React.FC = () => {
               paddingBottom: 0,
             }}
           >
-            {" "}
-            {/* Reuse header style for layout */}
-            {/* Invisible spacer to push nav right if title isn't needed */}
             <div style={{ flexGrow: 1 }}></div>
             <LessonNavigation
               lessonId={lessonPath!}

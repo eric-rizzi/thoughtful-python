@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  MultipleSelectionSection,
-  ReflectionSection,
+  MultipleChoiceSectionData,
+  MultipleSelectionSectionData,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -36,7 +36,7 @@ const lessonData: Lesson = {
         incorrect:
           "Consider the `TypeError` encountered when trying to add `1` to the age string directly from `input()`. This highlights the need for explicit type conversion.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleSelection",
       id: "reflection-q2-interpreting-errors",
@@ -57,7 +57,7 @@ const lessonData: Lesson = {
         incorrect:
           "Python error messages are very informative. They usually specify the error type, the line where it occurred, and a description. While they don't always give a direct solution, they provide essential clues for debugging.",
       },
-    } as MultipleSelectionSection,
+    } as MultipleSelectionSectionData,
     {
       kind: "Reflection",
       id: "strings-final-thoughts",
@@ -71,15 +71,7 @@ const lessonData: Lesson = {
         explanation:
           "Briefly explain what your code does and why this technique is useful.",
       },
-      rubric: {
-        developing:
-          "The code snippet has errors or doesn't clearly demonstrate the chosen technique. The explanation is unclear or incorrect.",
-        meets:
-          "The code snippet correctly demonstrates the chosen string technique, and the explanation is clear and accurate.",
-        exceeds:
-          "The code snippet demonstrates an insightful or creative use of a string technique, and the explanation is thorough, perhaps citing specific use cases or advantages.",
-      },
-    } as ReflectionSection,
+    } as ReflectionSectionData,
     {
       kind: "Information",
       id: "strings-unit-conclusion",

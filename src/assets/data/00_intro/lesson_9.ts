@@ -1,7 +1,7 @@
 import type {
-  DebuggerSection,
+  DebuggerSectionData,
   Lesson,
-  ReflectionSection,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       id: "first-debugging-challenge",
       title: "Debugger Challenge: Sum Calculator",
       code: 'def calculate_sum(limit):\n    total = 0\n    for i in range(1, limit + 1):\n        total += i\n    return total\n\nnum = 5\nresult = calculate_sum(num)\nprint(f"The sum up to {num} is {result}")',
-    } as DebuggerSection,
+    } as DebuggerSectionData,
     {
       kind: "Reflection",
       id: "debugger-reflection",
@@ -34,7 +34,7 @@ const lessonData: Lesson = {
         explanation:
           "Explain how observing the variables in the debugger helped you understand the `calculate_sum` function's execution flow, especially within the loop.",
       },
-    } as ReflectionSection,
+    } as ReflectionSectionData,
     {
       kind: "Information",
       id: "debugger-conclusion",

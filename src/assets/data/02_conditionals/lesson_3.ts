@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  PRIMMSection,
-  TestingSection,
+  MultipleChoiceSectionData,
+  PRIMMSectionData,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -39,7 +39,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "When `answer` is 'c', the outer `if` is false, so the outer `else` block executes. Inside that, the inner `if answer == \"b\"` is also false, so its `else` block runs, printing 'Other'. Finally, the 'All done' print statement outside all conditionals always runs.",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
       id: "cond3-q-paths",
@@ -54,7 +54,7 @@ const lessonData: Lesson = {
         incorrect:
           "Consider the possible inputs 'a', 'b', and anything else (like 'c'). Each leads to a different specific message being printed within the conditional structure.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "cond3-q-indent",
@@ -74,7 +74,7 @@ const lessonData: Lesson = {
         incorrect:
           "Indentation defines code blocks in Python. Think about which block the second `if` belongs to. Does it always run, or only under certain conditions established by the outer `if`/`else`?",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Testing",
       id: "cond3-task-stoplight",
@@ -116,7 +116,7 @@ const lessonData: Lesson = {
         ],
         functionToTest: "__main__",
       },
-    } as TestingSection,
+    } as TestingSectionData,
     {
       kind: "Information",
       id: "cond3-elif-intro",

@@ -1,7 +1,7 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  MultipleSelectionSection,
+  MultipleChoiceSectionData,
+  MultipleSelectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -32,7 +32,7 @@ const lessonData: Lesson = {
         correct:
           "Correct! The print() function is used to display output to the console.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "question-2",
@@ -50,7 +50,7 @@ const lessonData: Lesson = {
         correct:
           "Correct! In Python, functions are defined using the 'def' keyword followed by the function name and parentheses.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "question-3",
@@ -62,7 +62,7 @@ const lessonData: Lesson = {
         correct:
           "Correct! When converting 0°C to Fahrenheit using the formula F = (C x 9/5) + 32, we get 32°F.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "question-4",
@@ -79,7 +79,7 @@ const lessonData: Lesson = {
         correct:
           "Correct! Lists in Python are created using square brackets [].",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleSelection",
       id: "question-5",
@@ -92,7 +92,7 @@ const lessonData: Lesson = {
         correct:
           "Correct! Lists, dictionaries, sets, and tuples are all built-in data structures in Python.",
       },
-    } as MultipleSelectionSection,
+    } as MultipleSelectionSectionData,
     {
       kind: "MultipleSelection",
       id: "question-6",
@@ -111,7 +111,7 @@ const lessonData: Lesson = {
         correct:
           "Correct! In Python, you can use the # symbol for single-line comments and triple quotes (''' or \"\"\") for multi-line comments or docstrings.",
       },
-    } as MultipleSelectionSection,
+    } as MultipleSelectionSectionData,
     {
       kind: "Information",
       id: "quiz-conclusion",

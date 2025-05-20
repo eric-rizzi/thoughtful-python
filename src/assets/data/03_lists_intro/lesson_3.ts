@@ -1,7 +1,7 @@
 import type {
   Lesson,
-  ObservationSection,
-  PRIMMSection,
+  ObservationSectionData,
+  PRIMMSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -37,7 +37,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "When `answer` is 'c', the outer `if` is false, so the outer `else` block executes. Inside that, the inner `if answer == \"b\"` is also false, so its `else` block runs, printing 'Other'. Finally, the 'All done' print statement outside all conditionals always runs.",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "Observation",
       id: "comments",
@@ -51,7 +51,7 @@ const lessonData: Lesson = {
           "Comments are used to explain code and make your programs more readable:",
         code: '# This is a comment\nprint("This code is executed") # This is an inline comment\n\n# The following line is not executed\n# print("This won\'t be printed")',
       },
-    } as ObservationSection,
+    } as ObservationSectionData,
     {
       kind: "Observation",
       id: "basic-math",

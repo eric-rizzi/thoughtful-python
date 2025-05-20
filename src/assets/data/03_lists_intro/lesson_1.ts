@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  ObservationSection,
-  PRIMMSection,
+  MultipleChoiceSectionData,
+  ObservationSectionData,
+  PRIMMSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -28,7 +28,7 @@ const lessonData: Lesson = {
         description: "",
         code: 'gl = []\ngl.append("eggs")\ngl.append("apples")\nprint(gl)',
       },
-    } as ObservationSection,
+    } as ObservationSectionData,
     {
       kind: "MultipleChoice",
       id: "question-1",
@@ -47,7 +47,7 @@ const lessonData: Lesson = {
         incorrect:
           "Incorrect. The print() function is used to display output to the console.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "PRIMM",
       id: "primm-grocer-lists",
@@ -70,7 +70,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "When `answer` is 'c', the outer `if` is false, so the outer `else` block executes. Inside that, the inner `if answer == \"b\"` is also false, so its `else` block runs, printing 'Other'. Finally, the 'All done' print statement outside all conditionals always runs.",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "PRIMM",
       id: "primm-grocer-lists",
@@ -93,7 +93,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "When `answer` is 'c', the outer `if` is false, so the outer `else` block executes. Inside that, the inner `if answer == \"b\"` is also false, so its `else` block runs, printing 'Other'. Finally, the 'All done' print statement outside all conditionals always runs.",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "Observation",
       id: "comments",

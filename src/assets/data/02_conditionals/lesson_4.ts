@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  ObservationSection,
-  ReflectionSection,
+  MultipleChoiceSectionData,
+  ObservationSectionData,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -36,7 +36,7 @@ const lessonData: Lesson = {
         incorrect:
           "While printing quotes and getting input require care, the core logic challenge lies in structuring the nested `if`/`else` statements to correctly navigate the decision tree based on the two answers.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Information",
       id: "cond4-planning",
@@ -56,7 +56,7 @@ const lessonData: Lesson = {
         description: "Develop and test your game here.",
         code: '# 2 Questions Game\n\nprint("Think of one of these four words: [Word1, Word2, Word3, Word4]") # Tell the user the options\n\n# --- Question 1 --- \nanswer1 = input("Question 1 text here? (y/n) ").lower()\n\nif answer1 == \'y\':\n  # --- Question 2 (Yes Path) ---\n  answer2_yes = input("Question 2 (Yes path) text here? (y/n) ").lower()\n  if answer2_yes == \'y\':\n    guess = "Word1" # Word for YY path\n  else:\n    guess = "Word2" # Word for YN path\nelse: # answer1 was \'n\'\n  # --- Question 2 (No Path) ---\n  answer2_no = input("Question 2 (No path) text here? (y/n) ").lower()\n  if answer2_no == \'y\':\n    guess = "Word3" # Word for NY path\n  else:\n    guess = "Word4" # Word for NN path\n\n# Final guess - ensure format It\'s \'WORD\'!\nprint(f"It\'s \'{guess}\'!") \n',
       },
-    } as ObservationSection,
+    } as ObservationSectionData,
     {
       kind: "Reflection",
       id: "cond4-reflection-on-creation",
@@ -68,15 +68,7 @@ const lessonData: Lesson = {
         explanation:
           "Explain how your nested `if`/`else` structure uses the answers to the two questions to arrive at the correct final guess. How did you ensure the output format `It's 'WORD'!` was correct?",
       },
-      rubric: {
-        developing:
-          "The code is incomplete, doesn't use nesting correctly, or fails to meet key requirements. The explanation is unclear.",
-        meets:
-          "The code functions, uses nested conditionals appropriately, and meets most requirements. The explanation correctly describes the basic logic.",
-        exceeds:
-          "The code is well-structured, meets all requirements clearly, and may include creative questions. The explanation thoroughly details the nested logic and handling of output formatting.",
-      },
-    } as ReflectionSection,
+    } as ReflectionSectionData,
   ],
 };
 

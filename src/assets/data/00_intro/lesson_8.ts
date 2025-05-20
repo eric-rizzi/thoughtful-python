@@ -1,4 +1,4 @@
-import type { CoverageSection, Lesson } from "../../../types/data";
+import type { CoverageSectionData, Lesson } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Code Coverage and Execution Paths",
@@ -43,7 +43,7 @@ const lessonData: Lesson = {
           placeholder: "Enter a number",
         },
       ],
-    } as CoverageSection,
+    } as CoverageSectionData,
     {
       kind: "Coverage",
       id: "nested-conditions",
@@ -100,7 +100,7 @@ const lessonData: Lesson = {
           placeholder: "True or False",
         },
       ],
-    } as CoverageSection,
+    } as CoverageSectionData,
     {
       kind: "Information",
       id: "coverage-conclusion",

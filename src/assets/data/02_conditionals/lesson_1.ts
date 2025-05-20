@@ -1,8 +1,8 @@
 import type {
   Lesson,
-  MultipleChoiceSection,
-  PRIMMSection,
-  TestingSection,
+  MultipleChoiceSectionData,
+  PRIMMSectionData,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -38,7 +38,7 @@ const lessonData: Lesson = {
       ],
       conclusion:
         "The `.lower()` method converts the input to lowercase before comparison. This means 'CHEESE', 'cheese', and 'cHeEsE' all become 'cheese', matching the condition and printing the welcome message. This makes the check case-insensitive.",
-    } as PRIMMSection,
+    } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
       id: "cond1-q-datatype",
@@ -52,7 +52,7 @@ const lessonData: Lesson = {
         incorrect:
           "Remember that `input()` always returns a string, even if the user types numbers or other characters.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "cond1-q-operators",
@@ -72,7 +72,7 @@ const lessonData: Lesson = {
         incorrect:
           "Think about the purpose of each line. The first line stores the input *into* the variable. The second line *checks if* the (modified) input is the same as 'cheese'.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "cond1-q-lower-restrict",
@@ -91,7 +91,7 @@ const lessonData: Lesson = {
         incorrect:
           "Consider the inputs 'cheese', 'CHEESE', and 'Cheese'. Without `.lower()`, only one would match `'cheese'`. With `.lower()`, all three are converted to 'cheese' before the comparison.",
       },
-    } as MultipleChoiceSection,
+    } as MultipleChoiceSectionData,
     {
       kind: "Testing",
       id: "cond1-task-modify",
@@ -128,7 +128,7 @@ const lessonData: Lesson = {
         ],
         functionToTest: "__main__",
       },
-    } as TestingSection,
+    } as TestingSectionData,
   ],
 };
 
