@@ -215,12 +215,7 @@ const LessonPage: React.FC = () => {
           />
         );
       case "Debugger":
-        // As discussed, DebuggerSectionComponent currently doesn't take a 'section' prop with code.
-        // If you refactor DebuggerSectionComponent to accept `section: DebuggerSectionData`
-        // and use `section.code` as its initial code, then you would pass it:
-        // return <DebuggerSectionComponent key={section.id} section={section} />;
-        // For now, if it remains self-contained with its own state for code:
-        return <DebuggerSection key={section.id} />;
+        return <DebuggerSection key={section.id} section={section} />;
       default:
         const _exhaustiveCheck: never = section;
         console.warn(`Unknown section kind: ${(_exhaustiveCheck as any).kind}`);
