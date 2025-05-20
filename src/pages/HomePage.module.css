@@ -18,6 +18,90 @@
   color: #555;
 }
 
+.homePageContainer {
+  /* If you want to constrain the overall width of the homepage content */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem; /* Add some padding if using a max-width container */
+}
+
+.welcome {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 1rem; /* Adjusted margin */
+}
+
+.welcome h2 {
+  color: #306998;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.welcome p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Styles for the new philosophy section */
+.philosophySection {
+  background-color: #f9f9f9; /* A light background to distinguish it */
+  padding: 2rem;
+  margin-bottom: 2.5rem; /* Space before learning paths */
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.philosophySection h3 {
+  color: #306998; /* Match other heading colors */
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: left; /* Align philosophy title to the left */
+  font-size: 1.5rem;
+}
+
+.philosophySection ul {
+  list-style-type: disc; /* Standard bullets */
+  margin-left: 1.5rem; /* Indent bullet points */
+  padding-left: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.philosophySection li {
+  margin-bottom: 0.75rem; /* Space between bullet points */
+  line-height: 1.6;
+  color: #444; /* Slightly darker text for list items */
+}
+
+.philosophySection p {
+  line-height: 1.6;
+  color: #444;
+  text-align: left; /* Align paragraph text to the left */
+}
+.philosophySection p:last-child {
+  margin-bottom: 0;
+}
+
+.learningPaths {
+  margin-top: 2rem;
+}
+
+.learningPaths h2 {
+  color: #306998;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.learningPathsIntro {
+  /* New class for the intro paragraph of learning paths */
+  text-align: center; /* Center this specific paragraph */
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem; /* Match welcome paragraph size */
+  line-height: 1.6;
+}
+
 /* Features Section (Optional - based on original index.html) */
 .features {
   display: grid;

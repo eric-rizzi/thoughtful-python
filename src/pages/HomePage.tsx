@@ -29,16 +29,15 @@ const HomePage: React.FC = () => {
     };
 
     loadData();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  const defaultImagePath = `${BASE_PATH}images/default-unit.svg`; // Path relative to deployment root
+  const defaultImagePath = `${BASE_PATH}images/default-unit.svg`;
 
   const handleImageError = (
     event: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
-    // Type assertion needed because TS doesn't know target is an image
     const target = event.target as HTMLImageElement;
-    target.onerror = null; // Prevent infinite loop if default image also fails
+    target.onerror = null;
     target.src = defaultImagePath;
   };
 
@@ -71,7 +70,6 @@ const HomePage: React.FC = () => {
     return (
       <div className={styles.unitsGrid}>
         {units.map((unit) => (
-          // Use Link component for client-side navigation
           <Link
             to={`/unit/${unit.id}`}
             key={unit.id}
@@ -80,11 +78,10 @@ const HomePage: React.FC = () => {
             <div className={styles.unitCard}>
               <div className={styles.unitImageContainer}>
                 <img
-                  // Construct image path using BASE_PATH
                   src={`${BASE_PATH}images/${unit.image || "default-unit.svg"}`}
                   alt={`${unit.title} image`}
                   className={styles.unitImage}
-                  onError={handleImageError} // Fallback for broken images
+                  onError={handleImageError}
                 />
               </div>
               <div className={styles.unitContent}>
@@ -105,7 +102,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className={styles.homePageContainer}>
       <section className={styles.welcome}>
         <h2>Welcome to Interactive Python Learning</h2>
         <p>
@@ -113,10 +110,46 @@ const HomePage: React.FC = () => {
           required!
         </p>
       </section>
-
+      <section className={styles.philosophySection}>
+        <h3>The Philosophy of this website is:</h3>
+        <ul>
+          <li>Anyone can learn Python</li>
+          <li>
+            Python is a wonderful way to order your thoughts and accomplish
+            complex tasks
+          </li>
+          <li>
+            Like any language, learning Python takes a lot of concentration and
+            practice
+          </li>
+          <li>
+            The best way to learn a language is PRIMM: Predict, Run,
+            Investigate, Modify, Make
+          </li>
+          <li>The best way to solidify your knowledge is through reflection</li>
+          <li>
+            There are many wonderful tools (e.g., VSCode) that are a bit
+            overwhelming for first time learners
+          </li>
+          <li>
+            Once you have a base understanding, it's easy to jump to these more
+            powerful tools
+          </li>
+        </ul>
+        <p>
+          This website can be viewed as the first step on your programming
+          journey. It will help you establish a strong foundation Python
+          fundamentals and effective learning processes. Once you feel more
+          confident, you'll be well-prepared to explore other more powerful
+          tools.
+        </p>
+      </section>
       <section className={styles.learningPaths}>
         <h2>Learning Paths</h2>
-        <p>Choose a learning path to begin your Python journey.</p>
+        <p className={styles.learningPathsIntro}>
+          {" "}
+          Choose a learning path to begin your Python journey.
+        </p>
         {renderContent()}
       </section>
     </div>
