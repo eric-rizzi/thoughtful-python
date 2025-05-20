@@ -1,12 +1,12 @@
-// src/stores/authStore.ts
+// src/stores/authStore.tsx
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-// Import clearAllAnonymousData, and potentially hasAnonymousData for the future
 import {
   clearAllAnonymousData,
-  hasAnonymousData,
-  migrateAnonymousDataToUser,
+  // hasAnonymousData, // For potential future merge strategy
+  // migrateAnonymousDataToUser, // For potential future merge strategy
 } from "../lib/localStorageUtils";
+import { useProgressStore } from "./progressStore"; // Import progress store
 
 interface UserProfile {
   id: string;
@@ -19,15 +19,10 @@ interface AuthState {
   isAuthenticated: boolean;
   user: UserProfile | null;
   idToken: string | null;
-  // For Strategy 1 later, you'd add: shouldPromptForMerge: boolean;
   actions: {
-    login: (user: UserProfile, idToken: string) => void;
-    logout: () => void;
+    login: (user: UserProfile, idToken: string) => Promise<void>; // Made async for rehydration
+    logout: () => Promise<void>; // Made async for rehydration
     getIdToken: () => string | null;
-    // For Strategy 1 later, you'd add:
-    // completeMerge: () => void;
-    // declineMerge: () => void;
-    // setShouldPromptForMerge: (shouldPrompt: boolean) => void;
   };
 }
 
@@ -35,7 +30,6 @@ const initialAuthState = {
   isAuthenticated: false,
   user: null,
   idToken: null,
-  // For Strategy 1 later: shouldPromptForMerge: false,
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -43,53 +37,47 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       ...initialAuthState,
       actions: {
-        login: (user, idToken) => {
+        login: async (user, idToken) => {
           console.log(
-            "Login action called. Clearing anonymous data for Strategy 3."
+            "Login action: Clearing anonymous data from localStorage."
           );
-          clearAllAnonymousData(); // Strategy 3: Discard anonymous data
-
-          // When moving to Strategy 1, you would replace clearAllAnonymousData() with:
-          // if (hasAnonymousData()) {
-          //   let userAlreadyHasData = false; /* ... check if user.id_ keys exist ... */
-          //   if (userAlreadyHasData) {
-          //     clearAllAnonymousData();
-          //   } else {
-          //     set({ shouldPromptForMerge: true });
-          //   }
-          // }
+          clearAllAnonymousData(); // Deletes 'anonymous_...' keys from localStorage
 
           set({ isAuthenticated: true, user, idToken });
+
+          // After auth state is set, force progressStore to rehydrate.
+          // Its custom storage adapter will now use the new USER_ID prefixed key.
+          console.log(
+            "Login action: Forcing rehydration of progressStore for new user."
+          );
+          await useProgressStore.persist.rehydrate();
+          // If rehydrate doesn't clear old state, or if there's no data for the new user,
+          // you might still want to ensure a clean slate if that's the desired UX.
+          // However, rehydrate() should load the new user's data or the store's initial state if no data is found for that user.
+          // If no data for the new user, progressStore will have its initial state (empty completion).
         },
-        logout: () => {
-          console.log("Logout action called.");
-          set({ ...initialAuthState }); // Resets isAuthenticated, user, idToken
+        logout: async () => {
+          console.log("Logout action: User logging out.");
+          set({ ...initialAuthState }); // Reset auth state first
+
+          // After auth state is reset to anonymous, force progressStore to rehydrate.
+          // Its custom storage adapter will now use the 'anonymous_' prefixed key.
+          console.log(
+            "Logout action: Forcing rehydration of progressStore for anonymous state."
+          );
+          await useProgressStore.persist.rehydrate();
+          // If no anonymous data, progressStore will have its initial state (empty completion).
         },
         getIdToken: () => get().idToken,
-
-        // Placeholder actions for Strategy 1 (implement fully later)
-        // completeMerge: () => {
-        //   const user = get().user;
-        //   if (user && user.id) {
-        //     migrateAnonymousDataToUser(user.id);
-        //   }
-        //   set({ shouldPromptForMerge: false });
-        // },
-        // declineMerge: () => {
-        //   clearAllAnonymousData();
-        //   set({ shouldPromptForMerge: false });
-        // },
-        // setShouldPromptForMerge: (shouldPrompt) => set({ shouldPromptForMerge: shouldPrompt }),
       },
     }),
     {
-      name: "auth-storage",
+      name: "auth-storage", // This key itself is not user-specific by name
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
         user: state.user,
         idToken: state.idToken,
-        // For Strategy 1 later: shouldPromptForMerge: state.shouldPromptForMerge, (if you decide to persist the prompt state)
       }),
     }
   )

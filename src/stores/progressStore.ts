@@ -1,27 +1,78 @@
+// src/stores/progressStore.ts
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
+import { useAuthStore } from "./authStore";
+import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 
-// Define a constant empty array outside the hook
+const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2";
+
 const EMPTY_COMPLETED_SECTIONS: string[] = [];
-const PENALTY_DURATION_MS = 15 * 1000; // 15 seconds
+const PENALTY_DURATION_MS = 15 * 1000;
 
 interface ProgressState {
   completion: {
     [lessonId: string]: string[];
   };
-  penaltyEndTime: number | null; // Timestamp when the penalty ends, or null
+  penaltyEndTime: number | null;
   actions: {
     completeSection: (lessonId: string, sectionId: string) => void;
     isSectionComplete: (lessonId: string, sectionId: string) => boolean;
     getCompletedSections: (lessonId: string) => string[];
     resetLessonProgress: (lessonId: string) => void;
     resetAllProgress: () => void;
-    startPenalty: () => void; // Starts a 10-second penalty
-    clearPenalty: () => void; // Clears any active penalty
+    startPenalty: () => void;
+    clearPenalty: () => void;
   };
 }
 
-// Create the store using Zustand's create function and persist middleware
+const createUserSpecificStorage = (baseKey: string): StateStorage => {
+  const getEffectiveKey = (): string => {
+    const authState = useAuthStore.getState();
+    const userId =
+      authState.isAuthenticated && authState.user
+        ? authState.user.id
+        : ANONYMOUS_USER_ID_PLACEHOLDER;
+    const effectiveKeyResult = `${userId}_${baseKey}`;
+    // Log the components of the key
+    // console.log(`[Debug getEffectiveKey] authState.isAuthenticated: ${authState.isAuthenticated}, authState.user.id: ${authState.user?.id}, ANONYMOUS_USER_ID_PLACEHOLDER: ${ANONYMOUS_USER_ID_PLACEHOLDER}, baseKey: ${baseKey}, Result: ${effectiveKeyResult}`);
+    return effectiveKeyResult;
+  };
+
+  return {
+    getItem: (namePassedByPersist) => {
+      // `namePassedByPersist` will be BASE_PROGRESS_STORE_KEY
+      const effectiveKey = getEffectiveKey();
+      console.log(
+        `[ProgressStore Custom Storage] getItem: Attempting to get from effectiveKey="${effectiveKey}" (persist's name was "${namePassedByPersist}")`
+      );
+      const value = localStorage.getItem(effectiveKey);
+      console.log(
+        `[ProgressStore Custom Storage] getItem: Value for "${effectiveKey}" is ${
+          value ? `"${value.substring(0, 70)}..."` : null
+        }`
+      );
+      return value;
+    },
+    setItem: (namePassedByPersist, value) => {
+      const effectiveKey = getEffectiveKey();
+      console.log(
+        `[ProgressStore Custom Storage] setItem: Attempting to set for effectiveKey="${effectiveKey}" (persist's name was "${namePassedByPersist}"), value="${value.substring(
+          0,
+          70
+        )}..."`
+      );
+      localStorage.setItem(effectiveKey, value);
+    },
+    removeItem: (namePassedByPersist) => {
+      const effectiveKey = getEffectiveKey();
+      console.log(
+        `[ProgressStore Custom Storage] removeItem: Attempting to remove for effectiveKey="${effectiveKey}" (persist's name was "${namePassedByPersist}")`
+      );
+      localStorage.removeItem(effectiveKey);
+    },
+  };
+};
+
 export const useProgressStore = create<ProgressState>()(
   persist(
     (set, get) => ({
@@ -53,16 +104,17 @@ export const useProgressStore = create<ProgressState>()(
             delete newCompletion[lessonId];
             return { completion: newCompletion };
           }),
-        resetAllProgress: () => set({ completion: {} }),
+        resetAllProgress: () => set({ completion: {}, penaltyEndTime: null }),
         startPenalty: () =>
           set({ penaltyEndTime: Date.now() + PENALTY_DURATION_MS }),
         clearPenalty: () => set({ penaltyEndTime: null }),
       },
     }),
     {
-      name: "lesson-progress-storage-v2", // Updated name to include penalty
-      storage: createJSONStorage(() => localStorage),
-      // Persist both completion and penaltyEndTime
+      name: BASE_PROGRESS_STORE_KEY, // This is passed as `namePassedByPersist`
+      storage: createJSONStorage(() =>
+        createUserSpecificStorage(BASE_PROGRESS_STORE_KEY)
+      ),
       partialize: (state) => ({
         completion: state.completion,
         penaltyEndTime: state.penaltyEndTime,
@@ -71,11 +123,10 @@ export const useProgressStore = create<ProgressState>()(
   )
 );
 
-// Export actions separately for convenience
+// ... rest of the file (selectors)
 export const useProgressActions = () =>
   useProgressStore((state) => state.actions);
 
-// Selector hook for getting completed sections for a specific lesson
 export const useCompletedSectionsForLesson = (
   lessonId: string | undefined
 ): string[] => {
@@ -86,11 +137,9 @@ export const useCompletedSectionsForLesson = (
   );
 };
 
-// Selector hook for getting all completion data
 export const useAllCompletions = () =>
   useProgressStore((state) => state.completion);
 
-// Selector hook to check if a penalty is currently active
 export const useIsPenaltyActive = (): boolean => {
   return useProgressStore(
     (state) =>
@@ -98,7 +147,6 @@ export const useIsPenaltyActive = (): boolean => {
   );
 };
 
-// Selector hook to get the remaining penalty time in seconds
 export const useRemainingPenaltyTime = (): number => {
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
   if (penaltyEndTime === null || Date.now() >= penaltyEndTime) {
