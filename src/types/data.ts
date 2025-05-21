@@ -131,11 +131,11 @@ export interface TurtleSectionData extends LessonSection {
 }
 
 export interface ReflectionSubmission {
-  topic: string; // Value from the select dropdown
-  code: string; // User's code example
-  explanation: string; // User's explanation
-  timestamp: number; // When the submission was created/sent
-  submitted: boolean; // Was this submitted to the 'journal'?
+  topic: string;
+  code: string;
+  explanation: string;
+  timestamp: number;
+  submitted: boolean;
 }
 
 export type AssessmentLevel =
@@ -144,20 +144,22 @@ export type AssessmentLevel =
   | "developing"
   | "insufficient";
 
+export interface ReflectionSectionData extends LessonSection {
+  kind: "Reflection";
+  topic: string;
+  isTopicPredefined: boolean;
+
+  code: string;
+  isCodePredefined: boolean;
+
+  explanation: string;
+  isExplanationPredefined: boolean;
+}
+
 export interface ReflectionResponse {
   feedback: string; // Text feedback (simulated AI)
   assessment: AssessmentLevel; // Assessment level based on rubric
   timestamp: number; // When feedback was generated
-}
-
-// Update ReflectionSection interface slightly
-export interface ReflectionSectionData extends LessonSection {
-  kind: "Reflection";
-  prompts: {
-    topic: string; // Label for topic dropdown
-    code: string; // Label for code input
-    explanation: string; // Label for explanation input
-  };
 }
 
 // Type for the history entry combining submission and optional response

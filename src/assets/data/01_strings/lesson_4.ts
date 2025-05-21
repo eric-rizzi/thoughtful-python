@@ -64,13 +64,14 @@ const lessonData: Lesson = {
       title: "Final Thoughts on Strings",
       content:
         "Reflect on what you've learned about Python strings in this unit. Create a small code snippet that demonstrates a string manipulation technique you find useful or interesting, and explain it.",
-      prompts: {
-        topic:
-          "What string manipulation technique or concept are you demonstrating (e.g., slicing, methods like .upper(), f-strings, concatenation)?",
-        code: "Write a short Python code snippet (3-5 lines) demonstrating this technique.",
-        explanation:
-          "Briefly explain what your code does and why this technique is useful.",
-      },
+      topic:
+        "What string manipulation technique or concept are you demonstrating (e.g., slicing, methods like .upper(), f-strings, concatenation)?",
+      isTopicPredefined: false,
+      code: "Write a short Python code snippet (3-5 lines) demonstrating this technique.",
+      isCodePredefined: false,
+      explanation:
+        "Briefly explain what your code does and why this technique is useful.",
+      isExplanationPredefined: false,
     } as ReflectionSectionData,
     {
       kind: "Information",

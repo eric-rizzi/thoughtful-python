@@ -28,12 +28,13 @@ const lessonData: Lesson = {
       title: "Reflecting on Debugging",
       content:
         "Debugging is a powerful tool. What did you learn about how the program executes by using the debugger? How did the variables change throughout the loops and function calls?",
-      prompts: {
-        topic: "What did you learn about debugging and program execution?",
-        code: "Paste the final code from the debugger here.",
-        explanation:
-          "Explain how observing the variables in the debugger helped you understand the `calculate_sum` function's execution flow, especially within the loop.",
-      },
+      topic: "What did you learn about debugging and program execution?",
+      isTopicPredefined: false,
+      code: "Paste the final code from the debugger here.",
+      isCodePredefined: false,
+      explanation:
+        "Explain how observing the variables in the debugger helped you understand the `calculate_sum` function's execution flow, especially within the loop.",
+      isExplanationPredefined: false,
     } as ReflectionSectionData,
     {
       kind: "Information",

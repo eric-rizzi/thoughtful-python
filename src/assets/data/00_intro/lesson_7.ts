@@ -18,11 +18,12 @@ const lessonData: Lesson = {
       title: "Python Concept Reflection",
       content:
         "Choose a topic from the previous lessons that you found interesting or challenging. Create a simple code example that demonstrates this concept, and write 3-4 sentences explaining how the code works.",
-      prompts: {
-        topic: "Choose a topic you've learned about",
-        code: "Create a simple example that demonstrates this topic",
-        explanation: "Explain how your example works (3-4 sentences)",
-      },
+      topic: "For Loops",
+      isTopicPredefined: true,
+      code: "Create a simple example that demonstrates this topic",
+      isCodePredefined: false,
+      explanation: "Explain how your example works (3-4 sentences)",
+      isExplanationPredefined: false,
     } as ReflectionSectionData,
     {
       kind: "Information",

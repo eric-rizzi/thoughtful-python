@@ -62,13 +62,14 @@ const lessonData: Lesson = {
       title: "Final Thoughts on Conditionals",
       content:
         "Reflect on what you've learned about Python conditionals. Create a small code snippet (perhaps using `if`, `elif`, and `else`) that demonstrates a scenario where you might make decisions based on a variable's value, and explain it.",
-      prompts: {
-        topic:
-          "What real-world scenario or decision is your code snippet modeling (e.g., checking age, grading, simple choice)?",
-        code: "Write a short Python code snippet (4-7 lines) using `if`/`elif`/`else`.",
-        explanation:
-          "Briefly explain what your code does and how the conditional statements control the output based on the variable's value.",
-      },
+      topic:
+        "What real-world scenario or decision is your code snippet modeling (e.g., checking age, grading, simple choice)?",
+      isTopicPredefined: false,
+      code: "Write a short Python code snippet (4-7 lines) using `if`/`elif`/`else`.",
+      isCodePredefined: false,
+      explanation:
+        "Briefly explain what your code does and how the conditional statements control the output based on the variable's value.",
+      isExplanationPredefined: false,
     } as ReflectionSectionData,
     {
       kind: "Information",

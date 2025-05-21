@@ -84,12 +84,13 @@ const lessonData: Lesson = {
       title: "Reflecting on Your Mad Libs",
       content:
         "Think about the Mad Libs you created. This is an opportunity to reflect on your coding process and the application of string concepts. Provide your Mad Libs code and a brief explanation.",
-      prompts: {
-        topic: "Briefly describe the theme or idea behind your Mad Libs.",
-        code: "Paste your final Mad Libs Python code here.",
-        explanation:
-          "Explain how your Mad Libs code meets AT LEAST THREE of the five requirements (e.g., how you handled number input and operations, how you printed on multiple lines, how you included quotes/apostrophes, or how you used variables).",
-      },
+      topic: "Briefly describe the theme or idea behind your Mad Libs.",
+      isTopicPredefined: false,
+      code: "Paste your final Mad Libs Python code here.",
+      isCodePredefined: false,
+      explanation:
+        "Explain how your Mad Libs code meets AT LEAST THREE of the five requirements (e.g., how you handled number input and operations, how you printed on multiple lines, how you included quotes/apostrophes, or how you used variables).",
+      isExplanationPredefined: false,
     } as ReflectionSectionData,
   ],
 };

@@ -62,12 +62,13 @@ const lessonData: Lesson = {
       id: "cond4-reflection-on-creation",
       title: "Reflecting on Your Game",
       content: "Submit your '2 Questions' game code and explain its structure.",
-      prompts: {
-        topic: "What four words did you choose for your game?",
-        code: "Paste your final '2 Questions' Python code here.",
-        explanation:
-          "Explain how your nested `if`/`else` structure uses the answers to the two questions to arrive at the correct final guess. How did you ensure the output format `It's 'WORD'!` was correct?",
-      },
+      topic: "What four words did you choose for your game?",
+      isTopicPredefined: false,
+      code: "Paste your final '2 Questions' Python code here.",
+      isCodePredefined: false,
+      explanation:
+        "Explain how your nested `if`/`else` structure uses the answers to the two questions to arrive at the correct final guess. How did you ensure the output format `It's 'WORD'!` was correct?",
+      isExplanationPredefined: false,
     } as ReflectionSectionData,
   ],
 };
