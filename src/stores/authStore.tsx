@@ -1,14 +1,16 @@
-// src/stores/authStore.tsx
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import {
-  ANONYMOUS_USER_ID_PLACEHOLDER,
   clearAllAnonymousData,
+  ANONYMOUS_USER_ID_PLACEHOLDER,
 } from "../lib/localStorageUtils";
-import { BASE_PROGRESS_STORE_KEY } from "./progressStore"; // Import progress store
+import { BASE_PROGRESS_STORE_KEY } from "./progressStore"; // For constructing localStorage keys
+import { useApiSettingsStore } from "./apiSettingsStore"; // To get API Gateway URL
+import * as apiService from "../lib/apiService"; // Import your mocked API service
 
-interface UserProfile {
-  id: string;
+// Interfaces (should match or be imported if defined elsewhere centrally)
+export interface UserProfile {
+  id: string; // e.g., Google User ID (sub)
   name?: string;
   email?: string;
   picture?: string;
@@ -17,9 +19,9 @@ interface UserProfile {
 interface AuthState {
   isAuthenticated: boolean;
   user: UserProfile | null;
-  idToken: string | null;
+  idToken: string | null; // Google ID Token
   actions: {
-    login: (user: UserProfile, idToken: string) => Promise<void>;
+    login: (userProfile: UserProfile, idToken: string) => Promise<void>;
     logout: () => Promise<void>;
     getIdToken: () => string | null;
   };
@@ -36,150 +38,195 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       ...initialAuthState,
       actions: {
-        login: async (user, idToken) => {
-          console.log("Login action: User attempting to log in:", user.id);
+        login: async (userProfile, idToken) => {
+          console.log(
+            "[AuthStore] Login action started for user:",
+            userProfile.id
+          );
 
-          // ---- Start: Anonymous Progress Claiming Logic ----
-          const anonymousProgressLocalStorageKey = `${ANONYMOUS_USER_ID_PLACEHOLDER}_${BASE_PROGRESS_STORE_KEY}`;
-          const userProgressLocalStorageKey = `${user.id}_${BASE_PROGRESS_STORE_KEY}`;
+          const claimedAnonymousProgressActions: apiService.SectionCompletionInput[] =
+            [];
+          const anonymousProgressLsKey = `${ANONYMOUS_USER_ID_PLACEHOLDER}_${BASE_PROGRESS_STORE_KEY}`;
 
+          // 1. Read and prepare to claim anonymous progress (if any)
           try {
             const anonymousProgressRaw = localStorage.getItem(
-              anonymousProgressLocalStorageKey
+              anonymousProgressLsKey
             );
-
             if (anonymousProgressRaw) {
-              console.log(
-                "Anonymous progress found. Attempting to merge with user's progress."
-              );
-              const anonymousProgressData = JSON.parse(anonymousProgressRaw); // Structure: { state: { completion, penaltyEndTime }, version }
-
-              let currentUserProgressData = null;
-              const currentUserProgressRaw = localStorage.getItem(
-                userProgressLocalStorageKey
-              );
-              if (currentUserProgressRaw) {
-                currentUserProgressData = JSON.parse(currentUserProgressRaw);
-              }
-
-              // Perform the non-overwriting union for 'completion'
-              const mergedCompletionState = {
-                ...(currentUserProgressData?.state?.completion || {}),
-              };
-              const anonymousCompletion =
-                anonymousProgressData?.state?.completion || {};
-
-              for (const lessonId in anonymousCompletion) {
-                const anonSections = new Set(
-                  anonymousCompletion[lessonId] || []
+              const anonymousProgressData = JSON.parse(anonymousProgressRaw); // Expected: { state: { completion: {...} }, version: X }
+              if (anonymousProgressData?.state?.completion) {
+                console.log(
+                  "[AuthStore] Anonymous progress found, preparing to claim:",
+                  anonymousProgressData.state.completion
                 );
-                const userSections = new Set(
-                  mergedCompletionState[lessonId] || []
-                );
-                anonSections.forEach((section) => userSections.add(section));
-                if (userSections.size > 0) {
-                  mergedCompletionState[lessonId] = Array.from(userSections);
+                for (const lessonId in anonymousProgressData.state.completion) {
+                  const sections =
+                    (anonymousProgressData.state.completion[
+                      lessonId
+                    ] as string[]) || [];
+                  sections.forEach((sectionId) => {
+                    claimedAnonymousProgressActions.push({
+                      lessonId,
+                      sectionId,
+                    });
+                  });
                 }
               }
-
-              // Handle penaltyEndTime: User's existing penalty, or the later of the two.
-              let mergedPenaltyTime =
-                currentUserProgressData?.state?.penaltyEndTime || null;
-              const anonymousPenaltyTime =
-                anonymousProgressData?.state?.penaltyEndTime || null;
-
-              if (anonymousPenaltyTime !== null) {
-                if (
-                  mergedPenaltyTime === null ||
-                  anonymousPenaltyTime > mergedPenaltyTime
-                ) {
-                  mergedPenaltyTime = anonymousPenaltyTime;
-                }
-              }
-
-              const newProgressForUser = {
-                completion: mergedCompletionState,
-                penaltyEndTime: mergedPenaltyTime,
-              };
-
-              const version =
-                currentUserProgressData?.version ??
-                anonymousProgressData?.version ??
-                0;
-
-              localStorage.setItem(
-                userProgressLocalStorageKey,
-                JSON.stringify({ state: newProgressForUser, version })
-              );
-              console.log(
-                "Merged progress successfully saved under user's key:",
-                userProgressLocalStorageKey
-              );
-
-              // Note: The specific anonymous *progress* key (anonymousProgressLocalStorageKey)
-              // will be removed by the clearAllAnonymousData() call below.
-            } else {
-              console.log("No anonymous progress found to claim.");
             }
           } catch (e) {
             console.error(
-              "Error during anonymous progress claiming/merging:",
+              "[AuthStore] Error reading or parsing anonymous progress:",
               e
             );
-            // Log error, but continue with login to not block the user.
+            // Continue login even if this fails
           }
-          // ---- End: Anonymous Progress Claiming Logic ----
 
-          // This call was already in your original authStore.tsx's login action.
-          // It will wipe ALL localStorage items prefixed with ANONYMOUS_USER_ID_PLACEHOLDER_.
-          // This includes the original anonymous progress data (which is fine as it's now merged)
-          // and any other anonymous data like code editor drafts or configuration settings.
+          // 2. Clear ALL local anonymous data (from localStorageUtils)
+          // This wipes everything prefixed with ANONYMOUS_USER_ID_PLACEHOLDER_
+          console.log(52);
           console.log(
-            "Login action: Clearing ALL anonymous data from localStorage."
+            "[AuthStore] Clearing all anonymous data from localStorage."
           );
-          clearAllAnonymousData(); //
+          clearAllAnonymousData();
 
-          // Set Zustand auth state
-          set({ isAuthenticated: true, user, idToken });
+          // 3. Fetch canonical progress from the (mocked) server for the logged-in user
+          const apiGatewayUrl =
+            useApiSettingsStore.getState().progressApiGateway;
+          let serverProgressData: apiService.UserProgressData | null = null;
 
-          // Reload the page to rehydrate stores with the new user context
+          if (!apiGatewayUrl && !apiService.USE_MOCKED_API) {
+            // Check if URL is needed for real calls
+            console.error(
+              "[AuthStore] API Gateway URL is not configured for real API calls. Cannot fetch server progress."
+            );
+            // Potentially handle this by setting user up with empty progress or erroring login
+          } else {
+            try {
+              console.log(
+                "[AuthStore] Fetching user progress from server (mocked)..."
+              );
+              serverProgressData = await apiService.getUserProgress(
+                idToken,
+                apiGatewayUrl
+              );
+              console.log(
+                "[AuthStore] Successfully fetched (mocked) progress from server:",
+                serverProgressData
+              );
+
+              // 4. Store this server-fetched (mocked) progress into localStorage under the user's key.
+              // This state will be picked up by progressStore after page reload.
+              const userProgressLsKey = `${userProfile.id}_${BASE_PROGRESS_STORE_KEY}`;
+              const persistedState = {
+                state: {
+                  // Match the structure progressStore's persist expects
+                  completion: serverProgressData.completion,
+                  penaltyEndTime: serverProgressData.penaltyEndTime,
+                },
+                version: 0, // TODO: Get version from server if available, or use a default
+              };
+              localStorage.setItem(
+                userProgressLsKey,
+                JSON.stringify(persistedState)
+              );
+              console.log(
+                "[AuthStore] (Mocked) Server progress stored in localStorage for user:",
+                userProfile.id
+              );
+            } catch (e) {
+              console.error(
+                "[AuthStore] Error fetching (mocked) user progress from server or storing it:",
+                e
+              );
+              // If server fetch fails, the user might start with empty progress from localStorage if their key doesn't exist.
+              // The claimedAnonymousProgressActions sync (step 6) will still attempt.
+            }
+          }
+
+          // 5. Set Zustand auth state (this happens before reload)
+          set({ isAuthenticated: true, user: userProfile, idToken });
+          console.log("[AuthStore] Zustand authentication state updated.");
+
+          // 6. Sync "Claimed" Anonymous Progress to Mocked Server (if any existed and online)
+          if (claimedAnonymousProgressActions.length > 0) {
+            if (navigator.onLine) {
+              try {
+                console.log(
+                  "[AuthStore] Attempting to sync claimed anonymous progress to server (mocked)...",
+                  claimedAnonymousProgressActions
+                );
+                const batchInput: apiService.BatchCompletionsInput = {
+                  completions: claimedAnonymousProgressActions,
+                };
+                const syncResult = await apiService.updateUserProgress(
+                  idToken,
+                  apiGatewayUrl,
+                  batchInput
+                );
+                console.log(
+                  "[AuthStore] Successfully synced claimed anonymous progress (mocked). Server response:",
+                  syncResult
+                );
+                // The server (even mocked) now has this. If the getUserProgress earlier didn't include it,
+                // the next full sync or GET /progress would reflect it.
+                // For simplicity, we assume the server handles the merge.
+              } catch (e) {
+                console.error(
+                  "[AuthStore] Failed to sync claimed anonymous progress (mocked):",
+                  e
+                );
+                // In a real app: If this critical sync fails, you'd add these actions to the user's
+                // own robust offline queue in progressStore. For this phase, logging is okay.
+                // This implies a need for progressStore to handle an initial batch of "to-sync" items.
+              }
+            } else {
+              console.warn(
+                "[AuthStore] User is offline. Claimed anonymous progress was not synced. It would need to be added to a user-specific offline queue."
+              );
+              // This is a more complex scenario: user logs in offline and had prior anon data.
+              // The anon data is cleared locally. To preserve it, it would need to be added
+              // to the (yet to be fully implemented) user's offline queue in progressStore.
+              // For now, if login occurs offline, this specific claimed anonymous progress might be lost
+              // if not immediately synced. The server-fetched state (step 4) is the primary.
+            }
+          }
+
+          // 7. Trigger the reload.
+          console.log("[AuthStore] Login successful, reloading page.");
           window.location.reload();
-          console.log("Login successful, page will reload.");
         },
 
         logout: async () => {
-          console.log("Logout action started.");
+          console.log("[AuthStore] Logout action started.");
           const previousUser = get().user;
 
-          // Reset Zustand auth state first
+          // Clear Zustand auth state first
           set({ ...initialAuthState });
-          console.log("Zustand auth state has been reset.");
+          console.log("[AuthStore] Zustand authentication state reset.");
 
-          // If there was a logged-in user, their data REMAINS in localStorage.
-          // We DO NOT remove userProgressLocalStorageKey here.
+          // User's specific progress data in localStorage is NOT deleted here
+          // to allow it to persist if they log back in.
           if (previousUser && previousUser.id) {
             console.log(
-              `User ${previousUser.id} logging out. Their specific progress data will remain persisted in localStorage.`
+              `[AuthStore] User ${previousUser.id} logged out. Their specific progress data remains in localStorage.`
             );
-          } else {
-            console.log("Logging out (user was null or had no ID).");
           }
 
-          // Reload the page.
-          // After reload, the application will be in an anonymous state.
-          // The previously logged-in user's data is still in localStorage under their specific ID,
-          // but it won't be loaded until they log in again as that specific user.
-          window.location.reload();
+          // The googleLogout() function from @react-oauth/google should be called
+          // by your UI component that handles the Google logout button, before calling this action.
+
           console.log(
-            "Logout complete, page will reload for an anonymous session."
+            "[AuthStore] Logout complete, reloading page for an anonymous session."
           );
+          window.location.reload();
         },
 
         getIdToken: () => get().idToken,
       },
     }),
     {
-      name: "auth-storage", // localStorage key for the auth store's own state
+      name: "auth-storage", // localStorage key for the auth store's own persisted state
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
@@ -189,4 +236,6 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Optional: Export actions hook for convenience
 export const useAuthActions = () => useAuthStore((state) => state.actions);
