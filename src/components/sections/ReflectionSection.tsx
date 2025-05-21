@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
-  ReflectionSection as ReflectionSectionData,
+  ReflectionSectionData,
   ReflectionSubmission,
   ReflectionResponse,
   ReflectionHistoryEntry,
@@ -13,7 +13,11 @@ import type {
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
-import { loadProgress } from "../../lib/localStorageUtils";
+import {
+  loadProgress,
+  ANONYMOUS_USER_ID_PLACEHOLDER,
+} from "../../lib/localStorageUtils";
+import { useAuthStore } from "../../stores/authStore";
 
 // Define initial state outside the component or use useMemo for stable reference
 const STABLE_INITIAL_REFLECTION_STATE: SavedReflectionState = { history: [] };
@@ -156,13 +160,37 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const [chatbotVersion, setChatbotVersion] = useState<string>("");
   const [chatbotApiKey, setChatbotApiKey] = useState<string>("");
 
+  // Get auth state to determine the correct localStorage key
+  const authUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   useEffect(() => {
-    const savedConfig = loadProgress<ChatBotConfig>(CONFIG_STORAGE_KEY);
+    const currentStorageUserId =
+      isAuthenticated && authUser ? authUser.id : ANONYMOUS_USER_ID_PLACEHOLDER;
+
+    console.log(
+      `[ReflectionSection] useEffect: Loading ChatBotConfig for userId: ${currentStorageUserId}, subKey: ${CONFIG_STORAGE_KEY}`
+    );
+    const savedConfig = loadProgress<ChatBotConfig>(
+      currentStorageUserId, // Corrected: Pass userId as the first argument
+      CONFIG_STORAGE_KEY // Corrected: Pass the subKey ("chatbot_config")
+    );
+
     if (savedConfig) {
+      console.log(
+        "[ReflectionSection] useEffect: Found savedConfig",
+        savedConfig
+      );
       setChatbotVersion(savedConfig.chatbotVersion || "");
       setChatbotApiKey(savedConfig.chatbotApiKey || "");
+    } else {
+      console.log(
+        "[ReflectionSection] useEffect: No saved ChatBotConfig found. Resetting version/key."
+      );
+      setChatbotVersion(""); // Ensure reset if no config found for current user/session
+      setChatbotApiKey("");
     }
-  }, []);
+  }, [isAuthenticated, authUser]);
 
   const storageKey = `reflectState_${lessonId}_${section.id}`;
   // Use the stable reference for initialState
@@ -190,7 +218,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       checkReflectionCompletion
     );
 
-  // ... rest of your ReflectionSection component is likely fine ...
   const history = reflectionState.history;
   const hasEverReceivedFeedback = history.some((entry) => entry.response);
 
@@ -312,7 +339,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             onPaste={handlePaste}
           />
         </div>
-
         <div className={styles.reflectionInputGroup}>
           <label className={styles.reflectionLabel}>
             {section.prompts.code || "Code Example:"}
@@ -327,7 +353,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             />
           </div>
         </div>
-
         <div className={styles.reflectionInputGroup}>
           <label
             htmlFor={`${section.id}-explanation`}
@@ -343,9 +368,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             disabled={isSubmitting}
             placeholder="Explain your code example here (3-4 sentences)..."
             onPaste={handlePaste}
+            rows={4}
           />
         </div>
-
         <div className={styles.reflectionButtons}>
           <button
             onClick={() => handleSubmit(false)} // Get Feedback button
@@ -371,7 +396,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
-              !hasEverReceivedFeedback || // Must get feedback at least once for THIS version
+              !hasEverReceivedFeedback ||
               !chatbotVersion ||
               !chatbotApiKey
             }
@@ -389,9 +414,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             {isSubmitting ? "Processing..." : "Submit Entry to Journal"}
           </button>
         </div>
-
-        {error && <p className={styles.apiError}>Error: {error}</p>}
-
+        {error && <p className={styles.apiError}>{error}</p>}{" "}
         <div className={styles.reflectionHistory}>
           <h4>
             Submission History {isSectionComplete ? "(Section Complete ✓)" : ""}
