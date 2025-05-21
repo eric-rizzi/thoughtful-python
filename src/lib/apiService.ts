@@ -1,179 +1,34 @@
 // src/lib/apiService.ts
-import { ReflectionResponse, ReflectionSubmission } from "../types/data";
+import type {
+  UserProgressData,
+  BatchCompletionsInput,
+  ErrorResponse,
+  LearningEntrySubmissionData,
+  LearningEntryResponseItem,
+} from "../types/apiServiceTypes";
+import {
+  AssessmentLevel,
+  ReflectionResponse,
+  ReflectionSubmission,
+} from "../types/data";
 
-// --- Type Definitions (mirroring components.schemas from your Swagger) ---
-export interface SectionCompletionInput {
-  lessonId: string;
-  sectionId: string;
-}
+export const USE_MOCKED_API = false;
+const MOCKED_USER_ID = "mocked-google-user-id-12345";
 
-export interface UserProgressData {
-  userId: string; // Server will derive this from the token and include it in response
-  completion: {
-    [lessonId: string]: string[]; // e.g., "00_intro/lesson_1": ["section_a", "section_b"]
-  };
-  penaltyEndTime: number | null;
-  lastModifiedServerTimestamp?: string; // ReadOnly, set by server
-}
-
-export interface BatchCompletionsInput {
-  completions: SectionCompletionInput[];
-}
-
-export interface ErrorResponse {
-  message: string;
-  errorCode?: string;
-  details?: any;
-}
-
-// --- Mock Configuration ---
-export const USE_MOCKED_API = true; // Set to false when your backend is ready
-const MOCKED_USER_ID = "109086647533336088230"; // Example user ID
-
-// Simulate network delay for mocked calls
 const mockApiDelay = (duration: number = 500) =>
   new Promise((resolve) => setTimeout(resolve, duration));
 
-// --- API Functions ---
-
 /**
  * Fetches the authenticated user's complete learning progress from the server.
- *
- * MOCK IMPLEMENTATION:
- * Returns progress indicating Lesson 5 of the "Introduction to Python" unit is fully complete.
- * Other lessons/sections will be shown as incomplete or not started.
- * (Based on src/assets/data/00_intro/lesson_5.ts and getRequiredSectionsForLesson logic)
  */
 export async function getUserProgress(
   idToken: string,
   apiGatewayUrl: string
 ): Promise<UserProgressData> {
-  console.log("hi eric");
-  if (!idToken && !USE_MOCKED_API) {
-    // Allow empty token for mock if not strictly needed by mock
-    return Promise.reject(
-      new Error("Authentication token is required for real API calls.")
-    );
-  }
-  console.log("hi eric and penis");
-  if (!apiGatewayUrl && !USE_MOCKED_API) {
-    return Promise.reject(
-      new Error("API Gateway URL is required for real API calls.")
-    );
-  }
-
-  console.log("hi eric and other penis");
   if (USE_MOCKED_API) {
-    console.log(
-      `MOCKED API [getUserProgress]: Called. Token: ${
-        idToken ? idToken.substring(0, 15) : "N/A"
-      }..., URL: ${apiGatewayUrl}`
-    );
+    console.log(`MOCKED API [getUserProgress]: Called. URL: ${apiGatewayUrl}`);
     await mockApiDelay();
-
-    // Sections for "00_intro/lesson_5" considered for completion (excluding "Information" types)
-    // From src/assets/data/00_intro/lesson_5.ts:
-    // "question-1", "question-2", "question-3", "question-4", "question-5", "question-6"
-    const completedLesson5Sections = [
-      "question-1",
-      "question-2",
-      "question-3",
-      "question-4",
-      "question-5",
-      "question-6",
-    ];
-
     const mockedProgress: UserProgressData = {
-      userId: MOCKED_USER_ID,
-      completion: {
-        "00_intro/lesson_5": [...completedLesson5Sections],
-        // Example of other lessons being incomplete or not started
-        "00_intro/lesson_1": ["python-history"], // Partially complete example
-        "00_intro/lesson_2": [], // Started but no required sections complete
-        "01_strings/lesson_1": [],
-        // Any lessonId not present is considered not started
-      },
-      penaltyEndTime: null,
-      lastModifiedServerTimestamp: new Date().toISOString(),
-    };
-    console.log(
-      "MOCKED API [getUserProgress]: Returning ->",
-      JSON.stringify(mockedProgress, null, 2)
-    );
-    return Promise.resolve(mockedProgress);
-  }
-
-  // --- Real API Call (Placeholder - to be implemented when backend is ready) ---
-  console.log(`REAL API [getUserProgress]: Calling ${apiGatewayUrl}/progress`);
-  const response = await fetch(`${apiGatewayUrl}/progress`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${idToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json().catch(() => ({
-      message: response.statusText,
-      errorCode: `HTTP_${response.status}`,
-    }));
-    console.error(
-      `REAL API [getUserProgress]: Error ${response.status}`,
-      errorData
-    );
-    throw new Error(
-      errorData.message || `Failed to fetch progress: ${response.status}`
-    );
-  }
-  const data = await response.json();
-  console.log("REAL API [getUserProgress]: Received ->", data);
-  return data as UserProgressData;
-}
-
-/**
- * Records one or more section completions for the authenticated user.
- * Corresponds to PUT /progress in the Swagger schema.
- *
- * MOCK IMPLEMENTATION:
- * Logs the input and attempts a simplistic merge with the static "lesson 5 complete" state.
- * Returns this potentially modified state.
- */
-export async function updateUserProgress(
-  idToken: string,
-  apiGatewayUrl: string,
-  batchInput: BatchCompletionsInput
-): Promise<UserProgressData> {
-  if (!idToken && !USE_MOCKED_API) {
-    return Promise.reject(
-      new Error("Authentication token is required for real API calls.")
-    );
-  }
-  if (!apiGatewayUrl && !USE_MOCKED_API) {
-    return Promise.reject(
-      new Error("API Gateway URL is required for real API calls.")
-    );
-  }
-  if (
-    !batchInput ||
-    !batchInput.completions ||
-    batchInput.completions.length === 0
-  ) {
-    return Promise.reject(new Error("No completions provided in the batch."));
-  }
-
-  if (USE_MOCKED_API) {
-    console.log(
-      `MOCKED API [updateUserProgress]: Called with ${batchInput.completions.length} completion(s). URL: ${apiGatewayUrl}`
-    );
-    console.log(
-      "MOCKED API [updateUserProgress]: Batch input ->",
-      JSON.stringify(batchInput.completions, null, 2)
-    );
-    await mockApiDelay(300);
-
-    // Start with the base mocked progress (lesson 5 complete)
-    const baseProgress: UserProgressData = {
       userId: MOCKED_USER_ID,
       completion: {
         "00_intro/lesson_5": [
@@ -185,41 +40,105 @@ export async function updateUserProgress(
           "question-6",
         ],
         "00_intro/lesson_1": ["python-history"],
-        "00_intro/lesson_2": [],
-        "01_strings/lesson_1": [],
       },
       penaltyEndTime: null,
-      lastModifiedServerTimestamp: new Date().toISOString(), // Update timestamp
+      lastModifiedServerTimestamp: new Date().toISOString(),
     };
+    return Promise.resolve(mockedProgress);
+  }
 
-    // Simulate server-side merge/union for the mock
-    batchInput.completions.forEach((completion) => {
-      if (!baseProgress.completion[completion.lessonId]) {
-        baseProgress.completion[completion.lessonId] = [];
-      }
-      if (
-        !baseProgress.completion[completion.lessonId].includes(
-          completion.sectionId
-        )
-      ) {
-        baseProgress.completion[completion.lessonId].push(completion.sectionId);
-        console.log(
-          `MOCKED API [updateUserProgress]: Merged ${completion.lessonId}/${completion.sectionId}`
-        );
+  // --- Real API Call ---
+  if (!idToken)
+    return Promise.reject(new Error("Authentication token is required."));
+  if (!apiGatewayUrl)
+    return Promise.reject(new Error("API Gateway URL is required."));
+
+  console.log(
+    `LIVE API [getUserProgress]: Calling GET ${apiGatewayUrl}/progress`
+  );
+  const response = await fetch(`${apiGatewayUrl}/progress`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorData: ErrorResponse = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      errorData = await response.json();
+    } catch (e) {
+      // Ignore if response body is not JSON
+    }
+    console.error(
+      `LIVE API [getUserProgress]: Error ${response.status}`,
+      errorData
+    );
+    throw new Error(
+      errorData.message || `Failed to fetch progress: ${response.status}`
+    );
+  }
+  const data = await response.json();
+  console.log("LIVE API [getUserProgress]: Received ->", data);
+  return data as UserProgressData;
+}
+
+/**
+ * Records one or more section completions for the authenticated user.
+ * Corresponds to PUT /progress in the Swagger schema.
+ */
+export async function updateUserProgress(
+  idToken: string,
+  apiGatewayUrl: string,
+  batchInput: BatchCompletionsInput
+): Promise<UserProgressData> {
+  if (USE_MOCKED_API) {
+    console.log(
+      `MOCKED API [updateUserProgress]: Called with ${batchInput.completions.length} completion(s). URL: ${apiGatewayUrl}`
+    );
+    await mockApiDelay(300);
+    const baseProgress: UserProgressData = {
+      /* ... same mock as before ... */ userId: MOCKED_USER_ID,
+      completion: {
+        "00_intro/lesson_5": [
+          "question-1",
+          "question-2",
+          "question-3",
+          "question-4",
+          "question-5",
+          "question-6",
+        ],
+        "00_intro/lesson_1": ["python-history"],
+      },
+      penaltyEndTime: null,
+      lastModifiedServerTimestamp: new Date().toISOString(),
+    };
+    batchInput.completions.forEach((comp) => {
+      if (!baseProgress.completion[comp.lessonId])
+        baseProgress.completion[comp.lessonId] = [];
+      if (!baseProgress.completion[comp.lessonId].includes(comp.sectionId)) {
+        baseProgress.completion[comp.lessonId].push(comp.sectionId);
       }
     });
     baseProgress.lastModifiedServerTimestamp = new Date().toISOString();
-
-    console.log(
-      "MOCKED API [updateUserProgress]: Returning updated progress ->",
-      JSON.stringify(baseProgress, null, 2)
-    );
     return Promise.resolve(baseProgress);
   }
 
-  // --- Real API Call (Placeholder - to be implemented when backend is ready) ---
+  // --- Real API Call ---
+  if (!idToken)
+    return Promise.reject(new Error("Authentication token is required."));
+  if (!apiGatewayUrl)
+    return Promise.reject(new Error("API Gateway URL is required."));
+  if (!batchInput || !batchInput.completions) {
+    // Ensure completions array exists
+    return Promise.reject(new Error("Completions data is required."));
+  }
+
   console.log(
-    `REAL API [updateUserProgress]: Calling PUT ${apiGatewayUrl}/progress`
+    `LIVE API [updateUserProgress]: Calling PUT ${apiGatewayUrl}/progress`
   );
   const response = await fetch(`${apiGatewayUrl}/progress`, {
     method: "PUT",
@@ -227,16 +146,20 @@ export async function updateUserProgress(
       Authorization: `Bearer ${idToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(batchInput),
+    body: JSON.stringify(batchInput), // Send the batchInput directly
   });
 
   if (!response.ok) {
-    const errorData: ErrorResponse = await response.json().catch(() => ({
-      message: response.statusText,
-      errorCode: `HTTP_${response.status}`,
-    }));
+    let errorData: ErrorResponse = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      errorData = await response.json();
+    } catch (e) {
+      // Ignore
+    }
     console.error(
-      `REAL API [updateUserProgress]: Error ${response.status}`,
+      `LIVE API [updateUserProgress]: Error ${response.status}`,
       errorData
     );
     throw new Error(
@@ -244,45 +167,83 @@ export async function updateUserProgress(
     );
   }
   const data = await response.json();
-  console.log("REAL API [updateUserProgress]: Received ->", data);
+  console.log("LIVE API [updateUserProgress]: Received ->", data);
   return data as UserProgressData;
 }
 
-export interface LearningEntrySubmissionData {
-  lessonId: string;
-  sectionId: string; // The ID of the ReflectionSection
-  sectionTitle: string; // The title of the ReflectionSection
-  submission: ReflectionSubmission; // The student's topic, code, explanation, timestamp, submitted:true
-  assessmentResponse: ReflectionResponse; // The AI's feedback, assessment, timestamp
-}
+// --- Other API Functions (Learning Entries, Reflection Feedback) ---
+// Keep these mocked for now, or implement them when their respective backend Lambdas are ready.
 
+// Example: submitLearningEntry (still mocked or placeholder for real implementation)
 export async function submitLearningEntry(
   idToken: string,
   apiGatewayUrl: string,
   entryData: LearningEntrySubmissionData
 ): Promise<{ success: boolean; entryId?: string }> {
-  // Backend might return a new ID for the entry
   if (USE_MOCKED_API) {
+    // Or a specific flag for this service
     console.log(
-      `MOCKED API [submitLearningEntry]: Called for lesson "<span class="math-inline">\{entryData\.lessonId\}", section "</span>{entryData.sectionId}"`
-    );
-    console.log(
-      "MOCKED API [submitLearningEntry]: Entry Data:",
-      JSON.stringify(entryData, null, 2)
+      `MOCKED API [submitLearningEntry]: Called for lesson "${entryData.lessonId}"`
     );
     await mockApiDelay(500);
-    // Simulate successful save and return a mock ID
     return Promise.resolve({
       success: true,
       entryId: `mock-entry-${Date.now()}`,
     });
   }
-  // Real fetch to your backend endpoint (e.g., POST /api/learning-entries)
-  // const response = await fetch(`${apiGatewayUrl}/learning-entries`, {
-  //   method: 'POST',
-  //   headers: { /* ... Auth, Content-Type ... */ },
-  //   body: JSON.stringify(entryData),
-  // });
-  // ... handle response ...
-  throw new Error("Real submitLearningEntry not implemented.");
+  console.log(
+    `LIVE API [submitLearningEntry]: Calling POST ${apiGatewayUrl}/learning-entries`
+  );
+  // Real implementation for submitLearningEntry...
+  throw new Error("Real submitLearningEntry not implemented yet.");
+}
+
+// Example: fetchLearningEntries (still mocked or placeholder)
+export async function fetchLearningEntries(
+  idToken: string,
+  apiGatewayUrl: string
+): Promise<LearningEntryResponseItem[]> {
+  // Ensure LearningEntryResponseItem is defined or imported
+  if (USE_MOCKED_API) {
+    // Or a specific flag for this service
+    console.log("MOCKED API [fetchLearningEntries]: Called.");
+    await mockApiDelay();
+    return Promise.resolve([
+      /* ... mocked learning entries ... */
+    ]);
+  }
+  console.log(
+    `LIVE API [fetchLearningEntries]: Calling GET ${apiGatewayUrl}/learning-entries`
+  );
+  // Real implementation for fetchLearningEntries...
+  throw new Error("Real fetchLearningEntries not implemented yet.");
+}
+
+// Example: getReflectionFeedback (still mocked or placeholder)
+export async function getReflectionFeedback(
+  idToken: string,
+  apiGatewayUrl: string,
+  submission: ReflectionSubmission // Ensure this type is defined or imported
+): Promise<ReflectionResponse> {
+  // Ensure this type is defined or imported
+  if (USE_MOCKED_API) {
+    // Or a specific flag for this service
+    console.log(
+      `MOCKED API [getReflectionFeedback]: Called for topic "${submission.topic}"`
+    );
+    await mockApiDelay(1000);
+    return Promise.resolve({
+      feedback:
+        "This is thoughtful mocked feedback for the live integration phase.",
+      assessment: (Math.random() > 0.5
+        ? "mostly"
+        : "achieves") as AssessmentLevel, // Ensure AssessmentLevel is defined
+      timestamp: Date.now(),
+    });
+  }
+  console.log(
+    `LIVE API [getReflectionFeedback]: Calling POST ${apiGatewayUrl}/reflection/assess`
+  );
+  // Real implementation for getReflectionFeedback...
+  throw new Error("Real getReflectionFeedback not implemented yet.");
 }
