@@ -1,4 +1,5 @@
 // src/lib/apiService.ts
+import { ReflectionResponse, ReflectionSubmission } from "../types/data";
 
 // --- Type Definitions (mirroring components.schemas from your Swagger) ---
 export interface SectionCompletionInput {
@@ -245,4 +246,43 @@ export async function updateUserProgress(
   const data = await response.json();
   console.log("REAL API [updateUserProgress]: Received ->", data);
   return data as UserProgressData;
+}
+
+export interface LearningEntrySubmissionData {
+  lessonId: string;
+  sectionId: string; // The ID of the ReflectionSection
+  sectionTitle: string; // The title of the ReflectionSection
+  submission: ReflectionSubmission; // The student's topic, code, explanation, timestamp, submitted:true
+  assessmentResponse: ReflectionResponse; // The AI's feedback, assessment, timestamp
+}
+
+export async function submitLearningEntry(
+  idToken: string,
+  apiGatewayUrl: string,
+  entryData: LearningEntrySubmissionData
+): Promise<{ success: boolean; entryId?: string }> {
+  // Backend might return a new ID for the entry
+  if (USE_MOCKED_API) {
+    console.log(
+      `MOCKED API [submitLearningEntry]: Called for lesson "<span class="math-inline">\{entryData\.lessonId\}", section "</span>{entryData.sectionId}"`
+    );
+    console.log(
+      "MOCKED API [submitLearningEntry]: Entry Data:",
+      JSON.stringify(entryData, null, 2)
+    );
+    await mockApiDelay(500);
+    // Simulate successful save and return a mock ID
+    return Promise.resolve({
+      success: true,
+      entryId: `mock-entry-${Date.now()}`,
+    });
+  }
+  // Real fetch to your backend endpoint (e.g., POST /api/learning-entries)
+  // const response = await fetch(`${apiGatewayUrl}/learning-entries`, {
+  //   method: 'POST',
+  //   headers: { /* ... Auth, Content-Type ... */ },
+  //   body: JSON.stringify(entryData),
+  // });
+  // ... handle response ...
+  throw new Error("Real submitLearningEntry not implemented.");
 }

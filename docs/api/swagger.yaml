@@ -56,7 +56,8 @@ components:
               description: "A sectionId that has been completed."
           example:
             "00_intro/lesson_1": ["python-history", "print-function"]
-            "01_strings/lesson_2": ["primm-type-error", "problem2-task-fix-error"]
+            "01_strings/lesson_2":
+              ["primm-type-error", "problem2-task-fix-error"]
         penaltyEndTime:
           type: integer
           format: int64 # Unix timestamp in milliseconds
@@ -82,9 +83,156 @@ components:
         completions:
           type: array
           items:
-            $ref: '#/components/schemas/SectionCompletionInput'
+            $ref: "#/components/schemas/SectionCompletionInput"
           minItems: 1
           description: "An array of section completion events."
+
+    AssessmentLevel:
+      type: string
+      description: The assessment level given by the AI.
+      enum:
+        - achieves
+        - mostly
+        - developing
+        - insufficient
+
+    ReflectionSubmissionInput: # What the student submits for a reflection cycle or journaling
+      type: object
+      required:
+        - topic
+        - code
+        - explanation
+        - timestamp
+        - submitted # This will be true when formally journaling
+      properties:
+        topic:
+          type: string
+          description: The topic of the student's reflection.
+          example: "Understanding Python Dictionaries"
+        code:
+          type: string
+          description: The code snippet provided by the student.
+          example: "my_dict = {'key': 'value'}"
+        explanation:
+          type: string
+          description: The student's explanation of the topic and code.
+          example: "Dictionaries store key-value pairs..."
+        timestamp:
+          type: integer
+          format: int64
+          description: Unix epoch milliseconds when the submission was made.
+          example: 1678886400000
+        submitted:
+          type: boolean
+          description: True if this submission is being formally submitted to the journal.
+          example: true
+
+    ReflectionAssessmentResponse: # What the AI (or your backend proxying AI) returns
+      type: object
+      required:
+        - feedback
+        - assessment
+        - timestamp
+      properties:
+        feedback:
+          type: string
+          description: Qualitative feedback from the AI.
+          example: "Your explanation is clear, but the code example could be more complex."
+        assessment:
+          $ref: "#/components/schemas/AssessmentLevel"
+        timestamp:
+          type: integer
+          format: int64
+          description: Unix epoch milliseconds when the AI assessment was generated.
+          example: 1678886405000
+
+    LearningEntrySubmissionPayload: # What the client sends to POST /learning-entries
+      type: object
+      required:
+        - lessonId
+        - sectionId
+        - sectionTitle
+        - submission
+        - assessmentResponse
+      properties:
+        lessonId:
+          type: string
+          description: Identifier for the lesson this learning entry belongs to.
+          example: "01_introduction/02_variables"
+        sectionId:
+          type: string
+          description: Identifier for the reflection section within the lesson.
+          example: "reflection-variables-usage"
+        sectionTitle:
+          type: string
+          description: The title of the reflection section.
+          example: "Reflection: Applying Variables"
+        submission:
+          $ref: "#/components/schemas/ReflectionSubmissionInput"
+        assessmentResponse:
+          $ref: "#/components/schemas/ReflectionAssessmentResponse"
+
+    LearningEntryResponseItem: # Structure of a single learning entry when retrieved
+      type: object
+      properties:
+        id: # From backend
+          type: string
+          format: uuid # Or whatever format your backend uses for IDs
+          description: Unique identifier for the learning entry.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        userId: # Usually added by backend based on authenticated user
+          type: string
+          description: Identifier of the user who submitted the entry.
+          example: "google-oauth2|109086647533336088230"
+        lessonId:
+          type: string
+          example: "01_introduction/02_variables"
+        sectionId:
+          type: string
+          example: "reflection-variables-usage"
+        sectionTitle:
+          type: string
+          example: "Reflection: Applying Variables"
+        submittedTimestamp: # From original submission.timestamp
+          type: integer
+          format: int64
+          description: Unix epoch milliseconds of the student's submission.
+        topic: # From submission.topic
+          type: string
+        code: # From submission.code
+          type: string
+        explanation: # From submission.explanation
+          type: string
+        aiFeedback: # From assessmentResponse.feedback
+          type: string
+        aiAssessment: # From assessmentResponse.assessment
+          $ref: "#/components/schemas/AssessmentLevel"
+        aiFeedbackTimestamp: # From assessmentResponse.timestamp
+          type: integer
+          format: int64
+        createdAt: # Added by backend
+          type: string
+          format: date-time
+          description: Timestamp when the learning entry was created on the server.
+        updatedAt: # Added by backend
+          type: string
+          format: date-time
+          description: Timestamp when the learning entry was last updated on the server.
+
+    LearningEntrySubmissionConfirmation:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        entryId:
+          type: string
+          format: uuid
+          description: The ID of the newly created learning entry.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        message:
+          type: string
+          example: "Learning entry submitted successfully."
 
     ErrorResponse:
       type: object
@@ -129,30 +277,30 @@ paths:
       security:
         - BearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successfully retrieved user progress.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProgress'
-        '401':
+                $ref: "#/components/schemas/UserProgress"
+        "401":
           description: Unauthorized. Token is missing, invalid, or expired.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: User progress not found (e.g., new user with no server-side record yet). Could also return 200 with empty progress.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse' # Or a specific "NotFound" schema
-        '500':
+                $ref: "#/components/schemas/ErrorResponse" # Or a specific "NotFound" schema
+        "500":
           description: Internal Server Error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
     put:
       summary: Update User Progress (Record Section Completion)
@@ -173,33 +321,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BatchCompletionsInput' # Using batch for flexibility
+              $ref: "#/components/schemas/BatchCompletionsInput" # Using batch for flexibility
       responses:
-        '200':
+        "200":
           description: Progress successfully updated. Returns the new, complete progress state.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProgress'
-        '400':
+                $ref: "#/components/schemas/UserProgress"
+        "400":
           description: Bad Request - The input data is invalid (e.g., malformed, missing required fields).
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Unauthorized.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Internal Server Error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
+                $ref: "#/components/schemas/ErrorResponse"
 # Note: If you want separate endpoints for single vs. batch, you can add:
 #  /progress/section:
 #    post: ... (for single SectionCompletionInput)

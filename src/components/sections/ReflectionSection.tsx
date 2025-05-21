@@ -3,14 +3,15 @@ import React, { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
-  ReflectionSectionData, // Uses the NEW simplified type
+  ReflectionSectionData, // Using the simplified version
   ReflectionSubmission,
   ReflectionResponse,
   ReflectionHistoryEntry,
   SavedReflectionState,
   AssessmentLevel,
-} from "../../types/data"; // Ensure path is correct
-import styles from "./Section.module.css"; // Or your specific ReflectionSection.module.css
+} from "../../types/data"; // Adjust path as necessary
+import styles from "./Section.module.css"; // Assuming general styles are here
+// You might have specific reflection styles, e.g., import reflectionStyles from './ReflectionSection.module.css';
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import { useAuthStore } from "../../stores/authStore";
@@ -18,79 +19,113 @@ import {
   loadProgress,
   ANONYMOUS_USER_ID_PLACEHOLDER,
 } from "../../lib/localStorageUtils";
+import * as apiService from "../../lib/apiService"; // For submitLearningEntry
+import { useApiSettingsStore } from "../../stores/apiSettingsStore";
 
 // --- Helper Types & Constants ---
 interface ChatBotConfig {
   chatbotVersion: string;
   chatbotApiKey: string;
 }
-const CONFIG_STORAGE_KEY = "chatbot_config";
+const CONFIG_STORAGE_KEY = "chatbot_config"; // Key for user-specific chatbot settings in LS
 const STABLE_INITIAL_REFLECTION_STATE: SavedReflectionState = { history: [] };
+const ALLOW_PASTE_FOR_TESTING = true;
 
+// This function should be your working version that calls the Google Generative AI API
+// or your backend proxy for it.
 async function sendFeedbackToChatBot(
   submission: ReflectionSubmission,
   chatbotVersion: string,
   chatbotApiKey: string
 ): Promise<ReflectionResponse> {
-  // --- Your existing sendFeedbackToChatBot implementation ---
-  // This function remains the same as your working version.
-  // For brevity, its full code is omitted here but assumed to be present and correct.
   if (!chatbotVersion || !chatbotApiKey) {
-    throw new Error("ChatBot version or API Key not configured.");
+    throw new Error(
+      "ChatBot version or API Key not configured in application settings."
+    );
   }
+  // This is a placeholder for your actual API call logic.
+  // Ensure it matches the implementation that was working for you.
+  console.log("[sendFeedbackToChatBot] Sending to AI:", submission);
   const API_BASE_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/";
-  const modelId = chatbotVersion;
+  const modelId = chatbotVersion; // e.g., "gemini-1.5-flash-latest" or your fine-tuned model
   const endpoint = `${API_BASE_URL}${modelId}:generateContent?key=${chatbotApiKey}`;
+
   const prompt = `
     You are an automated Python code assessor. Your task is to evaluate a student's Python code example and explanation based on a specified topic. Provide constructive feedback and an assessment level.
+
     **Topic:** ${submission.topic}
+
     **Student's Code:**
     \`\`\`python
     ${submission.code}
     \`\`\`
+
     **Student's Explanation:**
     ${submission.explanation}
+
     **Rubric for Assessment Levels:**
     | Objective | Requirements/Specifications | Achieves | Mostly | Developing | Insufficient |
     | :---- | :---- | :---- | :---- | :---- | :---- |
     | Well-written: Entry is well-written and displays level of care expected in other, writing-centered classes | Entry is brief and to the point: it is no longer than it has to be. Entry uses proper terminology. Entry has no obvious spelling mistakes Entry uses proper grammar  | Entry is of high quality without any obvious errors or extraneous information | Entry contains one or two errors and could only be shortened a little | Entry contains many errors and has a lot of unnecessary, repetitive information. |  |
     | Thoughtful: Entry includes analysis that is easy to understand and could prove useful in the future | Analysis is about a topic that could conceivably come up in a future CS class. Analysis identifies single possible point of confusion. Analysis eliminates all possible confusion on the topic. Analysis references example. The phrase “as seen in the example” present in entry. | All requirements met. | Entry contains all but one of the requirements. | Entry's analysis is superficial an unfocused. |  |
     | Grounded: Entry includes a pertinent example that gets to the heart of the topic being discussed. | Example highlights issue being discussed. Example doesn't include unnecessary, extraneous details or complexity. Example is properly formatted. Example doesn't include any obvious programming errors. | All requirements met | Entry contains all but one or two of the requirements. | Entry's example is difficult to understand or doesn't relate to the topic being discussed. |  |
+
     **Provide your response in a concise format. Start with the assessment level, then provide the feedback. For example:
     Assessment: Mostly
-    Feedback: Your code is clear...**`;
+    Feedback: Your code is clear and accurately demonstrates the concept. Consider adding comments for better readability.**`;
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-  });
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      errorData.error?.message ||
-        `ChatBot API request failed: ${response.statusText}`
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({})); // Try to parse error, fallback to empty obj
+      throw new Error(
+        errorData.error?.message ||
+          `ChatBot API request failed: ${response.status} ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+    let assessment: AssessmentLevel = "developing"; // Default assessment
+    let feedbackMessage =
+      generatedText.trim() || "No specific feedback provided by AI.";
+
+    const assessmentMatch = generatedText.match(
+      /Assessment:\s*(achieves|mostly there|mostly|developing|insufficient)/i
     );
+    if (assessmentMatch?.[1]) {
+      const level = assessmentMatch[1].toLowerCase();
+      assessment = (
+        level === "mostly there" ? "mostly" : level
+      ) as AssessmentLevel;
+    }
+    const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
+    if (feedbackMatch?.[1]) {
+      feedbackMessage = feedbackMatch[1].trim();
+    } else if (assessmentMatch) {
+      // If only assessment found, take rest as feedback
+      feedbackMessage = generatedText
+        .substring(assessmentMatch[0].length)
+        .trim();
+    }
+    return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
+  } catch (error) {
+    console.error("Error in sendFeedbackToChatBot:", error);
+    // Return a default error response structure
+    return {
+      feedback:
+        error instanceof Error
+          ? `Error contacting AI: ${error.message}`
+          : "Unknown error contacting AI.",
+      assessment: "insufficient", // Or a specific error assessment level
+      timestamp: Date.now(),
+    };
   }
-  const data = await response.json();
-  const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  let assessment: AssessmentLevel = "developing";
-  let feedbackMessage = generatedText.trim();
-  const assessmentMatch = generatedText.match(
-    /Assessment:\s*(achieves|mostly there|mostly|developing|insufficient)/i
-  );
-  if (assessmentMatch?.[1]) {
-    const level = assessmentMatch[1].toLowerCase();
-    assessment = (
-      level === "mostly there" ? "mostly" : level
-    ) as AssessmentLevel;
-  }
-  const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
-  if (feedbackMatch?.[1]) feedbackMessage = feedbackMatch[1].trim();
-  else if (assessmentMatch)
-    feedbackMessage = generatedText.substring(assessmentMatch[0].length).trim();
-  return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
 }
 // --- End of sendFeedbackToChatBot ---
 
@@ -106,14 +141,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const { isTopicPredefined, isCodePredefined, isExplanationPredefined } =
     section;
 
-  // Initialize state based on whether the field is predefined or user-editable
   const [currentTopic, setCurrentTopic] = useState<string>(() =>
     isTopicPredefined ? section.topic : ""
   );
   const [currentCode, setCurrentCode] = useState<string>(
-    () =>
-      // If code is not predefined, section.code serves as the initial content/placeholder for the editor
-      section.code || ""
+    () => (isCodePredefined ? section.code : section.code || "") // section.code is placeholder if not predefined
   );
   const [currentExplanation, setCurrentExplanation] = useState<string>(() =>
     isExplanationPredefined ? section.explanation : ""
@@ -126,11 +158,14 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
   const authUser = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const idTokenFromStore = useAuthStore((state) => state.idToken); // For API calls
+  const apiGatewayUrlFromStore = useApiSettingsStore(
+    (state) => state.progressApiGateway
+  );
 
-  // Effect to update local state if the section prop (or its predefined values) changes.
   useEffect(() => {
     setCurrentTopic(isTopicPredefined ? section.topic : "");
-    setCurrentCode(section.code || ""); // Use section.code as initial for editable too
+    setCurrentCode(isCodePredefined ? section.code : section.code || "");
     setCurrentExplanation(isExplanationPredefined ? section.explanation : "");
   }, [
     section.id,
@@ -142,7 +177,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     isExplanationPredefined,
   ]);
 
-  // Load ChatBot config (remains the same)
   useEffect(() => {
     const currentStorageUserId =
       isAuthenticated && authUser ? authUser.id : ANONYMOUS_USER_ID_PLACEHOLDER;
@@ -171,6 +205,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     },
     []
   );
+
   const [reflectionState, setReflectionState, isSectionComplete] =
     useSectionProgress<SavedReflectionState>(
       lessonId,
@@ -182,15 +217,23 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
-      const finalTopic = isTopicPredefined
-        ? section.topic
-        : currentTopic.trim();
-      const finalCode = isCodePredefined ? section.code : currentCode; // Don't trim code
-      const finalExplanation = isExplanationPredefined
-        ? section.explanation
-        : currentExplanation.trim();
+      const finalTopic = (
+        isTopicPredefined ? section.topic : currentTopic
+      ).trim();
+      const finalCode = isCodePredefined ? section.code : currentCode; // Don't trim code, whitespace is significant
+      const finalExplanation = (
+        isExplanationPredefined ? section.explanation : currentExplanation
+      ).trim();
 
-      if (!finalTopic.trim() || !finalCode.trim() || !finalExplanation.trim()) {
+      if (
+        !finalTopic ||
+        (!isCodePredefined && !finalCode.trim()) ||
+        !finalExplanation
+      ) {
+        // For code, if it's user-editable, it must not be empty after trim.
+        // If it's predefined, it's taken as is.
+        // If it's user-editable and the placeholder IS the intended 'empty' code, this check might be too strict.
+        // However, usually, an empty code block isn't a meaningful reflection.
         alert(
           "Please ensure the topic, code example, and explanation have content."
         );
@@ -202,6 +245,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         );
         return;
       }
+
       setIsSubmitting(true);
       setError(null);
 
@@ -222,6 +266,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           setIsSubmitting(false);
           return;
         }
+
         const journalSubmission: ReflectionSubmission = {
           topic: finalTopic,
           code: finalCode,
@@ -229,16 +274,87 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           timestamp: Date.now(),
           submitted: true,
         };
-        const journalEntry: ReflectionHistoryEntry = {
+        const qualifyingResponse = latestEntry!.response!; // Known to exist due to qualifiesForJournal
+
+        // Prepare data for the API
+        const learningEntryData: apiService.LearningEntrySubmissionData = {
+          lessonId: lessonId,
+          sectionId: section.id,
+          sectionTitle: section.title, // Overall title of the ReflectionSection
           submission: journalSubmission,
-          response: latestEntry!.response,
+          assessmentResponse: qualifyingResponse,
         };
-        setReflectionState((prevState) => ({
-          history: [journalEntry, ...prevState.history],
-        }));
-        alert("Your entry has been submitted and saved to your journal!");
-        setIsSubmitting(false);
+
+        try {
+          if (idTokenFromStore && apiGatewayUrlFromStore) {
+            console.log(
+              "[ReflectionSection] Attempting to submit learning entry to API..."
+            );
+            const apiResult = await apiService.submitLearningEntry(
+              idTokenFromStore,
+              apiGatewayUrlFromStore,
+              learningEntryData
+            );
+            if (apiResult.success) {
+              console.log(
+                "[ReflectionSection] Learning entry submitted successfully to API. Entry ID:",
+                apiResult.entryId
+              );
+              // Add to local history
+              const journalEntry: ReflectionHistoryEntry = {
+                submission: journalSubmission,
+                response: qualifyingResponse,
+              };
+              setReflectionState((prevState) => ({
+                history: [journalEntry, ...prevState.history],
+              }));
+              alert("Your entry has been submitted and saved to your journal!");
+            } else {
+              setError(
+                "Failed to save learning entry to server. It's saved locally for now."
+              );
+              const journalEntry: ReflectionHistoryEntry = {
+                submission: journalSubmission,
+                response: qualifyingResponse,
+              };
+              setReflectionState((prevState) => ({
+                history: [journalEntry, ...prevState.history],
+              }));
+            }
+          } else {
+            setError(
+              "Cannot save learning entry: Missing auth token or API URL. Saved locally."
+            );
+            const journalEntry: ReflectionHistoryEntry = {
+              submission: journalSubmission,
+              response: qualifyingResponse,
+            };
+            setReflectionState((prevState) => ({
+              history: [journalEntry, ...prevState.history],
+            }));
+          }
+        } catch (apiError) {
+          console.error(
+            "[ReflectionSection] Error submitting learning entry to API:",
+            apiError
+          );
+          setError(
+            `Error saving to server: ${
+              apiError instanceof Error ? apiError.message : String(apiError)
+            }. Saved locally.`
+          );
+          const journalEntry: ReflectionHistoryEntry = {
+            submission: journalSubmission,
+            response: qualifyingResponse,
+          };
+          setReflectionState((prevState) => ({
+            history: [journalEntry, ...prevState.history],
+          }));
+        } finally {
+          setIsSubmitting(false);
+        }
       } else {
+        // "Get Feedback" path
         const submissionForFeedback: ReflectionSubmission = {
           topic: finalTopic,
           code: finalCode,
@@ -279,17 +395,24 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       isExplanationPredefined,
       section.topic,
       section.code,
-      section.explanation, // For accessing original predefined/placeholder values
+      section.explanation,
+      section.id,
+      section.title,
+      lessonId,
       chatbotVersion,
       chatbotApiKey,
       setReflectionState,
       reflectionState.history,
+      idTokenFromStore,
+      apiGatewayUrlFromStore, // Added dependencies for API call
     ]
   );
 
   const canAttemptInteraction =
     (isTopicPredefined || !!currentTopic.trim()) &&
-    (isCodePredefined || !!currentCode.trim()) && // For code, even a placeholder/comment might be non-empty
+    (isCodePredefined ||
+      !!currentCode.trim() ||
+      (currentCode === section.code && !!section.code)) && // Allow placeholder if that's the initial code
     (isExplanationPredefined || !!currentExplanation.trim());
 
   const history = reflectionState.history;
@@ -324,7 +447,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       </div>
 
       <div className={styles.reflectionContainer}>
-        {/* Topic Field */}
+        {/* Topic, Code, Explanation input groups ... (same as before) ... */}
         <div className={styles.reflectionInputGroup}>
           <label
             htmlFor={`${section.id}-topic`}
@@ -344,11 +467,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             }
             readOnly={isTopicPredefined || isSubmitting}
             placeholder={isTopicPredefined ? undefined : section.topic}
-            onPaste={isTopicPredefined ? undefined : handlePaste}
           />
         </div>
 
-        {/* Code Field */}
         <div className={styles.reflectionInputGroup}>
           <label className={styles.reflectionLabel}>
             Simple code example that demonstrates this topic
@@ -359,13 +480,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               onChange={isCodePredefined ? () => {} : setCurrentCode}
               readOnly={isSubmitting || isCodePredefined}
               minHeight="150px"
-              // `section.code` acts as placeholder/initial content if `isCodePredefined` is false
-              preventPaste={!isCodePredefined}
+              preventPaste={false && !isCodePredefined}
             />
           </div>
         </div>
 
-        {/* Explanation Field */}
         <div className={styles.reflectionInputGroup}>
           <label
             htmlFor={`${section.id}-explanation`}
@@ -386,15 +505,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             placeholder={
               isExplanationPredefined ? undefined : section.explanation
             }
-            onPaste={isExplanationPredefined ? undefined : handlePaste}
             rows={4}
           />
         </div>
 
-        {/* Buttons and History (logic for disabled/title on buttons remains the same) */}
         <div className={styles.reflectionButtons}>
           <button
-            onClick={() => handleSubmit(false)}
+            onClick={() => handleSubmit(false)} // Get Feedback
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
@@ -410,10 +527,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 : "Get AI feedback on your current entry"
             }
           >
-            {isSubmitting ? "Processing..." : "Get Feedback"}
+            {isSubmitting ? "Processing..." : "Get Feedback"}{" "}
+            {/* Simplified loading text */}
           </button>
           <button
-            onClick={() => handleSubmit(true)}
+            onClick={() => handleSubmit(true)} // Submit to Journal
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
@@ -434,11 +552,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 : "Submit this entry (with its latest qualifying feedback) to your journal"
             }
           >
-            {isSubmitting ? "Processing..." : "Submit Entry to Journal"}
+            {isSubmitting ? "Processing..." : "Submit Entry to Journal"}{" "}
+            {/* Simplified loading text */}
           </button>
         </div>
         {error && <p className={styles.apiError}>{error}</p>}
-        {/* History rendering (same as before) */}
+
+        {/* History rendering ... (same as before) ... */}
         <div className={styles.reflectionHistory}>
           <h4>
             Submission History {isSectionComplete ? "(Section Complete ✓)" : ""}
@@ -516,11 +636,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                           entry.response.assessment.slice(1)}
                       </div>
                     )}
-                    <p>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {entry.response.feedback}
-                      </ReactMarkdown>
-                    </p>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {entry.response.feedback}
+                    </ReactMarkdown>
                   </div>
                 )}
               </div>
