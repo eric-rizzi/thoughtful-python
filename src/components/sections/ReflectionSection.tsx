@@ -3,143 +3,104 @@ import React, { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
-  ReflectionSectionData,
+  ReflectionSection as ReflectionSectionData,
   ReflectionSubmission,
   ReflectionResponse,
   ReflectionHistoryEntry,
   SavedReflectionState,
   AssessmentLevel,
 } from "../../types/data";
-import styles from "./Section.module.css";
+import styles from "./Section.module.css"; // Main section styles
+// Make sure you have specific reflection styles or integrate them into Section.module.css
+// For example: import reflectionStyles from './ReflectionSection.module.css';
+// And then use reflectionStyles.topicInput, etc. or ensure styles.topicInput exists.
+// For this example, I'll assume relevant styles like styles.topicInput, styles.reflectionContainer etc. exist.
+
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
+import { useAuthStore } from "../../stores/authStore";
 import {
   loadProgress,
   ANONYMOUS_USER_ID_PLACEHOLDER,
 } from "../../lib/localStorageUtils";
-import { useAuthStore } from "../../stores/authStore";
 
-// Define initial state outside the component or use useMemo for stable reference
-const STABLE_INITIAL_REFLECTION_STATE: SavedReflectionState = { history: [] };
-
+// Define the type for ChatBotConfig expected from localStorage
 interface ChatBotConfig {
-  progressApiGateway: string;
   chatbotVersion: string;
   chatbotApiKey: string;
 }
 const CONFIG_STORAGE_KEY = "chatbot_config";
 
+const STABLE_INITIAL_REFLECTION_STATE: SavedReflectionState = { history: [] };
+
+// sendFeedbackToChatBot function (assuming it's defined in this file or imported)
+// For brevity, I'm not redefining it here if it's unchanged from your working version.
+// Ensure it correctly returns: Promise<ReflectionResponse>
+// where ReflectionResponse = { feedback: string, assessment: AssessmentLevel, timestamp: number }
 async function sendFeedbackToChatBot(
   submission: ReflectionSubmission,
   chatbotVersion: string,
   chatbotApiKey: string
 ): Promise<ReflectionResponse> {
-  // ... (sendFeedbackToChatBot implementation remains the same)
+  // ... (Your existing sendFeedbackToChatBot implementation)
+  // Ensure it parses and returns an 'assessment' field of type AssessmentLevel
+  // Example (ensure your actual parsing logic is robust):
   if (!chatbotVersion || !chatbotApiKey) {
-    throw new Error(
-      "ChatBot version or API Key not configured. Please go to the Configuration page."
-    );
+    throw new Error("ChatBot version or API Key not configured.");
   }
-
   const API_BASE_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/";
   const modelId = chatbotVersion;
   const endpoint = `${API_BASE_URL}${modelId}:generateContent?key=${chatbotApiKey}`;
-
   const prompt = `
     You are an automated Python code assessor. Your task is to evaluate a student's Python code example and explanation based on a specified topic. Provide constructive feedback and an assessment level.
-
     **Topic:** ${submission.topic}
-
     **Student's Code:**
     \`\`\`python
     ${submission.code}
     \`\`\`
-
     **Student's Explanation:**
     ${submission.explanation}
-
     **Rubric for Assessment Levels:**
-
     | Objective | Requirements/Specifications | Achieves | Mostly | Developing | Insufficient |
     | :---- | :---- | :---- | :---- | :---- | :---- |
     | Well-written: Entry is well-written and displays level of care expected in other, writing-centered classes | Entry is brief and to the point: it is no longer than it has to be. Entry uses proper terminology. Entry has no obvious spelling mistakes Entry uses proper grammar  | Entry is of high quality without any obvious errors or extraneous information | Entry contains one or two errors and could only be shortened a little | Entry contains many errors and has a lot of unnecessary, repetitive information. |  |
     | Thoughtful: Entry includes analysis that is easy to understand and could prove useful in the future | Analysis is about a topic that could conceivably come up in a future CS class. Analysis identifies single possible point of confusion. Analysis eliminates all possible confusion on the topic. Analysis references example. The phrase “as seen in the example” present in entry. | All requirements met. | Entry contains all but one of the requirements. | Entry's analysis is superficial an unfocused. |  |
     | Grounded: Entry includes a pertinent example that gets to the heart of the topic being discussed. | Example highlights issue being discussed. Example doesn't include unnecessary, extraneous details or complexity. Example is properly formatted. Example doesn't include any obvious programming errors. | All requirements met | Entry contains all but one or two of the requirements. | Entry's example is difficult to understand or doesn't relate to the topic being discussed. |  | 
-
     **Provide your response in a concise format. Start with the assessment level, then provide the feedback. For example:
-    Assessment: Mostly There
-    Feedback: Your code is clear and your explanation is accurate. Consider adding more comments to your code for readability.**
+    Assessment: Mostly
+    Feedback: Your code is clear...**`;
 
-    Based on the provided submission and rubric, assess the student's work and provide feedback.
-    `;
-
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("ChatBot API Error:", errorData);
-      throw new Error(
-        `ChatBot API request failed: ${
-          errorData.error?.message || response.statusText
-        }`
-      );
-    }
-
-    const data = await response.json();
-    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!generatedText) {
-      throw new Error("ChatBot did not return any content.");
-    }
-
-    let assessment: AssessmentLevel = "developing"; // Default
-    let feedbackMessage = generatedText.trim();
-
-    // More robust parsing for Assessment Level
-    const assessmentMatch = generatedText.match(
-      /Assessment:\s*(achieves|mostly there|mostly|developing|insufficient)/i
-    );
-    if (assessmentMatch && assessmentMatch[1]) {
-      const level = assessmentMatch[1].toLowerCase();
-      if (level === "mostly there") {
-        assessment = "mostly";
-      } else if (
-        ["achieves", "mostly", "developing", "insufficient"].includes(level)
-      ) {
-        assessment = level as AssessmentLevel;
-      }
-    }
-
-    const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
-    if (feedbackMatch && feedbackMatch[1]) {
-      feedbackMessage = feedbackMatch[1].trim();
-    }
-    // If no "Feedback:" prefix, use the whole text after trying to extract assessment
-    else if (assessmentMatch) {
-      feedbackMessage = generatedText
-        .substring(assessmentMatch[0].length)
-        .trim();
-    }
-
-    return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
-  } catch (error) {
-    console.error("Error communicating with ChatBot API:", error);
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
     throw new Error(
-      `Failed to get feedback from ChatBot: ${
-        error instanceof Error ? error.message : String(error)
-      }`
+      errorData.error?.message ||
+        `ChatBot API request failed: ${response.statusText}`
     );
   }
+  const data = await response.json();
+  const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  let assessment: AssessmentLevel = "developing";
+  let feedbackMessage = generatedText.trim();
+  const assessmentMatch = generatedText.match(
+    /Assessment:\s*(achieves|mostly there|mostly|developing|insufficient)/i
+  );
+  if (assessmentMatch?.[1]) {
+    const level = assessmentMatch[1].toLowerCase();
+    assessment = (
+      level === "mostly there" ? "mostly" : level
+    ) as AssessmentLevel;
+  }
+  const feedbackMatch = generatedText.match(/Feedback:\s*([\s\S]*)/i);
+  if (feedbackMatch?.[1]) feedbackMessage = feedbackMatch[1].trim();
+  else if (assessmentMatch)
+    feedbackMessage = generatedText.substring(assessmentMatch[0].length).trim();
+  return { feedback: feedbackMessage, assessment, timestamp: Date.now() };
 }
 
 interface ReflectionSectionProps {
@@ -160,50 +121,34 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const [chatbotVersion, setChatbotVersion] = useState<string>("");
   const [chatbotApiKey, setChatbotApiKey] = useState<string>("");
 
-  // Get auth state to determine the correct localStorage key
   const authUser = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
     const currentStorageUserId =
       isAuthenticated && authUser ? authUser.id : ANONYMOUS_USER_ID_PLACEHOLDER;
-
-    console.log(
-      `[ReflectionSection] useEffect: Loading ChatBotConfig for userId: ${currentStorageUserId}, subKey: ${CONFIG_STORAGE_KEY}`
-    );
     const savedConfig = loadProgress<ChatBotConfig>(
-      currentStorageUserId, // Corrected: Pass userId as the first argument
-      CONFIG_STORAGE_KEY // Corrected: Pass the subKey ("chatbot_config")
+      currentStorageUserId,
+      CONFIG_STORAGE_KEY
     );
-
     if (savedConfig) {
-      console.log(
-        "[ReflectionSection] useEffect: Found savedConfig",
-        savedConfig
-      );
       setChatbotVersion(savedConfig.chatbotVersion || "");
       setChatbotApiKey(savedConfig.chatbotApiKey || "");
     } else {
-      console.log(
-        "[ReflectionSection] useEffect: No saved ChatBotConfig found. Resetting version/key."
-      );
-      setChatbotVersion(""); // Ensure reset if no config found for current user/session
+      setChatbotVersion("");
       setChatbotApiKey("");
     }
   }, [isAuthenticated, authUser]);
 
   const storageKey = `reflectState_${lessonId}_${section.id}`;
-  // Use the stable reference for initialState
-  // const initialState = useMemo((): SavedReflectionState => ({ history: [] }), []);
 
   const checkReflectionCompletion = useCallback(
     (currentHookState: SavedReflectionState): boolean => {
-      // ... (rest of the function is fine)
       return currentHookState.history.some(
         (entry) =>
-          entry.submission.submitted === true && // Check if it was a formal journal submission
+          entry.submission.submitted === true &&
           entry.response?.assessment &&
-          ["achieves", "mostly"].includes(entry.response.assessment) // Consider "mostly" as complete too
+          ["achieves", "mostly"].includes(entry.response.assessment)
       );
     },
     []
@@ -214,12 +159,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       lessonId,
       section.id,
       storageKey,
-      STABLE_INITIAL_REFLECTION_STATE, // Pass the stable initial state
+      STABLE_INITIAL_REFLECTION_STATE,
       checkReflectionCompletion
     );
-
-  const history = reflectionState.history;
-  const hasEverReceivedFeedback = history.some((entry) => entry.response);
 
   const handleSubmit = useCallback(
     async (isFormalSubmission: boolean) => {
@@ -229,86 +171,126 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         );
         return;
       }
-      if (isFormalSubmission && !hasEverReceivedFeedback) {
-        alert(
-          "Please click 'Get Feedback' at least once before submitting this version to the journal."
-        );
-        return;
-      }
       if (!chatbotVersion || !chatbotApiKey) {
         setError(
           "ChatBot configuration missing. Please set the ChatBot Version and API Key on the Configuration page."
         );
-        setIsSubmitting(false); // Ensure button is re-enabled
         return;
       }
 
       setIsSubmitting(true);
       setError(null);
 
-      const submission: ReflectionSubmission = {
-        topic: topic.trim(),
-        code,
-        explanation,
-        timestamp: Date.now(),
-        submitted: isFormalSubmission,
-      };
+      if (isFormalSubmission) {
+        // Logic for "Submit Entry to Journal"
+        const latestEntry =
+          reflectionState.history.length > 0
+            ? reflectionState.history[0]
+            : null;
+        const currentAssessment = latestEntry?.response?.assessment;
+        const qualifiesForJournal =
+          currentAssessment &&
+          ["achieves", "mostly"].includes(currentAssessment);
 
-      try {
-        const response = await sendFeedbackToChatBot(
-          submission,
-          chatbotVersion,
-          chatbotApiKey
-        );
-        const newHistoryEntry: ReflectionHistoryEntry = {
-          submission,
-          response,
+        if (!qualifiesForJournal) {
+          alert(
+            "To submit to the journal, your latest reflection feedback must have an assessment of 'achieves' or 'mostly'.\nPlease use the 'Get Feedback' button to get an assessment on your current entry. If the assessment is adequate, you can then submit that version to the journal."
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        const journalSubmission: ReflectionSubmission = {
+          topic: topic.trim(),
+          code,
+          explanation,
+          timestamp: Date.now(),
+          submitted: true, // Mark as formally submitted
+        };
+
+        // Re-use the latest qualifying feedback for this journal entry
+        const journalEntry: ReflectionHistoryEntry = {
+          submission: journalSubmission,
+          response: latestEntry!.response, // We know latestEntry and response exist due to qualifiesForJournal
         };
 
         setReflectionState((prevState) => ({
-          history: [newHistoryEntry, ...prevState.history],
+          history: [journalEntry, ...prevState.history],
         }));
-
-        if (isFormalSubmission) {
-          alert("Your entry has been submitted and saved to your journal!");
-        }
-      } catch (err) {
-        console.error("Feedback submission error:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to get feedback. Please try again."
-        );
-      } finally {
+        alert("Your entry has been submitted and saved to your journal!");
         setIsSubmitting(false);
+      } else {
+        // Logic for "Get Feedback"
+        const currentSubmissionForFeedback: ReflectionSubmission = {
+          topic: topic.trim(),
+          code,
+          explanation,
+          timestamp: Date.now(),
+          submitted: false, // This is just a feedback cycle
+        };
+        try {
+          console.log(
+            "[ReflectionSection] Getting feedback from ChatBot for:",
+            currentSubmissionForFeedback
+          );
+          const response = await sendFeedbackToChatBot(
+            currentSubmissionForFeedback,
+            chatbotVersion,
+            chatbotApiKey
+          );
+          console.log("[ReflectionSection] ChatBot Response:", response);
+          const newHistoryEntry: ReflectionHistoryEntry = {
+            submission: currentSubmissionForFeedback,
+            response,
+          };
+          setReflectionState((prevState) => ({
+            history: [newHistoryEntry, ...prevState.history],
+          }));
+        } catch (err) {
+          console.error("[ReflectionSection] Feedback submission error:", err);
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to get feedback. Please try again."
+          );
+        } finally {
+          setIsSubmitting(false);
+        }
       }
     },
     [
       topic,
       code,
       explanation,
-      setReflectionState,
-      hasEverReceivedFeedback,
       chatbotVersion,
       chatbotApiKey,
+      setReflectionState,
+      reflectionState.history, // reflectionState.history is crucial here
     ]
   );
 
-  const getTopicNameForDisplay = (topicValue: string): string => {
-    if (!topicValue) return "Untitled Entry";
-    return topicValue.charAt(0).toUpperCase() + topicValue.slice(1);
-  };
-  const formatDate = (timestamp: number): string =>
-    new Date(timestamp).toLocaleString();
-
   const canAttemptInteraction =
     !!topic.trim() && !!code.trim() && !!explanation.trim();
+  const history = reflectionState.history;
+  const latestFeedbackEntry = history.length > 0 ? history[0] : null;
+  const latestAssessment = latestFeedbackEntry?.response?.assessment;
+  const canSubmitToJournalCondition = !!(
+    latestAssessment && ["achieves", "mostly"].includes(latestAssessment)
+  );
+  const hasEverReceivedAnyFeedback = history.some((entry) => entry.response);
 
   const handlePaste = (
     event: React.ClipboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     event.preventDefault();
     alert("Pasting is disabled for this field.");
+  };
+
+  const formatDate = (timestamp: number): string =>
+    new Date(timestamp).toLocaleString();
+  const getTopicNameForDisplay = (topicValue: string): string => {
+    if (!topicValue) return "Untitled Entry";
+    return topicValue.charAt(0).toUpperCase() + topicValue.slice(1);
   };
 
   return (
@@ -335,10 +317,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             disabled={isSubmitting}
-            placeholder="Enter a descriptive title (e.g., Using Loops for Lists)"
+            placeholder="Enter a descriptive title..."
             onPaste={handlePaste}
           />
         </div>
+
         <div className={styles.reflectionInputGroup}>
           <label className={styles.reflectionLabel}>
             {section.prompts.code || "Code Example:"}
@@ -353,6 +336,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             />
           </div>
         </div>
+
         <div className={styles.reflectionInputGroup}>
           <label
             htmlFor={`${section.id}-explanation`}
@@ -371,6 +355,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             rows={4}
           />
         </div>
+
         <div className={styles.reflectionButtons}>
           <button
             onClick={() => handleSubmit(false)} // Get Feedback button
@@ -396,32 +381,37 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             disabled={
               isSubmitting ||
               !canAttemptInteraction ||
-              !hasEverReceivedFeedback ||
               !chatbotVersion ||
-              !chatbotApiKey
+              !chatbotApiKey ||
+              !canSubmitToJournalCondition // Use the derived condition
             }
             className={styles.reflectionSubmitBtn}
             title={
               !canAttemptInteraction
                 ? "Please fill in all fields first"
-                : !hasEverReceivedFeedback
-                ? "Please click 'Get Feedback' for this version first"
                 : !chatbotVersion || !chatbotApiKey
                 ? "Please configure ChatBot API Key and Version in settings"
-                : "Submit this entry to your journal"
+                : !hasEverReceivedAnyFeedback
+                ? "Please click 'Get Feedback' at least once before submitting."
+                : !canSubmitToJournalCondition
+                ? "The latest AI feedback assessment needs to be 'achieves' or 'mostly'. Click 'Get Feedback' again on your current content if you've changed it."
+                : "Submit this entry (with its latest qualifying feedback) to your journal"
             }
           >
             {isSubmitting ? "Processing..." : "Submit Entry to Journal"}
           </button>
         </div>
-        {error && <p className={styles.apiError}>{error}</p>}{" "}
+
+        {error && <p className={styles.apiError}>{error}</p>}
+
         <div className={styles.reflectionHistory}>
           <h4>
             Submission History {isSectionComplete ? "(Section Complete ✓)" : ""}
           </h4>
           {history.length === 0 ? (
             <p className={styles.noHistory}>
-              No submissions yet. Click "Get Feedback" to start.
+              No submissions yet. Fill out the fields and click "Get Feedback"
+              to start.
             </p>
           ) : (
             history.map((entry, index) => (
