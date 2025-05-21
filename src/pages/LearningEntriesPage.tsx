@@ -1,7 +1,10 @@
+// src/pages/LearningEntriesPage.tsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./LearningEntriesPage.module.css";
 import type { ReflectionHistoryEntry, AssessmentLevel } from "../types/data";
+import { useAuthStore } from "../stores/authStore";
+import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 
 interface DisplayEntry {
   id: string;
@@ -13,40 +16,61 @@ interface DisplayEntry {
   code: string;
   explanation: string;
   assessment?: AssessmentLevel;
-  feedback?: string; // Keep in type, but won't render
+  feedback?: string;
 }
 
-const REFLECTION_KEY_REGEX = /^reflectState_(.+)_([^_]+)$/;
+const REFLECTION_SUBKEY_PATTERN = /^reflectState_(.+)_([^_]+)$/;
 
+// getTopicNameForDisplay and formatDate functions remain the same
 const getTopicNameForDisplay = (topicValue: string): string => {
   if (!topicValue || !topicValue.trim()) return "Untitled Entry";
   const trimmedTopic = topicValue.trim();
   return trimmedTopic.charAt(0).toUpperCase() + trimmedTopic.slice(1);
 };
 
+const formatDate = (timestamp: number): string => {
+  return new Date(timestamp).toLocaleString();
+};
+
 const LearningEntriesPage: React.FC = () => {
   const [entries, setEntries] = useState<DisplayEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const authUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
     const loadEntriesFromLocalStorage = () => {
       setIsLoading(true);
       setError(null);
       const allEntries: DisplayEntry[] = [];
-      console.log("Scanning localStorage for reflection entries...");
+
+      // Determine the prefix for the keys based on current auth state
+      const currentKeyPrefix =
+        (isAuthenticated && authUser
+          ? authUser.id
+          : ANONYMOUS_USER_ID_PLACEHOLDER) + "_";
+
+      console.log(
+        `[LearningEntriesPage] Scanning localStorage for keys starting with prefix: "${currentKeyPrefix}" and matching reflection pattern.`
+      );
 
       try {
         for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
+          const fullKey = localStorage.key(i);
 
-          if (key) {
-            const match = key.match(REFLECTION_KEY_REGEX);
+          if (fullKey && fullKey.startsWith(currentKeyPrefix)) {
+            const subKey = fullKey.substring(currentKeyPrefix.length);
+            const match = subKey.match(REFLECTION_SUBKEY_PATTERN);
 
             if (match) {
+              console.log(
+                `[LearningEntriesPage] Matched key: ${fullKey}, subKey: ${subKey}`
+              );
               const lessonPath = match[1];
               const sectionId = match[2];
-              const savedStateJson = localStorage.getItem(key);
+              const savedStateJson = localStorage.getItem(fullKey); // Use the fullKey to get item
+
               if (savedStateJson) {
                 try {
                   const savedState: { history: ReflectionHistoryEntry[] } =
@@ -60,7 +84,7 @@ const LearningEntriesPage: React.FC = () => {
                       .filter(
                         (historyEntry) =>
                           historyEntry.submission.submitted === true
-                      )
+                      ) // Only formally submitted
                       .forEach((historyEntry, index) => {
                         const lessonNumMatch =
                           lessonPath.match(/lesson_(\d+)$/);
@@ -69,7 +93,7 @@ const LearningEntriesPage: React.FC = () => {
                           : lessonPath;
 
                         allEntries.push({
-                          id: `${lessonPath}-${sectionId}-${index}-${historyEntry.submission.timestamp}`,
+                          id: `${fullKey}-${index}-${historyEntry.submission.timestamp}`, // Ensure unique ID for React key
                           timestamp: historyEntry.submission.timestamp,
                           lessonPath: lessonPath,
                           lessonDisplayNumber: lessonDisplayNumber,
@@ -84,7 +108,7 @@ const LearningEntriesPage: React.FC = () => {
                   }
                 } catch (parseError) {
                   console.error(
-                    `Error parsing localStorage key ${key}:`,
+                    `[LearningEntriesPage] Error parsing JSON for key ${fullKey}:`,
                     parseError
                   );
                 }
@@ -93,11 +117,16 @@ const LearningEntriesPage: React.FC = () => {
           }
         }
 
-        allEntries.sort((a, b) => b.timestamp - a.timestamp);
+        allEntries.sort((a, b) => b.timestamp - a.timestamp); // Sort by most recent first
         setEntries(allEntries);
-        console.log(`Found ${allEntries.length} submitted reflection entries.`);
+        console.log(
+          `[LearningEntriesPage] Found ${allEntries.length} submitted reflection entries for current user/session.`
+        );
       } catch (scanError) {
-        console.error("Error scanning localStorage:", scanError);
+        console.error(
+          "[LearningEntriesPage] Error scanning localStorage:",
+          scanError
+        );
         setError(
           scanError instanceof Error
             ? scanError.message
@@ -109,11 +138,9 @@ const LearningEntriesPage: React.FC = () => {
     };
 
     loadEntriesFromLocalStorage();
-  }, []);
+  }, [isAuthenticated, authUser]);
 
-  const formatDate = (timestamp: number): string => {
-    return new Date(timestamp).toLocaleString();
-  };
+  // ... (rest of the component: getAssessmentClass, getBadgeClass, render logic)
   const getAssessmentClass = (assessment?: AssessmentLevel): string => {
     if (!assessment) return "";
     const className = `assessment${
@@ -158,10 +185,10 @@ const LearningEntriesPage: React.FC = () => {
 
       {entries.length === 0 ? (
         <div className={styles.noEntriesMessage}>
-          <p>You haven't submitted any learning entries yet.</p>
+          <p>You haven't submitted any learning entries in this session yet.</p>
           <p>
-            Go to a Reflection or PRIMM section in a lesson and use the "Submit
-            Entry" or equivalent button to add entries here.
+            Go to a Reflection section in a lesson and use the "Submit Entry to
+            Journal" button to add entries here.
           </p>
           <Link to="/" className={styles.primaryButton}>
             Go to Home
@@ -179,17 +206,13 @@ const LearningEntriesPage: React.FC = () => {
               <div className={styles.entryHeader}>
                 <div className={styles.entryMeta}>
                   <span className={styles.entryTopic}>
-                    {entry.topic
-                      ? entry.topic.charAt(0).toUpperCase() +
-                        entry.topic.slice(1)
-                      : "Untitled Entry"}
+                    {getTopicNameForDisplay(entry.topic)}
                   </span>
                   {entry.assessment && (
                     <h3
                       className={`${styles.assessmentBadge} ${getBadgeClass(
-                        // getBadgeClass now for the badge itself
                         entry.assessment
-                      )} ${styles.entryHeaderAssessmentBadge}`}
+                      )}`}
                     >
                       AI Prediction:{" "}
                       {entry.assessment.charAt(0).toUpperCase() +
@@ -200,7 +223,6 @@ const LearningEntriesPage: React.FC = () => {
                     {formatDate(entry.timestamp)}
                   </span>
                 </div>
-                <h3 className={styles.entryTopic}></h3>
               </div>
               <div className={styles.entryContent}>
                 {entry.code && (
