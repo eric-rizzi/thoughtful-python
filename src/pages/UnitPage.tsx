@@ -106,9 +106,13 @@ const UnitPage: React.FC = () => {
           // Lesson data is available
           try {
             // Get completed sections for *this* lessonId from the Zustand state
-            const completedSectionsForThisLesson = new Set(
-              allCompletions[lessonId] || []
-            );
+            let completedSectionsForThisLesson = new Set<string>();
+            if (allCompletions && lessonId in allCompletions) {
+              completedSectionsForThisLesson = new Set(
+                Object.keys(allCompletions[lessonId])
+              );
+            }
+
             const requiredSections = getRequiredSectionsForLesson(lesson);
 
             if (requiredSections.length === 0) {

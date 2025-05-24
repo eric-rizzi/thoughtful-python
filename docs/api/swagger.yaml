@@ -48,32 +48,17 @@ components:
           example: "google-oauth2|12345678901234567890"
         completion:
           type: object
-          description: "A map where keys are lessonIds and values are arrays of completed sectionIds."
+          description: A map where keys are lesson IDs. Each lesson ID maps to an object where keys are section IDs and values are the ISO 8601 timestamp strings of when the section was first completed.
           additionalProperties:
-            type: array
-            items:
+            type: object
+            description: A map where keys are section IDs and values are their completion timestamps.
+            additionalProperties:
               type: string
-              description: "A sectionId that has been completed."
-          example:
-            "00_intro/lesson_1": ["python-history", "print-function"]
-            "01_strings/lesson_2":
-              ["primm-type-error", "problem2-task-fix-error"]
-        penaltyEndTime:
-          type: integer
-          format: int64 # Unix timestamp in milliseconds
-          nullable: true
-          description: "Timestamp indicating when a temporary penalty (e.g., for wrong quiz answers) ends. Null if no active penalty."
-          example: 1678886400000
-        lastSyncedClientTimestamp: # Optional: Client can send its last known sync time
-          type: integer
-          format: int64
-          nullable: true
-          description: "Client's timestamp of its last known state, useful for conflict resolution or delta updates (advanced)."
-        lastModifiedServerTimestamp: # Server will set this
-          type: string
-          format: date-time
-          readOnly: true
-          description: "The timestamp when this progress state was last updated on the server."
+              format: date-time
+              description: The ISO 8601 timestamp string indicating when the section was first completed.
+      required:
+        - userId
+        - completion
 
     BatchCompletionsInput:
       type: object

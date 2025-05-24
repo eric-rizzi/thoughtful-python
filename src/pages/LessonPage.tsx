@@ -37,7 +37,7 @@ const LessonPage: React.FC = () => {
   const [unitLessons, setUnitLessons] = useState<string[]>([]);
   const [currentIndexInUnit, setCurrentIndexInUnit] = useState<number>(-1);
 
-  const completedSectionsArray = useCompletedSectionsForLesson(lessonPath);
+  const completedSectionsMap = useCompletedSectionsForLesson(lessonPath);
 
   useEffect(() => {
     let isMounted = true;
@@ -116,8 +116,13 @@ const LessonPage: React.FC = () => {
   }, [lessonPath]);
 
   const completedSectionsSet = useMemo(
-    () => new Set(completedSectionsArray),
-    [completedSectionsArray]
+    () => {
+      if (!completedSectionsMap) {
+        return new Set<string>(); // Return an empty set if no data
+      }
+      return new Set(Object.keys(completedSectionsMap));
+    },
+    [completedSectionsMap] // Dependency array is correct
   );
 
   const informationSections: Set<string> = useMemo(() => {

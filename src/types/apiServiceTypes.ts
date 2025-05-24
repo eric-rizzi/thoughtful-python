@@ -12,10 +12,11 @@ export interface SectionCompletionInput {
 export interface UserProgressData {
   userId: string; // Server will derive this from the token and include it in response
   completion: {
-    [lessonId: string]: string[]; // e.g., "00_intro/lesson_1": ["section_a", "section_b"]
+    [lessonId: string]: {
+      // Key is lessonId
+      [sectionId: string]: string; // Key is sectionId, value is timeFirstCompleted (string)
+    };
   };
-  penaltyEndTime: number | null;
-  lastModifiedServerTimestamp?: string; // ReadOnly, set by server
 }
 
 export interface BatchCompletionsInput {

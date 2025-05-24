@@ -31,18 +31,18 @@ export async function getUserProgress(
     const mockedProgress: UserProgressData = {
       userId: MOCKED_USER_ID,
       completion: {
-        "00_intro/lesson_5": [
-          "question-1",
-          "question-2",
-          "question-3",
-          "question-4",
-          "question-5",
-          "question-6",
-        ],
-        "00_intro/lesson_1": ["python-history"],
+        "00_intro/lesson_5": {
+          "question-1": "2025-05-25",
+          "question-2": "2025-05-25",
+          "question-3": "2025-05-25",
+          "question-4": "2025-05-25",
+          "question-5": "2025-05-25",
+          "question-6": "2025-05-25",
+        },
+        "00_intro/lesson_1": {
+          "python-history": "2025-05-26",
+        },
       },
-      penaltyEndTime: null,
-      lastModifiedServerTimestamp: new Date().toISOString(),
     };
     return Promise.resolve(mockedProgress);
   }
@@ -54,7 +54,7 @@ export async function getUserProgress(
     return Promise.reject(new Error("API Gateway URL is required."));
 
   console.log(
-    `LIVE API [getUserProgress]: Calling GET ${apiGatewayUrl}/progress`
+    `LIVE API [getUserProgress]: Calling GET ${apiGatewayUrl}/progress with ${idToken}`
   );
   const response = await fetch(`${apiGatewayUrl}/progress`, {
     method: "GET",
@@ -103,27 +103,30 @@ export async function updateUserProgress(
     const baseProgress: UserProgressData = {
       /* ... same mock as before ... */ userId: MOCKED_USER_ID,
       completion: {
-        "00_intro/lesson_5": [
-          "question-1",
-          "question-2",
-          "question-3",
-          "question-4",
-          "question-5",
-          "question-6",
-        ],
-        "00_intro/lesson_1": ["python-history"],
+        "00_intro/lesson_5": {
+          "question-1": "2025-05-25",
+          "question-2": "2025-05-25",
+          "question-3": "2025-05-25",
+          "question-4": "2025-05-25",
+          "question-5": "2025-05-25",
+          "question-6": "2025-05-25",
+        },
+        "00_intro/lesson_1": {
+          "python-history": "2025-05-26",
+        },
       },
-      penaltyEndTime: null,
-      lastModifiedServerTimestamp: new Date().toISOString(),
     };
     batchInput.completions.forEach((comp) => {
-      if (!baseProgress.completion[comp.lessonId])
-        baseProgress.completion[comp.lessonId] = [];
-      if (!baseProgress.completion[comp.lessonId].includes(comp.sectionId)) {
-        baseProgress.completion[comp.lessonId].push(comp.sectionId);
+      if (!baseProgress.completion[comp.lessonId]) {
+        baseProgress.completion[comp.lessonId] = {};
+      }
+
+      const firstModifiedTime = new Date().toISOString();
+      if (!baseProgress.completion[comp.lessonId][comp.sectionId]) {
+        baseProgress.completion[comp.lessonId][comp.sectionId] =
+          firstModifiedTime;
       }
     });
-    baseProgress.lastModifiedServerTimestamp = new Date().toISOString();
     return Promise.resolve(baseProgress);
   }
 
@@ -138,9 +141,9 @@ export async function updateUserProgress(
   }
 
   console.log(
-    `LIVE API [updateUserProgress]: Calling PUT ${apiGatewayUrl}/progress`
+    `LIVE API [updateUserProgress]: Calling PUT ${apiGatewayUrl}/progress with ${idToken}`
   );
-  const response = await fetch(`${apiGatewayUrl}/progress`, {
+  const response = await fetch(`${apiGatewayUrl}progress`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${idToken}`,

@@ -6,17 +6,19 @@ import * as apiService from "../lib/apiService"; // Your API service
 import type {
   SectionCompletionInput,
   UserProgressData,
-} from "../lib/apiService"; // Types from apiService
+} from "../types/apiServiceTypes";
 import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 
 export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2"; // Make sure this is exported
 
-const EMPTY_COMPLETED_SECTIONS: string[] = [];
+const EMPTY_COMPLETED_SECTIONS: { [sectionId: string]: string } = {};
 const PENALTY_DURATION_MS = 15 * 1000;
 
 interface ProgressStateData {
   completion: {
-    [lessonId: string]: string[];
+    [lessonId: string]: {
+      [sectionId: string]: string; // timeFirstCompleted
+    };
   };
   penaltyEndTime: number | null;
   offlineActionQueue: SectionCompletionInput[]; // To store actions made while offline
@@ -27,7 +29,7 @@ interface ProgressStateData {
 interface ProgressActions {
   completeSection: (lessonId: string, sectionId: string) => Promise<void>; // Now async
   isSectionComplete: (lessonId: string, sectionId: string) => boolean;
-  getCompletedSections: (lessonId: string) => string[];
+  getCompletedSections: (lessonId: string) => { [sectionId: string]: string };
   resetLessonProgress: (lessonId: string) => void;
   resetAllProgress: () => void; // Should also clear offline queue
   startPenalty: () => void;
@@ -79,7 +81,7 @@ export const useProgressStore = create<ProgressState>()(
         },
         completeSection: async (lessonId, sectionId) => {
           const currentCompletion = get().completion[lessonId] || [];
-          if (currentCompletion.includes(sectionId)) {
+          if (sectionId in currentCompletion) {
             console.log(
               `[ProgressStore] Section ${lessonId}/${sectionId} already complete locally.`
             );
@@ -90,7 +92,7 @@ export const useProgressStore = create<ProgressState>()(
           set((state) => ({
             completion: {
               ...state.completion,
-              [lessonId]: [...currentCompletion, sectionId],
+              [lessonId]: { ...currentCompletion, sectionId: "2025-01-01" },
             },
           }));
           console.log(
@@ -158,19 +160,18 @@ export const useProgressStore = create<ProgressState>()(
           // For now, we'll overwrite and let processOfflineQueue handle potential redundancies
           // (server merge should be idempotent).
           const newCompletion = serverData.completion || {};
-          const newPenaltyEndTime = serverData.penaltyEndTime || null;
 
           // Smart queue clearing: remove actions from queue if server already has them
           const currentQueue = get().offlineActionQueue;
+          console.log(currentQueue);
           const updatedQueue = currentQueue.filter((action) => {
             const lessonCompletionsOnServer =
-              newCompletion[action.lessonId] || [];
-            return !lessonCompletionsOnServer.includes(action.sectionId);
+              newCompletion[action.lessonId] || {};
+            return !(action.sectionId in lessonCompletionsOnServer);
           });
 
           set({
             completion: newCompletion,
-            penaltyEndTime: newPenaltyEndTime,
             offlineActionQueue: updatedQueue, // Set the filtered queue
             lastSyncError: null, // Clear sync error as we have new truth from server
           });
@@ -247,7 +248,7 @@ export const useProgressStore = create<ProgressState>()(
         },
         isSectionComplete: (lessonId, sectionId) => {
           const lessonCompletion = get().completion[lessonId] || [];
-          return lessonCompletion.includes(sectionId);
+          return sectionId in lessonCompletion;
         },
         getCompletedSections: (lessonId) => {
           return get().completion[lessonId] || EMPTY_COMPLETED_SECTIONS;
@@ -326,7 +327,7 @@ export const useProgressActions = () =>
   useProgressStore((state) => state.actions);
 export const useCompletedSectionsForLesson = (
   lessonId: string | undefined
-): string[] =>
+): { [sectionId: string]: string } =>
   useProgressStore((state) =>
     lessonId
       ? state.completion[lessonId] || EMPTY_COMPLETED_SECTIONS
