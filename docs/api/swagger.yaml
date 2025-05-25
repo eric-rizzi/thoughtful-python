@@ -2,20 +2,20 @@ openapi: 3.0.0
 info:
   title: Thoughtful Python User Progress API
   version: v1.0.0
-  description: API for managing and tracking user learning progress in the Thoughtful Python application.
+  description: API for managing and tracking user learning progress and reflections in the Thoughtful Python application.
 
 servers:
-  - url: https://{your-api-gateway-id}.execute-api.{region}.amazonaws.com/{stage}
+  - url: https://3kyvgl1ck0.execute-api.us-east-2.amazonaws.com/
     description: API Gateway endpoint
     variables:
       your-api-gateway-id:
         default: placeholder_id
         description: Your actual API Gateway ID.
       region:
-        default: us-east-1 # Or your AWS region
+        default: us-east-2
         description: The AWS region where your API Gateway is deployed.
       stage:
-        default: prod # Or dev, staging, etc.
+        default: prod
         description: The deployment stage of your API.
 
 components:
@@ -25,6 +25,7 @@ components:
     #--------------------------------------------------------------------------
     SectionCompletionInput:
       type: object
+      description: Tuple of "completion" information that the client sends the server
       required:
         - lessonId
         - sectionId
@@ -38,7 +39,19 @@ components:
           description: "The unique identifier for the section within the lesson (e.g., 'python-history')."
           example: "python-history"
 
-    UserProgress:
+    BatchCompletionsInput:
+      type: object
+      required:
+        - completions
+      properties:
+        completions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SectionCompletionInput"
+          minItems: 1
+          description: "An array of section completion events."
+
+    UserProgress: # Renamed from UserProgressResponse for consistency if it's the primary progress object
       type: object
       description: Represents the complete learning progress for a user.
       properties:
@@ -60,18 +73,6 @@ components:
         - userId
         - completion
 
-    BatchCompletionsInput:
-      type: object
-      required:
-        - completions
-      properties:
-        completions:
-          type: array
-          items:
-            $ref: "#/components/schemas/SectionCompletionInput"
-          minItems: 1
-          description: "An array of section completion events."
-
     AssessmentLevel:
       type: string
       description: The assessment level given by the AI.
@@ -81,144 +82,130 @@ components:
         - developing
         - insufficient
 
-    ReflectionSubmissionInput: # What the student submits for a reflection cycle or journaling
+    ReflectionInteractionInput:
       type: object
       required:
-        - topic
-        - code
-        - explanation
-        - timestamp
-        - submitted # This will be true when formally journaling
+        - userTopic
+        - userCode
+        - userExplanation
       properties:
-        topic:
+        userTopic:
           type: string
-          description: The topic of the student's reflection.
-          example: "Understanding Python Dictionaries"
-        code:
+        userCode:
           type: string
-          description: The code snippet provided by the student.
-          example: "my_dict = {'key': 'value'}"
-        explanation:
+        userExplanation:
           type: string
-          description: The student's explanation of the topic and code.
-          example: "Dictionaries store key-value pairs..."
-        timestamp:
-          type: integer
-          format: int64
-          description: Unix epoch milliseconds when the submission was made.
-          example: 1678886400000
-        submitted:
+        isFinal: # Optional, defaults to false on server if not provided
           type: boolean
-          description: True if this submission is being formally submitted to the journal.
-          example: true
+          description: Set to true if this submission is intended as a final learning entry.
+          default: false
 
-    ReflectionAssessmentResponse: # What the AI (or your backend proxying AI) returns
+    ReflectionVersionItem:
       type: object
+      description: Represents a single saved version of a reflection, including AI feedback.
       required:
-        - feedback
-        - assessment
-        - timestamp
-      properties:
-        feedback:
-          type: string
-          description: Qualitative feedback from the AI.
-          example: "Your explanation is clear, but the code example could be more complex."
-        assessment:
-          $ref: "#/components/schemas/AssessmentLevel"
-        timestamp:
-          type: integer
-          format: int64
-          description: Unix epoch milliseconds when the AI assessment was generated.
-          example: 1678886405000
-
-    LearningEntrySubmissionPayload: # What the client sends to POST /learning-entries
-      type: object
-      required:
+        - versionId
+        - userId
         - lessonId
         - sectionId
-        - sectionTitle
-        - submission
-        - assessmentResponse
+        - userTopic
+        - userCode
+        - userExplanation
+        - aiFeedback
+        - aiAssessment
+        - createdAt
+        - isFinal
       properties:
+        versionId:
+          type: string
+          format: uuid # Or a timestamp-based unique ID
+          description: Unique identifier for this version of the reflection.
+          example: "v_1685000000000_abc123"
+        userId:
+          type: string
+          description: Identifier of the user.
         lessonId:
           type: string
-          description: Identifier for the lesson this learning entry belongs to.
-          example: "01_introduction/02_variables"
+          description: Identifier for the lesson.
         sectionId:
           type: string
           description: Identifier for the reflection section within the lesson.
-          example: "reflection-variables-usage"
-        sectionTitle:
+        userTopic:
           type: string
-          description: The title of the reflection section.
-          example: "Reflection: Applying Variables"
-        submission:
-          $ref: "#/components/schemas/ReflectionSubmissionInput"
-        assessmentResponse:
-          $ref: "#/components/schemas/ReflectionAssessmentResponse"
-
-    LearningEntryResponseItem: # Structure of a single learning entry when retrieved
-      type: object
-      properties:
-        id: # From backend
+          description: The topic of the reflection submission.
+        userCode:
           type: string
-          format: uuid # Or whatever format your backend uses for IDs
-          description: Unique identifier for the learning entry.
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        userId: # Usually added by backend based on authenticated user
+          description: The code submitted by the user for this version.
+        userExplanation:
           type: string
-          description: Identifier of the user who submitted the entry.
-          example: "google-oauth2|109086647533336088230"
-        lessonId:
+          description: The explanation submitted by the user for this version.
+        aiFeedback:
           type: string
-          example: "01_introduction/02_variables"
-        sectionId:
-          type: string
-          example: "reflection-variables-usage"
-        sectionTitle:
-          type: string
-          example: "Reflection: Applying Variables"
-        submittedTimestamp: # From original submission.timestamp
-          type: integer
-          format: int64
-          description: Unix epoch milliseconds of the student's submission.
-        topic: # From submission.topic
-          type: string
-        code: # From submission.code
-          type: string
-        explanation: # From submission.explanation
-          type: string
-        aiFeedback: # From assessmentResponse.feedback
-          type: string
-        aiAssessment: # From assessmentResponse.assessment
+          nullable: true # To allow null if isFinal is true
+          description: Feedback provided by the AI for this version's content (primarily for drafts).
+        aiAssessment:
           $ref: "#/components/schemas/AssessmentLevel"
-        aiFeedbackTimestamp: # From assessmentResponse.timestamp
-          type: integer
-          format: int64
-        createdAt: # Added by backend
+          nullable: true # To allow null if isFinal is true
+        createdAt:
           type: string
           format: date-time
-          description: Timestamp when the learning entry was created on the server.
-        updatedAt: # Added by backend
-          type: string
-          format: date-time
-          description: Timestamp when the learning entry was last updated on the server.
-
-    LearningEntrySubmissionConfirmation:
-      type: object
-      properties:
-        success:
+          description: Timestamp when this version was created.
+        isFinal:
           type: boolean
-          example: true
-        entryId:
+          description: Flag indicating if this version has been marked as final.
+          default: false
+
+    ReflectionFeedbackAndDraftResponse:
+      type: object
+      description: Response from the server after submitting a reflection for AI feedback and saving a new version.
+      required:
+        - versionId
+        - aiFeedback
+        - aiAssessment
+        - submittedContent
+        - createdAt
+      properties:
+        versionId:
           type: string
           format: uuid
-          description: The ID of the newly created learning entry.
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        message:
+          description: The unique ID of the newly created reflection version.
+        aiFeedback:
           type: string
-          example: "Learning entry submitted successfully."
+          description: The feedback generated by the AI.
+        aiAssessment:
+          $ref: "#/components/schemas/AssessmentLevel"
+        submittedContent:
+          $ref: "#/components/schemas/ReflectionSubmissionClientInput"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when this version was created.
 
+    ListOfReflectionDraftsResponse:
+      type: object
+      description: A list of all saved draft versions (isFinal: false) for a specific reflection section.
+      required:
+        - versions
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReflectionVersionItem" # Server filters to return only items where isFinal is false.
+
+    ListOfFinalLearningEntriesResponse:
+      type: object
+      description: A list of all finalized learning entries for the user (these are ReflectionVersionItems where isFinal=true).
+      required:
+        - entries
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReflectionVersionItem" # Server filters to return only items where isFinal is true.
+
+    #--------------------------------------------------------------------------
+    # General Error Schema (already existed)
+    #--------------------------------------------------------------------------
     ErrorResponse:
       type: object
       properties:
@@ -236,13 +223,13 @@ components:
           description: Optional additional error details.
 
   #--------------------------------------------------------------------------
-  # Security Schemes
+  # Security Schemes (already existed)
   #--------------------------------------------------------------------------
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT # Assuming you'll use the Google ID Token or a token derived from it
+      bearerFormat: JWT
 
 # Global security requirement (can be overridden at the operation level)
 security:
@@ -252,6 +239,7 @@ security:
 # API Paths and Operations
 #--------------------------------------------------------------------------
 paths:
+  #--- Progress Endpoints (Existing) ---
   /progress:
     get:
       summary: Get User Progress
@@ -268,24 +256,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserProgress"
-        "401":
-          description: Unauthorized. Token is missing, invalid, or expired.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: User progress not found (e.g., new user with no server-side record yet). Could also return 200 with empty progress.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse" # Or a specific "NotFound" schema
-        "500":
-          description: Internal Server Error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
     put:
       summary: Update User Progress (Record Section Completion)
@@ -306,7 +279,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BatchCompletionsInput" # Using batch for flexibility
+              $ref: "#/components/schemas/BatchCompletionsInput"
       responses:
         "200":
           description: Progress successfully updated. Returns the new, complete progress state.
@@ -314,27 +287,95 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserProgress"
-        "400":
-          description: Bad Request - The input data is invalid (e.g., malformed, missing required fields).
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /lessons/{lessonId}/sections/{sectionId}/reflections:
+    parameters:
+      - { name: lessonId, in: path, required: true, schema: { type: string } }
+      - { name: sectionId, in: path, required: true, schema: { type: string } }
+    post: # Handles both draft creation with AI feedback AND final submission
+      summary: Create Reflection Draft or Final Entry
+      description: |
+        If `isFinal` in the request is false (or absent), submits content for AI feedback and saves a new draft version (`isFinal: false`).
+        If `isFinal` is true, submits the content as a new final learning entry (`isFinal: true`),
+        potentially referencing a `sourceVersionId` (or server finds the latest draft) for context.
+        The final entry itself will have null for its direct `aiFeedback` and `aiAssessment`.
+      operationId: createOrFinalizeReflection
+      tags: ["Reflections & Learning Entries"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReflectionInteractionInput"
+      responses:
+        "201":
+          description: Reflection item (draft or final) created successfully. The response type depends on the `isFinal` flag in the request.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: Unauthorized.
+                oneOf:
+                  - $ref: "#/components/schemas/ReflectionFeedbackAndDraftResponse"
+                  - $ref: "#/components/schemas/ReflectionVersionItem" # If isFinal was true (this is the newly created final record)
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { description: "Source draft version not found (if isFinal=true and previous version not found).", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" }}}}
+        "500": { $ref: "#/components/responses/InternalServerError" }
+    get: # For fetching history of drafts for a particular reflection section
+      summary: Get All Draft Versions of a Reflection
+      description: Retrieves all saved draft versions (isFinal=false) for a specific reflection section for the authenticated user.
+      operationId: getReflectionDraftVersions
+      tags: ["Reflections & Learning Entries"]
+      responses:
+        "200":
+          description: Successfully retrieved reflection draft versions.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal Server Error.
+                $ref: "#/components/schemas/ListOfReflectionDraftsResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" } # If section itself or user has no drafts
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /learning-entries:
+    get:
+      summary: Get All Finalized Learning Entries
+      description: Retrieves all learning entries marked as final for the authenticated user, enriched with qualifying AI feedback from their respective source drafts.
+      operationId: getFinalizedLearningEntries
+      tags: ["Reflections & Learning Entries"]
+      responses:
+        "200":
+          description: Successfully retrieved finalized learning entries.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-# Note: If you want separate endpoints for single vs. batch, you can add:
-#  /progress/section:
-#    post: ... (for single SectionCompletionInput)
-# But using a batch endpoint (PUT /progress with BatchCompletionsInput) is often flexible enough.
-# I've chosen PUT for /progress to signify updating the entire conceptual "progress resource" for the user,
-# even if it's through partial updates. POST to a sub-resource like /progress/completions could also work.
+                $ref: "#/components/schemas/ListOfFinalLearningEntriesResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+components: # Moved reusable responses here for clarity
+  responses:
+    BadRequest:
+      description: Bad Request (e.g., invalid input or missing fields).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+    Unauthorized:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+    InternalServerError:
+      description: Internal Server Error.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
