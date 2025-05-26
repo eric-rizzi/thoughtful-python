@@ -13,7 +13,6 @@ import {
   useProgressStore,
 } from "../../stores/progressStore";
 import {
-  ReflectionFeedbackAndDraftResponse,
   ReflectionInteractionInput,
   ReflectionVersionItem,
 } from "../../types/apiServiceTypes";
@@ -160,12 +159,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         lessonId,
         sectionId,
         submissionData
-      )) as ReflectionFeedbackAndDraftResponse;
+      )) as ReflectionVersionItem;
 
-      // setDraftHistory((prevHistory) => [
-      //   response.submittedContent,
-      //   ...prevHistory,
-      // ]);
+      setDraftHistory((prevHistory) => [response, ...prevHistory]);
       alert("Feedback received and draft saved!");
     } catch (err) {
       console.error("Error getting AI feedback:", err);

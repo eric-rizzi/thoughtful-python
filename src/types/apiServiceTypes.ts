@@ -72,23 +72,6 @@ export interface ReflectionVersionItem {
 }
 
 /**
- * Response from POST /lessons/.../reflections when a draft is created (isFinal=false).
- * Based on your Swagger: ReflectionFeedbackAndVersionResponse
- */
-export interface ReflectionFeedbackAndDraftResponse {
-  // Renamed slightly for TS clarity from your Swagger's 'ReflectionFeedbackAndVersionResponse'
-  versionId: string; // The versionId of the draft that was just created/processed
-  aiFeedback: string; // The AI feedback for the submittedContent
-  aiAssessment: AssessmentLevel; // The AI assessment for the submittedContent
-  submittedContent: {
-    userTopic: string;
-    userCode: string;
-    userExplanation: string;
-  };
-  createdAt: string; // Timestamp of when this draft version was created
-}
-
-/**
  * Response structure for GET /lessons/{lessonId}/sections/{sectionId}/reflections.
  * Contains a list of draft versions.
  * Based on your Swagger: ListOfReflectionVersionsResponse (when listing drafts)

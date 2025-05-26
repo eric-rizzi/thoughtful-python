@@ -4,13 +4,12 @@ import type {
   BatchCompletionsInput,
   ErrorResponse,
   ReflectionInteractionInput,
-  ReflectionFeedbackAndDraftResponse,
   ReflectionVersionItem,
   ListOfReflectionDraftsResponse,
   ListOfFinalLearningEntriesResponse,
 } from "../types/apiServiceTypes";
 
-export const USE_MOCKED_API = false; // Keep for other mocks if needed, or phase out for these new fns
+export const USE_MOCKED_API = false;
 const MOCKED_USER_ID = "mocked-google-user-id-12345";
 
 const mockApiDelay = (duration: number = 500) =>
@@ -22,7 +21,6 @@ export async function getUserProgress(
   apiGatewayUrl: string
 ): Promise<UserProgressData> {
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
-    // Example check for mock
     console.log(`MOCKED API [getUserProgress]: Called. URL: ${apiGatewayUrl}`);
     await mockApiDelay();
     const mockedProgress: UserProgressData = {
@@ -85,7 +83,6 @@ export async function updateUserProgress(
       `MOCKED API [updateUserProgress]: Called with ${batchInput.completions.length} items.`
     );
     await mockApiDelay();
-    // Basic mock: return an empty progress for simplicity or enhance as needed
     return Promise.resolve({ userId: MOCKED_USER_ID, completion: {} });
   }
 
@@ -148,47 +145,39 @@ export async function submitReflectionInteraction(
   lessonId: string,
   sectionId: string,
   submissionData: ReflectionInteractionInput
-): Promise<ReflectionFeedbackAndDraftResponse | ReflectionVersionItem> {
-  // Response type depends on submissionData.isFinal
-
+): Promise<ReflectionVersionItem> {
+  // Changed return type
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
     console.log(
       `MOCKED API [submitReflectionInteraction] for ${lessonId}/${sectionId}, isFinal: ${submissionData.isFinal}`
     );
     await mockApiDelay();
     const timestamp = new Date().toISOString();
-    const mockVersionId = `mock_${lessonId}_${sectionId}_${timestamp}`;
-    if (submissionData.isFinal) {
-      const finalEntryMock: ReflectionVersionItem = {
-        versionId: mockVersionId,
-        userId: MOCKED_USER_ID,
-        lessonId,
-        sectionId,
-        userTopic: submissionData.userTopic,
-        userCode: submissionData.userCode,
-        userExplanation: submissionData.userExplanation,
-        aiFeedback: null, // Final entries don't have their own AI feedback
-        aiAssessment: null,
-        createdAt: timestamp,
-        isFinal: true,
-        sourceVersionId:
-          submissionData.sourceVersionId || "mock_source_draft_id",
-      };
-      return Promise.resolve(finalEntryMock);
-    } else {
-      const draftResponseMock: ReflectionFeedbackAndDraftResponse = {
-        versionId: mockVersionId,
-        submittedContent: {
-          userTopic: submissionData.userTopic,
-          userCode: submissionData.userCode,
-          userExplanation: submissionData.userExplanation,
-        },
-        aiFeedback: "This is thoughtful mocked AI feedback for your draft.",
-        aiAssessment: "mostly",
-        createdAt: timestamp,
-      };
-      return Promise.resolve(draftResponseMock);
-    }
+    const mockVersionId = `mock_${lessonId}_${sectionId}_${timestamp.replace(
+      /:|\./g,
+      ""
+    )}`; // Ensure mockVersionId is valid for DDB SK if needed
+
+    const mockItem: ReflectionVersionItem = {
+      versionId: mockVersionId,
+      userId: MOCKED_USER_ID,
+      lessonId,
+      sectionId,
+      userTopic: submissionData.userTopic,
+      userCode: submissionData.userCode,
+      userExplanation: submissionData.userExplanation,
+      createdAt: timestamp,
+      isFinal: submissionData.isFinal || false,
+      aiFeedback: submissionData.isFinal
+        ? null
+        : "This is thoughtful mocked AI feedback for your draft.",
+      aiAssessment: submissionData.isFinal ? null : "mostly",
+      sourceVersionId: submissionData.isFinal
+        ? submissionData.sourceVersionId || "mock_source_draft_id"
+        : null,
+      finalEntryCreatedAt: submissionData.isFinal ? timestamp : null,
+    };
+    return Promise.resolve(mockItem);
   }
 
   if (!idToken)
@@ -196,7 +185,8 @@ export async function submitReflectionInteraction(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
-  const endpoint = `${apiGatewayUrl}/reflections/FIXME/sections/${sectionId}`;
+  const lessonIdNoSlash = lessonId.replace("/", "-");
+  const endpoint = `${apiGatewayUrl}/reflections/${lessonIdNoSlash}/sections/${sectionId}`;
   console.log(
     `LIVE API [submitReflectionInteraction]: Calling POST ${endpoint}`
   );
@@ -211,7 +201,6 @@ export async function submitReflectionInteraction(
   });
 
   if (!response.ok) {
-    // Covers 201 for created, but checks for 4xx, 5xx
     let errorData: ErrorResponse = {
       message: `HTTP error ${response.status}: ${response.statusText}`,
     };
@@ -234,8 +223,7 @@ export async function submitReflectionInteraction(
     `LIVE API [submitReflectionInteraction]: Received from ${endpoint} ->`,
     data
   );
-  // The actual type depends on what the server sent based on isFinal
-  return data as ReflectionFeedbackAndDraftResponse | ReflectionVersionItem;
+  return data as ReflectionVersionItem; // Changed type cast
 }
 
 /**
@@ -252,7 +240,6 @@ export async function getReflectionDraftVersions(
   apiGatewayUrl: string,
   lessonId: string,
   sectionId: string
-  // Add query params for pagination if needed: lastEvaluatedKey?: string, limit?: number
 ): Promise<ListOfReflectionDraftsResponse> {
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
     console.log(
@@ -269,10 +256,9 @@ export async function getReflectionDraftVersions(
           userTopic: "Mock Draft Topic 1",
           userCode: "print(1)",
           userExplanation: "Expl 1",
-
           aiFeedback: "Good start.",
           aiAssessment: "developing",
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(Date.now() - 100000).toISOString(),
           isFinal: false,
         },
         {
@@ -289,7 +275,7 @@ export async function getReflectionDraftVersions(
           isFinal: false,
         },
       ],
-      // lastEvaluatedKey: null // Or a mock key
+      lastEvaluatedKey: null,
     };
     return Promise.resolve(mockDrafts);
   }
@@ -299,15 +285,11 @@ export async function getReflectionDraftVersions(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
-  const endpoint = `${apiGatewayUrl}/reflections/FIXME/sections/${sectionId}`;
-  // Add query parameters for pagination here if implementing:
-  // const url = new URL(endpoint);
-  // if (limit) url.searchParams.append('limit', String(limit));
-  // if (lastEvaluatedKey) url.searchParams.append('lastEvaluatedKey', lastEvaluatedKey);
+  const lessonIdNoSlash = lessonId.replace("/", "-");
+  const endpoint = `${apiGatewayUrl}/reflections/${lessonIdNoSlash}/sections/${sectionId}`;
   console.log(`LIVE API [getReflectionDraftVersions]: Calling GET ${endpoint}`);
 
   const response = await fetch(endpoint, {
-    // Change to url.toString() if using URL object
     method: "GET",
     headers: {
       Authorization: `Bearer ${idToken}`,
@@ -351,7 +333,6 @@ export async function getReflectionDraftVersions(
 export async function getFinalizedLearningEntries(
   idToken: string,
   apiGatewayUrl: string
-  // Add query params for pagination if needed: lastEvaluatedKey?: string, limit?: number
 ): Promise<ListOfFinalLearningEntriesResponse> {
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
     console.log(`MOCKED API [getFinalizedLearningEntries]`);
@@ -359,7 +340,6 @@ export async function getFinalizedLearningEntries(
     const mockFinalEntries: ListOfFinalLearningEntriesResponse = {
       entries: [
         {
-          // These are ReflectionVersionItem where isFinal=true and aiFeedback/Assessment are null
           versionId: "final_entry_1",
           userId: MOCKED_USER_ID,
           lessonId: "00_intro/lesson_7",
@@ -372,9 +352,10 @@ export async function getFinalizedLearningEntries(
           createdAt: new Date().toISOString(),
           isFinal: true,
           sourceVersionId: "draft_v2_for_final_1",
+          finalEntryCreatedAt: new Date().toISOString(),
         },
       ],
-      // lastEvaluatedKey: null
+      lastEvaluatedKey: null,
     };
     return Promise.resolve(mockFinalEntries);
   }
@@ -385,7 +366,6 @@ export async function getFinalizedLearningEntries(
     return Promise.reject(new Error("API Gateway URL is required."));
 
   const endpoint = `${apiGatewayUrl}/learning-entries`;
-  // Add query parameters for pagination here if implementing
   console.log(
     `LIVE API [getFinalizedLearningEntries]: Calling GET ${endpoint}`
   );
