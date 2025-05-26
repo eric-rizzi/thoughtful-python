@@ -133,7 +133,7 @@ export async function updateUserProgress(
 /**
  * Submits reflection content to the server for AI feedback (creating a draft)
  * OR to finalize a learning entry.
- * Corresponds to POST /lessons/{lessonId}/sections/{sectionId}/reflections
+ * Corresponds to POST /reflections/{lessonId}/sections/{sectionId}
  * @param idToken - The user's authentication token.
  * @param apiGatewayUrl - The base URL of the API Gateway.
  * @param lessonId - The ID of the lesson.
@@ -196,7 +196,7 @@ export async function submitReflectionInteraction(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
-  const endpoint = `${apiGatewayUrl}learning-entries/lessons/${lessonId}/sections/${sectionId}/reflections`;
+  const endpoint = `${apiGatewayUrl}/reflections/FIXME/sections/${sectionId}`;
   console.log(
     `LIVE API [submitReflectionInteraction]: Calling POST ${endpoint}`
   );
@@ -299,7 +299,7 @@ export async function getReflectionDraftVersions(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
-  const endpoint = `${apiGatewayUrl}learning-entries/lessons/${lessonId}/sections/${sectionId}/reflections`;
+  const endpoint = `${apiGatewayUrl}/reflections/FIXME/sections/${sectionId}`;
   // Add query parameters for pagination here if implementing:
   // const url = new URL(endpoint);
   // if (limit) url.searchParams.append('limit', String(limit));

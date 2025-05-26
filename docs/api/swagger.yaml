@@ -299,7 +299,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /lessons/{lessonId}/sections/{sectionId}/reflections:
+  /reflections/{lessonId}/sections/{sectionId}:
     parameters:
       - { name: lessonId, in: path, required: true, schema: { type: string } }
       - { name: sectionId, in: path, required: true, schema: { type: string } }
