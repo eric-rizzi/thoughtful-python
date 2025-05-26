@@ -58,8 +58,10 @@ const ProgressPage: React.FC = () => {
               };
             }
 
-            const completedSectionsForLesson = new Set(
-              allCompletions[lessonPath] || 
+            // Get completed sections for this specific lesson from the global store
+            const lessonProgressObject = allCompletions[lessonPath];
+            const completedSectionsForLesson = new Set<string>(
+              lessonProgressObject ? Object.keys(lessonProgressObject) : []
             );
             const requiredSections = lesson
               ? getRequiredSectionsForLesson(lesson)
