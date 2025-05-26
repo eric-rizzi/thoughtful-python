@@ -9,6 +9,7 @@ import {
 import type { Unit, Lesson } from "../types/data";
 import styles from "./UnitPage.module.css";
 import { useAllCompletions } from "../stores/progressStore";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 type CompletionStatus = {
   text: string;
@@ -24,7 +25,6 @@ const UnitPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get all completion data from the Zustand store
   const allCompletions = useAllCompletions();
 
   useEffect(() => {
@@ -47,7 +47,6 @@ const UnitPage: React.FC = () => {
         setUnit(fetchedUnit);
         document.title = `${fetchedUnit.title} - Python Lessons`;
 
-        // Fetch all lessons for this unit concurrently
         const lessonPromises = fetchedUnit.lessons.map((lessonId) =>
           fetchLessonData(lessonId)
             .then((data) => ({
@@ -58,7 +57,6 @@ const UnitPage: React.FC = () => {
             .catch((err) => ({ id: lessonId, status: "rejected", reason: err }))
         );
 
-        // Use Promise.all to await all lesson fetches
         const results = await Promise.all(lessonPromises);
         const loadedLessons = new Map<string, Lesson | null>();
         results.forEach((result) => {
@@ -84,37 +82,27 @@ const UnitPage: React.FC = () => {
     loadUnitAndLessons();
   }, [unitId]);
 
-  // Memoize lesson statuses using data from Zustand store
   const lessonStatuses = useMemo(() => {
-    console.log(
-      "UnitPage: Recalculating lesson statuses based on Zustand. Current allCompletions:",
-      allCompletions
-    );
     const statuses = new Map<string, CompletionStatus>();
     if (unit) {
       unit.lessons.forEach((lessonId) => {
         let status: CompletionStatus = {
           text: "Loading info...",
           class: "not-started",
-        }; // Default
+        };
         const lesson = lessonsData.get(lessonId);
 
         if (lesson === null) {
-          // Failed to load lesson data
           status = { text: "Info unavailable", class: "not-started" };
         } else if (lesson) {
-          // Lesson data is available
           try {
-            // Get completed sections for *this* lessonId from the Zustand state
             let completedSectionsForThisLesson = new Set<string>();
             if (allCompletions && lessonId in allCompletions) {
               completedSectionsForThisLesson = new Set(
                 Object.keys(allCompletions[lessonId])
               );
             }
-
             const requiredSections = getRequiredSectionsForLesson(lesson);
-
             if (requiredSections.length === 0) {
               status = { text: "Not applicable", class: "not-started" };
             } else if (completedSectionsForThisLesson.size === 0) {
@@ -123,7 +111,6 @@ const UnitPage: React.FC = () => {
               const completedRequiredCount = requiredSections.filter(
                 (sectionId) => completedSectionsForThisLesson.has(sectionId)
               ).length;
-
               if (completedRequiredCount >= requiredSections.length) {
                 status = { text: "Completed", class: "completed" };
               } else if (completedRequiredCount > 0) {
@@ -147,17 +134,10 @@ const UnitPage: React.FC = () => {
       });
     }
     return statuses;
-  }, [unit, lessonsData, allCompletions]); // Re-calculate when unit, lessonsData, OR allCompletions from Zustand changes
-
-  // --- Rendering Logic ---
+  }, [unit, lessonsData, allCompletions]);
 
   if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <p>Loading unit content...</p>
-        <div className={styles.spinner}></div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading unit content..." />;
   }
 
   if (error) {
@@ -172,10 +152,12 @@ const UnitPage: React.FC = () => {
   }
 
   if (!unit) {
-    // Should be covered by error state, but as a fallback
     return (
-      <div className={styles.loading}>
+      <div className={styles.error}>
         <p>Unit data could not be loaded.</p>
+        <Link to="/" className={styles.backLink}>
+          &larr; Back to Learning Paths
+        </Link>
       </div>
     );
   }
@@ -197,7 +179,6 @@ const UnitPage: React.FC = () => {
             class: "not-started",
           };
 
-          // Handle case where lesson data failed to load
           if (lesson === null) {
             return (
               <div
@@ -212,7 +193,6 @@ const UnitPage: React.FC = () => {
               </div>
             );
           }
-          // Handle case where lesson data is still loading (should be brief)
           if (!lesson) {
             return (
               <div key={lessonPath} className={styles.lessonCard}>
@@ -222,12 +202,9 @@ const UnitPage: React.FC = () => {
             );
           }
 
-          // Render normal lesson card
           return (
             <Link
-              // lessonPath is used here to build the link URL
               to={`/lesson/${lessonPath}`}
-              // lessonPath is used here as the unique React key
               key={lessonPath}
               className={styles.lessonCardLink}
             >
@@ -247,8 +224,7 @@ const UnitPage: React.FC = () => {
                       className={`${styles.statusDot} ${styles[status.class]}`}
                     ></span>
                   )}
-                  <span>{status.text}</span>{" "}
-                  {/* Added span around status.text for consistent styling if needed */}
+                  <span>{status.text}</span>
                 </div>
               </div>
             </Link>

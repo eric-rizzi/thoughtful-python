@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import { fetchUnitsData } from "../lib/dataLoader";
 import type { Unit } from "../types/data";
 import styles from "./HomePage.module.css";
+import loadingStyles from "../components/LoadingSpinner.module.css";
 import { BASE_PATH } from "../config";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const HomePage: React.FC = () => {
   const [units, setUnits] = useState<Unit[]>([]);
@@ -43,12 +45,7 @@ const HomePage: React.FC = () => {
 
   const renderContent = () => {
     if (isLoading) {
-      return (
-        <div className={styles.loading}>
-          <p>Loading learning paths...</p>
-          <div className={styles.spinner}></div>
-        </div>
-      );
+      return <LoadingSpinner message="Loading learning paths..." />;
     }
 
     if (error) {
@@ -61,7 +58,7 @@ const HomePage: React.FC = () => {
 
     if (units.length === 0) {
       return (
-        <div className={styles.loading}>
+        <div className={loadingStyles.spinnerContainer}>
           <p>No learning paths available yet. Check back soon!</p>
         </div>
       );

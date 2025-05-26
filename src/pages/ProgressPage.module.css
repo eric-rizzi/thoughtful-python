@@ -91,7 +91,6 @@
 }
 
 /* Loading and Error Messages */
-.loadingMessage,
 .errorMessage,
 .noProgressMessage {
   text-align: center;
@@ -113,25 +112,6 @@
   color: #dc3545;
   background-color: #f8d7da;
   border-color: #f5c6cb;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-left-color: #4b8bbe;
-  animation: spin 1s linear infinite;
-  margin: 1rem auto 0;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .primaryButton {

@@ -4,7 +4,6 @@ import { useParams, Link } from "react-router-dom";
 import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader";
 import type { Lesson, AnyLessonSectionData } from "../types/data";
 
-// Import Section Components
 import InformationSection from "../components/sections/InformationSection";
 import ObservationSection from "../components/sections/ObservationSection";
 import TestingSection from "../components/sections/TestingSection";
@@ -17,9 +16,9 @@ import CoverageSection from "../components/sections/CoverageSection";
 import PRIMMSection from "../components/sections/PRIMMSection";
 import DebuggerSection from "../components/sections/DebuggerSection";
 
-// Import LessonNavigation (it's rendered here now)
 import LessonNavigation from "../components/LessonNavigation";
 import LessonSidebar from "../components/LessonSidebar";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 import styles from "./LessonPage.module.css";
 import { useCompletedSectionsForLesson } from "../stores/progressStore";
@@ -28,8 +27,6 @@ const LessonPage: React.FC = () => {
   const params = useParams();
   const lessonPath = params["*"];
 
-  // The 'lesson' state will now be of type Lesson | null,
-  // and lesson.sections will be AnyLessonSectionData[]
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +54,6 @@ const LessonPage: React.FC = () => {
       setCurrentIndexInUnit(-1);
       setParentUnitId(null);
 
-      console.log(`LessonPage: Attempting to fetch lesson ${lessonPath}`);
       try {
         const [fetchedLesson, unitsData] = await Promise.all([
           fetchLessonData(lessonPath),
@@ -68,7 +64,6 @@ const LessonPage: React.FC = () => {
 
         setLesson(fetchedLesson);
         document.title = `${fetchedLesson.title} - Python Lesson`;
-        console.log(`LessonPage: Successfully fetched ${lessonPath}`);
 
         let foundUnitLessons: string[] | null = null;
         let foundIndex = -1;
@@ -88,9 +83,6 @@ const LessonPage: React.FC = () => {
           setUnitLessons(foundUnitLessons);
           setCurrentIndexInUnit(foundIndex);
           setParentUnitId(foundUnitId);
-          console.log(
-            `LessonPage: Found unit context for ${lessonPath} in unit ${foundUnitId}`
-          );
         } else {
           console.warn(`Could not find unit context for lesson ${lessonPath}`);
         }
@@ -115,15 +107,12 @@ const LessonPage: React.FC = () => {
     };
   }, [lessonPath]);
 
-  const completedSectionsSet = useMemo(
-    () => {
-      if (!completedSectionsMap) {
-        return new Set<string>(); // Return an empty set if no data
-      }
-      return new Set(Object.keys(completedSectionsMap));
-    },
-    [completedSectionsMap] // Dependency array is correct
-  );
+  const completedSectionsSet = useMemo(() => {
+    if (!completedSectionsMap) {
+      return new Set<string>();
+    }
+    return new Set(Object.keys(completedSectionsMap));
+  }, [completedSectionsMap]);
 
   const informationSections: Set<string> = useMemo(() => {
     if (!lesson) return new Set<string>();
@@ -141,88 +130,89 @@ const LessonPage: React.FC = () => {
   const currentPositionInUnit = currentIndexInUnit + 1;
   const totalLessonsInUnit = unitLessons.length;
 
-  const renderSection = (section: AnyLessonSectionData) => {
+  const renderSection = (sectionData: AnyLessonSectionData) => {
     const currentLessonId = lessonPath || "unknown";
-    switch (section.kind) {
+    switch (sectionData.kind) {
       case "Information":
-        // TypeScript now knows 'section' is InformationSectionData
-        return <InformationSection key={section.id} section={section} />;
+        return (
+          <InformationSection key={sectionData.id} section={sectionData} />
+        );
       case "Observation":
         return (
           <ObservationSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "Testing":
         return (
           <TestingSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "Prediction":
         return (
           <PredictionSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "MultipleChoice":
         return (
           <MultipleChoiceSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "MultipleSelection":
         return (
           <MultipleSelectionSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "Turtle":
         return (
           <TurtleSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "Reflection":
         return (
           <ReflectionSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "Coverage":
         return (
           <CoverageSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "PRIMM":
         return (
           <PRIMMSection
-            key={section.id}
+            key={sectionData.id}
             lessonId={currentLessonId}
-            section={section}
+            section={sectionData}
           />
         );
       case "Debugger":
-        return <DebuggerSection key={section.id} section={section} />;
+        return <DebuggerSection key={sectionData.id} section={sectionData} />;
       default:
-        const _exhaustiveCheck: never = section;
+        const _exhaustiveCheck: never = sectionData;
         console.warn(`Unknown section kind: ${(_exhaustiveCheck as any).kind}`);
         return (
           <div key={(_exhaustiveCheck as any).id} className={styles.error}>
@@ -234,10 +224,9 @@ const LessonPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className={styles.loading}>
-        <p>Loading lesson content for '{lessonPath}'...</p>
-        <div className={styles.spinner}></div>
-      </div>
+      <LoadingSpinner
+        message={`Loading lesson content for '${lessonPath}'...`}
+      />
     );
   }
   if (error) {
@@ -246,10 +235,7 @@ const LessonPage: React.FC = () => {
         <h2>Error Loading Lesson</h2>
         <p>{error}</p>
         {parentUnitId ? (
-          <Link
-            to={`/unit/${parentUnitId}`}
-            className={styles.backLink /* Assuming this class exists */}
-          >
+          <Link to={`/unit/${parentUnitId}`} className={styles.backLink}>
             &larr; Back to Unit
           </Link>
         ) : (
@@ -306,7 +292,7 @@ const LessonPage: React.FC = () => {
           )}
         </div>
 
-        {lesson.sections.map((section) => renderSection(section))}
+        {lesson.sections.map((sectionItem) => renderSection(sectionItem))}
 
         {totalLessonsInUnit > 0 && (
           <div

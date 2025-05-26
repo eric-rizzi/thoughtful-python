@@ -7,8 +7,9 @@ import {
   getRequiredSectionsForLesson,
 } from "../lib/dataLoader";
 import { useAllCompletions } from "../stores/progressStore";
-import type { Lesson } from "../types/data"; // Import Lesson type
-import styles from "./ProgressPage.module.css"; // New CSS module
+import type { Lesson } from "../types/data";
+import styles from "./ProgressPage.module.css";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface LessonCompletionStatus {
   lessonId: string;
@@ -27,11 +28,10 @@ const ProgressPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const allCompletions = useAllCompletions(); // Get all completed sections from Zustand
+  const allCompletions = useAllCompletions();
 
   useEffect(() => {
     let isMounted = true;
-
     const loadProgressData = async () => {
       setIsLoading(true);
       setError(null);
@@ -49,7 +49,6 @@ const ProgressPage: React.FC = () => {
                 `Failed to load lesson data for ${lessonPath}:`,
                 lessonError
               );
-              // If a lesson can't be loaded, treat it as incomplete for progress display
               return {
                 lessonId: lessonPath,
                 title: `Lesson ${
@@ -59,15 +58,13 @@ const ProgressPage: React.FC = () => {
               };
             }
 
-            // Get completed sections for this specific lesson from the global store
             const completedSectionsForLesson = new Set(
-              allCompletions[lessonPath] || []
+              allCompletions[lessonPath] || 
             );
             const requiredSections = lesson
               ? getRequiredSectionsForLesson(lesson)
               : [];
 
-            // A lesson is complete ONLY if all required sections are completed
             const isLessonComplete =
               requiredSections.length > 0 &&
               requiredSections.every((sectionId) =>
@@ -114,9 +111,9 @@ const ProgressPage: React.FC = () => {
     loadProgressData();
 
     return () => {
-      isMounted = false; // Cleanup for unmounted component
+      isMounted = false;
     };
-  }, [allCompletions]); // Re-run if global completion state changes
+  }, [allCompletions]);
 
   const renderUnitProgress = (unit: UnitProgress) => {
     return (
@@ -139,7 +136,7 @@ const ProgressPage: React.FC = () => {
                     : styles.incompleteCircle
                 }`}
               >
-                {index + 1} {/* Display lesson number inside circle */}
+                {index + 1}
               </div>
             </Link>
           ))}
@@ -151,10 +148,7 @@ const ProgressPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className={styles.progressPageContainer}>
-        <div className={styles.loadingMessage}>
-          <p>Loading your progress...</p>
-          <div className={styles.spinner}></div>
-        </div>
+        <LoadingSpinner message="Loading your progress..." />
       </div>
     );
   }

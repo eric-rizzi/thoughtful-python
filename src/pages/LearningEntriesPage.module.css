@@ -198,12 +198,6 @@
   background-color: #306998;
 }
 
-.loadingMessage {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-}
-
 .entryFeedbackInternalHeader {
   display: flex;
   justify-content: space-between;
