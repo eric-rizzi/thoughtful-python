@@ -2,162 +2,99 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./LearningEntriesPage.module.css";
-import type { ReflectionHistoryEntry, AssessmentLevel } from "../types/data";
 import { useAuthStore } from "../stores/authStore";
-import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
-
-interface DisplayEntry {
-  id: string;
-  timestamp: number;
-  lessonPath: string;
-  lessonDisplayNumber?: string;
-  sectionId: string;
-  topic: string;
-  code: string;
-  explanation: string;
-  assessment?: AssessmentLevel;
-  feedback?: string;
-}
-
-const REFLECTION_SUBKEY_PATTERN = /^reflectState_(.+)_([^_]+)$/;
-
-// getTopicNameForDisplay and formatDate functions remain the same
-const getTopicNameForDisplay = (topicValue: string): string => {
-  if (!topicValue || !topicValue.trim()) return "Untitled Entry";
-  const trimmedTopic = topicValue.trim();
-  return trimmedTopic.charAt(0).toUpperCase() + trimmedTopic.slice(1);
-};
-
-const formatDate = (timestamp: number): string => {
-  return new Date(timestamp).toLocaleString();
-};
+import { useApiSettingsStore } from "../stores/apiSettingsStore";
+import * as apiService from "../lib/apiService";
+import { ReflectionVersionItem } from "../types/apiServiceTypes";
 
 const LearningEntriesPage: React.FC = () => {
-  const [entries, setEntries] = useState<DisplayEntry[]>([]);
+  const [finalEntries, setFinalEntries] = useState<ReflectionVersionItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const authUser = useAuthStore((state) => state.user);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  const { idToken, isAuthenticated, user } = useAuthStore();
+  const apiGatewayUrl = useApiSettingsStore(
+    (state) => state.progressApiGateway
+  );
 
   useEffect(() => {
-    const loadEntriesFromLocalStorage = () => {
+    if (!isAuthenticated || !idToken || !apiGatewayUrl) {
+      if (isAuthenticated) {
+        // Only set error if auth is expected but config is missing
+        setError("API configuration is missing.");
+      } else {
+        setError("Please log in to view your learning entries.");
+      }
+      setIsLoading(false);
+      setFinalEntries([]);
+      return;
+    }
+
+    const fetchEntries = async () => {
       setIsLoading(true);
       setError(null);
-      const allEntries: DisplayEntry[] = [];
-
-      // Determine the prefix for the keys based on current auth state
-      const currentKeyPrefix =
-        (isAuthenticated && authUser
-          ? authUser.id
-          : ANONYMOUS_USER_ID_PLACEHOLDER) + "_";
-
-      console.log(
-        `[LearningEntriesPage] Scanning localStorage for keys starting with prefix: "${currentKeyPrefix}" and matching reflection pattern.`
-      );
-
       try {
-        for (let i = 0; i < localStorage.length; i++) {
-          const fullKey = localStorage.key(i);
-
-          if (fullKey && fullKey.startsWith(currentKeyPrefix)) {
-            const subKey = fullKey.substring(currentKeyPrefix.length);
-            const match = subKey.match(REFLECTION_SUBKEY_PATTERN);
-
-            if (match) {
-              console.log(
-                `[LearningEntriesPage] Matched key: ${fullKey}, subKey: ${subKey}`
-              );
-              const lessonPath = match[1];
-              const sectionId = match[2];
-              const savedStateJson = localStorage.getItem(fullKey); // Use the fullKey to get item
-
-              if (savedStateJson) {
-                try {
-                  const savedState: { history: ReflectionHistoryEntry[] } =
-                    JSON.parse(savedStateJson);
-
-                  if (
-                    savedState?.history &&
-                    Array.isArray(savedState.history)
-                  ) {
-                    savedState.history
-                      .filter(
-                        (historyEntry) =>
-                          historyEntry.submission.submitted === true
-                      ) // Only formally submitted
-                      .forEach((historyEntry, index) => {
-                        const lessonNumMatch =
-                          lessonPath.match(/lesson_(\d+)$/);
-                        const lessonDisplayNumber = lessonNumMatch
-                          ? lessonNumMatch[1]
-                          : lessonPath;
-
-                        allEntries.push({
-                          id: `${fullKey}-${index}-${historyEntry.submission.timestamp}`, // Ensure unique ID for React key
-                          timestamp: historyEntry.submission.timestamp,
-                          lessonPath: lessonPath,
-                          lessonDisplayNumber: lessonDisplayNumber,
-                          sectionId: sectionId,
-                          topic: historyEntry.submission.topic,
-                          code: historyEntry.submission.code,
-                          explanation: historyEntry.submission.explanation,
-                          assessment: historyEntry.response?.assessment,
-                          feedback: historyEntry.response?.feedback,
-                        });
-                      });
-                  }
-                } catch (parseError) {
-                  console.error(
-                    `[LearningEntriesPage] Error parsing JSON for key ${fullKey}:`,
-                    parseError
-                  );
-                }
-              }
-            }
-          }
-        }
-
-        allEntries.sort((a, b) => b.timestamp - a.timestamp); // Sort by most recent first
-        setEntries(allEntries);
-        console.log(
-          `[LearningEntriesPage] Found ${allEntries.length} submitted reflection entries for current user/session.`
+        const response = await apiService.getFinalizedLearningEntries(
+          idToken,
+          apiGatewayUrl
         );
-      } catch (scanError) {
-        console.error(
-          "[LearningEntriesPage] Error scanning localStorage:",
-          scanError
+        // Sort by createdAt descending (newest first) if not already sorted by API
+        const sortedEntries = response.entries.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
+        setFinalEntries(sortedEntries);
+      } catch (err) {
+        console.error("Failed to fetch finalized learning entries:", err);
         setError(
-          scanError instanceof Error
-            ? scanError.message
-            : "Failed to scan learning entries."
+          err instanceof Error
+            ? err.message
+            : "Failed to load learning entries."
         );
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadEntriesFromLocalStorage();
-  }, [isAuthenticated, authUser]);
+    fetchEntries();
+  }, [idToken, apiGatewayUrl, isAuthenticated]);
 
-  // ... (rest of the component: getAssessmentClass, getBadgeClass, render logic)
-  const getAssessmentClass = (assessment?: AssessmentLevel): string => {
-    if (!assessment) return "";
-    const className = `assessment${
-      assessment.charAt(0).toUpperCase() + assessment.slice(1)
-    }`;
-    return styles[className] || "";
+  const formatDate = (timestamp: string | undefined): string =>
+    timestamp ? new Date(timestamp).toLocaleString() : "N/A";
+
+  const getTopicNameForDisplay = (topicValue: string | undefined): string => {
+    if (!topicValue || !topicValue.trim()) return "Untitled Entry";
+    const trimmedTopic = topicValue.trim();
+    return trimmedTopic.charAt(0).toUpperCase() + trimmedTopic.slice(1);
   };
-  const getBadgeClass = (assessment?: AssessmentLevel): string => {
-    if (!assessment) return "";
-    return styles[assessment] || "";
+
+  // Helper to get a displayable lesson number or ID
+  const getLessonDisplayIdentifier = (lessonPath: string): string => {
+    const match = lessonPath.match(/lesson_(\d+)$/);
+    if (match && match[1]) {
+      return `Lesson ${match[1]}`;
+    }
+    const parts = lessonPath.split("/");
+    return parts[parts.length - 1] || lessonPath; // Fallback to last part or full path
   };
+
+  if (!isAuthenticated && !isLoading) {
+    return (
+      <div className={styles.learningEntriesSection}>
+        <h2>Your Learning Entries</h2>
+        <div className={styles.noEntriesMessage}>
+          <p>Please log in to view your learning journal.</p>
+          {/* Login button/functionality would typically be in the Header */}
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
       <div className={styles.learningEntriesSection}>
         <div className={styles.loadingMessage}>
-          <p>Scanning for your learning entries...</p>
+          <p>Loading your learning entries...</p>
         </div>
       </div>
     );
@@ -166,9 +103,12 @@ const LearningEntriesPage: React.FC = () => {
   if (error) {
     return (
       <div className={styles.learningEntriesSection}>
-        <div className={styles.errorFeedback}>
+        <div
+          className={styles.apiError}
+          style={{ textAlign: "center", padding: "2rem" }}
+        >
           {" "}
-          {/* Ensure this class exists or use a generic error style */}
+          {/* Re-using apiError style */}
           Error loading entries: {error}
         </div>
       </div>
@@ -177,18 +117,19 @@ const LearningEntriesPage: React.FC = () => {
 
   return (
     <div className={styles.learningEntriesSection}>
-      <h2>Your Learning Entries</h2>
+      <h2>Your Learning Journal</h2>
       <p className={styles.introText}>
-        This page collects all your formally submitted reflections and
-        explanations from the lessons, along with the AI's assessment level.
+        This page displays all your finalized reflection entries. The AI
+        feedback that qualified these submissions can be found on the original
+        draft versions within each lesson.
       </p>
 
-      {entries.length === 0 ? (
+      {finalEntries.length === 0 ? (
         <div className={styles.noEntriesMessage}>
-          <p>You haven't submitted any learning entries in this session yet.</p>
+          <p>You haven't submitted any finalized learning entries yet.</p>
           <p>
-            Go to a Reflection section in a lesson and use the "Submit Entry to
-            Journal" button to add entries here.
+            Complete reflections in lessons and use the "Submit to Journal"
+            button.
           </p>
           <Link to="/" className={styles.primaryButton}>
             Go to Home
@@ -196,52 +137,74 @@ const LearningEntriesPage: React.FC = () => {
         </div>
       ) : (
         <div className={styles.entriesList}>
-          {entries.map((entry) => (
-            <div
-              key={entry.id}
-              className={`${styles.entryCard} ${getAssessmentClass(
-                entry.assessment
-              )}`}
-            >
-              <div className={styles.entryHeader}>
-                <div className={styles.entryMeta}>
-                  <span className={styles.entryTopic}>
-                    {getTopicNameForDisplay(entry.topic)}
-                  </span>
-                  {entry.assessment && (
-                    <h3
-                      className={`${styles.assessmentBadge} ${getBadgeClass(
-                        entry.assessment
-                      )}`}
-                    >
-                      AI Prediction:{" "}
-                      {entry.assessment.charAt(0).toUpperCase() +
-                        entry.assessment.slice(1)}
-                    </h3>
-                  )}
-                  <span className={styles.entryDate}>
-                    {formatDate(entry.timestamp)}
+          {finalEntries.map(
+            (
+              entry // entry is ReflectionVersionItem where isFinal=true
+            ) => (
+              <div key={entry.versionId} className={`${styles.entryCard}`}>
+                <div className={styles.entryHeader}>
+                  <div className={styles.entryMeta}>
+                    <span className={styles.entryTopic}>
+                      {getTopicNameForDisplay(entry.userTopic)}
+                    </span>
+                    {/* The qualifying assessment is on the sourceVersionId draft, not directly here */}
+                    {/* We could show a generic "Finalized" badge or nothing */}
+                    <span className={styles.entryDate}>
+                      {formatDate(entry.createdAt)}
+                    </span>
+                  </div>
+                  <span className={styles.entryLesson}>
+                    From:{" "}
+                    <Link to={`/lesson/${entry.lessonId}#${entry.sectionId}`}>
+                      {getLessonDisplayIdentifier(entry.lessonId)} - Section:{" "}
+                      {entry.sectionId}
+                    </Link>
+                    {entry.sourceVersionId && (
+                      <small style={{ display: "block", color: "#777" }}>
+                        (Based on draft: ...{entry.sourceVersionId.slice(-12)})
+                      </small>
+                    )}
                   </span>
                 </div>
+                <div className={styles.entryContent}>
+                  {entry.userCode && (
+                    <div className={styles.entryCode}>
+                      <h4>Code Example:</h4>
+                      <pre>
+                        <code>{entry.userCode}</code>
+                      </pre>
+                    </div>
+                  )}
+                  {entry.userExplanation && (
+                    <div className={styles.entryExplanation}>
+                      <h4>Your Explanation:</h4>
+                      <p>{entry.userExplanation}</p>
+                    </div>
+                  )}
+                </div>
+                {/* To show AI feedback here, you would need:
+                1. API to return enriched data (which you opted against for this GET list).
+                2. Client makes another call per entry using entry.sourceVersionId.
+                3. Or, link to the draft in the lesson view where feedback is visible.
+                For now, we display a note about where to find feedback.
+               */}
+                <div
+                  style={{
+                    marginTop: "1rem",
+                    fontSize: "0.85em",
+                    color: "#555",
+                    borderTop: "1px dashed #eee",
+                    paddingTop: "0.75rem",
+                  }}
+                >
+                  <em>
+                    The qualifying AI feedback and assessment for this entry can
+                    be found on the source draft within the lesson.
+                  </em>
+                </div>
               </div>
-              <div className={styles.entryContent}>
-                {entry.code && (
-                  <div className={styles.entryCode}>
-                    <h4>Code Example:</h4>
-                    <pre>
-                      <code>{entry.code}</code>
-                    </pre>
-                  </div>
-                )}
-                {entry.explanation && (
-                  <div className={styles.entryExplanation}>
-                    <h4>Explanation:</h4>
-                    <p>{entry.explanation}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       )}
     </div>

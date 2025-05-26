@@ -175,7 +175,7 @@ components:
         aiAssessment:
           $ref: "#/components/schemas/AssessmentLevel"
         submittedContent:
-          $ref: "#/components/schemas/ReflectionSubmissionClientInput"
+          $ref: "#/components/schemas/ReflectionInteractionInput"
         createdAt:
           type: string
           format: date-time
@@ -186,22 +186,30 @@ components:
       description: A list of all saved draft versions (isFinal: false) for a specific reflection section.
       required:
         - versions
+        - lastEvaluatedKey
       properties:
         versions:
           type: array
           items:
             $ref: "#/components/schemas/ReflectionVersionItem" # Server filters to return only items where isFinal is false.
+        lastEvaluatedKey:
+          type: string
+          nullable: true # If null, nothing left to pull from server
 
     ListOfFinalLearningEntriesResponse:
       type: object
       description: A list of all finalized learning entries for the user (these are ReflectionVersionItems where isFinal=true).
       required:
         - entries
+        - lastEvaluatedKey
       properties:
         entries:
           type: array
           items:
             $ref: "#/components/schemas/ReflectionVersionItem" # Server filters to return only items where isFinal is true.
+        lastEvaluatedKey:
+          type: string
+          nullable: true # If null, nothing left to pull from server
 
     #--------------------------------------------------------------------------
     # General Error Schema (already existed)
