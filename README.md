@@ -12,18 +12,20 @@ directly in the browser using Pyodide.
 
 ## How to Use
 
-1. Visit the [live site](https://yourusername.github.io/)
+1. Visit the [live site](https://eric-rizzi.github.io/thoughtful-python/)
 2. Select a lesson from the navigation menu
 3. Follow the interactive instructions and complete the exercises
 
 ## Development
 
 This project uses:
+
 - TypeScript
 - Webpack
 - Pyodide for Python in the browser
 
 To set up locally:
+
 ```bash
 npm install
 npm run dev
