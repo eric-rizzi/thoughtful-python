@@ -7,7 +7,7 @@ import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useAuthStore } from "../../stores/authStore";
 import * as apiService from "../../lib/apiService";
-// Import useProgressActions and useProgressStore directly to get the isSectionComplete function
+import { ApiError } from "../../lib/apiService";
 import {
   useProgressActions,
   useProgressStore,
@@ -17,6 +17,7 @@ import {
   ReflectionVersionItem,
 } from "../../types/apiServiceTypes";
 import { API_GATEWAY_BASE_URL } from "../../config";
+import LoadingSpinner from "../LoadingSpinner";
 
 const QUALIFYING_ASSESSMENTS_FOR_FINAL: AssessmentLevel[] = [
   "achieves",
@@ -36,7 +37,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const { isTopicPredefined, isCodePredefined, isExplanationPredefined } =
     section;
 
-  // Local state for current user inputs
   const [currentTopic, setCurrentTopic] = useState<string>(() =>
     isTopicPredefined ? section.topic : ""
   );
@@ -48,28 +48,20 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   );
 
   const [draftHistory, setDraftHistory] = useState<ReflectionVersionItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // General loading for submit/feedback
+  const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
+  const [fetchError, setFetchError] = useState<string | null>(null); // For history fetch errors
+  const [submitError, setSubmitError] = useState<string | null>(null); // For submit/feedback errors
 
   const { idToken, isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const { completeSection } = useProgressActions();
-
-  // Get the isSectionComplete function from the progressStore's actions
-  // (or directly from the store's state if you prefer to select it)
   const isSectionMarkedCompleteInStore = useProgressStore((state) =>
     state.actions.isSectionComplete(lessonId, sectionId)
   );
-  // Alternatively, if isSectionComplete is part of the state, not actions:
-  // const isSectionMarkedCompleteInStore = useProgressStore(state =>
-  //   (state.completion[lessonId] && state.completion[lessonId][sectionId]) ? true : false
-  // );
-  // Let's assume your isSectionComplete function from actions is the correct one to use.
 
-  // Fetch draft history on load or when relevant params change
-  useEffect(() => {
+  const fetchAndUpdateHistory = useCallback(async () => {
     if (
       !isAuthenticated ||
       !idToken ||
@@ -80,34 +72,39 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       setDraftHistory([]);
       return;
     }
-    // ... (fetchHistory logic remains the same) ...
-    const fetchHistory = async () => {
-      setIsLoading(true);
-      setFetchError(null);
-      try {
-        const response = await apiService.getReflectionDraftVersions(
-          idToken,
-          apiGatewayUrl,
-          lessonId,
-          sectionId
-        );
-        const sortedVersions = response.versions.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        setDraftHistory(sortedVersions);
-      } catch (err) {
-        console.error("Failed to fetch reflection draft history:", err);
+    setIsLoadingHistory(true);
+    setFetchError(null);
+    try {
+      const response = await apiService.getReflectionDraftVersions(
+        idToken,
+        apiGatewayUrl,
+        lessonId,
+        sectionId
+      );
+      const sortedVersions = response.versions.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setDraftHistory(sortedVersions);
+    } catch (err) {
+      console.error("Failed to fetch reflection draft history:", err);
+      if (err instanceof ApiError) {
         setFetchError(
-          err instanceof Error ? err.message : "Failed to load draft history."
+          `Error loading history: ${err.data.message} (Status: ${err.status})`
         );
-      } finally {
-        setIsLoading(false);
+      } else if (err instanceof Error) {
+        setFetchError(`Error loading history: ${err.message}`);
+      } else {
+        setFetchError("An unknown error occurred while loading history.");
       }
-    };
-
-    fetchHistory();
+    } finally {
+      setIsLoadingHistory(false);
+    }
   }, [idToken, apiGatewayUrl, lessonId, sectionId, isAuthenticated]);
+
+  useEffect(() => {
+    fetchAndUpdateHistory();
+  }, [fetchAndUpdateHistory]);
 
   useEffect(() => {
     setCurrentTopic(isTopicPredefined ? section.topic : "");
@@ -123,12 +120,29 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     isExplanationPredefined,
   ]);
 
+  const handleApiError = (err: unknown, defaultMessage: string) => {
+    if (err instanceof ApiError) {
+      // ApiError includes status and potentially parsed server message
+      const serverMessage =
+        typeof err.data?.message === "string" ? err.data.message : err.message;
+      setSubmitError(
+        `${serverMessage}${
+          err.status === 429 ? "" : ` (Status: ${err.status})`
+        }`
+      );
+    } else if (err instanceof Error) {
+      setSubmitError(`${defaultMessage}: ${err.message}`);
+    } else {
+      setSubmitError(`${defaultMessage}: An unknown error occurred.`);
+    }
+  };
+
   const handleGetFeedback = useCallback(async () => {
-    // ... (logic remains the same) ...
     if (!isAuthenticated || !idToken || !apiGatewayUrl) {
       setSubmitError("User not authenticated or API not configured.");
       return;
     }
+    // ... (input validation remains same)
     const finalTopic = (
       isTopicPredefined ? section.topic : currentTopic
     ).trim();
@@ -144,7 +158,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
     setIsLoading(true);
     setSubmitError(null);
-
     const submissionData: ReflectionInteractionInput = {
       userTopic: finalTopic,
       userCode: finalCode,
@@ -153,21 +166,23 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     };
 
     try {
-      const response = (await apiService.submitReflectionInteraction(
+      const newDraftEntry = await apiService.submitReflectionInteraction(
         idToken,
         apiGatewayUrl,
         lessonId,
         sectionId,
         submissionData
-      )) as ReflectionVersionItem;
-
-      setDraftHistory((prevHistory) => [response, ...prevHistory]);
+      );
+      setDraftHistory((prevHistory) =>
+        [newDraftEntry, ...prevHistory].sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      );
       alert("Feedback received and draft saved!");
     } catch (err) {
       console.error("Error getting AI feedback:", err);
-      setSubmitError(
-        err instanceof Error ? err.message : "Failed to get feedback."
-      );
+      handleApiError(err, "Failed to get feedback");
     } finally {
       setIsLoading(false);
     }
@@ -181,15 +196,14 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     currentCode,
     currentExplanation,
     isTopicPredefined,
-    isCodePredefined,
-    isExplanationPredefined,
     section.topic,
+    isCodePredefined,
     section.code,
+    isExplanationPredefined,
     section.explanation,
   ]);
 
   const handleFinalSubmit = useCallback(async () => {
-    // ... (logic remains largely the same) ...
     if (!isAuthenticated || !idToken || !apiGatewayUrl) {
       setSubmitError("User not authenticated or API not configured.");
       return;
@@ -234,23 +248,21 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     };
 
     try {
-      const finalEntryResponse = (await apiService.submitReflectionInteraction(
+      const finalEntryResponse = await apiService.submitReflectionInteraction(
         idToken,
         apiGatewayUrl,
         lessonId,
         sectionId,
         submissionData
-      )) as ReflectionVersionItem;
-
+      );
       alert(
         `Learning entry submitted successfully! Entry ID: ${finalEntryResponse.versionId}`
       );
       completeSection(lessonId, sectionId);
+      fetchAndUpdateHistory();
     } catch (err) {
       console.error("Error submitting final learning entry:", err);
-      setSubmitError(
-        err instanceof Error ? err.message : "Failed to submit final entry."
-      );
+      handleApiError(err, "Failed to submit final entry");
     } finally {
       setIsLoading(false);
     }
@@ -265,11 +277,12 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     currentCode,
     currentExplanation,
     completeSection,
+    fetchAndUpdateHistory,
     isTopicPredefined,
-    isCodePredefined,
-    isExplanationPredefined,
     section.topic,
+    isCodePredefined,
     section.code,
+    isExplanationPredefined,
     section.explanation,
   ]);
 
@@ -302,7 +315,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       </div>
 
       <div className={styles.reflectionContainer}>
-        {/* ... (input fields remain the same) ... */}
+        {/* Input Fields for Topic, Code, Explanation */}
         <div className={styles.reflectionInputGroup}>
           <label
             htmlFor={`${sectionId}-topic`}
@@ -376,7 +389,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 : "Get AI feedback"
             }
           >
-            {isLoading ? "Processing..." : "Get Feedback"}
+            {isLoading && !submitError ? "Processing..." : "Get Feedback"}
           </button>
           <button
             onClick={handleFinalSubmit}
@@ -400,7 +413,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 : "Submit to Journal"
             }
           >
-            {isLoading
+            {isLoading && !submitError
               ? "Submitting..."
               : isSectionMarkedCompleteInStore
               ? "Submitted ✓"
@@ -408,23 +421,34 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           </button>
         </div>
         {submitError && <p className={styles.apiError}>{submitError}</p>}
-        {fetchError && <p className={styles.apiError}>{fetchError}</p>}
 
+        {/* History Display */}
         <div className={styles.reflectionHistory}>
           <h4>
             Feedback History{" "}
             {isSectionMarkedCompleteInStore ? "(Section Complete ✓)" : ""}
           </h4>
-          {/* ... (history rendering logic remains the same) ... */}
-          {isLoading && draftHistory.length === 0 && <p>Loading history...</p>}
-          {!isLoading && draftHistory.length === 0 && !fetchError && (
+          {fetchError && (
+            <p className={styles.apiError} style={{ textAlign: "center" }}>
+              {fetchError}
+            </p>
+          )}
+          {isLoadingHistory && draftHistory.length === 0 && !fetchError && (
+            <LoadingSpinner message="Loading history..." size="small" />
+          )}
+          {!isLoadingHistory && draftHistory.length === 0 && !fetchError && (
             <p className={styles.noHistory}>
               No feedback history yet. Fill out the fields and click "Get
               Feedback".
             </p>
           )}
           {draftHistory.map((entry) => (
-            <div key={entry.versionId} className={`${styles.reflectionCard}`}>
+            <div
+              key={entry.versionId}
+              className={`${styles.reflectionCard} ${
+                styles[`cardAssessment${entry.aiAssessment || "none"}`] || ""
+              }`}
+            >
               <div className={styles.reflectionSubmission}>
                 <div className={styles.reflectionHeader}>
                   <span className={styles.reflectionDate}>

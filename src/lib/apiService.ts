@@ -2,7 +2,7 @@
 import type {
   UserProgressData,
   BatchCompletionsInput,
-  ErrorResponse,
+  ErrorResponse, // This is already defined for structured errors
   ReflectionInteractionInput,
   ReflectionVersionItem,
   ListOfReflectionDraftsResponse,
@@ -12,10 +12,27 @@ import type {
 export const USE_MOCKED_API = false;
 const MOCKED_USER_ID = "mocked-google-user-id-12345";
 
+// Custom Error class to hold status and parsed response
+export class ApiError extends Error {
+  status: number;
+  data: ErrorResponse | { message: string }; // Can hold the parsed JSON error or a simpler message
+
+  constructor(
+    message: string,
+    status: number,
+    data?: ErrorResponse | { message: string }
+  ) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.data = data || { message };
+    Object.setPrototypeOf(this, ApiError.prototype); // For correct instanceof checks
+  }
+}
+
 const mockApiDelay = (duration: number = 500) =>
   new Promise((resolve) => setTimeout(resolve, duration));
 
-// --- Existing Progress API Functions (keep as is) ---
 export async function getUserProgress(
   idToken: string,
   apiGatewayUrl: string
@@ -35,14 +52,9 @@ export async function getUserProgress(
     return Promise.resolve(mockedProgress);
   }
 
-  if (!idToken)
-    return Promise.reject(new Error("Authentication token is required."));
-  if (!apiGatewayUrl)
-    return Promise.reject(new Error("API Gateway URL is required."));
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
 
-  console.log(
-    `LIVE API [getUserProgress]: Calling GET ${apiGatewayUrl}/progress`
-  );
   const response = await fetch(`${apiGatewayUrl}/progress`, {
     method: "GET",
     headers: {
@@ -58,19 +70,19 @@ export async function getUserProgress(
     try {
       errorData = await response.json();
     } catch (e) {
-      /* ignore */
+      /* ignore if body not JSON */
     }
     console.error(
       `LIVE API [getUserProgress]: Error ${response.status}`,
       errorData
     );
-    throw new Error(
-      errorData.message || `Failed to fetch progress: ${response.status}`
+    throw new ApiError(
+      errorData.message || `Failed to fetch progress: ${response.status}`,
+      response.status,
+      errorData
     );
   }
-  const data = await response.json();
-  console.log("LIVE API [getUserProgress]: Received ->", data);
-  return data as UserProgressData;
+  return response.json() as Promise<UserProgressData>;
 }
 
 export async function updateUserProgress(
@@ -86,16 +98,11 @@ export async function updateUserProgress(
     return Promise.resolve({ userId: MOCKED_USER_ID, completion: {} });
   }
 
-  if (!idToken)
-    return Promise.reject(new Error("Authentication token is required."));
-  if (!apiGatewayUrl)
-    return Promise.reject(new Error("API Gateway URL is required."));
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
   if (!batchInput || !batchInput.completions)
-    return Promise.reject(new Error("Completions data is required."));
+    throw new ApiError("Completions data is required.", 400);
 
-  console.log(
-    `LIVE API [updateUserProgress]: Calling PUT ${apiGatewayUrl}/progress`
-  );
   const response = await fetch(`${apiGatewayUrl}/progress`, {
     method: "PUT",
     headers: {
@@ -112,19 +119,19 @@ export async function updateUserProgress(
     try {
       errorData = await response.json();
     } catch (e) {
-      // Ignore
+      /* ignore */
     }
     console.error(
       `LIVE API [updateUserProgress]: Error ${response.status}`,
       errorData
     );
-    throw new Error(
-      errorData.message || `Failed to update progress: ${response.status}`
+    throw new ApiError(
+      errorData.message || `Failed to update progress: ${response.status}`,
+      response.status,
+      errorData
     );
   }
-  const data = await response.json();
-  console.log("LIVE API [updateUserProgress]: Received ->", data);
-  return data as UserProgressData;
+  return response.json() as Promise<UserProgressData>;
 }
 
 /**
@@ -146,7 +153,6 @@ export async function submitReflectionInteraction(
   sectionId: string,
   submissionData: ReflectionInteractionInput
 ): Promise<ReflectionVersionItem> {
-  // Changed return type
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
     console.log(
       `MOCKED API [submitReflectionInteraction] for ${lessonId}/${sectionId}, isFinal: ${submissionData.isFinal}`
@@ -156,7 +162,7 @@ export async function submitReflectionInteraction(
     const mockVersionId = `mock_${lessonId}_${sectionId}_${timestamp.replace(
       /:|\./g,
       ""
-    )}`; // Ensure mockVersionId is valid for DDB SK if needed
+    )}`;
 
     const mockItem: ReflectionVersionItem = {
       versionId: mockVersionId,
@@ -180,16 +186,11 @@ export async function submitReflectionInteraction(
     return Promise.resolve(mockItem);
   }
 
-  if (!idToken)
-    return Promise.reject(new Error("Authentication token is required."));
-  if (!apiGatewayUrl)
-    return Promise.reject(new Error("API Gateway URL is required."));
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
 
   const lessonIdNoSlash = lessonId.replace("/", "-");
   const endpoint = `${apiGatewayUrl}/reflections/${lessonIdNoSlash}/sections/${sectionId}`;
-  console.log(
-    `LIVE API [submitReflectionInteraction]: Calling POST ${endpoint}`
-  );
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -201,29 +202,30 @@ export async function submitReflectionInteraction(
   });
 
   if (!response.ok) {
+    // Handles 201 for created, but checks for 4xx, 5xx including 429
     let errorData: ErrorResponse = {
       message: `HTTP error ${response.status}: ${response.statusText}`,
     };
     try {
-      errorData = await response.json();
+      // The Lambda's format_lambda_response sends {"message": ..., "type": ...} for 429
+      const parsedJson = await response.json();
+      // If 'type' exists (like our throttling types), include it.
+      errorData = {
+        message: parsedJson.message || errorData.message,
+        details: parsedJson.type ? { type: parsedJson.type } : undefined,
+      };
     } catch (e) {
-      /* ignore if body not JSON */
+      /* ignore if body not JSON or different structure */
     }
+
     console.error(
       `LIVE API [submitReflectionInteraction]: Error ${response.status} for ${endpoint}`,
       errorData
     );
-    throw new Error(
-      errorData.message || `Failed to submit reflection: ${response.status}`
-    );
+    throw new ApiError(errorData.message, response.status, errorData);
   }
 
-  const data = await response.json();
-  console.log(
-    `LIVE API [submitReflectionInteraction]: Received from ${endpoint} ->`,
-    data
-  );
-  return data as ReflectionVersionItem; // Changed type cast
+  return response.json() as Promise<ReflectionVersionItem>;
 }
 
 /**
@@ -285,10 +287,11 @@ export async function getReflectionDraftVersions(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
+
   const lessonIdNoSlash = lessonId.replace("/", "-");
   const endpoint = `${apiGatewayUrl}/reflections/${lessonIdNoSlash}/sections/${sectionId}`;
-  console.log(`LIVE API [getReflectionDraftVersions]: Calling GET ${endpoint}`);
-
   const response = await fetch(endpoint, {
     method: "GET",
     headers: {
@@ -310,17 +313,13 @@ export async function getReflectionDraftVersions(
       `LIVE API [getReflectionDraftVersions]: Error ${response.status} for ${endpoint}`,
       errorData
     );
-    throw new Error(
-      errorData.message ||
-        `Failed to fetch reflection drafts: ${response.status}`
+    throw new ApiError(
+      errorData.message || `Failed to fetch drafts: ${response.status}`,
+      response.status,
+      errorData
     );
   }
-  const data = await response.json();
-  console.log(
-    `LIVE API [getReflectionDraftVersions]: Received from ${endpoint} ->`,
-    data
-  );
-  return data as ListOfReflectionDraftsResponse;
+  return response.json() as Promise<ListOfReflectionDraftsResponse>;
 }
 
 /**
@@ -360,10 +359,8 @@ export async function getFinalizedLearningEntries(
     return Promise.resolve(mockFinalEntries);
   }
 
-  if (!idToken)
-    return Promise.reject(new Error("Authentication token is required."));
-  if (!apiGatewayUrl)
-    return Promise.reject(new Error("API Gateway URL is required."));
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
 
   const endpoint = `${apiGatewayUrl}/learning-entries`;
   console.log(
@@ -391,15 +388,11 @@ export async function getFinalizedLearningEntries(
       `LIVE API [getFinalizedLearningEntries]: Error ${response.status} for ${endpoint}`,
       errorData
     );
-    throw new Error(
-      errorData.message ||
-        `Failed to fetch finalized learning entries: ${response.status}`
+    throw new ApiError(
+      errorData.message || `Failed to fetch entries: ${response.status}`,
+      response.status,
+      errorData
     );
   }
-  const data = await response.json();
-  console.log(
-    `LIVE API [getFinalizedLearningEntries]: Received from ${endpoint} ->`,
-    data
-  );
-  return data as ListOfFinalLearningEntriesResponse;
+  return response.json() as Promise<ListOfFinalLearningEntriesResponse>;
 }

@@ -58,13 +58,7 @@
       "id": "python_lists_advanced",
       "title": "Python Lists (Advanced)",
       "description": "Stretch your understand of lists with an ethical puzzle.",
-      "lessons": [
-        "04_lists_advanced/lesson_1",
-        "04_lists_advanced/lesson_2",
-        "04_lists_advanced/lesson_3",
-        "04_lists_advanced/lesson_4",
-        "04_lists_advanced/lesson_5"
-      ],
+      "lessons": ["04_lists_advanced/lesson_1", "04_lists_advanced/lesson_2"],
       "image": "python-logo.svg"
     }
   ]
