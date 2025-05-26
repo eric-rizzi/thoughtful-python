@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # Updated to Node.js 20 (includes newer npm)
+          node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
@@ -29,13 +29,17 @@ jobs:
       - name: Build project
         run: npm run build
 
+      # Catch "404's" with the index so don't end up with an actual 404
+      - name: Create 404.html for SPA routing on GitHub Pages
+        run: cp ./dist/index.html ./dist/404.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./dist" # Adjust if your build output is in a different directory
+          path: "./dist"
 
   deploy:
     environment:
