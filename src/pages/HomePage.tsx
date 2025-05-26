@@ -108,7 +108,7 @@ const HomePage: React.FC = () => {
         </p>
       </section>
       <section className={styles.philosophySection}>
-        <h3>The Philosophy of this website is:</h3>
+        <h3>Philosophy:</h3>
         <ul>
           <li>Anyone can learn Python</li>
           <li>
@@ -116,8 +116,7 @@ const HomePage: React.FC = () => {
             complex tasks
           </li>
           <li>
-            Like any language, learning Python takes a lot of concentration and
-            practice
+            Like any language, learning Python takes concentration and practice
           </li>
           <li>
             The best way to learn a language is PRIMM: Predict, Run,
@@ -125,7 +124,7 @@ const HomePage: React.FC = () => {
           </li>
           <li>The best way to solidify your knowledge is through reflection</li>
           <li>
-            There are many wonderful tools (e.g., VSCode) that are a bit
+            There are many powerful coding tools (e.g., VSCode), but they are
             overwhelming for first time learners
           </li>
           <li>
@@ -135,7 +134,7 @@ const HomePage: React.FC = () => {
         </ul>
         <p>
           This website can be viewed as the first step on your programming
-          journey. It will help you establish a strong foundation Python
+          journey. It will help you establish a strong foundation in Python
           fundamentals and effective learning processes. Once you feel more
           confident, you'll be well-prepared to explore other more powerful
           tools.
