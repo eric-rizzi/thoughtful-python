@@ -1,5 +1,5 @@
 // src/pages/ProgressPage.tsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   fetchUnitsData,
@@ -7,7 +7,7 @@ import {
   getRequiredSectionsForLesson,
 } from "../lib/dataLoader";
 import { useAllCompletions } from "../stores/progressStore";
-import type { Unit, Lesson } from "../types/data"; // Import Lesson type
+import type { Lesson } from "../types/data"; // Import Lesson type
 import styles from "./ProgressPage.module.css"; // New CSS module
 
 interface LessonCompletionStatus {

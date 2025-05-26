@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./LearningEntriesPage.module.css";
 import { useAuthStore } from "../stores/authStore";
-import { useApiSettingsStore } from "../stores/apiSettingsStore";
 import * as apiService from "../lib/apiService";
 import { ReflectionVersionItem } from "../types/apiServiceTypes";
+import { API_GATEWAY_BASE_URL } from "../config";
 
 const LearningEntriesPage: React.FC = () => {
   const [finalEntries, setFinalEntries] = useState<ReflectionVersionItem[]>([]);
@@ -13,9 +13,7 @@ const LearningEntriesPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { idToken, isAuthenticated, user } = useAuthStore();
-  const apiGatewayUrl = useApiSettingsStore(
-    (state) => state.progressApiGateway
-  );
+  const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   useEffect(() => {
     if (!isAuthenticated || !idToken || !apiGatewayUrl) {

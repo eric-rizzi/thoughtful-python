@@ -196,7 +196,7 @@ export async function submitReflectionInteraction(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
-  const endpoint = `${apiGatewayUrl}/lessons/${lessonId}/sections/${sectionId}/reflections`;
+  const endpoint = `${apiGatewayUrl}learning-entries/lessons/${lessonId}/sections/${sectionId}/reflections`;
   console.log(
     `LIVE API [submitReflectionInteraction]: Calling POST ${endpoint}`
   );
@@ -299,7 +299,7 @@ export async function getReflectionDraftVersions(
   if (!apiGatewayUrl)
     return Promise.reject(new Error("API Gateway URL is required."));
 
-  const endpoint = `${apiGatewayUrl}/lessons/${lessonId}/sections/${sectionId}/reflections`;
+  const endpoint = `${apiGatewayUrl}learning-entries/lessons/${lessonId}/sections/${sectionId}/reflections`;
   // Add query parameters for pagination here if implementing:
   // const url = new URL(endpoint);
   // if (limit) url.searchParams.append('limit', String(limit));

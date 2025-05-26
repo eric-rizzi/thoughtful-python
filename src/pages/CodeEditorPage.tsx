@@ -1,5 +1,5 @@
 // src/pages/CodeEditorPage.tsx
-import React, { useState, useCallback, useEffect, useMemo } from "react"; // Added useMemo
+import React, { useState, useEffect, useMemo } from "react"; // Added useMemo
 import CodeEditor from "../components/CodeEditor";
 import ActiveTestItem from "../components/ActiveTestItem";
 import { useActiveTestSuite } from "../hooks/useActiveTestSuite";

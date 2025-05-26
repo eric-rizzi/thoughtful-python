@@ -6,7 +6,6 @@ import type { ReflectionSectionData, AssessmentLevel } from "../../types/data";
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useAuthStore } from "../../stores/authStore";
-import { useApiSettingsStore } from "../../stores/apiSettingsStore";
 import * as apiService from "../../lib/apiService";
 // Import useProgressActions and useProgressStore directly to get the isSectionComplete function
 import {
@@ -18,6 +17,7 @@ import {
   ReflectionInteractionInput,
   ReflectionVersionItem,
 } from "../../types/apiServiceTypes";
+import { API_GATEWAY_BASE_URL } from "../../config";
 
 const QUALIFYING_ASSESSMENTS_FOR_FINAL: AssessmentLevel[] = [
   "achieves",
@@ -54,9 +54,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { idToken, isAuthenticated } = useAuthStore();
-  const apiGatewayUrl = useApiSettingsStore(
-    (state) => state.progressApiGateway
-  );
+  const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const { completeSection } = useProgressActions();
 

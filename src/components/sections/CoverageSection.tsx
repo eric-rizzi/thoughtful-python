@@ -3,10 +3,10 @@ import React, { useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
-  CoverageSection as CoverageSectionData,
-  SavedCoverageState, // This will be our TState
-  InputParam, // Keep for typing
-  CoverageChallenge, // Keep for typing
+  CoverageSectionData,
+  SavedCoverageState,
+  InputParam,
+  CoverageChallenge,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";

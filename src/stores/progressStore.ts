@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import { useAuthStore } from "./authStore"; // To get idToken for API calls
-import { useApiSettingsStore } from "./apiSettingsStore"; // To get API Gateway URL
 import * as apiService from "../lib/apiService"; // Your API service
 import type {
   SectionCompletionInput,
   UserProgressData,
 } from "../types/apiServiceTypes";
 import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
+import { API_GATEWAY_BASE_URL } from "../config";
 
 export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2"; // Make sure this is exported
 
@@ -113,8 +113,7 @@ export const useProgressStore = create<ProgressState>()(
           if (navigator.onLine) {
             try {
               const idToken = authActions.getIdToken();
-              const apiGatewayUrl =
-                useApiSettingsStore.getState().progressApiGateway;
+              const apiGatewayUrl = API_GATEWAY_BASE_URL;
               if (idToken && apiGatewayUrl) {
                 console.log(
                   `[ProgressStore] Attempting to sync completion: ${lessonId}/${sectionId}`
