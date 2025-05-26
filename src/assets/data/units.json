@@ -15,7 +15,7 @@
         "00_intro/lesson_8",
         "00_intro/lesson_9"
       ],
-      "image": "python-logo.png"
+      "image": "unit_00_intro.svg"
     },
     {
       "id": "python_strings",
@@ -27,7 +27,7 @@
         "01_strings/lesson_3",
         "01_strings/lesson_4"
       ],
-      "image": "python-logo.svg"
+      "image": "unit_01_strings.svg"
     },
     {
       "id": "python_conditionals",
@@ -40,7 +40,7 @@
         "02_conditionals/lesson_4",
         "02_conditionals/lesson_5"
       ],
-      "image": "python-logo.svg"
+      "image": "unit_02_conditionals.svg"
     },
     {
       "id": "python_lists_intro",
@@ -52,14 +52,14 @@
         "03_lists_intro/lesson_3",
         "03_lists_intro/lesson_4"
       ],
-      "image": "python-logo.svg"
+      "image": "unit_03_lists_intro.svg"
     },
     {
       "id": "python_lists_advanced",
       "title": "Python Lists (Advanced)",
       "description": "Stretch your understand of lists with an ethical puzzle.",
       "lessons": ["04_lists_advanced/lesson_1", "04_lists_advanced/lesson_2"],
-      "image": "python-logo.svg"
+      "image": "unit_04_lists_advanced.svg"
     }
   ]
 }

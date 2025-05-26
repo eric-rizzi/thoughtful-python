@@ -422,7 +422,6 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         </div>
         {submitError && <p className={styles.apiError}>{submitError}</p>}
 
-        {/* History Display */}
         <div className={styles.reflectionHistory}>
           <h4>
             Feedback History{" "}
