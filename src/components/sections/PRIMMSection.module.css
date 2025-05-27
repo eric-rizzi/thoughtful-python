@@ -1,171 +1,219 @@
 /* src/components/sections/PRIMMSection.module.css */
+
 .primmSectionContainer {
-  border-left: 5px solid #8e44ad; /* New distinct color (purple) */
-  background-color: #f9f6fc;
-  padding-left: 1.5rem;
-  margin-top: 1rem; /* Ensure spacing from previous section */
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 .introduction {
   margin-bottom: 1.5rem;
   font-size: 1.05em;
-  background-color: #fdfdff;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  border: 1px dashed #dcd6e4;
-
 }
 
 .exampleBlock {
-  background-color: #ffffff;
+  /* Main container for a single PRIMM activity */
+  background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-/* Style for completed blocks */
-.blockComplete {
-   border-left: 5px solid #2ecc71; /* Green border for completed block */
-}
-
-
-.exampleBlock h4 { /* Code Example: / Output: */
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  color: #306998;
-  font-size: 1.1em;
-  font-weight: 600;
-}
-
-/* Ensure output area has margin */
-.outputArea {
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem; /* Space before prediction */
-  min-height: 50px; /* Give it some initial height */
-  background-color: #f8f9fa; /* Lighter background than default code output maybe */
-  border: 1px solid #eee;
-}
-
-
-.predictionRunArea {
-  display: flex;
-  align-items: flex-start; /* Align items top */
-  gap: 1rem;
   margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f0f3f5;
-  border-radius: 6px;
-  border: 1px solid #d8dfe4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
-.predictionInputGroup {
-   flex-grow: 1; /* Allow input group to take space */
-}
-
-.predictionInputGroup label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    color: #333;
-}
-
-
-.predictionInput {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-.predictionInput:focus {
-  border-color: #8e44ad; /* Match section border */
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.2);
-}
-
-/* Adjust run button appearance if needed */
-.runButton {
-  /* Inherits from styles.runButton */
-  flex-shrink: 0; /* Prevent button from shrinking */
-  margin-top: 1.8em; /* Align roughly with input box (adjust if label is multi-line) */
-}
-/* Override disabled style if needed */
-.runButton:disabled {
-    background-color: #bdc3c7; /* Grey */
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-.feedbackArea {
-  margin-top: 0.5rem; /* Space below prediction/run area */
-  padding: 0.25rem 0.5rem; /* Less padding maybe */
-  border-radius: 4px;
-  min-height: 1.5em; /* Prevent layout shift */
-}
-
-.correctText {
-  color: #27ae60; /* Green */
-  font-weight: bold;
-  margin: 0.25rem 0;
-}
-
-.incorrectText {
-  color: #c0392b; /* Red */
-  font-weight: bold;
-    margin: 0.25rem 0;
-}
-
-.stage { /* Base for explanation stage */
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px dashed #ccc;
-}
-
-.explanationStage {
-  background-color: #fff9e6; /* Light yellow background */
-  padding: 1rem;
-  border: 1px solid #ffe8a3;
-  border-radius: 6px;
-}
-
-
-.explanationStage h5 {
-  font-size: 1.1em;
-  color: #d35400; /* Orange */
+.exampleBlock h4 {
+  /* For "Code to Analyze" heading */
   margin-top: 0;
   margin-bottom: 0.75rem;
-}
-.explanationStage p {
-    margin-top: 0;
-    margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.15em;
 }
 
+.activityArea {
+  margin-top: 1rem;
+}
+
+.inputGroup {
+  margin-bottom: 1.25rem;
+}
+
+.inputLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 1rem;
+}
+
+.predictionTextarea,
 .explanationTextarea {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ccc;
+  border: 1px solid #ced4da;
   border-radius: 4px;
   box-sizing: border-box;
-  font-family: inherit;
-  font-size: 1em;
-  min-height: 80px;
-  margin-bottom: 0.5rem;
+  /* --- Explicitly set font to match body/prose style --- */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 1em; /* Or your desired prose font size, e.g., 0.95rem */
+  line-height: 1.5; /* Ensure good line spacing for prose */
+  /* --- End of font change --- */
+  min-height: 70px;
+  margin-bottom: 0.25rem;
+  resize: vertical;
 }
+.predictionTextarea:focus,
 .explanationTextarea:focus {
-  border-color: #f39c12; /* Orange focus */
+  border-color: #4b8bbe;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2);
+  box-shadow: 0 0 0 2px rgba(75, 139, 190, 0.2);
+}
+.predictionTextarea:disabled,
+.explanationTextarea:disabled {
+  background-color: #e9ecef;
+  color: #495057;
+  cursor: default;
 }
 
 .lengthHint {
   font-size: 0.85em;
-  color: #7f8c8d; /* Grey */
-  margin-top: 0.25rem;
+  color: #e74c3c;
+  margin-top: 0.1rem;
 }
 
-.conclusion {
-  margin-top: 2rem;
-  /* Uses .completionMessage from Section.module.css */
+.confidenceSelectContainer label {
+  margin-right: 15px;
+  font-weight: normal;
+  cursor: pointer;
+}
+.confidenceSelectContainer input[type="radio"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* "Past Answers / Information" Div */
+.pastAnswersDiv {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 1.5rem;
+}
+.pastAnswersDiv_hidden {
+  display: none;
+}
+
+.infoEntry {
+  margin-bottom: 0.75rem;
+}
+.infoEntry:last-child {
+  margin-bottom: 0;
+}
+
+.infoLabel {
+  display: block;
+  font-size: 1rem;
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.infoText,
+.aiCommentText {
+  margin-left: 1em;
+  padding: 0.25em 0;
+  white-space: pre-wrap;
+  color: #212529;
+  display: block;
+  line-height: 1.5;
+  /* Ensures this text also uses the standard prose font by inheritance */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.assessmentLabel {
+  font-weight: bold;
+  font-size: 0.85em;
+  margin-left: 0.5em;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  text-transform: uppercase;
+  display: inline-block;
+  vertical-align: middle;
+}
+.assessmentAchieves {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #b2d8b5;
+}
+.assessmentMostly {
+  color: #004085;
+  background-color: #cce5ff;
+  border: 1px solid #a3c2e0;
+}
+.assessmentDeveloping {
+  color: #856404;
+  background-color: #fff3cd;
+  border: 1px solid #f0dd92;
+}
+.assessmentInsufficient {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #ebc0c3;
+}
+
+.keyOutputText {
+  background-color: #23272f;
+  color: #d8dee9;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-family: "Menlo", "Consolas", "Courier New", monospace; /* Keep this monospaced */
+  font-size: 0.95em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  display: block;
+  box-sizing: border-box;
+  margin-left: 1em;
+  margin-top: 0.25rem;
+  width: calc(100% - 1em); /* Adjust width considering margin */
+}
+
+/* "Next Question to Answer" Div */
+.nextQuestionDiv {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #ced4da;
+}
+.nextQuestionDiv_noContentAbove {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Buttons */
+.primmButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.7em 1.3em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.25s;
+  font-size: 0.95em;
+  margin-top: 0.5rem;
+}
+.primmButton:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+.primmButton:disabled {
+  background-color: #6c757d;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.getFeedbackButton {
+  composes: primmButton;
+  background-color: #28a745;
+}
+.getFeedbackButton:hover:not(:disabled) {
+  background-color: #218838;
 }

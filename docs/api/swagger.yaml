@@ -258,7 +258,6 @@ components:
       description: "AI's evaluation of the user's PRIMM prediction and self-correction."
       required:
         - predictionSpecificityRating # Make this required as per user's point 7
-        # selfCorrectionQualityRating can be null if not applicable
       properties:
         predictionSpecificityRating:
           type: integer

@@ -1,5 +1,7 @@
 // src/types/data.ts
 
+import { PrimmEvaluationResponse } from "./apiServiceTypes";
+
 // --- Base Structures ---
 
 export interface LessonExample {
@@ -214,47 +216,39 @@ export interface SavedCodeState {
 }
 
 export interface PRIMMCodeExample {
-  id: string; // Unique ID for this PRIMM block within the section
-  code: string; // The code to be displayed and run
-  predictPrompt: string; // Question asking the user to predict something (e.g., "What will be the value of x?")
-  expectedPrediction: string; // The correct answer for the prediction (string-based for simplicity)
-  // Optional: Specific lines to focus on for prediction, or variables
-  predictionTargetDescription?: string; // e.g., "the final output", "the value of variable 'y' at the end"
-  explanationPrompt: string; // Prompt for the explanation if prediction is wrong
-  minExplanationLength: number; // Minimum characters for the explanation
+  // Modified for the new flow
+  id: string;
+  code: string;
+  predictPrompt: string;
+  minPredictionLength?: number;
+  minExplanationLength?: number;
 }
 
 export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
-  introduction: string; // General introduction to this PRIMM activity
+  introduction: string;
   examples: PRIMMCodeExample[]; // Array of PRIMM blocks for this section
-  // Potentially add Modify or Make prompts later
-  conclusion?: string; // Text to show after all examples are completed
 }
 
-export interface PRIMMExampleState {
-  userPrediction: string; // User's input
-  explanationText: string; // User's explanation (if needed)
-  hasMetExplanationRequirement: boolean; // Tracks if explanation is sufficient OR prediction was correct
-  output: string | null; // Actual output from running the code
-  runError: string | null; // Any error message from the Python execution
-  runAttempted: boolean; // Has the user clicked Run for this block?
-  // No predictionSubmitted or isPredictionCorrect needed here anymore
-  // isComplete is now the primary flag for completion of this block
-  isComplete: boolean; // Has this specific PRIMM block met its completion criteria?
+// This will be the structure stored per PRIMM example via useSectionProgress
+export interface EnhancedPRIMMExampleUserState {
+  userEnglishPrediction: string;
+  predictionConfidence: number; // 1 (Low), 2 (Medium), 3 (High)
+  isPredictionLocked: boolean;
+  actualPyodideOutput: string | null;
+  keyOutputSnippet: string | null;
+  userExplanationText: string;
+  aiEvaluationResult: PrimmEvaluationResponse | null;
+  currentUiStep: "PREDICT" | "EXPLAIN_AFTER_RUN" | "VIEW_AI_FEEDBACK";
+  isComplete: boolean;
 }
 
-// REVISED Saved state for the whole section
-export interface SavedPRIMMSectionState {
-  // Keyed by PRIMMCodeExample.id
+export interface SavedEnhancedPRIMMSectionState {
   exampleStates: {
-    // Still store the full state per example, excluding maybe transient error states if desired
-    // But storing runError and output is useful for displaying state across sessions
-    [exampleId: string]: PRIMMExampleState;
+    [exampleId: string]: EnhancedPRIMMExampleUserState;
   };
 }
 
-// export interface SavedPRIMMSectionState { ... } (already defined and used)
 export type AnyLessonSectionData =
   | InformationSectionData
   | ObservationSectionData

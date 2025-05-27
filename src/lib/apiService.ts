@@ -7,6 +7,8 @@ import type {
   ReflectionVersionItem,
   ListOfReflectionDraftsResponse,
   ListOfFinalLearningEntriesResponse,
+  PrimmEvaluationRequest,
+  PrimmEvaluationResponse,
 } from "../types/apiServiceTypes";
 
 export const USE_MOCKED_API = false;
@@ -395,4 +397,90 @@ export async function getFinalizedLearningEntries(
     );
   }
   return response.json() as Promise<ListOfFinalLearningEntriesResponse>;
+}
+
+export async function submitPrimmEvaluation(
+  idToken: string, // Still needed for consistency, even if mock doesn't use it
+  apiGatewayUrl: string, // Still needed for consistency
+  payload: PrimmEvaluationRequest
+): Promise<PrimmEvaluationResponse> {
+  if (USE_MOCKED_API) {
+    // Your existing flag
+    console.log(
+      "MOCKED API [submitPrimmEvaluation]: Called with payload:",
+      payload
+    );
+    await mockApiDelay(1200); // Use your existing mockApiDelay
+
+    // Generate a plausible mock response
+    const mockResponse: PrimmEvaluationResponse = {
+      predictionSpecificityRating: Math.floor(Math.random() * 3) + 3, // e.g., 3-5 stars
+      predictionSpecificityFeedback: `Mocked feedback on prediction specificity for: "${payload.userPredictionText.substring(
+        0,
+        30
+      )}..."`,
+      selfCorrectionQualityRating: payload.userSelfCorrectionText
+        ? Math.floor(Math.random() * 3) + 2
+        : null, // e.g., 2-4 stars if text exists
+      selfCorrectionQualityFeedback: payload.userSelfCorrectionText
+        ? `Mocked feedback on self-correction: "${payload.userSelfCorrectionText.substring(
+            0,
+            30
+          )}..."`
+        : null,
+      overallComment: "This is a mocked overall comment from the AI. Good job!",
+    };
+    return Promise.resolve(mockResponse);
+  }
+
+  // --- Placeholder for REAL API call logic (to be implemented in Step 2 of your main plan) ---
+  if (!idToken)
+    throw new ApiError(
+      "Authentication token is required for PRIMM evaluation.",
+      401
+    );
+  if (!apiGatewayUrl)
+    throw new ApiError(
+      "API Gateway URL is required for PRIMM evaluation.",
+      500
+    );
+
+  const endpoint = `${apiGatewayUrl}/primm-feedback/submit`; // Matches your Swagger
+
+  console.log(
+    `LIVE API [submitPrimmEvaluation]: Calling POST ${endpoint} with payload:`,
+    payload
+  );
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let errorData: { message: string; details?: any } = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      const parsedJson = await response.json();
+      errorData = {
+        message: parsedJson.message || errorData.message,
+        details: parsedJson.type
+          ? { type: parsedJson.type }
+          : parsedJson.details || undefined,
+      };
+    } catch (e) {
+      /* ignore if body not JSON */
+    }
+    console.error(
+      `LIVE API [submitPrimmEvaluation]: Error ${response.status}`,
+      errorData
+    );
+    throw new ApiError(errorData.message, response.status, errorData);
+  }
+  return response.json() as Promise<PrimmEvaluationResponse>;
 }

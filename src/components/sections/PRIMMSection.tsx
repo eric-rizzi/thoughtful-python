@@ -1,244 +1,39 @@
 // src/components/sections/PRIMMSection.tsx
-import React, { useState, useCallback, useMemo } from "react"; // Added useState for local running state
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
 import type {
-  PRIMMSection as PRIMMSectionData,
+  PRIMMSectionData,
   PRIMMCodeExample,
-  PRIMMExampleState, // Use updated interface
-  SavedPRIMMSectionState, // Use updated interface
+  EnhancedPRIMMExampleUserState,
+  SavedEnhancedPRIMMSectionState,
+  AssessmentLevel, // Ensure AssessmentLevel is imported
 } from "../../types/data";
+import type {
+  PrimmEvaluationRequest,
+  PrimmEvaluationResponse,
+} from "../../types/apiServiceTypes";
+
 import styles from "./Section.module.css";
 import primmStyles from "./PRIMMSection.module.css";
+
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
+import { useAuthStore } from "../../stores/authStore";
+import { ApiError } from "../../lib/apiService";
+import { API_GATEWAY_BASE_URL } from "../../config";
 
-interface PRIMMExampleBlockProps {
-  example: PRIMMCodeExample;
-  state: PRIMMExampleState;
-  onStateChange: (newState: Partial<PRIMMExampleState>) => void;
-  onRunCode: () => Promise<{ output: string; error: string | null }>;
-  isPyodideLoading: boolean;
-  pyodideError: Error | null;
-}
+const DEFAULT_MIN_PREDICTION_LENGTH = 20;
+const DEFAULT_MIN_EXPLANATION_LENGTH = 30;
 
-// *** PRIMMExampleBlock Sub-component ***
-const PRIMMExampleBlock: React.FC<PRIMMExampleBlockProps> = React.memo(
-  ({
-    example,
-    state,
-    onStateChange,
-    onRunCode,
-    isPyodideLoading,
-    pyodideError,
-  }) => {
-    // Local state to track if the 'Run' button is currently executing
-    const [isRunningCode, setIsRunningCode] = useState(false);
+const CONFIDENCE_OPTIONS: { value: number; label: string }[] = [
+  { value: 1, label: "Not Confident" },
+  { value: 2, label: "Somewhat Confident" },
+  { value: 3, label: "Very Confident" },
+];
 
-    const handlePredictionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      // Only update prediction, don't affect other states yet
-      onStateChange({ userPrediction: e.target.value });
-    };
-
-    const handleExplanationChange = (
-      e: React.ChangeEvent<HTMLTextAreaElement>
-    ) => {
-      const newText = e.target.value;
-      const explanationMet = newText.length >= example.minExplanationLength;
-      // When explanation is updated, check if *this action* makes the block complete
-      // (It completes if explanation is now met AND the explanation was needed due to prior wrong prediction)
-      const blockNowComplete =
-        explanationMet &&
-        state.runAttempted &&
-        !state.runError &&
-        !(
-          state.userPrediction.trim().toLowerCase() ===
-          example.expectedPrediction.trim().toLowerCase()
-        );
-      onStateChange({
-        explanationText: newText,
-        hasMetExplanationRequirement: explanationMet,
-        isComplete: state.isComplete || blockNowComplete,
-      });
-    };
-
-    const handleRunCodeInternal = async () => {
-      setIsRunningCode(true);
-      // Update persisted state immediately to show "Running..."
-      onStateChange({
-        output: "Running...",
-        runError: null,
-        runAttempted: true,
-      });
-
-      const result = await onRunCode();
-      const actualOutput = result.error ? null : result.output || "";
-      const predictionAtRunTime = state.userPrediction.trim();
-
-      const wasCorrectNow =
-        !result.error &&
-        actualOutput !== null &&
-        predictionAtRunTime.toLowerCase() ===
-          example.expectedPrediction.trim().toLowerCase();
-
-      const needsExplanationNow = !wasCorrectNow && !result.error;
-      // Check if existing explanation text already meets requirement
-      const explanationRequirementAlreadyMet =
-        needsExplanationNow &&
-        state.explanationText.length >= example.minExplanationLength;
-      const blockCompleteNow =
-        wasCorrectNow || explanationRequirementAlreadyMet;
-
-      onStateChange({
-        output: actualOutput,
-        runError: result.error,
-        hasMetExplanationRequirement:
-          wasCorrectNow || explanationRequirementAlreadyMet, // Met if correct OR explanation already sufficient
-        isComplete: blockCompleteNow,
-      });
-
-      setIsRunningCode(false);
-    };
-
-    // --- Reordered Declarations ---
-    const isRunEnabled =
-      !!state.userPrediction.trim() && !isRunningCode && !isPyodideLoading;
-
-    // Define wasPredictionCorrect FIRST based on current state (for display)
-    const wasPredictionCorrect =
-      state.runAttempted &&
-      !state.runError &&
-      state.output !== null &&
-      state.userPrediction.trim().toLowerCase() ===
-        example.expectedPrediction.trim().toLowerCase();
-
-    const showExplanation =
-      state.runAttempted && !state.runError && !wasPredictionCorrect;
-
-    return (
-      // --- JSX Structure (updated slightly for clarity and disabling) ---
-      <div
-        className={`${primmStyles.exampleBlock} ${
-          state.isComplete ? primmStyles.blockComplete : ""
-        }`}
-      >
-        {/* 1. Code */}
-        <h4>Code Example:</h4>
-        <CodeEditor
-          value={example.code}
-          onChange={() => {}}
-          readOnly={true}
-          height="auto"
-          minHeight="80px"
-        />
-
-        {/* 2. Output Area */}
-        <h4>Output:</h4>
-        <div className={`${styles.outputArea} ${primmStyles.outputArea}`}>
-          {state.runAttempted ? (
-            <pre>
-              {state.runError
-                ? `Error: ${state.runError}`
-                : state.output ?? "Code executed (no output)."}
-            </pre>
-          ) : (
-            <span className={styles.outputEmpty}>
-              Output will appear here after running.
-            </span>
-          )}
-        </div>
-
-        {/* 3. Prediction Area + Run Button */}
-        <div className={primmStyles.predictionRunArea}>
-          <div className={primmStyles.predictionInputGroup}>
-            <label htmlFor={`predict-${example.id}`}>
-              {example.predictPrompt}{" "}
-              {example.predictionTargetDescription &&
-                `(${example.predictionTargetDescription})`}
-              :
-            </label>
-            <input
-              id={`predict-${example.id}`}
-              type="text"
-              value={state.userPrediction}
-              onChange={handlePredictionChange}
-              placeholder="Enter your prediction here..."
-              className={primmStyles.predictionInput}
-              disabled={state.isComplete || isRunningCode} // Disable if complete or running
-            />
-          </div>
-          <button
-            onClick={handleRunCodeInternal}
-            disabled={!isRunEnabled || state.isComplete} // Disable if criteria not met or block complete
-            className={`${styles.runButton} ${primmStyles.runButton}`}
-            title={
-              !state.userPrediction.trim()
-                ? "Enter a prediction to enable Run"
-                : isPyodideLoading
-                ? "Python loading..."
-                : state.isComplete
-                ? "Example complete"
-                : ""
-            }
-          >
-            {isRunningCode ? "Running..." : "Run"}
-          </button>
-        </div>
-        {/* Show feedback only after run attempted and there was no error */}
-        {state.runAttempted && !state.runError && (
-          <div className={primmStyles.feedbackArea}>
-            {wasPredictionCorrect ? (
-              <p className={primmStyles.correctText}>Prediction Correct!</p>
-            ) : (
-              <p className={primmStyles.incorrectText}>
-                Prediction Incorrect. Expected: "{example.expectedPrediction}"
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* 4. Conditional Explanation Box */}
-        {showExplanation && (
-          <div
-            className={`${primmStyles.stage} ${primmStyles.explanationStage}`}
-          >
-            <h5>Explain the Discrepancy</h5>
-            <p>{example.explanationPrompt}</p>
-            <textarea
-              value={state.explanationText}
-              onChange={handleExplanationChange}
-              placeholder={`Explain why the output was different... (min ${example.minExplanationLength} chars)`}
-              className={primmStyles.explanationTextarea}
-              rows={3}
-              // Disable textarea only once the requirement is met *for this explanation box*
-              disabled={state.hasMetExplanationRequirement}
-            />
-            {/* Provide feedback on explanation length / met requirement */}
-            {!state.hasMetExplanationRequirement &&
-              state.explanationText.length > 0 && (
-                <p className={primmStyles.lengthHint}>
-                  {Math.max(
-                    0,
-                    example.minExplanationLength - state.explanationText.length
-                  )}{" "}
-                  more characters needed.
-                </p>
-              )}
-            {state.hasMetExplanationRequirement &&
-              state.explanationText.length > 0 && (
-                <p className={primmStyles.correctText}>
-                  Explanation requirement met!
-                </p>
-              )}
-          </div>
-        )}
-      </div>
-    );
-  }
-);
-
-// ... (Rest of PRIMMSection component remains the same) ...
 interface PRIMMSectionProps {
   section: PRIMMSectionData;
   lessonId: string;
@@ -250,77 +45,251 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
     isLoading: isPyodideLoading,
     error: pyodideError,
   } = usePyodide();
-  const storageKey = `primmState_${lessonId}_${section.id}`;
+  const { idToken, isAuthenticated } = useAuthStore();
+  const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
-  const initialHookState = useMemo((): SavedPRIMMSectionState => {
-    const exampleStates: SavedPRIMMSectionState["exampleStates"] = {};
-    section.examples.forEach((ex) => {
-      exampleStates[ex.id] = {
-        userPrediction: "",
-        explanationText: "",
-        hasMetExplanationRequirement: false,
-        output: null,
-        runError: null,
-        runAttempted: false,
-        isComplete: false,
-      };
-    });
-    return { exampleStates };
-  }, [section.examples]);
+  const currentExample: PRIMMCodeExample | undefined = section.examples[0];
+  const storageKey = `primmStrippedFill_${lessonId}_${section.id}_${
+    currentExample?.id || "default"
+  }`;
 
-  const checkPRIMMCompletion = useCallback(
-    (currentHookState: SavedPRIMMSectionState): boolean => {
-      if (!section.examples || section.examples.length === 0) return true;
-      return section.examples.every((ex) => {
-        const exState = currentHookState.exampleStates[ex.id];
-        return exState?.isComplete === true;
-      });
-    },
-    [section.examples]
+  const initialSingleExampleState: EnhancedPRIMMExampleUserState = useMemo(
+    () => ({
+      userEnglishPrediction: "",
+      predictionConfidence: 0,
+      isPredictionLocked: false,
+      actualPyodideOutput: null,
+      keyOutputSnippet: null,
+      userExplanationText: "",
+      aiEvaluationResult: null,
+      currentUiStep: "PREDICT",
+      isComplete: false,
+    }),
+    []
   );
 
-  const [primmSectionState, setPRIMMSectionState, isSectionComplete] =
-    useSectionProgress<SavedPRIMMSectionState>(
+  const getInitialSectionState = useCallback(
+    (): SavedEnhancedPRIMMSectionState => ({
+      exampleStates: currentExample
+        ? { [currentExample.id]: initialSingleExampleState }
+        : {},
+    }),
+    [currentExample, initialSingleExampleState]
+  );
+
+  const checkPRIMMCompletion = useCallback(
+    (currentHookState: SavedEnhancedPRIMMSectionState): boolean => {
+      if (!currentExample) return true;
+      return (
+        currentHookState.exampleStates[currentExample.id]?.isComplete === true
+      );
+    },
+    [currentExample]
+  );
+
+  const [savedSectionState, setSavedSectionState, isSectionOverallComplete] =
+    useSectionProgress<SavedEnhancedPRIMMSectionState>(
       lessonId,
       section.id,
       storageKey,
-      initialHookState,
+      getInitialSectionState(),
       checkPRIMMCompletion
     );
 
-  const handleExampleStateChange = useCallback(
-    (exampleId: string, newState: Partial<PRIMMExampleState>) => {
-      setPRIMMSectionState((prevGlobalState) => {
-        const currentExampleState =
-          prevGlobalState.exampleStates[exampleId] ||
-          initialHookState.exampleStates[exampleId];
-        const updatedExampleStates = {
-          ...prevGlobalState.exampleStates,
-          [exampleId]: {
-            ...currentExampleState,
-            ...newState,
+  const [currentExampleUserState, setCurrentExampleUserState] =
+    useState<EnhancedPRIMMExampleUserState>(
+      () =>
+        (currentExample &&
+          savedSectionState.exampleStates[currentExample.id]) ||
+        initialSingleExampleState
+    );
+
+  useEffect(() => {
+    if (currentExample) {
+      const persistedState = savedSectionState.exampleStates[currentExample.id];
+      if (
+        persistedState &&
+        JSON.stringify(persistedState) !==
+          JSON.stringify(currentExampleUserState)
+      ) {
+        setCurrentExampleUserState(persistedState);
+      } else if (
+        !persistedState &&
+        JSON.stringify(initialSingleExampleState) !==
+          JSON.stringify(currentExampleUserState)
+      ) {
+        setCurrentExampleUserState(initialSingleExampleState);
+      }
+    }
+  }, [
+    savedSectionState,
+    currentExample,
+    initialSingleExampleState,
+    currentExampleUserState,
+  ]);
+
+  const updatePersistedExampleState = useCallback(
+    (newStatePartial: Partial<EnhancedPRIMMExampleUserState>) => {
+      if (!currentExample) return;
+      setCurrentExampleUserState((prevState) => {
+        const fullyUpdatedState = { ...prevState, ...newStatePartial };
+        setSavedSectionState((prevOverall) => ({
+          ...prevOverall,
+          exampleStates: {
+            ...prevOverall.exampleStates,
+            [currentExample.id]: fullyUpdatedState,
           },
-        };
-        return { exampleStates: updatedExampleStates };
+        }));
+        return fullyUpdatedState;
       });
     },
-    [setPRIMMSectionState, initialHookState]
+    [currentExample, setSavedSectionState]
   );
 
-  const handleRunCodeForExample = useCallback(
-    async (code: string) => {
-      if (isPyodideLoading || pyodideError) {
-        return {
-          output: "",
-          error: `Python environment not ready (${
-            pyodideError?.message || "loading"
-          })`,
-        };
-      }
-      return runPythonCode(code);
-    },
-    [runPythonCode, isPyodideLoading, pyodideError]
+  const [isLoadingAiFeedback, setIsLoadingAiFeedback] = useState(false);
+  const [submitActionError, setSubmitActionError] = useState<string | null>(
+    null
   );
+
+  const minPredictionLength =
+    currentExample?.minPredictionLength || DEFAULT_MIN_PREDICTION_LENGTH;
+  const minExplanationLength =
+    currentExample?.minExplanationLength || DEFAULT_MIN_EXPLANATION_LENGTH;
+
+  const extractKeyOutput = (fullOutput: string | null): string | null => {
+    if (!fullOutput || typeof fullOutput !== "string")
+      return "(No output or error during run)";
+    const lines = fullOutput.trim().split("\n");
+    return lines.length > 0
+      ? lines[lines.length - 1].trim()
+      : "(No distinct last line of output)";
+  };
+
+  const handleRunCode = async () => {
+    if (!currentExample || isPyodideLoading || pyodideError) return;
+    updatePersistedExampleState({
+      actualPyodideOutput: "Running...",
+      keyOutputSnippet: "Running...",
+    });
+    const result = await runPythonCode(currentExample.code);
+    const fullOutput = result.error
+      ? `Pyodide Execution Error: ${result.error}`
+      : result.output || "Code executed (no output).";
+    const keyOutput = extractKeyOutput(fullOutput);
+
+    updatePersistedExampleState({
+      actualPyodideOutput: fullOutput,
+      keyOutputSnippet: keyOutput,
+      isPredictionLocked: true,
+      currentUiStep: "EXPLAIN_AFTER_RUN",
+    });
+  };
+
+  const handleActionApiError = (err: unknown, defaultMessage: string) => {
+    if (err instanceof ApiError) {
+      const serverMessage =
+        typeof err.data?.message === "string" ? err.data.message : err.message;
+      setSubmitActionError(
+        `${serverMessage}${
+          err.status === 429 ? "" : ` (Status: ${err.status})`
+        }`
+      );
+    } else if (err instanceof Error) {
+      setSubmitActionError(`${defaultMessage}: ${err.message}`);
+    } else {
+      setSubmitActionError(`${defaultMessage}: An unknown error occurred.`);
+    }
+  };
+
+  const handleGetAIFeedback = async () => {
+    if (!currentExample || !isAuthenticated || !idToken || !apiGatewayUrl) {
+      setSubmitActionError("Authentication or configuration error.");
+      return;
+    }
+    if (
+      currentExampleUserState.userExplanationText.length < minExplanationLength
+    ) {
+      alert(
+        `Please provide a more detailed explanation (at least ${minExplanationLength} characters).`
+      );
+      return;
+    }
+
+    setIsLoadingAiFeedback(true);
+    setSubmitActionError(null);
+
+    const payload: PrimmEvaluationRequest = {
+      lessonId,
+      sectionId: section.id,
+      primmExampleId: currentExample.id,
+      codeSnippet: currentExample.code,
+      userPredictionPromptText: currentExample.predictPrompt,
+      userPredictionText: currentExampleUserState.userEnglishPrediction,
+      predictionConfidence: currentExampleUserState.predictionConfidence,
+      actualOutputSummary: currentExampleUserState.keyOutputSnippet,
+      userExplanationText: currentExampleUserState.userExplanationText,
+    };
+
+    try {
+      console.log(
+        "MOCKING API call to 'submitPrimmEvaluation' with payload:",
+        payload
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const mockAIResponse: PrimmEvaluationResponse = {
+        predictionAssessment: ["achieves", "mostly", "developing"][
+          Math.floor(Math.random() * 3)
+        ] as AssessmentLevel,
+        explanationAssessment: [
+          "achieves",
+          "mostly",
+          "developing",
+          "insufficient",
+        ][Math.floor(Math.random() * 4)] as AssessmentLevel,
+        overallComment:
+          "Mocked AI Comment: Be more specific in your prediction and more verbose in your reflection. This code snippet demonstrates [concept X] by [doing Y]. Your explanation touched upon [Z] correctly.",
+      };
+      updatePersistedExampleState({
+        aiEvaluationResult: mockAIResponse,
+        currentUiStep: "VIEW_AI_FEEDBACK",
+        isComplete: true,
+      });
+    } catch (err) {
+      console.error("Error getting AI feedback:", err);
+      handleActionApiError(err, "Failed to get AI evaluation");
+    } finally {
+      setIsLoadingAiFeedback(false);
+    }
+  };
+
+  if (!currentExample) {
+    return (
+      <div className={styles.interactivePlaceholder}>
+        No PRIMM example data configured.
+      </div>
+    );
+  }
+
+  const isPredictionInputValid =
+    currentExampleUserState.userEnglishPrediction.length >=
+      minPredictionLength && currentExampleUserState.predictionConfidence > 0;
+  const isExplanationInputValid =
+    currentExampleUserState.userExplanationText.length >= minExplanationLength;
+
+  const getAssessmentLabelClass = (
+    assessment?: AssessmentLevel | null
+  ): string => {
+    if (!assessment) return "";
+    return (
+      primmStyles[
+        `assessment${assessment.charAt(0).toUpperCase() + assessment.slice(1)}`
+      ] || ""
+    );
+  };
+
+  const showPastAnswersDiv =
+    currentExampleUserState.isPredictionLocked ||
+    currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK";
 
   return (
     <section
@@ -334,32 +303,274 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
         </ReactMarkdown>
       </div>
 
-      {section.examples.map((example) => {
-        const currentExampleState =
-          primmSectionState.exampleStates[example.id] ||
-          initialHookState.exampleStates[example.id];
-        return (
-          <PRIMMExampleBlock
-            key={example.id}
-            example={example}
-            state={currentExampleState}
-            onStateChange={(newState) =>
-              handleExampleStateChange(example.id, newState)
-            }
-            onRunCode={() => handleRunCodeForExample(example.code)}
-            isPyodideLoading={isPyodideLoading}
-            pyodideError={pyodideError}
-          />
-        );
-      })}
+      <div className={primmStyles.exampleBlock} key={currentExample.id}>
+        <h4>Code to Analyze:</h4>
+        <CodeEditor
+          value={currentExample.code}
+          onChange={() => {}}
+          readOnly={true}
+          height="auto"
+          minHeight="80px"
+        />
 
-      {isSectionComplete && section.conclusion && (
+        {/* --- "Past Answers / Information" Div --- */}
         <div
-          className={`${styles.completionMessage} ${primmStyles.conclusion}`}
+          className={`${primmStyles.pastAnswersDiv} ${
+            !showPastAnswersDiv ? primmStyles.pastAnswersDiv_hidden : ""
+          }`}
         >
-          {section.conclusion}
+          {/* Prediction */}
+          {currentExampleUserState.isPredictionLocked && (
+            <div className={primmStyles.infoEntry}>
+              <span className={primmStyles.infoLabel}>
+                Prediction:
+                {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
+                  currentExampleUserState.aiEvaluationResult
+                    ?.predictionAssessment && (
+                    <span
+                      className={`${
+                        primmStyles.assessmentLabel
+                      } ${getAssessmentLabelClass(
+                        currentExampleUserState.aiEvaluationResult
+                          .predictionAssessment
+                      )}`}
+                    >
+                      {currentExampleUserState.aiEvaluationResult.predictionAssessment.toUpperCase()}
+                    </span>
+                  )}
+              </span>
+              <span className={primmStyles.infoText}>
+                {currentExampleUserState.userEnglishPrediction ||
+                  "(No prediction was entered)"}
+              </span>
+            </div>
+          )}
+
+          {/* Confidence */}
+          {currentExampleUserState.isPredictionLocked &&
+            currentExampleUserState.predictionConfidence > 0 && (
+              <div className={primmStyles.infoEntry}>
+                <span className={primmStyles.infoLabel}>Confidence:</span>
+                <span className={primmStyles.infoText}>
+                  {CONFIDENCE_OPTIONS.find(
+                    (c) =>
+                      c.value === currentExampleUserState.predictionConfidence
+                  )?.label || "Not Set"}
+                </span>
+              </div>
+            )}
+
+          {/* Key Output */}
+          {(currentExampleUserState.currentUiStep === "EXPLAIN_AFTER_RUN" ||
+            currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK") &&
+            currentExampleUserState.keyOutputSnippet !== null && (
+              <div className={primmStyles.infoEntry}>
+                <span className={primmStyles.infoLabel}>Key Output:</span>
+                <span className={primmStyles.keyOutputText}>
+                  {currentExampleUserState.keyOutputSnippet}
+                </span>
+              </div>
+            )}
+
+          {/* Reflection/Explanation */}
+          {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" && (
+            <div className={primmStyles.infoEntry}>
+              <span className={primmStyles.infoLabel}>
+                Reflection:
+                {currentExampleUserState.aiEvaluationResult
+                  ?.explanationAssessment && (
+                  <span
+                    className={`${
+                      primmStyles.assessmentLabel
+                    } ${getAssessmentLabelClass(
+                      currentExampleUserState.aiEvaluationResult
+                        .explanationAssessment
+                    )}`}
+                  >
+                    {currentExampleUserState.aiEvaluationResult.explanationAssessment.toUpperCase()}
+                  </span>
+                )}
+              </span>
+              <span className={primmStyles.infoText}>
+                {currentExampleUserState.userExplanationText ||
+                  "(No explanation was entered)"}
+              </span>
+            </div>
+          )}
+
+          {/* AI Overall Comments */}
+          {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
+            currentExampleUserState.aiEvaluationResult?.overallComment && (
+              <div className={primmStyles.infoEntry}>
+                <span className={primmStyles.infoLabel}>
+                  AI Overall Comments:
+                </span>
+                <p className={primmStyles.aiCommentText}>
+                  {currentExampleUserState.aiEvaluationResult.overallComment}
+                </p>
+              </div>
+            )}
         </div>
-      )}
+
+        {/* --- "Next Question to Answer" Div --- */}
+        <div
+          className={`${primmStyles.nextQuestionDiv} ${
+            showPastAnswersDiv ? "" : primmStyles.nextQuestionDiv_noContentAbove
+          }`}
+        >
+          {currentExampleUserState.currentUiStep === "PREDICT" && (
+            <div className={primmStyles.inputGroup}>
+              <label
+                htmlFor={`predict-english-${currentExample.id}`}
+                className={primmStyles.inputLabel}
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {currentExample.predictPrompt}
+                </ReactMarkdown>{" "}
+              </label>
+              <textarea
+                id={`predict-english-${currentExample.id}`}
+                value={currentExampleUserState.userEnglishPrediction}
+                onChange={(e) =>
+                  updatePersistedExampleState({
+                    userEnglishPrediction: e.target.value,
+                  })
+                }
+                placeholder="In your own words, what will this code do?"
+                className={primmStyles.predictionTextarea}
+                rows={3}
+              />
+              {currentExampleUserState.userEnglishPrediction.length >= 0 &&
+                currentExampleUserState.userEnglishPrediction.length <
+                  minPredictionLength && (
+                  <p className={primmStyles.lengthHint}>
+                    {minPredictionLength -
+                      currentExampleUserState.userEnglishPrediction.length}{" "}
+                    more characters needed.
+                  </p>
+                )}
+              <div
+                className={primmStyles.inputGroup}
+                style={{ marginTop: "0.75rem" }}
+              >
+                <label
+                  className={primmStyles.inputLabel}
+                  style={{ marginBottom: "0.25rem" }}
+                >
+                  Your Confidence:
+                </label>
+                <div className={primmStyles.confidenceSelectContainer}>
+                  {CONFIDENCE_OPTIONS.map((opt) => (
+                    <label key={opt.value}>
+                      <input
+                        type="radio"
+                        name={`confidence-${currentExample.id}`}
+                        value={opt.value}
+                        checked={
+                          currentExampleUserState.predictionConfidence ===
+                          opt.value
+                        }
+                        onChange={() =>
+                          updatePersistedExampleState({
+                            predictionConfidence: opt.value,
+                          })
+                        }
+                      />{" "}
+                      {opt.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <button
+                onClick={handleRunCode}
+                disabled={!isPredictionInputValid || isPyodideLoading}
+                className={primmStyles.primmButton}
+              >
+                {isPyodideLoading ? "Python Loading..." : "Run Code"}
+              </button>
+              {pyodideError && (
+                <p style={{ color: "red", marginTop: "0.5rem" }}>
+                  Pyodide Error: {pyodideError.message}
+                </p>
+              )}
+            </div>
+          )}
+
+          {currentExampleUserState.currentUiStep === "EXPLAIN_AFTER_RUN" && (
+            <div className={primmStyles.inputGroup}>
+              <label
+                htmlFor={`explanation-${currentExample.id}`}
+                className={primmStyles.inputLabel}
+              >
+                Your Reflection/Explanation:
+              </label>
+              <textarea
+                id={`explanation-${currentExample.id}`}
+                value={currentExampleUserState.userExplanationText}
+                onChange={(e) =>
+                  updatePersistedExampleState({
+                    userExplanationText: e.target.value,
+                  })
+                }
+                placeholder="Explain the code's behavior and your initial prediction..."
+                className={primmStyles.explanationTextarea}
+                rows={4}
+              />
+              {currentExampleUserState.userExplanationText.length >= 0 &&
+                currentExampleUserState.userExplanationText.length <
+                  minExplanationLength && (
+                  <p className={primmStyles.lengthHint}>
+                    {minExplanationLength -
+                      currentExampleUserState.userExplanationText.length}{" "}
+                    more characters needed.
+                  </p>
+                )}
+              <button
+                onClick={handleGetAIFeedback}
+                disabled={
+                  !isExplanationInputValid ||
+                  isLoadingAiFeedback ||
+                  !isAuthenticated
+                }
+                className={primmStyles.getFeedbackButton}
+                title={
+                  !isAuthenticated
+                    ? "Please log in"
+                    : !isExplanationInputValid
+                    ? "Complete your explanation"
+                    : "Get AI Feedback"
+                }
+              >
+                {isLoadingAiFeedback
+                  ? "Getting Feedback..."
+                  : "Get AI Feedback"}
+              </button>
+            </div>
+          )}
+
+          {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
+            isSectionOverallComplete && (
+              <p
+                style={{
+                  color: "green",
+                  fontWeight: "bold",
+                  marginTop: "1rem",
+                  textAlign: "center",
+                }}
+              >
+                This PRIMM activity is complete!
+              </p>
+            )}
+          {submitActionError && (
+            <p
+              className={styles.apiError}
+              style={{ color: "red", marginTop: "1rem" }}
+            >
+              {submitActionError}
+            </p>
+          )}
+        </div>
+      </div>
     </section>
   );
 };

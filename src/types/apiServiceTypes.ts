@@ -92,6 +92,24 @@ export interface ListOfFinalLearningEntriesResponse {
   lastEvaluatedKey?: Record<string, any> | null; // For pagination
 }
 
+export interface PrimmEvaluationRequest {
+  lessonId: string;
+  sectionId: string;
+  primmExampleId: string;
+  codeSnippet: string;
+  userPredictionPromptText: string; // The prompt shown to the user
+  userPredictionText: string; // User's English prediction
+  predictionConfidence: number; // 1-3 for Low/Medium/High
+  actualOutputSummary?: string | null;
+  userExplanationText?: string | null;
+}
+
+export interface PrimmEvaluationResponse {
+  predictionAssessment: AssessmentLevel;
+  explanationAssessment?: AssessmentLevel | null;
+  overallComment?: string | null;
+}
+
 // You would also keep your existing types like:
 // ErrorResponse, UserProgress, BatchCompletionsInput, SectionCompletionInput
 // For example:
