@@ -25,9 +25,6 @@ import { useAuthStore } from "../../stores/authStore";
 import { ApiError } from "../../lib/apiService";
 import { API_GATEWAY_BASE_URL } from "../../config";
 
-const DEFAULT_MIN_PREDICTION_LENGTH = 20;
-const DEFAULT_MIN_EXPLANATION_LENGTH = 30;
-
 const CONFIDENCE_OPTIONS: { value: number; label: string }[] = [
   { value: 1, label: "Not Confident" },
   { value: 2, label: "Somewhat Confident" },
@@ -151,11 +148,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
     null
   );
 
-  const minPredictionLength =
-    currentExample?.minPredictionLength || DEFAULT_MIN_PREDICTION_LENGTH;
-  const minExplanationLength =
-    currentExample?.minExplanationLength || DEFAULT_MIN_EXPLANATION_LENGTH;
-
   const extractKeyOutput = (fullOutput: string | null): string | null => {
     if (!fullOutput || typeof fullOutput !== "string")
       return "(No output or error during run)";
@@ -206,12 +198,8 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
       setSubmitActionError("Authentication or configuration error.");
       return;
     }
-    if (
-      currentExampleUserState.userExplanationText.length < minExplanationLength
-    ) {
-      alert(
-        `Please provide a more detailed explanation (at least ${minExplanationLength} characters).`
-      );
+    if (currentExampleUserState.userExplanationText.length < 2) {
+      alert(`Please provide a more detailed explanation.`);
       return;
     }
 
@@ -271,10 +259,10 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
   }
 
   const isPredictionInputValid =
-    currentExampleUserState.userEnglishPrediction.length >=
-      minPredictionLength && currentExampleUserState.predictionConfidence > 0;
+    currentExampleUserState.userEnglishPrediction.length >= 1 &&
+    currentExampleUserState.predictionConfidence > 0;
   const isExplanationInputValid =
-    currentExampleUserState.userExplanationText.length >= minExplanationLength;
+    currentExampleUserState.userExplanationText.length >= 1;
 
   const getAssessmentLabelClass = (
     assessment?: AssessmentLevel | null
@@ -440,15 +428,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                 className={primmStyles.predictionTextarea}
                 rows={3}
               />
-              {currentExampleUserState.userEnglishPrediction.length >= 0 &&
-                currentExampleUserState.userEnglishPrediction.length <
-                  minPredictionLength && (
-                  <p className={primmStyles.lengthHint}>
-                    {minPredictionLength -
-                      currentExampleUserState.userEnglishPrediction.length}{" "}
-                    more characters needed.
-                  </p>
-                )}
               <div
                 className={primmStyles.inputGroup}
                 style={{ marginTop: "0.75rem" }}
@@ -516,15 +495,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                 className={primmStyles.explanationTextarea}
                 rows={4}
               />
-              {currentExampleUserState.userExplanationText.length >= 0 &&
-                currentExampleUserState.userExplanationText.length <
-                  minExplanationLength && (
-                  <p className={primmStyles.lengthHint}>
-                    {minExplanationLength -
-                      currentExampleUserState.userExplanationText.length}{" "}
-                    more characters needed.
-                  </p>
-                )}
               <button
                 onClick={handleGetAIFeedback}
                 disabled={
