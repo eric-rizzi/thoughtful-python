@@ -10,6 +10,7 @@ import type {
   PrimmEvaluationRequest,
   PrimmEvaluationResponse,
 } from "../types/apiServiceTypes";
+import { AssessmentLevel } from "../types/data";
 
 export const USE_MOCKED_API = false;
 const MOCKED_USER_ID = "mocked-google-user-id-12345";
@@ -400,29 +401,39 @@ export async function getFinalizedLearningEntries(
 }
 
 export async function submitPrimmEvaluation(
-  idToken: string, // Still needed for consistency, even if mock doesn't use it
-  apiGatewayUrl: string, // Still needed for consistency
+  idToken: string,
+  apiGatewayUrl: string,
   payload: PrimmEvaluationRequest
 ): Promise<PrimmEvaluationResponse> {
   if (USE_MOCKED_API) {
-    // Your existing flag
     console.log(
       "MOCKED API [submitPrimmEvaluation]: Called with payload:",
       payload
     );
-    await mockApiDelay(1200); // Use your existing mockApiDelay
+    await mockApiDelay(1200);
 
-    // Generate a plausible mock response
+    // Use a more consistent mock based on the latest PrimmEvaluationResponse structure
     const mockResponse: PrimmEvaluationResponse = {
-      aiExplanationAssessment: "achieves",
-      aiPredictionAssessment: "developing",
-      aiOverallComment:
-        "This is a mocked overall comment from the AI. Good job!",
+      aiPredictionAssessment: ["achieves", "mostly", "developing"][
+        Math.floor(Math.random() * 3)
+      ] as AssessmentLevel,
+      aiExplanationAssessment: payload.userExplanationText // If explanation text is provided, give an assessment
+        ? (["achieves", "mostly", "developing", "insufficient"][
+            Math.floor(Math.random() * 4)
+          ] as AssessmentLevel)
+        : // If no explanation text, the server Pydantic model might default or it should be optional.
+          // Per your swagger, aiExplanationAssessment is required. So, let's provide a default if no text.
+          "insufficient",
+      aiOverallComment: `Mocked AI Overall Comment: Your prediction (confidence: ${
+        payload.userPredictionConfidence
+      }) showed some insight. Your explanation was ${
+        payload.userExplanationText ? "noted" : "not provided"
+      }. Keep it up!`,
     };
     return Promise.resolve(mockResponse);
   }
 
-  // --- Placeholder for REAL API call logic (to be implemented in Step 2 of your main plan) ---
+  // --- REAL API CALL LOGIC ---
   if (!idToken)
     throw new ApiError(
       "Authentication token is required for PRIMM evaluation.",
@@ -434,7 +445,7 @@ export async function submitPrimmEvaluation(
       500
     );
 
-  const endpoint = `${apiGatewayUrl}/primm-feedback/submit`; // Matches your Swagger
+  const endpoint = `${apiGatewayUrl}/primm-feedback`;
 
   console.log(
     `LIVE API [submitPrimmEvaluation]: Calling POST ${endpoint} with payload:`,
@@ -451,20 +462,23 @@ export async function submitPrimmEvaluation(
   });
 
   if (!response.ok) {
-    let errorData: { message: string; details?: any } = {
+    // This will catch 429, 400, 500, etc.
+    let errorData: { message: string; details?: any; type?: string } = {
       message: `HTTP error ${response.status}: ${response.statusText}`,
     };
     try {
       const parsedJson = await response.json();
       errorData = {
         message: parsedJson.message || errorData.message,
-        details: parsedJson.type
-          ? { type: parsedJson.type }
-          : parsedJson.details || undefined,
+        type: parsedJson.type || undefined,
+        details: parsedJson.details || undefined,
       };
     } catch (e) {
-      /* ignore if body not JSON */
+      console.warn(
+        "Response from server was not valid JSON, using status text as message."
+      );
     }
+
     console.error(
       `LIVE API [submitPrimmEvaluation]: Error ${response.status}`,
       errorData

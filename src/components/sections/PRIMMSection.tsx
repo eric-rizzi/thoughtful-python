@@ -8,20 +8,18 @@ import type {
   PRIMMCodeExample,
   EnhancedPRIMMExampleUserState,
   SavedEnhancedPRIMMSectionState,
-  AssessmentLevel, // Ensure AssessmentLevel is imported
+  AssessmentLevel,
 } from "../../types/data";
-import type {
-  PrimmEvaluationRequest,
-  PrimmEvaluationResponse,
-} from "../../types/apiServiceTypes";
+import type { PrimmEvaluationRequest } from "../../types/apiServiceTypes";
 
-import styles from "./Section.module.css";
-import primmStyles from "./PRIMMSection.module.css";
+import styles from "./Section.module.css"; // General section styles
+import primmStyles from "./PRIMMSection.module.css"; // Specific PRIMM styles
 
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import { useAuthStore } from "../../stores/authStore";
+import * as apiService from "../../lib/apiService";
 import { ApiError } from "../../lib/apiService";
 import { API_GATEWAY_BASE_URL } from "../../config";
 
@@ -46,7 +44,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const currentExample: PRIMMCodeExample | undefined = section.examples[0];
-  const storageKey = `primmStrippedFill_${lessonId}_${section.id}_${
+  const storageKey = `primmProgressiveFill_${lessonId}_${section.id}_${
     currentExample?.id || "default"
   }`;
 
@@ -76,7 +74,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
 
   const checkPRIMMCompletion = useCallback(
     (currentHookState: SavedEnhancedPRIMMSectionState): boolean => {
-      if (!currentExample) return true;
+      if (!currentExample) return true; // Or false, depending on desired behavior for empty sections
       return (
         currentHookState.exampleStates[currentExample.id]?.isComplete === true
       );
@@ -220,31 +218,19 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
     };
 
     try {
-      console.log(
-        "MOCKING API call to 'submitPrimmEvaluation' with payload:",
+      const aiResponse = await apiService.submitPrimmEvaluation(
+        idToken,
+        apiGatewayUrl,
         payload
       );
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const mockAIResponse: PrimmEvaluationResponse = {
-        aiPredictionAssessment: ["achieves", "mostly", "developing"][
-          Math.floor(Math.random() * 3)
-        ] as AssessmentLevel,
-        aiExplanationAssessment: [
-          "achieves",
-          "mostly",
-          "developing",
-          "insufficient",
-        ][Math.floor(Math.random() * 4)] as AssessmentLevel,
-        aiOverallComment:
-          "Mocked AI Comment: Be more specific in your prediction and more verbose in your reflection. This code snippet demonstrates [concept X] by [doing Y]. Your explanation touched upon [Z] correctly.",
-      };
+
       updatePersistedExampleState({
-        aiEvaluationResult: mockAIResponse,
+        aiEvaluationResult: aiResponse,
         currentUiStep: "VIEW_AI_FEEDBACK",
         isComplete: true,
       });
     } catch (err) {
-      console.error("Error getting AI feedback:", err);
+      console.error("Error getting AI feedback via apiService:", err);
       handleActionApiError(err, "Failed to get AI evaluation");
     } finally {
       setIsLoadingAiFeedback(false);
@@ -254,7 +240,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
   if (!currentExample) {
     return (
       <div className={styles.interactivePlaceholder}>
-        No PRIMM example data configured.
+        No PRIMM example data configured for this section.
       </div>
     );
   }
@@ -308,7 +294,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
             !showPastAnswersDiv ? primmStyles.pastAnswersDiv_hidden : ""
           }`}
         >
-          {/* Prediction */}
           {currentExampleUserState.isPredictionLocked && (
             <div className={primmStyles.infoEntry}>
               <span className={primmStyles.infoLabel}>
@@ -335,7 +320,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
             </div>
           )}
 
-          {/* Confidence */}
           {currentExampleUserState.isPredictionLocked &&
             currentExampleUserState.userPredictionConfidence > 0 && (
               <div className={primmStyles.infoEntry}>
@@ -350,19 +334,20 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
               </div>
             )}
 
-          {/* Key Output */}
           {(currentExampleUserState.currentUiStep === "EXPLAIN_AFTER_RUN" ||
             currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK") &&
             currentExampleUserState.keyOutputSnippet !== null && (
               <div className={primmStyles.infoEntry}>
                 <span className={primmStyles.infoLabel}>Key Output:</span>
-                <span className={primmStyles.keyOutputText}>
+                <span
+                  className={primmStyles.keyOutputText}
+                  style={{ width: "100%", boxSizing: "border-box" }}
+                >
                   {currentExampleUserState.keyOutputSnippet}
                 </span>
               </div>
             )}
 
-          {/* Reflection/Explanation */}
           {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" && (
             <div className={primmStyles.infoEntry}>
               <span className={primmStyles.infoLabel}>
@@ -388,7 +373,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
             </div>
           )}
 
-          {/* AI Overall Comments */}
           {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
             currentExampleUserState.aiEvaluationResult?.aiOverallComment && (
               <div className={primmStyles.infoEntry}>
@@ -429,6 +413,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                 placeholder="In your own words, what will this code do?"
                 className={primmStyles.predictionTextarea}
                 rows={3}
+                disabled={isLoadingAiFeedback} // Disable while AI is processing
               />
               <div
                 className={primmStyles.inputGroup}
@@ -456,6 +441,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                             userPredictionConfidence: opt.value,
                           })
                         }
+                        disabled={currentExampleUserState.isPredictionLocked} // Keep disabled if locked
                       />{" "}
                       {opt.label}
                     </label>
@@ -464,7 +450,11 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
               </div>
               <button
                 onClick={handleRunCode}
-                disabled={!isPredictionInputValid || isPyodideLoading}
+                disabled={
+                  !isPredictionInputValid ||
+                  isPyodideLoading ||
+                  currentExampleUserState.isPredictionLocked
+                }
                 className={primmStyles.primmButton}
               >
                 {isPyodideLoading ? "Python Loading..." : "Run Code"}
@@ -496,6 +486,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                 placeholder="Explain the code's behavior and your initial prediction..."
                 className={primmStyles.explanationTextarea}
                 rows={4}
+                disabled={isLoadingAiFeedback} // Disable while AI is processing
               />
               <button
                 onClick={handleGetAIFeedback}
@@ -507,7 +498,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                 className={primmStyles.getFeedbackButton}
                 title={
                   !isAuthenticated
-                    ? "Please log in"
+                    ? "Please log in to get AI feedback"
                     : !isExplanationInputValid
                     ? "Complete your explanation"
                     : "Get AI Feedback"
@@ -521,7 +512,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
           )}
 
           {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
-            isSectionOverallComplete && (
+            isSectionOverallComplete && ( // Show completion message in this step too
               <p
                 style={{
                   color: "green",
@@ -535,7 +526,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
             )}
           {submitActionError && (
             <p
-              className={styles.apiError}
+              className={styles.apiError} // Using global apiError style for consistency
               style={{ color: "red", marginTop: "1rem" }}
             >
               {submitActionError}
