@@ -113,23 +113,25 @@ const HomePage: React.FC = () => {
           <li>Anyone can learn Python</li>
           <li>
             Python is a wonderful way to order your thoughts and accomplish
-            complex tasks
+            complex tasks.
           </li>
           <li>
-            Like any language, learning Python takes concentration and practice
+            Like any language, learning Python takes concentration and practice.
           </li>
           <li>
-            The best way to learn a language is PRIMM: Predict, Run,
-            Investigate, Modify, Make
-          </li>
-          <li>The best way to solidify your knowledge is through reflection</li>
-          <li>
-            There are many powerful coding tools (e.g., VSCode), but they are
-            overwhelming for first time learners
+            The best way to learn a programming language is PRIMM: Predict, Run,
+            Investigate, Modify, Make.
           </li>
           <li>
-            Once you have a base understanding, it's easy to jump to these more
-            powerful tools
+            The best way to solidify your knowledge is through reflection.
+          </li>
+          <li>
+            There are many powerful coding tools, but they are overwhelming for
+            first time learners.
+          </li>
+          <li>
+            Once you have a base understanding, it's easy to jump to more
+            powerful tools.
           </li>
         </ul>
         <p>
