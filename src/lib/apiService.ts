@@ -414,21 +414,10 @@ export async function submitPrimmEvaluation(
 
     // Generate a plausible mock response
     const mockResponse: PrimmEvaluationResponse = {
-      predictionSpecificityRating: Math.floor(Math.random() * 3) + 3, // e.g., 3-5 stars
-      predictionSpecificityFeedback: `Mocked feedback on prediction specificity for: "${payload.userPredictionText.substring(
-        0,
-        30
-      )}..."`,
-      selfCorrectionQualityRating: payload.userSelfCorrectionText
-        ? Math.floor(Math.random() * 3) + 2
-        : null, // e.g., 2-4 stars if text exists
-      selfCorrectionQualityFeedback: payload.userSelfCorrectionText
-        ? `Mocked feedback on self-correction: "${payload.userSelfCorrectionText.substring(
-            0,
-            30
-          )}..."`
-        : null,
-      overallComment: "This is a mocked overall comment from the AI. Good job!",
+      aiExplanationAssessment: "achieves",
+      aiPredictionAssessment: "developing",
+      aiOverallComment:
+        "This is a mocked overall comment from the AI. Good job!",
     };
     return Promise.resolve(mockResponse);
   }

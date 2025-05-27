@@ -53,7 +53,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
   const initialSingleExampleState: EnhancedPRIMMExampleUserState = useMemo(
     () => ({
       userEnglishPrediction: "",
-      predictionConfidence: 0,
+      userPredictionConfidence: 0,
       isPredictionLocked: false,
       actualPyodideOutput: null,
       keyOutputSnippet: null,
@@ -213,7 +213,8 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
       codeSnippet: currentExample.code,
       userPredictionPromptText: currentExample.predictPrompt,
       userPredictionText: currentExampleUserState.userEnglishPrediction,
-      predictionConfidence: currentExampleUserState.predictionConfidence,
+      userPredictionConfidence:
+        currentExampleUserState.userPredictionConfidence,
       actualOutputSummary: currentExampleUserState.keyOutputSnippet,
       userExplanationText: currentExampleUserState.userExplanationText,
     };
@@ -225,16 +226,16 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
       );
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const mockAIResponse: PrimmEvaluationResponse = {
-        predictionAssessment: ["achieves", "mostly", "developing"][
+        aiPredictionAssessment: ["achieves", "mostly", "developing"][
           Math.floor(Math.random() * 3)
         ] as AssessmentLevel,
-        explanationAssessment: [
+        aiExplanationAssessment: [
           "achieves",
           "mostly",
           "developing",
           "insufficient",
         ][Math.floor(Math.random() * 4)] as AssessmentLevel,
-        overallComment:
+        aiOverallComment:
           "Mocked AI Comment: Be more specific in your prediction and more verbose in your reflection. This code snippet demonstrates [concept X] by [doing Y]. Your explanation touched upon [Z] correctly.",
       };
       updatePersistedExampleState({
@@ -260,7 +261,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
 
   const isPredictionInputValid =
     currentExampleUserState.userEnglishPrediction.length >= 1 &&
-    currentExampleUserState.predictionConfidence > 0;
+    currentExampleUserState.userPredictionConfidence > 0;
   const isExplanationInputValid =
     currentExampleUserState.userExplanationText.length >= 1;
 
@@ -314,16 +315,16 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                 Prediction:
                 {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
                   currentExampleUserState.aiEvaluationResult
-                    ?.predictionAssessment && (
+                    ?.aiPredictionAssessment && (
                     <span
                       className={`${
                         primmStyles.assessmentLabel
                       } ${getAssessmentLabelClass(
                         currentExampleUserState.aiEvaluationResult
-                          .predictionAssessment
+                          .aiPredictionAssessment
                       )}`}
                     >
-                      {currentExampleUserState.aiEvaluationResult.predictionAssessment.toUpperCase()}
+                      {currentExampleUserState.aiEvaluationResult.aiPredictionAssessment.toUpperCase()}
                     </span>
                   )}
               </span>
@@ -336,13 +337,14 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
 
           {/* Confidence */}
           {currentExampleUserState.isPredictionLocked &&
-            currentExampleUserState.predictionConfidence > 0 && (
+            currentExampleUserState.userPredictionConfidence > 0 && (
               <div className={primmStyles.infoEntry}>
                 <span className={primmStyles.infoLabel}>Confidence:</span>
                 <span className={primmStyles.infoText}>
                   {CONFIDENCE_OPTIONS.find(
                     (c) =>
-                      c.value === currentExampleUserState.predictionConfidence
+                      c.value ===
+                      currentExampleUserState.userPredictionConfidence
                   )?.label || "Not Set"}
                 </span>
               </div>
@@ -366,16 +368,16 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
               <span className={primmStyles.infoLabel}>
                 Reflection:
                 {currentExampleUserState.aiEvaluationResult
-                  ?.explanationAssessment && (
+                  ?.aiExplanationAssessment && (
                   <span
                     className={`${
                       primmStyles.assessmentLabel
                     } ${getAssessmentLabelClass(
                       currentExampleUserState.aiEvaluationResult
-                        .explanationAssessment
+                        .aiExplanationAssessment
                     )}`}
                   >
-                    {currentExampleUserState.aiEvaluationResult.explanationAssessment.toUpperCase()}
+                    {currentExampleUserState.aiEvaluationResult.aiExplanationAssessment.toUpperCase()}
                   </span>
                 )}
               </span>
@@ -388,13 +390,13 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
 
           {/* AI Overall Comments */}
           {currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK" &&
-            currentExampleUserState.aiEvaluationResult?.overallComment && (
+            currentExampleUserState.aiEvaluationResult?.aiOverallComment && (
               <div className={primmStyles.infoEntry}>
                 <span className={primmStyles.infoLabel}>
                   AI Overall Comments:
                 </span>
                 <p className={primmStyles.aiCommentText}>
-                  {currentExampleUserState.aiEvaluationResult.overallComment}
+                  {currentExampleUserState.aiEvaluationResult.aiOverallComment}
                 </p>
               </div>
             )}
@@ -446,12 +448,12 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
                         name={`confidence-${currentExample.id}`}
                         value={opt.value}
                         checked={
-                          currentExampleUserState.predictionConfidence ===
+                          currentExampleUserState.userPredictionConfidence ===
                           opt.value
                         }
                         onChange={() =>
                           updatePersistedExampleState({
-                            predictionConfidence: opt.value,
+                            userPredictionConfidence: opt.value,
                           })
                         }
                       />{" "}

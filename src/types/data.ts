@@ -233,7 +233,7 @@ export interface PRIMMSectionData extends LessonSection {
 // This will be the structure stored per PRIMM example via useSectionProgress
 export interface EnhancedPRIMMExampleUserState {
   userEnglishPrediction: string;
-  predictionConfidence: number; // 1 (Low), 2 (Medium), 3 (High)
+  userPredictionConfidence: number; // 1 (Low), 2 (Medium), 3 (High)
   isPredictionLocked: boolean;
   actualPyodideOutput: string | null;
   keyOutputSnippet: string | null;

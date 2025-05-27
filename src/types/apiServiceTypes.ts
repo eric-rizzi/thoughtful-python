@@ -99,15 +99,15 @@ export interface PrimmEvaluationRequest {
   codeSnippet: string;
   userPredictionPromptText: string; // The prompt shown to the user
   userPredictionText: string; // User's English prediction
-  predictionConfidence: number; // 1-3 for Low/Medium/High
+  userPredictionConfidence: number; // 1-3 for Low/Medium/High
+  userExplanationText: string;
   actualOutputSummary?: string | null;
-  userExplanationText?: string | null;
 }
 
 export interface PrimmEvaluationResponse {
-  predictionAssessment: AssessmentLevel;
-  explanationAssessment?: AssessmentLevel | null;
-  overallComment?: string | null;
+  aiPredictionAssessment: AssessmentLevel;
+  aiExplanationAssessment: AssessmentLevel;
+  aiOverallComment: string;
 }
 
 // You would also keep your existing types like:

@@ -203,8 +203,8 @@ components:
         - codeSnippet
         - userPredictionPromptText
         - userPredictionText
-        - predictionConfidence
-        - userObservedOutcomeComparison
+        - userPredictionConfidence
+        - userExplanationText
       properties:
         lessonId:
           type: string
@@ -222,71 +222,45 @@ components:
           type: string
           description: "The Python code snippet the user analyzed. This provides context to the AI."
           example: "name = \"Alex\"\nprint(f\"Hello {name} it's nice to meet you!\")"
-        userPredictionText:
-          type: string
-          description: "The user's initial English prediction of what the code will do."
-          example: "The code will print a greeting to Alex, including his name, and handle the apostrophe correctly."
         userPredictionPromptText:
           type: string
           description: "The exact prompt or question shown to the user that elicited their initial prediction."
           example: "Look closely at Line 3 (`print(f\"Hello {name} it's nice to meet you!\")`). What exact text will this line output?"
-        predictionConfidence:
+        userPredictionText:
+          type: string
+          description: "The user's initial English prediction of what the code will do."
+          example: "The code will print a greeting to Alex, including his name, and handle the apostrophe correctly."
+        userPredictionConfidence:
           type: integer
           format: int32 
           minimum: 1
-          maximum: 5 # Assuming a 1-5 scale, adjust as needed (e.g., 1-3 for Low/Medium/High)
-          description: "User's self-reported confidence in their initial prediction (e.g., 1=Low, 3=Medium, 5=High)."
-          example: 4
-        userObservedOutcomeComparison:
+          maximum: 3 # (e.g., 1-3 for Low/Medium/High)
+          description: "User's self-reported confidence in their initial prediction (e.g., 1=Low, 3=High)."
+          example: 3
+        userExplanationText:
           type: string
-          enum: ["MATCHED_EXACTLY", "PARTIALLY_MATCHED", "DID_NOT_MATCH"]
-          description: "User's assessment of how their initial prediction compared to the actual outcome after running the code."
-          example: "PARTIALLY_MATCHED"
+          description: "The user's explanation of their prediction error, or a deeper explanation of why the code behaved as it did."
+          example: "My initial prediction was correct. The f-string substitutes the variable 'name', and using double quotes for the string allows the single quote in 'it's' to be included without error."
         actualOutputSummary:
           type: string
           nullable: true
           description: "A brief summary of the actual output observed by the user after running the code client-side. This field is optional and helps the AI compare prediction to outcome."
           example: "Output was: Hello Alex it's nice to meet you!"
-        userSelfCorrectionText:
-          type: string
-          nullable: true # Nullable, as it's only provided if the user's prediction needed correction or further explanation.
-          description: "The user's explanation of their prediction error, or a deeper explanation of why the code behaved as it did."
-          example: "My initial prediction was correct. The f-string substitutes the variable 'name', and using double quotes for the string allows the single quote in 'it's' to be included without error."
 
     PrimmEvaluationResponse:
       type: object
       description: "AI's evaluation of the user's PRIMM prediction and self-correction."
       required:
-        - predictionSpecificityRating # Make this required as per user's point 7
+        - aiPredictionAssessment
+        - aiExplanationAssessment
+        - aiOverallComment
       properties:
-        predictionSpecificityRating:
-          type: integer
-          format: int32
-          minimum: 1
-          maximum: 5
-          description: "Rating (1-5 stars) of how specific and accurate the user's initial prediction was."
-          example: 4
-        predictionSpecificityFeedback:
+        aiPredictionAssessment:
+          $ref: "#/components/schemas/AssessmentLevel"
+        aiExplanationAssessment:
+          $ref: "#/components/schemas/AssessmentLevel"
+        aiOverallComment:
           type: string
-          nullable: true
-          description: "Optional textual feedback from the AI on the prediction's specificity and accuracy."
-          example: "Your prediction was quite specific and correctly identified the main outcome! For even higher specificity, you could have mentioned the variable substitution mechanism of f-strings."
-        selfCorrectionQualityRating:
-          type: integer
-          format: int32
-          minimum: 1
-          maximum: 5
-          nullable: true # Null if no self-correction was applicable (e.g., initial prediction was perfect) or not provided.
-          description: "Rating (1-5 stars) of the quality of the user's self-correction explanation. Null if not applicable."
-          example: 5
-        selfCorrectionQualityFeedback:
-          type: string
-          nullable: true
-          description: "Optional textual feedback from the AI on the self-correction quality or the confirmatory explanation."
-          example: "Excellent self-correction! You clearly understood why the f-string behaved as it did, including handling the apostrophe."
-        overallComment: # Changed from overallFeedback to avoid conflict with specific feedback fields
-          type: string
-          nullable: true
           description: "Optional overall comments, encouragement, or summary from the AI."
           example: "Great job on this PRIMM exercise! Your analytical skills are developing well."
 
@@ -443,7 +417,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
 
-  /primm-feedback/submit: # Using this path as an example
+  /primm-feedback: # Using this path as an example
     post:
       summary: Submit PRIMM Analysis for AI Evaluation
       description: |
