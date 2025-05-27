@@ -18,6 +18,14 @@ servers:
         default: prod
         description: The deployment stage of your API.
 
+tags:
+  - name: Progress
+    description: Operations related to user learning progress.
+  - name: Reflections & Learning Entries
+    description: Operations related to user reflections and finalized journal entries.
+  - name: PRIMM Feedback
+    description: Operations related to AI evaluation of PRIMM activities.
+
 components:
   schemas:
     #--------------------------------------------------------------------------
@@ -185,8 +193,106 @@ components:
           type: string
           nullable: true # If null, nothing left to pull from server
 
+    PrimmEvaluationRequest:
+      type: object
+      description: "Payload for submitting a user's PRIMM activity (prediction and self-correction) for AI evaluation."
+      required:
+        - lessonId
+        - sectionId
+        - primmExampleId
+        - codeSnippet
+        - userPredictionPromptText
+        - userPredictionText
+        - predictionConfidence
+        - userObservedOutcomeComparison
+      properties:
+        lessonId:
+          type: string
+          description: "Identifier for the lesson containing the PRIMM section."
+          example: "01_strings/lesson_1"
+        sectionId:
+          type: string
+          description: "Identifier for the PRIMM section within the lesson."
+          example: "primm-print-analysis"
+        primmExampleId:
+          type: string
+          description: "Identifier for the specific PRIMM code example within the section."
+          example: "primm-greetings-line3"
+        codeSnippet:
+          type: string
+          description: "The Python code snippet the user analyzed. This provides context to the AI."
+          example: "name = \"Alex\"\nprint(f\"Hello {name} it's nice to meet you!\")"
+        userPredictionText:
+          type: string
+          description: "The user's initial English prediction of what the code will do."
+          example: "The code will print a greeting to Alex, including his name, and handle the apostrophe correctly."
+        userPredictionPromptText:
+          type: string
+          description: "The exact prompt or question shown to the user that elicited their initial prediction."
+          example: "Look closely at Line 3 (`print(f\"Hello {name} it's nice to meet you!\")`). What exact text will this line output?"
+        predictionConfidence:
+          type: integer
+          format: int32 
+          minimum: 1
+          maximum: 5 # Assuming a 1-5 scale, adjust as needed (e.g., 1-3 for Low/Medium/High)
+          description: "User's self-reported confidence in their initial prediction (e.g., 1=Low, 3=Medium, 5=High)."
+          example: 4
+        userObservedOutcomeComparison:
+          type: string
+          enum: ["MATCHED_EXACTLY", "PARTIALLY_MATCHED", "DID_NOT_MATCH"]
+          description: "User's assessment of how their initial prediction compared to the actual outcome after running the code."
+          example: "PARTIALLY_MATCHED"
+        actualOutputSummary:
+          type: string
+          nullable: true
+          description: "A brief summary of the actual output observed by the user after running the code client-side. This field is optional and helps the AI compare prediction to outcome."
+          example: "Output was: Hello Alex it's nice to meet you!"
+        userSelfCorrectionText:
+          type: string
+          nullable: true # Nullable, as it's only provided if the user's prediction needed correction or further explanation.
+          description: "The user's explanation of their prediction error, or a deeper explanation of why the code behaved as it did."
+          example: "My initial prediction was correct. The f-string substitutes the variable 'name', and using double quotes for the string allows the single quote in 'it's' to be included without error."
+
+    PrimmEvaluationResponse:
+      type: object
+      description: "AI's evaluation of the user's PRIMM prediction and self-correction."
+      required:
+        - predictionSpecificityRating # Make this required as per user's point 7
+        # selfCorrectionQualityRating can be null if not applicable
+      properties:
+        predictionSpecificityRating:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 5
+          description: "Rating (1-5 stars) of how specific and accurate the user's initial prediction was."
+          example: 4
+        predictionSpecificityFeedback:
+          type: string
+          nullable: true
+          description: "Optional textual feedback from the AI on the prediction's specificity and accuracy."
+          example: "Your prediction was quite specific and correctly identified the main outcome! For even higher specificity, you could have mentioned the variable substitution mechanism of f-strings."
+        selfCorrectionQualityRating:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 5
+          nullable: true # Null if no self-correction was applicable (e.g., initial prediction was perfect) or not provided.
+          description: "Rating (1-5 stars) of the quality of the user's self-correction explanation. Null if not applicable."
+          example: 5
+        selfCorrectionQualityFeedback:
+          type: string
+          nullable: true
+          description: "Optional textual feedback from the AI on the self-correction quality or the confirmatory explanation."
+          example: "Excellent self-correction! You clearly understood why the f-string behaved as it did, including handling the apostrophe."
+        overallComment: # Changed from overallFeedback to avoid conflict with specific feedback fields
+          type: string
+          nullable: true
+          description: "Optional overall comments, encouragement, or summary from the AI."
+          example: "Great job on this PRIMM exercise! Your analytical skills are developing well."
+
     #--------------------------------------------------------------------------
-    # General Error Schema (already existed)
+    # General Error Schema
     #--------------------------------------------------------------------------
     ErrorResponse:
       type: object
@@ -205,7 +311,7 @@ components:
           description: Optional additional error details.
 
   #--------------------------------------------------------------------------
-  # Security Schemes (already existed)
+  # Security Schemes
   #--------------------------------------------------------------------------
   securitySchemes:
     BearerAuth:
@@ -336,6 +442,68 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "500": { $ref: "#/components/responses/InternalServerError" }
+
+
+  /primm-feedback/submit: # Using this path as an example
+    post:
+      summary: Submit PRIMM Analysis for AI Evaluation
+      description: |
+        Submits a user's textual prediction about a given code snippet, 
+        and optionally their self-correction explanation after they have run the code and observed its actual behavior.
+        Returns an AI-generated evaluation, typically including ratings for prediction specificity and self-correction quality.
+        This endpoint is subject to throttling.
+      operationId: submitPrimmAnalysisForEvaluation # Changed for clarity
+      tags:
+        - "PRIMM Feedback"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        description: "The PRIMM submission details including the code snippet, user's prediction, and self-correction text."
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrimmEvaluationRequest"
+      responses:
+        "200": # Using 200 OK for a successful evaluation response from the AI
+          description: "AI evaluation received successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrimmEvaluationResponse"
+        "400": 
+          $ref: "#/components/responses/BadRequest" # For invalid request payload
+        "401": 
+          $ref: "#/components/responses/Unauthorized" # If token is missing or invalid
+        "429": 
+          description: "Rate limit exceeded for PRIMM evaluations. The user has made too many requests in a given timeframe."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse" 
+              examples:
+                userMinuteLimit:
+                  value:
+                    message: "Too many PRIMM evaluation requests. Please try again in a minute."
+                    details: { "type": "PRIMM_USER_MINUTE_LIMIT" } # Example detail
+                userDailyLimit:
+                  value:
+                    message: "You have reached your daily limit for PRIMM evaluations."
+                    details: { "type": "PRIMM_USER_DAILY_LIMIT" }
+                globalDailyLimit:
+                  value:
+                    message: "The PRIMM evaluation service is currently experiencing high demand. Please try again later."
+                    details: { "type": "PRIMM_GLOBAL_DAILY_LIMIT" }
+        "500": 
+          $ref: "#/components/responses/InternalServerError" # General server error
+        "503": 
+          description: "AI ChatBot service unavailable or timed out during PRIMM evaluation."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "The AI evaluation service is temporarily unavailable. Please try again later."
 
 components: # Moved reusable responses here for clarity
   responses:
