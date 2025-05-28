@@ -6,7 +6,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Basic Conditionals (`if`/`else`)",
+  title: "Basic Conditionals",
   description:
     "Explore `if`/`else` statements, comparison operators, and string methods like `.lower()` through a password checking example.",
   sections: [

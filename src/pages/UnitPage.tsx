@@ -1,6 +1,8 @@
 // src/pages/UnitPage.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   fetchUnitById,
   fetchLessonData,
@@ -169,7 +171,11 @@ const UnitPage: React.FC = () => {
       </Link>
       <div className={styles.unitHeader}>
         <h2 className={styles.unitTitle}>{unit.title}</h2>
-        <p className={styles.unitDescription}>{unit.description}</p>
+        <p className={styles.unitDescription}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {unit.description}
+          </ReactMarkdown>
+        </p>
       </div>
       <div className={styles.lessonsList}>
         {unit.lessons.map((lessonPath, index) => {
@@ -211,7 +217,11 @@ const UnitPage: React.FC = () => {
               <div className={styles.lessonCard}>
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>{lesson.title}</h3>
-                <p className={styles.lessonDescription}>{lesson.description}</p>
+                <p className={styles.lessonDescription}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {lesson.description}
+                  </ReactMarkdown>
+                </p>
                 <div className={styles.lessonStatus}>
                   {status.class === "completed" ? (
                     <span

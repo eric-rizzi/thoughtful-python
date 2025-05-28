@@ -1,6 +1,8 @@
 // src/pages/HomePage.tsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { fetchUnitsData } from "../lib/dataLoader";
 import type { Unit } from "../types/data";
 import styles from "./HomePage.module.css";
@@ -83,7 +85,11 @@ const HomePage: React.FC = () => {
               </div>
               <div className={styles.unitContent}>
                 <h3 className={styles.unitTitle}>{unit.title}</h3>
-                <p className={styles.unitDescription}>{unit.description}</p>
+                <p className={styles.unitDescription}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {unit.description}
+                  </ReactMarkdown>
+                </p>
                 <div className={styles.unitDetails}>
                   <div className={styles.unitLessons}>
                     {unit.lessons.length} lessons

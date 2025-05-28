@@ -6,7 +6,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Project - 2 Questions Game",
+  title: "2 Questions Game",
   description:
     "Build a simple guessing game using nested conditionals to narrow down possibilities.",
   sections: [

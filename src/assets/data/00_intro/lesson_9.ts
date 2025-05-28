@@ -5,7 +5,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Lesson 9: Introduction to Debugging",
+  title: "Intro to Debugging",
   description:
     "Learn to use the interactive debugger to step through your Python code, inspect variables, and understand execution flow.",
   sections: [

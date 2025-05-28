@@ -256,7 +256,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
         submissionData
       );
       alert(
-        `Learning entry submitted successfully! Entry ID: ${finalEntryResponse.versionId}`
+        `Learning entry on ${finalEntryResponse.userTopic} submitted successfully!`
       );
       completeSection(lessonId, sectionId);
       fetchAndUpdateHistory();

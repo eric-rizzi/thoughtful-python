@@ -6,7 +6,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "String Manipulation Review & Best Practices",
+  title: "String Manipulation Review",
   description:
     "Reflect on key concepts related to strings and data types in Python.",
   sections: [

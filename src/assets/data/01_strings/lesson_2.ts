@@ -6,7 +6,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Lesson 10: Type Casting and Input",
+  title: "Type Casting and Input",
   description:
     "Predict errors, understand type mismatches with input, and learn to fix them using type casting.",
   sections: [

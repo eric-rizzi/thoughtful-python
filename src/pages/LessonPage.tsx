@@ -1,6 +1,8 @@
 // src/pages/LessonPage.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader";
 import type { Lesson, AnyLessonSectionData } from "../types/data";
 
@@ -280,7 +282,11 @@ const LessonPage: React.FC = () => {
       </aside>
       <div className={styles.lessonContent}>
         <div className={styles.lessonHeader}>
-          <h1 className={styles.lessonTitle}>{lesson.title}</h1>
+          <h1 className={styles.lessonTitle}>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {lesson.title}
+            </ReactMarkdown>
+          </h1>
           {totalLessonsInUnit > 0 && (
             <LessonNavigation
               lessonId={lessonPath!}
