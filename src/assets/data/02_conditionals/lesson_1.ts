@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-password-check",
       title: "Predict, Run, Investigate: Password Logic",
-      introduction:
+      content:
         "This code asks for a password and checks if it matches 'cheese' (case-insensitive). Predict the output for the input 'CHEESE'.",
       examples: [
         {
@@ -29,11 +29,6 @@ const lessonData: Lesson = {
           code: '# Simulate input for prediction\npassword = "CHEESE"\n\n# Conditional Check\nif password.lower() == "cheese":\n  print("Welcome, it\'s lovely to see you") # Output A\nelse:\n  print("Get out of here!") # Output B',
           predictPrompt:
             "What will be printed to the screen when this code runs?",
-          expectedPrediction: "Welcome, it's lovely to see you",
-          predictionTargetDescription: "The final printed message",
-          explanationPrompt:
-            "Your prediction didn't match. Why did the `if` condition evaluate to `True`? Consider what `password.lower()` does and how `==` works.",
-          minExplanationLength: 40,
         },
       ],
       conclusion:

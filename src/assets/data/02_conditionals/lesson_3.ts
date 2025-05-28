@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-nested-paths",
       title: "Predict, Run, Investigate: Nested Logic",
-      introduction:
+      content:
         "This code uses nested `if`/`else` statements. Predict the output if the input is 'c'.",
       examples: [
         {
@@ -29,12 +29,6 @@ const lessonData: Lesson = {
           code: '# Simulate input for prediction\nanswer = "c"\n\nif answer == "a":\n  print("Option a")\nelse:\n  # Inner conditional\n  if answer == "b":\n    print("Option b")\n  else:\n    print("Other") # This is inside the outer \'else\'\n\nprint("All done") # This runs regardless',
           predictPrompt:
             'What lines will be printed when this code runs with `answer = "c"`?',
-          expectedPrediction: "Other\nAll done",
-          predictionTargetDescription:
-            "The full output, including the final line",
-          explanationPrompt:
-            "Your prediction didn't match. Trace the code execution: Since `answer` is not 'a', which block runs? Inside that block, is `answer` equal to 'b'? Which `print` statement is finally reached before 'All done'?",
-          minExplanationLength: 50,
         },
       ],
       conclusion:

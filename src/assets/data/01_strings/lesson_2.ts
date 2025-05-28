@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-type-error",
       title: "Predict, Run, Investigate: The `TypeError`",
-      introduction:
+      content:
         "This code asks for the user's age (as a string) and tries to calculate their age next year. Predict what will happen, then run it.",
       examples: [
         {
@@ -29,11 +29,6 @@ const lessonData: Lesson = {
           code: '# Simulate input() returning a string\nage = "25" \n\n# Attempt arithmetic operation\nnext_age_calculation = age + 1 \n\n# This print statement will likely not be reached\nprint(f"Next year\'s age calculation: {next_age_calculation}")',
           predictPrompt:
             "What will be the result of executing this code? Will it print successfully, or will it produce an error?",
-          expectedPrediction: "Error",
-          predictionTargetDescription: "Successful print OR Error",
-          explanationPrompt:
-            "The code produced a `TypeError`. If you predicted it would print successfully, explain why Python cannot add the string variable `age` and the integer `1` directly. What must be done first?",
-          minExplanationLength: 50,
         },
       ],
       conclusion:

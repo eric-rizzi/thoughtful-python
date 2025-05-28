@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-syntax-errors",
       title: "Predict, Run, Investigate: Syntax Errors",
-      introduction:
+      content:
         "This code intends to ask if someone is a student and print a message. However, it contains syntax errors. Predict what will happen when you try to run it.",
       examples: [
         {
@@ -29,11 +29,6 @@ const lessonData: Lesson = {
           code: '# CODE WITH ERRORS (for display only):\nanswer = input("Are you a student? ")\nif answer.lower() = "yes": # Error 1: Assignment instead of comparison\n  print("Good luck on your tests!")\n  else: # Error 2: IndentationError\n  print("Pay your rent!")',
           predictPrompt:
             "This code has two main syntax errors. Where do you think the FIRST error Python will report occurs, and what kind of error might it be?",
-          expectedPrediction: "SyntaxError on the if line",
-          predictionTargetDescription: "Location and type of the first error",
-          explanationPrompt:
-            "The first error is a `SyntaxError: invalid syntax` on the `if` line, caused by using `=` instead of `==`. If you predicted something else, explain why Python flags this as an error.",
-          minExplanationLength: 40,
         },
       ],
       conclusion:

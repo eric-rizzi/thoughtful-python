@@ -19,7 +19,7 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-grocer-lists",
       title: "Grocery lists",
-      introduction:
+      content:
         "Use the code below to answer the following questions and complete the required tasks.",
       examples: [
         {
@@ -27,12 +27,6 @@ const lessonData: Lesson = {
           code: 'def do_something_0(to_add):\n    gl = ["bread", "apples"]\n    gl.append(to_add)\n\n    for elem in gl:\n        print(f"Buy {elem}!")\n\n    print(f"But the {gl[-1]} is most important!")\n\nif __name__ == "__main__":\n    do_something_0("ice cream")',
           predictPrompt:
             'What lines will be printed when this code runs with `answer = "c"`?',
-          expectedPrediction: "Other\nAll done",
-          predictionTargetDescription:
-            "The full output, including the final line",
-          explanationPrompt:
-            "Your prediction didn't match. Trace the code execution: Since `answer` is not 'a', which block runs? Inside that block, is `answer` equal to 'b'? Which `print` statement is finally reached before 'All done'?",
-          minExplanationLength: 50,
         },
       ],
       conclusion:

@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-print-analysis",
       title: "Predict, Run, Investigate: Print Statements",
-      introduction:
+      content:
         "Below is Python code that attempts to print greetings using different methods. Focus on the code, predict the output for the specified line, then run it to check.",
       examples: [
         {
@@ -29,12 +29,6 @@ const lessonData: Lesson = {
           code: '# We\'ll use a fixed name for prediction\nname = "Alex"\n\nprint(f"Hello {name}it\'s nice to meet you!") # Line 1\nprint("Hello {name} it\'s nice to meet you!") # Line 2\nprint(f"Hello {name} it\'s nice to meet you!") # Line 3\nprint(f"Hello name it\'s nice to meet you!") # Line 4',
           predictPrompt:
             'Look closely at Line 3 (`print(f"Hello {name} it\'s nice to meet you!")`). What exact text will this line output?',
-          expectedPrediction: "Hello Alex it's nice to meet you!",
-          predictionTargetDescription:
-            "Exact output of the third print statement",
-          explanationPrompt:
-            "Your prediction didn't match the actual output from Line 3. Why did the code produce the output it did? Consider how the `f` prefix and curly braces `{}` affect the string.",
-          minExplanationLength: 40,
         },
       ],
       conclusion:

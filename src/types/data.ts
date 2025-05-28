@@ -216,17 +216,13 @@ export interface SavedCodeState {
 }
 
 export interface PRIMMCodeExample {
-  // Modified for the new flow
   id: string;
   code: string;
   predictPrompt: string;
-  minPredictionLength?: number;
-  minExplanationLength?: number;
 }
 
 export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
-  introduction: string;
   examples: PRIMMCodeExample[]; // Array of PRIMM blocks for this section
 }
 

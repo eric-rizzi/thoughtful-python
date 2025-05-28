@@ -274,7 +274,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
       <h2 className={styles.title}>{section.title}</h2>
       <div className={`${styles.content} ${primmStyles.introduction}`}>
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.introduction}
+          {section.content}
         </ReactMarkdown>
       </div>
 
