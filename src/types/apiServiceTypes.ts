@@ -110,6 +110,17 @@ export interface PrimmEvaluationResponse {
   aiOverallComment: string;
 }
 
+export interface InstructorStudentInfo {
+  studentId: string;
+  studentName?: string | null; // Optional, as it might not be available in POC
+  studentEmail?: string | null; // Optional
+}
+
+export interface ListOfInstructorStudentsResponse {
+  students: InstructorStudentInfo[];
+  // lastEvaluatedKey?: Record<string, any> | null; // For future pagination if the list becomes very long
+}
+
 // You would also keep your existing types like:
 // ErrorResponse, UserProgress, BatchCompletionsInput, SectionCompletionInput
 // For example:

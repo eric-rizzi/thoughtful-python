@@ -9,6 +9,8 @@ import type {
   ListOfFinalLearningEntriesResponse,
   PrimmEvaluationRequest,
   PrimmEvaluationResponse,
+  InstructorStudentInfo,
+  ListOfInstructorStudentsResponse,
 } from "../types/apiServiceTypes";
 import { AssessmentLevel } from "../types/data";
 
@@ -486,4 +488,68 @@ export async function submitPrimmEvaluation(
     throw new ApiError(errorData.message, response.status, errorData);
   }
   return response.json() as Promise<PrimmEvaluationResponse>;
+}
+
+export async function getInstructorPermittedStudents(
+  idToken: string,
+  apiGatewayUrl: string
+): Promise<ListOfInstructorStudentsResponse> {
+  if (USE_MOCKED_API) {
+    console.log("MOCKED API [getInstructorPermittedStudents]: Called");
+    await mockApiDelay();
+    const mockStudents: InstructorStudentInfo[] = [
+      {
+        studentId: "USER#student_alpha_123",
+        studentName: "Alpha Armstrong",
+        studentEmail: "alpha@example.com",
+      },
+      { studentId: "USER#student_beta_456", studentName: "Beta Bronson" },
+      {
+        studentId: "USER#student_gamma_789",
+        studentEmail: "gamma@example.com",
+      },
+    ];
+    return Promise.resolve({ students: mockStudents });
+  }
+
+  // Real API call logic
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
+
+  const endpoint = `${apiGatewayUrl}/instructor/students`; // Path from your Swagger
+
+  console.log(
+    `LIVE API [getInstructorPermittedStudents]: Calling GET ${endpoint}`
+  );
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorData: { message: string; details?: any; type?: string } = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      const parsedJson = await response.json();
+      errorData = {
+        message: parsedJson.message || errorData.message,
+        type: parsedJson.type || undefined,
+        details: parsedJson.details || undefined,
+      };
+    } catch (e) {
+      console.warn(
+        "Response from server was not valid JSON, using status text as message."
+      );
+    }
+    console.error(
+      `LIVE API [getInstructorPermittedStudents]: Error ${response.status}`,
+      errorData
+    );
+    throw new ApiError(errorData.message, response.status, errorData);
+  }
+  return response.json() as Promise<ListOfInstructorStudentsResponse>;
 }

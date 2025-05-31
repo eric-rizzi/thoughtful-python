@@ -7,7 +7,9 @@ import CodeEditorPage from "./pages/CodeEditorPage";
 import ProgressPage from "./pages/ProgressPage";
 import LearningEntriesPage from "./pages/LearningEntriesPage";
 import ConfigurationPage from "./pages/ConfigurationPage";
+import InstructorDashboardPage from "./pages/InstructorDashboardPage";
 import Layout from "./components/Layout";
+import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import { useProgressStore, useProgressActions } from "./stores/progressStore"; // Import store and actions
 
 function App() {
@@ -50,6 +52,14 @@ function App() {
         <Route path="progress" element={<ProgressPage />} />
         <Route path="learning-entries" element={<LearningEntriesPage />} />
         <Route path="configure" element={<ConfigurationPage />} />
+        <Route
+          path="instructor-dashboard"
+          element={
+            <AuthenticatedRoute>
+              <InstructorDashboardPage />
+            </AuthenticatedRoute>
+          }
+        />
         <Route
           path="*"
           element={

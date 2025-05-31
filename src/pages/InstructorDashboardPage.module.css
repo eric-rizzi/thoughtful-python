@@ -1,0 +1,137 @@
+/* src/pages/InstructorDashboardPage.module.css */
+.dashboardContainer {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.dashboardHeader {
+  background-color: #306998; /* A theme color */
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardHeader h1 {
+  margin: 0;
+  font-size: 2em;
+}
+.dashboardHeader p {
+  margin: 0.5rem 0 0;
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+
+.dashboardLayout {
+  display: flex;
+  gap: 2rem;
+}
+
+.sidebar {
+  flex: 0 0 220px; /* Fixed width sidebar */
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 6px;
+  height: fit-content; /* Adjust as needed */
+  border: 1px solid #e9ecef;
+}
+
+.sidebarTitle {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2em;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li a,
+.sidebar li .placeholderLink {
+  display: block;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  color: #306998;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar li a:hover,
+.sidebar li a.activeLink {
+  background-color: #e0eaf3;
+  color: #1c3f5c;
+  font-weight: 500;
+}
+.sidebar li .activeLink {
+  font-weight: bold;
+}
+
+.sidebar li .placeholderLink {
+  color: #999;
+  cursor: default;
+  background-color: transparent !important; /* Override hover */
+}
+
+.mainContent {
+  flex-grow: 1;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.studentListSection h2 {
+  margin-top: 0;
+  color: #306998;
+  border-bottom: 2px solid #e0eaf3;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.studentList {
+  list-style: none;
+  padding: 0;
+}
+
+.studentListItem {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+.studentListItem:last-child {
+  border-bottom: none;
+}
+.studentListItem:hover {
+  background-color: #f9f9f9;
+}
+
+.studentId {
+  font-weight: 500;
+  color: #333;
+}
+.studentName {
+  color: #555;
+  font-style: italic;
+}
+.studentEmail {
+  color: #777;
+  font-size: 0.9em;
+}
+
+.errorMessage {
+  color: #c0392b;
+  background-color: #f9e4e2;
+  border: 1px solid #f1c0ba;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+}
