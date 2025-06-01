@@ -49,9 +49,16 @@ function App() {
         <Route path="unit/:unitId" element={<UnitPage />} />
         <Route path="lesson/*" element={<LessonPage />} />
         <Route path="editor" element={<CodeEditorPage />} />
-        <Route path="progress" element={<ProgressPage />} />
         <Route path="learning-entries" element={<LearningEntriesPage />} />
         <Route path="configure" element={<ConfigurationPage />} />
+        <Route
+          path="progress"
+          element={
+            <AuthenticatedRoute>
+              <ProgressPage />
+            </AuthenticatedRoute>
+          }
+        />
         <Route
           path="instructor-dashboard"
           element={
