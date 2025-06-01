@@ -121,6 +121,40 @@ export interface ListOfInstructorStudentsResponse {
   // lastEvaluatedKey?: Record<string, any> | null; // For future pagination if the list becomes very long
 }
 
+export interface StudentLessonProgressItem {
+  lessonId: string;
+  lessonTitle: string;
+  completionPercent: number;
+  isCompleted: boolean;
+  completedSectionsCount: number;
+  totalRequiredSectionsInLesson: number;
+}
+
+export interface StudentUnitProgressResponse {
+  studentId: string;
+  studentName?: string | null;
+  unitId: string;
+  unitTitle: string;
+  lessonsProgress: StudentLessonProgressItem[];
+  overallUnitCompletionPercent: number;
+}
+
+// For the "At-a-Glance" summary (if fetched from a dedicated endpoint later)
+export interface ClassLessonSummaryItem {
+  lessonId: string;
+  lessonTitle: string;
+  averageCompletionPercent: number;
+  studentsAttemptedCount: number;
+  studentsCompletedCount: number;
+}
+
+export interface ClassUnitSummaryResponse {
+  unitId: string;
+  unitTitle: string;
+  totalStudentsInView: number;
+  lessonSummaries: ClassLessonSummaryItem[];
+}
+
 // You would also keep your existing types like:
 // ErrorResponse, UserProgress, BatchCompletionsInput, SectionCompletionInput
 // For example:

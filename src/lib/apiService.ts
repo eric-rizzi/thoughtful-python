@@ -11,6 +11,8 @@ import type {
   PrimmEvaluationResponse,
   InstructorStudentInfo,
   ListOfInstructorStudentsResponse,
+  StudentUnitProgressResponse,
+  ClassUnitSummaryResponse,
 } from "../types/apiServiceTypes";
 import { AssessmentLevel } from "../types/data";
 
@@ -552,4 +554,106 @@ export async function getInstructorPermittedStudents(
     throw new ApiError(errorData.message, response.status, errorData);
   }
   return response.json() as Promise<ListOfInstructorStudentsResponse>;
+}
+
+export async function getInstructorStudentUnitProgress(
+  idToken: string,
+  apiGatewayUrl: string,
+  studentId: string,
+  unitId: string
+): Promise<StudentUnitProgressResponse> {
+  if (USE_MOCKED_API) {
+    console.log(
+      `MOCKED API [getInstructorStudentUnitProgress]: studentId: ${studentId}, unitId: ${unitId}`
+    );
+    await mockApiDelay();
+    // Simulate varied progress for different students/units for testing
+    const randomSeed = (studentId.length + unitId.length) % 3;
+    const overallPercent = 30 + randomSeed * 25; // e.g., 30%, 55%, 80%
+
+    const mockProgress: StudentUnitProgressResponse = {
+      studentId,
+      unitId,
+      unitTitle: `Mocked ${unitId.replace("_", " ")} Title`,
+      overallUnitCompletionPercent: overallPercent,
+      lessonsProgress: [
+        // Assume 2-3 lessons per unit for mock
+        {
+          lessonId: `${unitId}/lesson_1`,
+          lessonTitle: "Lesson 1 Title",
+          completionPercent: Math.min(
+            100,
+            overallPercent + 10 + randomSeed * 10
+          ),
+          isCompleted: overallPercent > 80,
+          completedSectionsCount: 3,
+          totalRequiredSectionsInLesson: 4,
+        },
+        {
+          lessonId: `${unitId}/lesson_2`,
+          lessonTitle: "Lesson 2 Title",
+          completionPercent: Math.min(100, overallPercent - 5 + randomSeed * 5),
+          isCompleted: overallPercent > 90,
+          completedSectionsCount: 2,
+          totalRequiredSectionsInLesson: 3,
+        },
+        {
+          lessonId: `${unitId}/lesson_3`,
+          lessonTitle: "Lesson 3 Title",
+          completionPercent: Math.max(0, overallPercent - 20),
+          isCompleted: overallPercent > 95,
+          completedSectionsCount: 1,
+          totalRequiredSectionsInLesson: 5,
+        },
+      ],
+    };
+    if (studentId.includes("gamma")) {
+      // Example: Make one student have less progress
+      mockProgress.overallUnitCompletionPercent = 20;
+      mockProgress.lessonsProgress.forEach(
+        (lp) => (lp.completionPercent = Math.max(0, lp.completionPercent - 30))
+      );
+    }
+    return Promise.resolve(mockProgress);
+  }
+
+  // Real API call logic
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
+
+  // Path from your Swagger for specific student unit progress
+  const endpoint = `${apiGatewayUrl}/instructor/students/${studentId}/units/${unitId}/progress`;
+
+  console.log(
+    `LIVE API [getInstructorStudentUnitProgress]: Calling GET ${endpoint}`
+  );
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorData: { message: string; details?: any; type?: string } = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      const parsedJson = await response.json();
+      errorData = {
+        message: parsedJson.message || errorData.message,
+        type: parsedJson.type || undefined,
+        details: parsedJson.details || undefined,
+      };
+    } catch (e) {
+      /* ignore */
+    }
+    console.error(
+      `LIVE API [getInstructorStudentUnitProgress]: Error ${response.status}`,
+      errorData
+    );
+    throw new ApiError(errorData.message, response.status, errorData);
+  }
+  return response.json() as Promise<StudentUnitProgressResponse>;
 }
