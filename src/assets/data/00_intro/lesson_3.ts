@@ -2,6 +2,7 @@ import type { Lesson, PredictionSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Predicting Function Output",
+  guid: "5c3c6f3b-722f-4b19-b3ed-d532b7961f92",
   description:
     "Practice predicting how functions will behave with different inputs without running code, an essential skill for effective programming.",
   sections: [

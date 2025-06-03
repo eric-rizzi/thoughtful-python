@@ -7,12 +7,13 @@ import {
 } from "../lib/localStorageUtils";
 import { useProgressActions } from "../stores/progressStore";
 import { useAuthStore } from "../stores/authStore";
+import { LessonId, SectionId } from "../types/data";
 
 type HookSetStateAction<S> = S | ((prevState: S) => S);
 
 export function useSectionProgress<TState extends object>(
-  lessonId: string,
-  sectionId: string,
+  lessonId: LessonId,
+  sectionId: SectionId,
   storageSubKey: string,
   initialState: TState,
   checkCompletion: (state: TState) => boolean
@@ -24,7 +25,7 @@ export function useSectionProgress<TState extends object>(
   // This value will react to auth changes due to useAuthStore.
   const currentStorageUserId = useMemo(() => {
     return isAuthenticated && authUser
-      ? authUser.id
+      ? authUser.userId
       : ANONYMOUS_USER_ID_PLACEHOLDER;
   }, [isAuthenticated, authUser]);
 

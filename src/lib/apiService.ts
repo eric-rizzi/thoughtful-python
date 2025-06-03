@@ -13,11 +13,19 @@ import type {
   ListOfInstructorStudentsResponse,
   ClassUnitProgressResponse,
   StudentUnitCompletionData,
+  AuthToken,
 } from "../types/apiServiceTypes";
-import { AssessmentLevel } from "../types/data";
+import {
+  AssessmentLevel,
+  UserId,
+  LessonId,
+  SectionId,
+  UnitId,
+  IsoTimestamp,
+} from "../types/data";
 
 export const USE_MOCKED_API = false;
-const MOCKED_USER_ID = "mocked-google-user-id-12345";
+const MOCKED_USER_ID = "mocked-google-user-id-12345" as UserId;
 
 // Custom Error class to hold status and parsed response
 export class ApiError extends Error {
@@ -41,7 +49,7 @@ const mockApiDelay = (duration: number = 500) =>
   new Promise((resolve) => setTimeout(resolve, duration));
 
 export async function getUserProgress(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string
 ): Promise<UserProgressData> {
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
@@ -154,10 +162,10 @@ export async function updateUserProgress(
  * or ReflectionVersionItem (the final entry) if isFinal=true.
  */
 export async function submitReflectionInteraction(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string,
-  lessonId: string,
-  sectionId: string,
+  lessonId: LessonId,
+  sectionId: SectionId,
   submissionData: ReflectionInteractionInput
 ): Promise<ReflectionVersionItem> {
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
@@ -165,7 +173,7 @@ export async function submitReflectionInteraction(
       `MOCKED API [submitReflectionInteraction] for ${lessonId}/${sectionId}, isFinal: ${submissionData.isFinal}`
     );
     await mockApiDelay();
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toISOString() as IsoTimestamp;
     const mockVersionId = `mock_${lessonId}_${sectionId}_${timestamp.replace(
       /:|\./g,
       ""
@@ -245,10 +253,10 @@ export async function submitReflectionInteraction(
  * @returns A Promise resolving to ListOfReflectionDraftsResponse.
  */
 export async function getReflectionDraftVersions(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string,
-  lessonId: string,
-  sectionId: string
+  lessonId: LessonId,
+  sectionId: SectionId
 ): Promise<ListOfReflectionDraftsResponse> {
   if (USE_MOCKED_API && apiGatewayUrl.includes("mock")) {
     console.log(
@@ -267,7 +275,9 @@ export async function getReflectionDraftVersions(
           userExplanation: "Expl 1",
           aiFeedback: "Good start.",
           aiAssessment: "developing",
-          createdAt: new Date(Date.now() - 100000).toISOString(),
+          createdAt: new Date(
+            Date.now() - 100000
+          ).toISOString() as IsoTimestamp,
           isFinal: false,
         },
         {
@@ -280,7 +290,7 @@ export async function getReflectionDraftVersions(
           userExplanation: "Expl 2",
           aiFeedback: "Getting better!",
           aiAssessment: "mostly",
-          createdAt: new Date().toISOString(),
+          createdAt: new Date().toISOString() as IsoTimestamp,
           isFinal: false,
         },
       ],
@@ -348,17 +358,17 @@ export async function getFinalizedLearningEntries(
         {
           versionId: "final_entry_1",
           userId: MOCKED_USER_ID,
-          lessonId: "00_intro/lesson_7",
-          sectionId: "python-reflection",
+          lessonId: "00_intro/lesson_7" as LessonId,
+          sectionId: "python-reflection" as SectionId,
           userTopic: "Final Topic 1",
           userCode: "print('final 1')",
           userExplanation: "Final Expl 1",
           aiFeedback: null,
           aiAssessment: null,
-          createdAt: new Date().toISOString(),
+          createdAt: new Date().toISOString() as IsoTimestamp,
           isFinal: true,
           sourceVersionId: "draft_v2_for_final_1",
-          finalEntryCreatedAt: new Date().toISOString(),
+          finalEntryCreatedAt: new Date().toISOString() as IsoTimestamp,
         },
       ],
       lastEvaluatedKey: null,
@@ -557,9 +567,9 @@ export async function getInstructorPermittedStudents(
 }
 
 export async function getInstructorClassUnitProgress(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string,
-  unitId: string,
+  unitId: UnitId,
   studentIds: string[] // Optional: Server could get permitted students itself, or client sends IDs
 ): Promise<ClassUnitProgressResponse> {
   // For this version, let's assume the server will determine permitted students based on the instructor's idToken.

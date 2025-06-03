@@ -2,6 +2,7 @@ import type { Lesson } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "TODO",
+  guid: "fb0724da-2741-41bf-a737-5ad0eaf0291f",
   description:
     "Welcome to your first Python lesson! In this lesson, you'll learn the fundamentals of Python programming.",
   sections: [

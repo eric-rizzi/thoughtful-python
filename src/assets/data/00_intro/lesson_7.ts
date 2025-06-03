@@ -2,6 +2,7 @@ import type { Lesson, ReflectionSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Reflection and Self-Assessment",
+  guid: "ab5bed79-7662-423e-90ef-952539f59099",
   description:
     "Demonstrate your understanding by creating and explaining a Python code example on a topic of your choice.",
   sections: [

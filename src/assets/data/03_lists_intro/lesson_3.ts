@@ -6,6 +6,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Python Lists (Basic)",
+  guid: "84868dd9-81cb-4eb9-82d8-09f7efb6a2f8",
   description: "W",
   sections: [
     {

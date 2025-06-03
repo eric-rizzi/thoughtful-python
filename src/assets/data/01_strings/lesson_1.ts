@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "String Formatting and f-strings",
+  guid: "03cff8d8-33a0-49ed-98c4-d51613995340",
   description:
     "Predict output, run code, and investigate f-strings for variable insertion and handling quotes.",
   sections: [

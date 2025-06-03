@@ -2,6 +2,7 @@ import type { Lesson, TurtleSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Turtle Graphics Challenge",
+  guid: "5831a4e6-9d52-42bb-9a45-c3cd5ba53a51",
   description:
     "Apply your Python skills to create shapes using Turtle Graphics. This fun challenge will test your ability to use loops and coordinate geometry.",
   sections: [

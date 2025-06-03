@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "String Manipulation Review",
+  guid: "3ed77482-b004-49dd-bc5d-e588f42883aa",
   description:
     "Reflect on key concepts related to strings and data types in Python.",
   sections: [

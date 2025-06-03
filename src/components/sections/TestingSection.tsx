@@ -2,7 +2,12 @@
 import React, { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { LessonSection, TestingExample } from "../../types/data";
+import type {
+  LessonId,
+  LessonSection,
+  SectionId,
+  TestingExample,
+} from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
 import {
@@ -16,13 +21,13 @@ import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface TestingSectionProps {
   section: LessonSection;
-  lessonId: string;
+  lessonId: LessonId;
 }
 
 const TestableExample: React.FC<{
   example: TestingExample;
-  lessonId: string;
-  sectionId: string;
+  lessonId: LessonId;
+  sectionId: SectionId;
 }> = React.memo(({ example, lessonId, sectionId }) => {
   const { completeSection } = useProgressActions();
   const {

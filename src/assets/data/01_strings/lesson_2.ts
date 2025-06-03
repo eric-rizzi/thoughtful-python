@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Type Casting and Input",
+  guid: "a9e039a5-d551-4068-b797-553ef721bac9",
   description:
     "Predict errors, understand type mismatches with input, and learn to fix them using type casting.",
   sections: [

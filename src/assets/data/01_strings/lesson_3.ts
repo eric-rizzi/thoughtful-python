@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Creative Project - Mad Libs",
+  guid: "1af50da8-e219-4845-b9e1-52db34b1437e",
   description:
     "Apply your knowledge of strings, input, and type casting to create an interactive Mad Libs game.",
   sections: [

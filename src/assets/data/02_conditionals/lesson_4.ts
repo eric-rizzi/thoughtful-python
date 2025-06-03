@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "2 Questions Game",
+  guid: "3bbea3a7-7cc2-4026-9073-304f121ceb1c",
   description:
     "Build a simple guessing game using nested conditionals to narrow down possibilities.",
   sections: [

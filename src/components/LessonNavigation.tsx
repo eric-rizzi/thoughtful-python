@@ -3,11 +3,12 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 // Import the new CSS Module
 import styles from "./LessonNavigation.module.css";
+import { LessonId } from "../types/data";
 
 interface LessonNavigationProps {
-  lessonId: string;
-  prevLessonId: string | null;
-  nextLessonId: string | null;
+  lessonId: LessonId;
+  prevLessonId: LessonId | null;
+  nextLessonId: LessonId | null;
   currentPosition: number;
   totalInUnit: number;
 }

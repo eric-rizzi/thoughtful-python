@@ -2,7 +2,11 @@
 import React, { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { ReflectionSectionData, AssessmentLevel } from "../../types/data";
+import type {
+  ReflectionSectionData,
+  AssessmentLevel,
+  LessonId,
+} from "../../types/data";
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { useAuthStore } from "../../stores/authStore";
@@ -26,7 +30,7 @@ const QUALIFYING_ASSESSMENTS_FOR_FINAL: AssessmentLevel[] = [
 
 interface ReflectionSectionProps {
   section: ReflectionSectionData;
-  lessonId: string;
+  lessonId: LessonId;
 }
 
 const ReflectionSection: React.FC<ReflectionSectionProps> = ({

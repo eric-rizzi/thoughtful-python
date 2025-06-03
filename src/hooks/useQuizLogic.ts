@@ -7,6 +7,7 @@ import {
   useRemainingPenaltyTime,
 } from "../stores/progressStore";
 import type {
+  LessonId,
   MultipleChoiceSectionData,
   MultipleSelectionSectionData,
 } from "../types/data";
@@ -19,7 +20,7 @@ export interface QuizLogicPersistedState {
 }
 
 interface UseQuizLogicProps {
-  lessonId: string;
+  lessonId: LessonId;
   section: MultipleChoiceSectionData | MultipleSelectionSectionData;
   isMultiSelect: boolean;
 }

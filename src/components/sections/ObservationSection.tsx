@@ -1,6 +1,11 @@
 // src/components/sections/ObservationSection.tsx
 import React from "react";
-import type { LessonSection, LessonExample } from "../../types/data";
+import type {
+  LessonSection,
+  LessonExample,
+  SectionId,
+  LessonId,
+} from "../../types/data";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import styles from "./Section.module.css";
@@ -10,14 +15,14 @@ import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface ObservationSectionProps {
   section: LessonSection; // Expects a generic LessonSection, but examples are key
-  lessonId: string;
+  lessonId: LessonId;
 }
 
 // Helper component for each example to use the hook
 const ObservationExample: React.FC<{
   example: LessonExample;
-  lessonId: string;
-  sectionId: string;
+  lessonId: LessonId;
+  sectionId: SectionId;
 }> = ({ example, lessonId, sectionId }) => {
   const { completeSection } = useProgressActions();
   const exampleHook = useInteractiveExample({

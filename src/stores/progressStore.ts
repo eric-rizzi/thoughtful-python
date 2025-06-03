@@ -8,16 +8,17 @@ import type {
 } from "../types/apiServiceTypes";
 import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 import { API_GATEWAY_BASE_URL } from "../config";
+import { IsoTimestamp, LessonId, SectionId } from "../types/data";
 
 export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2"; // Make sure this is exported
 
-const EMPTY_COMPLETED_SECTIONS: { [sectionId: string]: string } = {};
+const EMPTY_COMPLETED_SECTIONS: { [sectionId: SectionId]: IsoTimestamp } = {};
 const PENALTY_DURATION_MS = 15 * 1000;
 
 interface ProgressStateData {
   completion: {
-    [lessonId: string]: {
-      [sectionId: string]: string; // timeFirstCompleted
+    [lessonId: LessonId]: {
+      [sectionId: SectionId]: IsoTimestamp; // timeFirstCompleted
     };
   };
   penaltyEndTime: number | null;
@@ -27,10 +28,12 @@ interface ProgressStateData {
 }
 
 interface ProgressActions {
-  completeSection: (lessonId: string, sectionId: string) => Promise<void>; // Now async
-  isSectionComplete: (lessonId: string, sectionId: string) => boolean;
-  getCompletedSections: (lessonId: string) => { [sectionId: string]: string };
-  resetLessonProgress: (lessonId: string) => void;
+  completeSection: (lessonId: LessonId, sectionId: SectionId) => Promise<void>; // Now async
+  isSectionComplete: (lessonId: LessonId, sectionId: SectionId) => boolean;
+  getCompletedSections: (lessonId: LessonId) => {
+    [sectionId: SectionId]: string;
+  };
+  resetLessonProgress: (lessonId: LessonId) => void;
   resetAllProgress: () => void; // Should also clear offline queue
   startPenalty: () => void;
   clearPenalty: () => void;
@@ -57,7 +60,7 @@ const createUserSpecificStorage = (baseKey: string): StateStorage => {
     const authState = useAuthStore.getState();
     const userId =
       authState.isAuthenticated && authState.user
-        ? authState.user.id
+        ? authState.user.userId
         : ANONYMOUS_USER_ID_PLACEHOLDER;
     return `${userId}_${baseKey}`;
   };
@@ -351,8 +354,8 @@ export const useProgressStore = create<ProgressState>()(
 export const useProgressActions = () =>
   useProgressStore((state) => state.actions);
 export const useCompletedSectionsForLesson = (
-  lessonId: string | undefined
-): { [sectionId: string]: string } =>
+  lessonId: LessonId | undefined
+): { [sectionId: SectionId]: IsoTimestamp } =>
   useProgressStore((state) =>
     lessonId
       ? state.completion[lessonId] || EMPTY_COMPLETED_SECTIONS

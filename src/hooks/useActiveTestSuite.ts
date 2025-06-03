@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { usePyodide } from "../contexts/PyodideContext";
 import { loadProgress, saveProgress } from "../lib/localStorageUtils"; // ANONYMOUS_USER_ID_PLACEHOLDER is used internally by localStorageUtils if userId is null/undefined
+import { UserId } from "../types/data";
 
 const ACTIVE_TESTS_STORAGE_KEY = "codeEditorPage_activeTests_v3";
 
@@ -29,7 +30,7 @@ const extractTestFunctionName = (code: string): string | null => {
 
 // Add currentStorageUserId as a parameter to the hook
 export const useActiveTestSuite = (
-  currentStorageUserId: string | null | undefined
+  currentStorageUserId: UserId | null | undefined
 ) => {
   const [activeTests, setActiveTests] = useState<ActiveTest[]>(
     () =>

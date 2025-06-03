@@ -1,5 +1,7 @@
+import { UserId } from "../types/data";
+
 // src/lib/localStorageUtils.ts
-export const ANONYMOUS_USER_ID_PLACEHOLDER = "anonymous";
+export const ANONYMOUS_USER_ID_PLACEHOLDER = "anonymous" as UserId;
 
 /**
  * Constructs the full localStorage key.
@@ -9,7 +11,7 @@ export const ANONYMOUS_USER_ID_PLACEHOLDER = "anonymous";
  * @returns The full key to be used for localStorage.
  */
 function getFullStorageKey(
-  userId: string | null | undefined,
+  userId: UserId | null | undefined,
   subKey: string
 ): string {
   const prefix = userId ? `${userId}_` : `${ANONYMOUS_USER_ID_PLACEHOLDER}_`;
@@ -17,7 +19,7 @@ function getFullStorageKey(
 }
 
 export function saveProgress<T>(
-  userId: string | null | undefined,
+  userId: UserId | null | undefined,
   subKey: string,
   data: T
 ): void {
@@ -36,7 +38,7 @@ export function saveProgress<T>(
 }
 
 export function loadProgress<T>(
-  userId: string | null | undefined,
+  userId: UserId | null | undefined,
   subKey: string
 ): T | null {
   try {
@@ -79,7 +81,7 @@ export function clearAllAnonymousData(): void {
  * Migrates all anonymous data to a specified user ID.
  * Copies data to new user-specific keys and then removes the old anonymous keys.
  */
-export function migrateAnonymousDataToUser(newUserId: string): {
+export function migrateAnonymousDataToUser(newUserId: UserId): {
   success: boolean;
   error?: string;
   migratedSubKeys: string[];

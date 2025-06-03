@@ -9,6 +9,7 @@ import type {
   EnhancedPRIMMExampleUserState,
   SavedEnhancedPRIMMSectionState,
   AssessmentLevel,
+  LessonId,
 } from "../../types/data";
 import type { PrimmEvaluationRequest } from "../../types/apiServiceTypes";
 
@@ -31,7 +32,7 @@ const CONFIDENCE_OPTIONS: { value: number; label: string }[] = [
 
 interface PRIMMSectionProps {
   section: PRIMMSectionData;
-  lessonId: string;
+  lessonId: LessonId;
 }
 
 const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {

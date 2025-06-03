@@ -2,6 +2,7 @@ import type { CoverageSectionData, Lesson } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Code Coverage and Execution Paths",
+  guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98",
   description:
     "Learn to understand how code executes by exploring different execution paths through a program.",
   sections: [

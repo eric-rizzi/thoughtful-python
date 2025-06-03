@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Grocery Lists",
+  guid: "c3aa36b7-5c56-476f-a38f-2a9fd39e08eb",
   description: 'Compare "real world" lists with their Python equivalent.',
   sections: [
     {

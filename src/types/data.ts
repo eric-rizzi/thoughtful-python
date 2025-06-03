@@ -4,6 +4,13 @@ import { PrimmEvaluationResponse } from "./apiServiceTypes";
 
 // --- Base Structures ---
 
+export type UserId = string & { readonly __brand: "UserId" };
+export type IsoTimestamp = string & { readonly __brand: "IsoTimestamp" };
+
+export type UnitId = string & { readonly __brand: "UnitId" };
+export type LessonId = string & { readonly __brand: "LessonId" };
+export type SectionId = string & { readonly __brand: "SectionId" };
+
 export interface LessonExample {
   id: string;
   title: string;
@@ -22,7 +29,7 @@ export interface TestingExample extends LessonExample {
 
 export interface LessonSection {
   kind: SectionKind;
-  id: string;
+  id: SectionId;
   title: string;
   content: string;
 }
@@ -259,16 +266,22 @@ export type AnyLessonSectionData =
   | PRIMMSectionData;
 
 export interface Lesson {
+  guid: LessonId;
   title: string;
   description: string;
   sections: LessonSection[];
 }
 
+export interface LessonReference {
+  guid: LessonId;
+  path: string;
+}
+
 export interface Unit {
-  id: string;
+  id: UnitId;
   title: string;
   description: string;
-  lessons: string[]; // Array of lesson IDs (e.g., "lesson_1")
+  lessons: LessonReference[];
   image?: string;
 }
 

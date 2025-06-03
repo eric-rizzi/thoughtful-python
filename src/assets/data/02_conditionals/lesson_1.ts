@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Basic Conditionals",
+  guid: "77d6e706-4068-41cc-abf6-f435f6aca538",
   description:
     "Explore `if`/`else` statements, comparison operators, and string methods like `.lower()` through a password checking example.",
   sections: [

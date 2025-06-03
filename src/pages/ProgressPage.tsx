@@ -7,18 +7,18 @@ import {
   getRequiredSectionsForLesson,
 } from "../lib/dataLoader";
 import { useAllCompletions } from "../stores/progressStore";
-import type { Lesson } from "../types/data";
+import type { Lesson, LessonId, UnitId } from "../types/data";
 import styles from "./ProgressPage.module.css";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 interface LessonCompletionStatus {
-  lessonId: string;
+  lessonId: LessonId;
   title: string;
   isCompleted: boolean;
 }
 
 interface UnitProgress {
-  unitId: string;
+  unitId: UnitId;
   title: string;
   lessons: LessonCompletionStatus[];
 }

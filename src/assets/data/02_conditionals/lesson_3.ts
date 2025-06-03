@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Nested Conditionals",
+  guid: "cbf11a92-aefe-422f-8e71-0245e5c13e43",
   description:
     "Learn how to create multiple execution paths using nested `if`/`else` statements.",
   sections: [

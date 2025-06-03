@@ -6,6 +6,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Conditionals Review",
+  guid: "a001f2f7-66ad-4799-af46-a4acbf8f1098",
   description:
     "Reflect on key concepts related to `if`, `else`, `elif`, and nested conditionals.",
   sections: [

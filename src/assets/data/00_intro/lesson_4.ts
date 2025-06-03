@@ -2,6 +2,7 @@ import type { Lesson, ObservationSectionData } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Data Structures",
+  guid: "14f3ba03-2020-44e6-b68d-ae8dde46da7e",
   description:
     "Learn about the main data structures in Python: lists, tuples, dictionaries, and sets.",
   sections: [

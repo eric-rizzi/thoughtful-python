@@ -2,14 +2,17 @@
 import React, { useCallback, useMemo } from "react"; // Added useMemo
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { PredictionSection as PredictionSectionData } from "../../types/data";
+import type {
+  LessonId,
+  PredictionSection as PredictionSectionData,
+} from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import CodeEditor from "../CodeEditor";
 
 interface PredictionSectionProps {
   section: PredictionSectionData;
-  lessonId: string;
+  lessonId: LessonId;
 }
 
 interface PredictionsMap {

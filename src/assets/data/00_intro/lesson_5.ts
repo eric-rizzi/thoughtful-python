@@ -6,6 +6,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Python Knowledge Quiz",
+  guid: "3ad2a551-618e-4398-918a-02342f824ab1",
   description:
     "Test your knowledge of Python fundamentals with this interactive quiz.",
   sections: [

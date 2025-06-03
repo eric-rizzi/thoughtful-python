@@ -7,6 +7,7 @@ import type {
   SavedCoverageState,
   InputParam,
   CoverageChallenge,
+  LessonId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
@@ -15,7 +16,7 @@ import { useSectionProgress } from "../../hooks/useSectionProgress";
 
 interface CoverageSectionProps {
   section: CoverageSectionData;
-  lessonId: string;
+  lessonId: LessonId;
 }
 
 const CoverageSection: React.FC<CoverageSectionProps> = ({

@@ -9,13 +9,15 @@ import { BASE_PROGRESS_STORE_KEY, useProgressStore } from "./progressStore";
 import { API_GATEWAY_BASE_URL } from "../config";
 import * as apiService from "../lib/apiService";
 import {
+  AuthToken,
   BatchCompletionsInput,
   SectionCompletionInput,
   UserProgressData,
 } from "../types/apiServiceTypes";
+import { IsoTimestamp, SectionId, UserId } from "../types/data";
 
 export interface UserProfile {
-  id: string; // e.g., Google User ID (sub)
+  userId: UserId; // e.g., Google User ID (sub)
   name?: string;
   email?: string;
   picture?: string;
@@ -24,7 +26,7 @@ export interface UserProfile {
 interface AuthState {
   isAuthenticated: boolean;
   user: UserProfile | null;
-  idToken: string | null; // Google ID Token
+  idToken: AuthToken | null; // Google ID Token
   actions: {
     login: (userProfile: UserProfile, idToken: string) => Promise<void>;
     logout: () => Promise<void>;
@@ -43,10 +45,10 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       ...initialAuthState,
       actions: {
-        login: async (userProfile: UserProfile, idToken: string) => {
+        login: async (userProfile: UserProfile, idToken: AuthToken) => {
           console.log(
             "[AuthStore] Login action started for user:",
-            userProfile.id
+            userProfile.userId
           );
 
           // 1. Read anonymous progress into memory
@@ -62,7 +64,7 @@ export const useAuthStore = create<AuthState>()(
                 for (const lessonId in anonymousProgressData.state.completion) {
                   const sections =
                     (anonymousProgressData.state.completion[lessonId] as {
-                      [sectionId: string]: string;
+                      [sectionId: SectionId]: IsoTimestamp;
                     }) || {};
                   Object.keys(sections).forEach((sectionId) => {
                     claimedAnonymousProgressActions.push({
@@ -89,7 +91,7 @@ export const useAuthStore = create<AuthState>()(
 
           const apiGatewayUrl = API_GATEWAY_BASE_URL;
           let finalProgressToPersist: UserProgressData = {
-            userId: userProfile.id,
+            userId: userProfile.userId,
             completion: {},
           };
 
@@ -98,7 +100,7 @@ export const useAuthStore = create<AuthState>()(
             try {
               console.log(
                 "[AuthStore] Fetching initial server progress for user:",
-                userProfile.id
+                userProfile.userId
               );
               finalProgressToPersist = await apiService.getUserProgress(
                 idToken,
@@ -189,9 +191,9 @@ export const useAuthStore = create<AuthState>()(
           console.log("[AuthStore] Logout action started.");
           const previousUser = get().user;
           set({ ...initialAuthState });
-          if (previousUser && previousUser.id) {
+          if (previousUser && previousUser.userId) {
             console.log(
-              `[AuthStore] User ${previousUser.id} logged out. Their specific progress data remains in localStorage.`
+              `[AuthStore] User ${previousUser.userId} logged out. Their specific progress data remains in localStorage.`
             );
           }
           console.log(

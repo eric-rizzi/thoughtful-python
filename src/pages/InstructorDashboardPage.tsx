@@ -9,7 +9,7 @@ import type {
   StudentLessonProgressItem, // This will be a computed display model client-side
   // DisplayableStudentUnitProgress, // This will be computed client-side
 } from "../types/apiServiceTypes";
-import type { Unit, Lesson } from "../types/data";
+import type { Unit, Lesson, LessonId, UserId, UnitId } from "../types/data";
 import {
   fetchUnitsData,
   fetchLessonData,
@@ -21,14 +21,14 @@ import styles from "./InstructorDashboardPage.module.css";
 
 // Client-side computed structure for display
 interface DisplayableStudentUnitProgress {
-  studentId: string;
+  studentId: UserId;
   studentName?: string | null;
   lessonsProgress: StudentLessonProgressItem[];
   overallUnitCompletionPercent: number;
 }
 
 interface ClientClassLessonSummary {
-  lessonId: string;
+  lessonId: LessonId;
   lessonTitle: string;
   averageCompletionPercent: number;
   numStudentsAttempted: number;
@@ -46,7 +46,7 @@ const InstructorDashboardPage: React.FC = () => {
   const [studentsError, setStudentsError] = useState<string | null>(null);
 
   const [allUnits, setAllUnits] = useState<Unit[]>([]);
-  const [selectedUnitId, setSelectedUnitId] = useState<string>("");
+  const [selectedUnitId, setSelectedUnitId] = useState<UnitId>("" as UnitId);
   const [selectedUnitObject, setSelectedUnitObject] = useState<Unit | null>(
     null
   ); // Store the whole unit object
@@ -138,8 +138,8 @@ const InstructorDashboardPage: React.FC = () => {
         }
         setSelectedUnitObject(currentUnitData);
 
-        const lessonPromises = currentUnitData.lessons.map((lessonPath) =>
-          fetchLessonData(lessonPath)
+        const lessonPromises = currentUnitData.lessons.map((lessonReference) =>
+          fetchLessonData(lessonReference.guid)
         );
         const lessonsForUnit = (await Promise.all(lessonPromises)).filter(
           (l) => l !== null
@@ -182,7 +182,7 @@ const InstructorDashboardPage: React.FC = () => {
                 const totalRequiredInLesson = requiredSections.length;
 
                 const completedSectionsMapForLesson =
-                  studentData.completedSectionsInUnit[lesson.title] || {};
+                  studentData.completedSectionsInUnit[lesson.guid] || {};
                 const completedInLessonCount = Object.keys(
                   completedSectionsMapForLesson
                 ).length;
@@ -204,7 +204,7 @@ const InstructorDashboardPage: React.FC = () => {
                     : 0; // If no required sections, consider it 100%
 
                 return {
-                  lessonId: lesson.title,
+                  lessonId: lesson.guid,
                   lessonTitle: lesson.title,
                   completionPercent: parseFloat(completionPercent.toFixed(1)),
                   isCompleted: completionPercent >= 100,
@@ -313,7 +313,7 @@ const InstructorDashboardPage: React.FC = () => {
         }
       });
       return {
-        lessonId: lesson.title,
+        lessonId: lesson.guid,
         lessonTitle: lesson.title,
         averageCompletionPercent:
           validStudentProgressCount > 0

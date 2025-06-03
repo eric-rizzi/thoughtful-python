@@ -7,12 +7,13 @@ import {
   ANONYMOUS_USER_ID_PLACEHOLDER,
 } from "../lib/localStorageUtils";
 import { useAuthStore } from "../stores/authStore";
+import { LessonId, SectionId } from "../types/data";
 
 interface UseInteractiveExampleProps {
   exampleId: string;
   initialCode: string;
-  lessonId: string;
-  sectionId: string;
+  lessonId: LessonId;
+  sectionId: SectionId;
   persistCode?: boolean;
   storageKeyPrefix?: string;
 }

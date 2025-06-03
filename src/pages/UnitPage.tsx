@@ -8,7 +8,7 @@ import {
   fetchLessonData,
   getRequiredSectionsForLesson,
 } from "../lib/dataLoader";
-import type { Unit, Lesson } from "../types/data";
+import type { Unit, Lesson, UnitId, LessonId } from "../types/data";
 import styles from "./UnitPage.module.css";
 import { useAllCompletions } from "../stores/progressStore";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -19,9 +19,9 @@ type CompletionStatus = {
 };
 
 const UnitPage: React.FC = () => {
-  const { unitId } = useParams<{ unitId: string }>();
+  const { unitId } = useParams<{ unitId: UnitId }>();
   const [unit, setUnit] = useState<Unit | null>(null);
-  const [lessonsData, setLessonsData] = useState<Map<string, Lesson | null>>(
+  const [lessonsData, setLessonsData] = useState<Map<LessonId, Lesson | null>>(
     new Map()
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -49,24 +49,31 @@ const UnitPage: React.FC = () => {
         setUnit(fetchedUnit);
         document.title = `${fetchedUnit.title} - Python Lessons`;
 
-        const lessonPromises = fetchedUnit.lessons.map((lessonId) =>
-          fetchLessonData(lessonId)
+        const lessonPromises = fetchedUnit.lessons.map((lessonReference) =>
+          fetchLessonData(lessonReference.guid)
             .then((data) => ({
-              id: lessonId,
+              guid: lessonReference.guid,
               status: "fulfilled",
               value: data,
             }))
-            .catch((err) => ({ id: lessonId, status: "rejected", reason: err }))
+            .catch((err) => ({
+              guid: lessonReference.guid,
+              status: "rejected",
+              reason: err,
+            }))
         );
 
         const results = await Promise.all(lessonPromises);
-        const loadedLessons = new Map<string, Lesson | null>();
+        const loadedLessons = new Map<LessonId, Lesson | null>();
         results.forEach((result) => {
           if (result.status === "fulfilled") {
-            loadedLessons.set(result.id, result.value);
+            loadedLessons.set(result.guid, result.value);
           } else {
-            console.error(`Failed to load lesson ${result.id}:`, result.reason);
-            loadedLessons.set(result.id, null);
+            console.error(
+              `Failed to load lesson ${result.guid}:`,
+              result.reason
+            );
+            loadedLessons.set(result.guid, null);
           }
         });
         setLessonsData(loadedLessons);
@@ -85,23 +92,23 @@ const UnitPage: React.FC = () => {
   }, [unitId]);
 
   const lessonStatuses = useMemo(() => {
-    const statuses = new Map<string, CompletionStatus>();
+    const statuses = new Map<LessonId, CompletionStatus>();
     if (unit) {
-      unit.lessons.forEach((lessonId) => {
+      unit.lessons.forEach((lessonReference) => {
         let status: CompletionStatus = {
           text: "Loading info...",
           class: "not-started",
         };
-        const lesson = lessonsData.get(lessonId);
+        const lesson = lessonsData.get(lessonReference.guid);
 
         if (lesson === null) {
           status = { text: "Info unavailable", class: "not-started" };
         } else if (lesson) {
           try {
             let completedSectionsForThisLesson = new Set<string>();
-            if (allCompletions && lessonId in allCompletions) {
+            if (allCompletions && lessonReference.guid in allCompletions) {
               completedSectionsForThisLesson = new Set(
-                Object.keys(allCompletions[lessonId])
+                Object.keys(allCompletions[lessonReference.guid])
               );
             }
             const requiredSections = getRequiredSectionsForLesson(lesson);
@@ -128,11 +135,14 @@ const UnitPage: React.FC = () => {
               }
             }
           } catch (e) {
-            console.error(`Error calculating status for ${lessonId}:`, e);
+            console.error(
+              `Error calculating status for ${lessonReference.guid}:`,
+              e
+            );
             status = { text: "Status Error", class: "not-started" };
           }
         }
-        statuses.set(lessonId, status);
+        statuses.set(lessonReference.guid, status);
       });
     }
     return statuses;
@@ -178,9 +188,9 @@ const UnitPage: React.FC = () => {
         </p>
       </div>
       <div className={styles.lessonsList}>
-        {unit.lessons.map((lessonPath, index) => {
-          const lesson = lessonsData.get(lessonPath);
-          const status = lessonStatuses.get(lessonPath) || {
+        {unit.lessons.map((lessonReference, index) => {
+          const lesson = lessonsData.get(lessonReference.guid);
+          const status = lessonStatuses.get(lessonReference.guid) || {
             text: "Loading...",
             class: "not-started",
           };
@@ -188,20 +198,20 @@ const UnitPage: React.FC = () => {
           if (lesson === null) {
             return (
               <div
-                key={lessonPath}
+                key={lessonReference.guid}
                 className={`${styles.lessonCard} ${styles.lessonCardError}`}
               >
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>Lesson Unavailable</h3>
                 <p className={styles.lessonDescription}>
-                  Could not load data for {lessonPath}.
+                  Could not load data for {lessonReference.guid}.
                 </p>
               </div>
             );
           }
           if (!lesson) {
             return (
-              <div key={lessonPath} className={styles.lessonCard}>
+              <div key={lessonReference.guid} className={styles.lessonCard}>
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>Loading...</h3>
               </div>
@@ -210,8 +220,8 @@ const UnitPage: React.FC = () => {
 
           return (
             <Link
-              to={`/lesson/${lessonPath}`}
-              key={lessonPath}
+              to={`/lesson/${lessonReference.guid}`}
+              key={lessonReference.guid}
               className={styles.lessonCardLink}
             >
               <div className={styles.lessonCard}>

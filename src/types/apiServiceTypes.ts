@@ -1,16 +1,25 @@
-import { AssessmentLevel } from "./data";
+import {
+  AssessmentLevel,
+  SectionId,
+  LessonId,
+  UnitId,
+  UserId,
+  IsoTimestamp,
+} from "./data";
+
+export type AuthToken = string & { readonly __brand: "AuthToken" };
 
 export interface SectionCompletionInput {
-  lessonId: string;
-  sectionId: string;
+  lessonId: LessonId;
+  sectionId: SectionId;
 }
 
 export interface UserProgressData {
-  userId: string; // Server will derive this from the token and include it in response
+  userId: UserId; // Server will derive this from the token and include it in response
   completion: {
-    [lessonId: string]: {
+    [lessonId: LessonId]: {
       // Key is lessonId
-      [sectionId: string]: string; // Key is sectionId, value is timeFirstCompleted (string)
+      [sectionId: SectionId]: IsoTimestamp; // Key is sectionId, value is timeFirstCompleted (string)
     };
   };
 }
@@ -45,13 +54,13 @@ export interface ReflectionInteractionInput {
  */
 export interface ReflectionVersionItem {
   versionId: string; // e.g., "v_1685000000000_abc123" or the composite SK
-  userId: string;
-  lessonId: string;
-  sectionId: string;
+  userId: UserId;
+  lessonId: LessonId;
+  sectionId: SectionId;
   userTopic: string; // Content submitted by the user for this version
   userCode: string; // Content submitted by the user for this version
   userExplanation: string; // Content submitted by the user for this version
-  createdAt: string; // ISO 8601 date-time string
+  createdAt: IsoTimestamp; // ISO 8601 date-time string
   isFinal: boolean; // True if this is a finalized learning entry
 
   // These are populated for drafts (isFinal: false) after AI feedback.
@@ -68,7 +77,7 @@ export interface ReflectionVersionItem {
   // This field is primarily for DynamoDB GSI use and might not always be present
   // in API responses unless specifically projected/needed by the client for that view.
   // Your ReflectionVersionItem in Swagger didn't explicitly list it.
-  finalEntryCreatedAt?: string | null;
+  finalEntryCreatedAt?: IsoTimestamp | null;
 }
 
 /**
@@ -93,8 +102,8 @@ export interface ListOfFinalLearningEntriesResponse {
 }
 
 export interface PrimmEvaluationRequest {
-  lessonId: string;
-  sectionId: string;
+  lessonId: LessonId;
+  sectionId: SectionId;
   primmExampleId: string;
   codeSnippet: string;
   userPredictionPromptText: string; // The prompt shown to the user
@@ -122,17 +131,17 @@ export interface ListOfInstructorStudentsResponse {
 }
 
 export interface StudentUnitCompletionData {
-  studentId: string;
+  studentId: UserId;
   // studentName?: string | null; // Optional: server could still provide this if easily available
   completedSectionsInUnit: {
     // Key is full lessonId (e.g., "00_intro/lesson_1")
-    [lessonId: string]: { [sectionId: string]: string };
+    [lessonId: LessonId]: { [sectionId: SectionId]: IsoTimestamp };
   };
 }
 
 // Response from the new batch progress endpoint
 export interface ClassUnitProgressResponse {
-  unitId: string;
+  unitId: UnitId;
   // unitTitle?: string; // Optional: client can get this from its own data
   studentProgressData: StudentUnitCompletionData[];
   // lastEvaluatedKey for paginating students if needed in the future
@@ -140,7 +149,7 @@ export interface ClassUnitProgressResponse {
 
 // Keep these for the table rendering logic (they are client-side display models)
 export interface StudentLessonProgressItem {
-  lessonId: string;
+  lessonId: LessonId;
   lessonTitle: string;
   completionPercent: number;
   isCompleted: boolean;
@@ -152,7 +161,7 @@ export interface DisplayableStudentUnitProgress {
   // This is what the client will compute and use for the table rows
   studentId: string;
   studentName?: string | null;
-  unitId: string;
+  unitId: UnitId;
   unitTitle: string;
   lessonsProgress: StudentLessonProgressItem[];
   overallUnitCompletionPercent: number;

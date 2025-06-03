@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import type {
   TurtleSection as TurtleSectionData,
   JsTurtleCommand,
+  LessonId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
@@ -231,7 +232,7 @@ json.dumps(_js_turtle_commands_)
 
 const TurtleSection: React.FC<{
   section: TurtleSectionData;
-  lessonId: string;
+  lessonId: LessonId;
 }> = ({ section, lessonId }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const jsTurtleRef = useRef<RealTurtleInstance | null>(null);

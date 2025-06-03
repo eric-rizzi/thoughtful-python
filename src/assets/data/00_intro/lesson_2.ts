@@ -1,4 +1,5 @@
 import type {
+  InformationSectionData,
   Lesson,
   ObservationSectionData,
   TestingSectionData,
@@ -6,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Functions and Temperature Conversion",
+  guid: "65ddff46-b4af-4443-ac0a-5b6a714e405e",
   description:
     "Learn how to create and use functions in Python, with a focus on converting temperatures between Celsius and Fahrenheit.",
   sections: [
@@ -15,7 +17,7 @@ const lessonData: Lesson = {
       title: "Introduction",
       content:
         "In this lesson, you'll learn how to create and use functions in Python. Functions allow us to organize code into reusable blocks that perform specific tasks.",
-    },
+    } as InformationSectionData,
     {
       kind: "Observation",
       id: "functions",
@@ -96,7 +98,7 @@ const lessonData: Lesson = {
       title: "Understanding Testing",
       content:
         'Testing is a crucial part of software development. When you click the "Test Solution" button, our system will run your function with various inputs and check if the outputs match the expected results.\n\nThe test cases include:\n- Standard temperatures (freezing point, boiling point)\n- Body temperature\n- Negative temperatures\n- Edge cases\n\nYour function should handle all these cases correctly to pass the tests.',
-    },
+    } as InformationSectionData,
   ],
 };
 

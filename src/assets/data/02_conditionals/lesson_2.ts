@@ -7,6 +7,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Debugging Conditionals",
+  guid: "0f92c4de-ca4d-49f8-af65-7f9843f50341",
   description:
     "Learn to identify and fix common syntax errors related to conditional statements.",
   sections: [

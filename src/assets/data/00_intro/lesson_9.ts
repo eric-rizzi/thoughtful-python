@@ -6,6 +6,7 @@ import type {
 
 const lessonData: Lesson = {
   title: "Intro to Debugging",
+  guid: "09289f01-6463-4420-8b74-2146850a28cf",
   description:
     "Learn to use the interactive debugger to step through your Python code, inspect variables, and understand execution flow.",
   sections: [
