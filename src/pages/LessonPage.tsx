@@ -141,7 +141,11 @@ const LessonPage: React.FC = () => {
     if (!completedSectionsMap) {
       return new Set<SectionId>();
     }
-    return new Set<SectionId>(Object.keys(completedSectionsMap));
+    const sectionIdStrings: string[] = Object.keys(completedSectionsMap);
+    const sectionIds: SectionId[] = sectionIdStrings.map(
+      (key) => key as SectionId
+    );
+    return new Set<SectionId>(sectionIds);
   }, [completedSectionsMap]);
 
   const informationSections: Set<SectionId> = useMemo(() => {
