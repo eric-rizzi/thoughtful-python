@@ -85,11 +85,11 @@ const HomePage: React.FC = () => {
               </div>
               <div className={styles.unitContent}>
                 <h3 className={styles.unitTitle}>{unit.title}</h3>
-                <p className={styles.unitDescription}>
+                <div className={styles.unitDescription}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {unit.description}
                   </ReactMarkdown>
-                </p>
+                </div>
                 <div className={styles.unitDetails}>
                   <div className={styles.unitLessons}>
                     {unit.lessons.length} lessons

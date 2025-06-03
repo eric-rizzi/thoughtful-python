@@ -9,6 +9,7 @@ export type IsoTimestamp = string & { readonly __brand: "IsoTimestamp" };
 
 export type UnitId = string & { readonly __brand: "UnitId" };
 export type LessonId = string & { readonly __brand: "LessonId" };
+export type LessonPath = string & { readonly __brand: "LessonPath" };
 export type SectionId = string & { readonly __brand: "SectionId" };
 
 export interface LessonExample {
@@ -274,7 +275,7 @@ export interface Lesson {
 
 export interface LessonReference {
   guid: LessonId;
-  path: string;
+  path: LessonPath;
 }
 
 export interface Unit {

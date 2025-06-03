@@ -101,7 +101,7 @@ export async function getUserProgress(
 }
 
 export async function updateUserProgress(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string,
   batchInput: BatchCompletionsInput
 ): Promise<UserProgressData> {
@@ -204,8 +204,7 @@ export async function submitReflectionInteraction(
   if (!idToken) throw new ApiError("Authentication token is required.", 401);
   if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
 
-  const lessonIdNoSlash = lessonId.replace("/", "-");
-  const endpoint = `${apiGatewayUrl}/reflections/${lessonIdNoSlash}/sections/${sectionId}`;
+  const endpoint = `${apiGatewayUrl}/reflections/${lessonId}/sections/${sectionId}`;
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -307,8 +306,7 @@ export async function getReflectionDraftVersions(
   if (!idToken) throw new ApiError("Authentication token is required.", 401);
   if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
 
-  const lessonIdNoSlash = lessonId.replace("/", "-");
-  const endpoint = `${apiGatewayUrl}/reflections/${lessonIdNoSlash}/sections/${sectionId}`;
+  const endpoint = `${apiGatewayUrl}/reflections/${lessonId}/sections/${sectionId}`;
   const response = await fetch(endpoint, {
     method: "GET",
     headers: {
@@ -415,7 +413,7 @@ export async function getFinalizedLearningEntries(
 }
 
 export async function submitPrimmEvaluation(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string,
   payload: PrimmEvaluationRequest
 ): Promise<PrimmEvaluationResponse> {
@@ -503,7 +501,7 @@ export async function submitPrimmEvaluation(
 }
 
 export async function getInstructorPermittedStudents(
-  idToken: string,
+  idToken: AuthToken,
   apiGatewayUrl: string
 ): Promise<ListOfInstructorStudentsResponse> {
   if (USE_MOCKED_API) {
@@ -511,13 +509,16 @@ export async function getInstructorPermittedStudents(
     await mockApiDelay();
     const mockStudents: InstructorStudentInfo[] = [
       {
-        studentId: "USER#student_alpha_123",
+        studentId: "USER#student_alpha_123" as UserId,
         studentName: "Alpha Armstrong",
         studentEmail: "alpha@example.com",
       },
-      { studentId: "USER#student_beta_456", studentName: "Beta Bronson" },
       {
-        studentId: "USER#student_gamma_789",
+        studentId: "USER#student_beta_456" as UserId,
+        studentName: "Beta Bronson",
+      },
+      {
+        studentId: "USER#student_gamma_789" as UserId,
         studentEmail: "gamma@example.com",
       },
     ];
@@ -570,7 +571,7 @@ export async function getInstructorClassUnitProgress(
   idToken: AuthToken,
   apiGatewayUrl: string,
   unitId: UnitId,
-  studentIds: string[] // Optional: Server could get permitted students itself, or client sends IDs
+  studentIds: UserId[] // Optional: Server could get permitted students itself, or client sends IDs
 ): Promise<ClassUnitProgressResponse> {
   // For this version, let's assume the server will determine permitted students based on the instructor's idToken.
   // If you wanted client to send studentIds, you'd add it to query params or request body (if POST).

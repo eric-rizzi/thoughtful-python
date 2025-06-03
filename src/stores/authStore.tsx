@@ -28,9 +28,9 @@ interface AuthState {
   user: UserProfile | null;
   idToken: AuthToken | null; // Google ID Token
   actions: {
-    login: (userProfile: UserProfile, idToken: string) => Promise<void>;
+    login: (userProfile: UserProfile, idToken: AuthToken) => Promise<void>;
     logout: () => Promise<void>;
-    getIdToken: () => string | null;
+    getIdToken: () => AuthToken | null;
   };
 }
 

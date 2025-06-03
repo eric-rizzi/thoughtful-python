@@ -50,7 +50,7 @@ const UnitPage: React.FC = () => {
         document.title = `${fetchedUnit.title} - Python Lessons`;
 
         const lessonPromises = fetchedUnit.lessons.map((lessonReference) =>
-          fetchLessonData(lessonReference.guid)
+          fetchLessonData(lessonReference.path)
             .then((data) => ({
               guid: lessonReference.guid,
               status: "fulfilled",
@@ -181,11 +181,11 @@ const UnitPage: React.FC = () => {
       </Link>
       <div className={styles.unitHeader}>
         <h2 className={styles.unitTitle}>{unit.title}</h2>
-        <p className={styles.unitDescription}>
+        <div className={styles.unitDescription}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {unit.description}
           </ReactMarkdown>
-        </p>
+        </div>
       </div>
       <div className={styles.lessonsList}>
         {unit.lessons.map((lessonReference, index) => {
@@ -220,18 +220,18 @@ const UnitPage: React.FC = () => {
 
           return (
             <Link
-              to={`/lesson/${lessonReference.guid}`}
+              to={`/lesson/${lessonReference.path}`}
               key={lessonReference.guid}
               className={styles.lessonCardLink}
             >
               <div className={styles.lessonCard}>
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>{lesson.title}</h3>
-                <p className={styles.lessonDescription}>
+                <div className={styles.lessonDescription}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {lesson.description}
                   </ReactMarkdown>
-                </p>
+                </div>
                 <div className={styles.lessonStatus}>
                   {status.class === "completed" ? (
                     <span

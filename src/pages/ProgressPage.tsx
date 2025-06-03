@@ -40,26 +40,29 @@ const ProgressPage: React.FC = () => {
         const fetchedUnits = unitsData.units;
 
         const unitProgressPromises = fetchedUnits.map(async (unit) => {
-          const lessonPromises = unit.lessons.map(async (lessonPath) => {
+          const lessonPromises = unit.lessons.map(async (lessonReference) => {
             let lesson: Lesson | null = null;
             try {
-              lesson = await fetchLessonData(lessonPath);
+              lesson = await fetchLessonData(lessonReference.guid);
             } catch (lessonError) {
               console.error(
-                `Failed to load lesson data for ${lessonPath}:`,
+                `Failed to load lesson data for ${lessonReference.guid}:`,
                 lessonError
               );
               return {
-                lessonId: lessonPath,
+                lessonId: lessonReference.guid,
                 title: `Lesson ${
-                  lessonPath.split("/").pop()?.replace("lesson_", "") || "N/A"
+                  lessonReference.path
+                    .split("/")
+                    .pop()
+                    ?.replace("lesson_", "") || "N/A"
                 } (Unavailable)`,
                 isCompleted: false,
               };
             }
 
             // Get completed sections for this specific lesson from the global store
-            const lessonProgressObject = allCompletions[lessonPath];
+            const lessonProgressObject = allCompletions[lessonReference.guid];
             const completedSectionsForLesson = new Set<string>(
               lessonProgressObject ? Object.keys(lessonProgressObject) : []
             );
@@ -74,11 +77,14 @@ const ProgressPage: React.FC = () => {
               );
 
             return {
-              lessonId: lessonPath,
+              lessonId: lessonReference.guid,
               title:
                 lesson?.title ||
                 `Lesson ${
-                  lessonPath.split("/").pop()?.replace("lesson_", "") || "N/A"
+                  lessonReference.path
+                    .split("/")
+                    .pop()
+                    ?.replace("lesson_", "") || "N/A"
                 }`,
               isCompleted: isLessonComplete,
             };

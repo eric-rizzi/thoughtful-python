@@ -44,8 +44,6 @@ const ActiveTestItem: React.FC<ActiveTestItemProps> = React.memo(
         {/* Make it read-only and provide a no-op onChange handler */}
         {/* Apply styling to control its appearance as a snippet */}
         <div className={styles.activeTestCodeSnippetWrapper}>
-          {" "}
-          {/* Added a wrapper for styling */}
           <CodeEditor
             value={test.code}
             readOnly={true}

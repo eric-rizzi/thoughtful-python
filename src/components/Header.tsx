@@ -1,6 +1,6 @@
 // src/components/Header.tsx
 import React from "react";
-import { NavLink } from "react-router-dom"; // Removed useLocation
+import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useAuthStore, useAuthActions } from "../stores/authStore";
 import {
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
         const decodedToken = JSON.parse(jsonPayload);
 
         const userProfile = {
-          id: decodedToken.sub, // Google User ID
+          userId: decodedToken.sub,
           name: decodedToken.name,
           email: decodedToken.email,
           picture: decodedToken.picture,

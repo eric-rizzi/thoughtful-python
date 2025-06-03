@@ -6,6 +6,7 @@ import type {
   LessonReference,
   AnyLessonSectionData,
   SectionId,
+  LessonPath,
 } from "../types/data";
 // Remove BASE_PATH if unitsData is imported directly, or ensure it's used correctly if units.ts is in public
 // import { BASE_PATH } from '../config';
@@ -23,7 +24,8 @@ const lessonFileModules = import.meta.glob("../assets/data/**/*.ts") as Record<
 
 // Caches to store loaded data and prevent redundant fetching
 let allUnitsCache: Unit[] | null = null;
-let lessonIdToPathMap: Map<LessonId, string> | null = null; // Maps LessonUUID to its FilePath
+let lessonIdToPathMap: Map<LessonId, LessonPath> | null = null; // Maps LessonUUID to its FilePath
+let lessonPathToIdMap: Map<LessonPath, LessonId> | null = null; // Maps LessonUUID to its FilePath
 const lessonContentCache: Map<LessonId, Lesson | null> = new Map(); // Maps LessonUUID to loaded Lesson object
 
 // Flag to ensure units data is processed only once
@@ -44,9 +46,9 @@ function processUnitsData(): void {
     console.log("Processing imported units.ts data...");
     // Define a more specific type for raw unit data for clarity, matching units.ts export
     // This assumes unitsDataFromTsModule is an array of RawUnit-like objects
-    type RawLessonIdentifier = { id: string; path: string };
+    type RawLessonIdentifier = { guid: LessonId; path: LessonPath };
     type RawUnit = {
-      id: string;
+      id: UnitId;
       title: string;
       description: string;
       image?: string;
@@ -55,19 +57,18 @@ function processUnitsData(): void {
     const rawUnits = unitsDataFromTsModule as RawUnit[]; // Cast the imported data
 
     const tempUnits: Unit[] = [];
-    const tempMap = new Map<LessonId, string>();
-    const seenLessonGUIDs = new Set<LessonId>();
-    const seenLessonPaths = new Set<string>();
+    const tempIdToPathMap = new Map<LessonId, LessonPath>();
+    const tempPathToIdMap = new Map<LessonPath, LessonId>();
     let hasDataIntegrityErrors = false;
 
     for (const rawUnit of rawUnits) {
       const lessonReferences: LessonReference[] = [];
       for (const lessonInfo of rawUnit.lessons || []) {
-        const lessonUUID = lessonInfo.guid as LessonId; // Cast to branded type
+        const lessonUUID = lessonInfo.guid;
         const lessonPath = lessonInfo.path;
 
         // 1. Check for duplicate LessonId GUIDs
-        if (seenLessonGUIDs.has(lessonUUID)) {
+        if (tempIdToPathMap.has(lessonUUID)) {
           console.error(
             `Data Integrity Error: Duplicate LessonId (GUID) found: '${lessonUUID}'. ` +
               `It's referenced for path '${lessonPath}' in unit '${rawUnit.id}', but was already seen. ` +
@@ -75,11 +76,10 @@ function processUnitsData(): void {
           );
           hasDataIntegrityErrors = true;
         } else {
-          seenLessonGUIDs.add(lessonUUID);
+          tempIdToPathMap.set(lessonUUID, lessonPath);
         }
 
-        // 2. Check for duplicate LessonPaths
-        if (seenLessonPaths.has(lessonPath)) {
+        if (tempPathToIdMap.has(lessonPath)) {
           console.error(
             `Data Integrity Error: Duplicate LessonPath found: '${lessonPath}'. ` +
               `It's referenced for LessonId (GUID) '${lessonUUID}' in unit '${rawUnit.id}', but this path was already mapped. ` +
@@ -87,20 +87,9 @@ function processUnitsData(): void {
           );
           hasDataIntegrityErrors = true;
         } else {
-          seenLessonPaths.add(lessonPath);
+          tempPathToIdMap.set(lessonPath, lessonUUID);
         }
 
-        if (!tempMap.has(lessonUUID)) {
-          tempMap.set(lessonUUID, lessonPath);
-        } else if (tempMap.get(lessonUUID) !== lessonPath) {
-          console.error(
-            `Data Integrity Error: LessonId (GUID) '${lessonUUID}' is mapped to multiple paths: ` +
-              `'${tempMap.get(
-                lessonUUID
-              )}' and '${lessonPath}'. GUIDs must map to a single path.`
-          );
-          hasDataIntegrityErrors = true;
-        }
         lessonReferences.push({ guid: lessonUUID, path: lessonPath });
       }
 
@@ -114,7 +103,9 @@ function processUnitsData(): void {
     }
 
     allUnitsCache = tempUnits;
-    lessonIdToPathMap = tempMap;
+    lessonIdToPathMap = tempIdToPathMap;
+    lessonPathToIdMap = tempPathToIdMap;
+
     unitsDataProcessed = true; // Mark as processed
     console.log(
       "units.ts data processed. Lesson ID (GUID) to Path map created."
@@ -161,26 +152,24 @@ export async function fetchUnitById(unitId: UnitId): Promise<Unit | null> {
 }
 
 export async function fetchLessonData(
-  lessonId: LessonId
+  lessonFilePath: LessonPath
 ): Promise<Lesson | null> {
   if (!unitsDataProcessed) await fetchUnitsData(); // Ensure map is populated
+
+  const lessonId = lessonPathToIdMap?.get(lessonFilePath);
+  if (!lessonId) {
+    console.error(
+      `No LessonId found for path (UUID): '${lessonFilePath}'. Check units.ts mapping.`
+    );
+    return null;
+  }
 
   if (lessonContentCache.has(lessonId)) {
     const cachedLesson = lessonContentCache.get(lessonId);
     return cachedLesson === undefined ? null : cachedLesson;
   }
 
-  const lessonFilePath = lessonIdToPathMap?.get(lessonId);
-  if (!lessonFilePath) {
-    console.error(
-      `No file path found for LessonId (UUID): '${lessonId}'. Check units.ts mapping.`
-    );
-    lessonContentCache.set(lessonId, null);
-    return null;
-  }
-
   const moduleKey = `../assets/data/${lessonFilePath}.ts`;
-
   if (lessonFileModules[moduleKey]) {
     try {
       const moduleLoader = lessonFileModules[moduleKey];

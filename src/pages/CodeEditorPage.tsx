@@ -20,7 +20,7 @@ const CodeEditorPage: React.FC = () => {
 
   const currentStorageUserId = useMemo(() => {
     return isAuthenticated && authUser
-      ? authUser.id
+      ? authUser.userId
       : ANONYMOUS_USER_ID_PLACEHOLDER;
   }, [isAuthenticated, authUser]);
 

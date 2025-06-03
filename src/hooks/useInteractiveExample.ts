@@ -38,7 +38,7 @@ export const useInteractiveExample = ({
   const currentStorageUserId = useMemo(() => {
     // Memoize to prevent unnecessary re-runs if called in deps
     return isAuthenticated && authUser
-      ? authUser.id
+      ? authUser.userId
       : ANONYMOUS_USER_ID_PLACEHOLDER;
   }, [isAuthenticated, authUser]);
 

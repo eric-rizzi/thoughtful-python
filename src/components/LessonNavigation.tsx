@@ -3,20 +3,19 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 // Import the new CSS Module
 import styles from "./LessonNavigation.module.css";
-import { LessonId } from "../types/data";
+import { LessonPath } from "../types/data";
 
 interface LessonNavigationProps {
-  lessonId: LessonId;
-  prevLessonId: LessonId | null;
-  nextLessonId: LessonId | null;
+  prevLessonPath: LessonPath | null;
+  nextLessonPath: LessonPath | null;
   currentPosition: number;
   totalInUnit: number;
 }
 
 const LessonNavigation: React.FC<LessonNavigationProps> = ({
   // lessonId,
-  prevLessonId,
-  nextLessonId,
+  prevLessonPath,
+  nextLessonPath,
   currentPosition,
   totalInUnit,
 }) => {
@@ -36,10 +35,10 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
   return (
     // Use the container class from the new CSS module
     <div className={styles.navigationContainer}>
-      {prevLessonId ? (
+      {prevLessonPath ? (
         <NavLink
           // Use path relative to basename
-          to={`/lesson/${prevLessonId}`}
+          to={`/lesson/${prevLessonPath}`}
           className={getNavLinkClass(true)}
           aria-label="Previous Lesson"
         >
@@ -54,10 +53,10 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
         Lesson {currentPosition} of {totalInUnit}
       </span>
 
-      {nextLessonId ? (
+      {nextLessonPath ? (
         <NavLink
           // Use path relative to basename
-          to={`/lesson/${nextLessonId}`}
+          to={`/lesson/${nextLessonPath}`}
           className={getNavLinkClass(true)}
           aria-label="Next Lesson"
         >

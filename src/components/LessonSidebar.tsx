@@ -1,12 +1,12 @@
 // src/components/LessonSidebar.tsx
 import React from "react";
-import type { LessonSection } from "../types/data";
+import type { LessonSection, SectionId } from "../types/data";
 import styles from "./LessonSidebar.module.css";
 
 interface LessonSidebarProps {
   sections: LessonSection[];
-  completedSections: Set<string>;
-  informationSections: Set<string>;
+  completedSections: Set<SectionId>; // FIXME: THIS SEEMS WRONG ... dict[LessonId: SectionId]?
+  informationSections: Set<SectionId>;
 
   // Optional: Add onClick handler for smooth scrolling later
   // onLinkClick?: (sectionId: string) => void;

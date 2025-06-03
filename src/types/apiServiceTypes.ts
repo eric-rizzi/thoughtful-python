@@ -120,7 +120,7 @@ export interface PrimmEvaluationResponse {
 }
 
 export interface InstructorStudentInfo {
-  studentId: string;
+  studentId: UserId;
   studentName?: string | null; // Optional, as it might not be available in POC
   studentEmail?: string | null; // Optional
 }

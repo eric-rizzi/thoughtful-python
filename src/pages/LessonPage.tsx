@@ -4,7 +4,15 @@ import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader";
-import type { Lesson, AnyLessonSectionData } from "../types/data";
+import type {
+  Lesson,
+  AnyLessonSectionData,
+  UnitId,
+  LessonReference,
+  LessonPath,
+  LessonId,
+  SectionId,
+} from "../types/data";
 
 import InformationSection from "../components/sections/InformationSection";
 import ObservationSection from "../components/sections/ObservationSection";
@@ -27,16 +35,17 @@ import { useCompletedSectionsForLesson } from "../stores/progressStore";
 
 const LessonPage: React.FC = () => {
   const params = useParams();
-  const lessonPath = params["*"];
+  const lessonPath: LessonPath = params["*"];
+  const lessonId: LessonId = "3c1e0332-e7ec-4e6a-b0c6-f9c9890999c5" as LessonId;
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [parentUnitId, setParentUnitId] = useState<string | null>(null);
-  const [unitLessons, setUnitLessons] = useState<string[]>([]);
+  const [parentUnitId, setParentUnitId] = useState<UnitId | null>(null);
+  const [unitLessons, setUnitLessons] = useState<LessonReference[]>([]);
   const [currentIndexInUnit, setCurrentIndexInUnit] = useState<number>(-1);
 
-  const completedSectionsMap = useCompletedSectionsForLesson(lessonPath);
+  const completedSectionsMap = useCompletedSectionsForLesson(lessonId);
 
   useEffect(() => {
     let isMounted = true;
@@ -67,12 +76,14 @@ const LessonPage: React.FC = () => {
         setLesson(fetchedLesson);
         document.title = `${fetchedLesson.title} - Python Lesson`;
 
-        let foundUnitLessons: string[] | null = null;
+        let foundUnitLessons: LessonReference[] | null = null;
         let foundIndex = -1;
-        let foundUnitId: string | null = null;
+        let foundUnitId: UnitId | null = null;
 
         for (const unit of unitsData.units) {
-          const index = unit.lessons.indexOf(lessonPath);
+          const index = unit.lessons.findIndex(
+            (lessonRef) => lessonRef.path === lessonPath
+          );
           if (index !== -1) {
             foundUnitLessons = unit.lessons;
             foundIndex = index;
@@ -109,23 +120,23 @@ const LessonPage: React.FC = () => {
     };
   }, [lessonPath]);
 
-  const completedSectionsSet = useMemo(() => {
+  const completedSectionsSet: Set<SectionId> = useMemo(() => {
     if (!completedSectionsMap) {
-      return new Set<string>();
+      return new Set<SectionId>();
     }
-    return new Set(Object.keys(completedSectionsMap));
+    return new Set<SectionId>(Object.keys(completedSectionsMap));
   }, [completedSectionsMap]);
 
-  const informationSections: Set<string> = useMemo(() => {
-    if (!lesson) return new Set<string>();
+  const informationSections: Set<SectionId> = useMemo(() => {
+    if (!lesson) return new Set<SectionId>();
     return new Set(
       lesson.sections.filter((s) => s.kind === "Information").map((s) => s.id)
     );
   }, [lesson]);
 
-  const prevLessonId =
+  const prevLessonReference =
     currentIndexInUnit > 0 ? unitLessons[currentIndexInUnit - 1] : null;
-  const nextLessonId =
+  const nextLessonReference =
     currentIndexInUnit !== -1 && currentIndexInUnit < unitLessons.length - 1
       ? unitLessons[currentIndexInUnit + 1]
       : null;
@@ -133,7 +144,7 @@ const LessonPage: React.FC = () => {
   const totalLessonsInUnit = unitLessons.length;
 
   const renderSection = (sectionData: AnyLessonSectionData) => {
-    const currentLessonId = lessonPath || "unknown";
+    const currentLessonId = lessonId || ("unknown" as LessonId);
     switch (sectionData.kind) {
       case "Information":
         return (
@@ -289,9 +300,8 @@ const LessonPage: React.FC = () => {
           </h1>
           {totalLessonsInUnit > 0 && (
             <LessonNavigation
-              lessonId={lessonPath!}
-              prevLessonId={prevLessonId}
-              nextLessonId={nextLessonId}
+              prevLessonPath={prevLessonReference?.path}
+              nextLessonPath={nextLessonReference?.path}
               currentPosition={currentPositionInUnit}
               totalInUnit={totalLessonsInUnit}
             />
@@ -312,9 +322,8 @@ const LessonPage: React.FC = () => {
           >
             <div style={{ flexGrow: 1 }}></div>
             <LessonNavigation
-              lessonId={lessonPath!}
-              prevLessonId={prevLessonId}
-              nextLessonId={nextLessonId}
+              prevLessonPath={prevLessonReference?.path}
+              nextLessonPath={nextLessonReference?.path}
               currentPosition={currentPositionInUnit}
               totalInUnit={totalLessonsInUnit}
             />

@@ -7,6 +7,7 @@ import * as apiService from "../lib/apiService";
 import { ReflectionVersionItem } from "../types/apiServiceTypes";
 import { API_GATEWAY_BASE_URL } from "../config";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { IsoTimestamp } from "../types/data";
 
 const LearningEntriesPage: React.FC = () => {
   const [finalEntries, setFinalEntries] = useState<ReflectionVersionItem[]>([]);
@@ -56,7 +57,7 @@ const LearningEntriesPage: React.FC = () => {
     fetchEntries();
   }, [idToken, apiGatewayUrl, isAuthenticated]);
 
-  const formatDate = (timestamp: string | undefined): string =>
+  const formatDate = (timestamp: IsoTimestamp | undefined): string =>
     timestamp ? new Date(timestamp).toLocaleString() : "N/A";
 
   const getTopicNameForDisplay = (topicValue: string | undefined): string => {

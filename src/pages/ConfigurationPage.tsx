@@ -24,7 +24,9 @@ const ConfigurationPage: React.FC = () => {
 
   // Determine the current user ID for localStorage operations
   const currentStorageUserId =
-    isAuthenticated && authUser ? authUser.id : ANONYMOUS_USER_ID_PLACEHOLDER;
+    isAuthenticated && authUser
+      ? authUser.userId
+      : ANONYMOUS_USER_ID_PLACEHOLDER;
 
   // Load saved display name on component mount or when user changes
   useEffect(() => {
@@ -84,14 +86,6 @@ const ConfigurationPage: React.FC = () => {
             </small>
           </div>
         </div>
-
-        {/* Removed API Gateway URL input section.
-          The URL is now set in src/config.ts.
-        */}
-
-        {/* Removed ChatBot Configuration section.
-          API Key and Model are now managed server-side.
-        */}
 
         <button type="submit" className={styles.saveButton}>
           Save Configuration
