@@ -151,6 +151,13 @@ export async function fetchUnitById(unitId: UnitId): Promise<Unit | null> {
   return allUnitsCache?.find((unit) => unit.id === unitId) || null;
 }
 
+export async function getLessonGuidByPath(
+  lessonPath: LessonPath
+): Promise<LessonId | null> {
+  if (!unitsDataProcessed) await fetchUnitsData(); // Ensure maps are populated
+  return lessonPathToIdMap?.get(lessonPath) || null;
+}
+
 export async function fetchLessonData(
   lessonFilePath: LessonPath
 ): Promise<Lesson | null> {

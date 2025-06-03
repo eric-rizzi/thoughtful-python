@@ -3,7 +3,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { fetchLessonData, fetchUnitsData } from "../lib/dataLoader";
+import {
+  fetchLessonData,
+  fetchUnitsData,
+  getLessonGuidByPath,
+} from "../lib/dataLoader";
 import type {
   Lesson,
   AnyLessonSectionData,
@@ -35,17 +39,17 @@ import { useCompletedSectionsForLesson } from "../stores/progressStore";
 
 const LessonPage: React.FC = () => {
   const params = useParams();
-  const lessonPath: LessonPath = params["*"];
-  const lessonId: LessonId = "3c1e0332-e7ec-4e6a-b0c6-f9c9890999c5" as LessonId;
+  const lessonPath = params["*"] as LessonPath;
 
-  const [lesson, setLesson] = useState<Lesson | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [parentUnitId, setParentUnitId] = useState<UnitId | null>(null);
+  const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [lessonGuid, setLessonGuid] = useState<LessonId | null>(null); // State for the resolved GUID
   const [unitLessons, setUnitLessons] = useState<LessonReference[]>([]);
   const [currentIndexInUnit, setCurrentIndexInUnit] = useState<number>(-1);
+  const [parentUnitId, setParentUnitId] = useState<UnitId | null>(null);
 
-  const completedSectionsMap = useCompletedSectionsForLesson(lessonId);
+  const completedSectionsMap = useCompletedSectionsForLesson(lessonGuid);
 
   useEffect(() => {
     let isMounted = true;
@@ -61,11 +65,24 @@ const LessonPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       setLesson(null);
+      setLessonGuid(null);
       setUnitLessons([]);
       setCurrentIndexInUnit(-1);
       setParentUnitId(null);
 
       try {
+        const guid = await getLessonGuidByPath(lessonPath);
+        if (!isMounted) return;
+
+        if (!guid) {
+          setError(
+            `Lesson not found for path: '${lessonPath}'. Please check the URL or units configuration.`
+          );
+          setIsLoading(false);
+          return;
+        }
+
+        setLessonGuid(guid);
         const [fetchedLesson, unitsData] = await Promise.all([
           fetchLessonData(lessonPath),
           fetchUnitsData(),
@@ -144,7 +161,7 @@ const LessonPage: React.FC = () => {
   const totalLessonsInUnit = unitLessons.length;
 
   const renderSection = (sectionData: AnyLessonSectionData) => {
-    const currentLessonId = lessonId || ("unknown" as LessonId);
+    const currentLessonGuid = lessonGuid || ("unknown" as LessonId);
     switch (sectionData.kind) {
       case "Information":
         return (
@@ -154,7 +171,7 @@ const LessonPage: React.FC = () => {
         return (
           <ObservationSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -162,7 +179,7 @@ const LessonPage: React.FC = () => {
         return (
           <TestingSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -170,7 +187,7 @@ const LessonPage: React.FC = () => {
         return (
           <PredictionSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -178,7 +195,7 @@ const LessonPage: React.FC = () => {
         return (
           <MultipleChoiceSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -186,7 +203,7 @@ const LessonPage: React.FC = () => {
         return (
           <MultipleSelectionSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -194,7 +211,7 @@ const LessonPage: React.FC = () => {
         return (
           <TurtleSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -202,7 +219,7 @@ const LessonPage: React.FC = () => {
         return (
           <ReflectionSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -210,7 +227,7 @@ const LessonPage: React.FC = () => {
         return (
           <CoverageSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
@@ -218,7 +235,7 @@ const LessonPage: React.FC = () => {
         return (
           <PRIMMSection
             key={sectionData.id}
-            lessonId={currentLessonId}
+            lessonId={currentLessonGuid}
             section={sectionData}
           />
         );
