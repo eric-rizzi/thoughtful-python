@@ -11,8 +11,8 @@ import type {
   PrimmEvaluationResponse,
   InstructorStudentInfo,
   ListOfInstructorStudentsResponse,
-  StudentUnitProgressResponse,
-  ClassUnitSummaryResponse,
+  ClassUnitProgressResponse,
+  StudentUnitCompletionData,
 } from "../types/apiServiceTypes";
 import { AssessmentLevel } from "../types/data";
 
@@ -556,76 +556,65 @@ export async function getInstructorPermittedStudents(
   return response.json() as Promise<ListOfInstructorStudentsResponse>;
 }
 
-export async function getInstructorStudentUnitProgress(
+export async function getInstructorClassUnitProgress(
   idToken: string,
   apiGatewayUrl: string,
-  studentId: string,
-  unitId: string
-): Promise<StudentUnitProgressResponse> {
+  unitId: string,
+  studentIds: string[] // Optional: Server could get permitted students itself, or client sends IDs
+): Promise<ClassUnitProgressResponse> {
+  // For this version, let's assume the server will determine permitted students based on the instructor's idToken.
+  // If you wanted client to send studentIds, you'd add it to query params or request body (if POST).
+  // For a GET, usually it's query params. e.g. ?studentIds=id1,id2,id3
+
   if (USE_MOCKED_API) {
     console.log(
-      `MOCKED API [getInstructorStudentUnitProgress]: studentId: ${studentId}, unitId: ${unitId}`
+      `MOCKED API [getInstructorClassUnitProgress]: unitId: ${unitId}, for ${studentIds.length} students`
     );
-    await mockApiDelay();
-    // Simulate varied progress for different students/units for testing
-    const randomSeed = (studentId.length + unitId.length) % 3;
-    const overallPercent = 30 + randomSeed * 25; // e.g., 30%, 55%, 80%
+    await mockApiDelay(800);
 
-    const mockProgress: StudentUnitProgressResponse = {
-      studentId,
-      unitId,
-      unitTitle: `Mocked ${unitId.replace("_", " ")} Title`,
-      overallUnitCompletionPercent: overallPercent,
-      lessonsProgress: [
-        // Assume 2-3 lessons per unit for mock
-        {
-          lessonId: `${unitId}/lesson_1`,
-          lessonTitle: "Lesson 1 Title",
-          completionPercent: Math.min(
-            100,
-            overallPercent + 10 + randomSeed * 10
-          ),
-          isCompleted: overallPercent > 80,
-          completedSectionsCount: 3,
-          totalRequiredSectionsInLesson: 4,
-        },
-        {
-          lessonId: `${unitId}/lesson_2`,
-          lessonTitle: "Lesson 2 Title",
-          completionPercent: Math.min(100, overallPercent - 5 + randomSeed * 5),
-          isCompleted: overallPercent > 90,
-          completedSectionsCount: 2,
-          totalRequiredSectionsInLesson: 3,
-        },
-        {
-          lessonId: `${unitId}/lesson_3`,
-          lessonTitle: "Lesson 3 Title",
-          completionPercent: Math.max(0, overallPercent - 20),
-          isCompleted: overallPercent > 95,
-          completedSectionsCount: 1,
-          totalRequiredSectionsInLesson: 5,
-        },
-      ],
-    };
-    if (studentId.includes("gamma")) {
-      // Example: Make one student have less progress
-      mockProgress.overallUnitCompletionPercent = 20;
-      mockProgress.lessonsProgress.forEach(
-        (lp) => (lp.completionPercent = Math.max(0, lp.completionPercent - 30))
-      );
-    }
-    return Promise.resolve(mockProgress);
+    const mockStudentProgressData: StudentUnitCompletionData[] = studentIds.map(
+      (sId) => {
+        const seed = (sId.length + unitId.length) % 4;
+        return {
+          studentId: sId,
+          completedSectionsInUnit: {
+            [`${unitId}/lesson_1`]:
+              seed > 0
+                ? { section_a: "2025-06-01", section_b: "2025-06-02" }
+                : { section_a: "2025-06-03" },
+            [`${unitId}/lesson_2`]:
+              seed > 1
+                ? {
+                    section_c: "2025-06-01",
+                    section_d: "2025-06-01",
+                    section_e: "2025-06-01",
+                  }
+                : seed > 0
+                ? { section_c: "2025-06-01" }
+                : {},
+            [`${unitId}/lesson_3`]: seed > 2 ? { section_f: "2025-06-01" } : {},
+          },
+        };
+      }
+    );
+
+    return Promise.resolve({
+      unitId: unitId,
+      studentProgressData: mockStudentProgressData,
+    });
   }
 
   // Real API call logic
   if (!idToken) throw new ApiError("Authentication token is required.", 401);
   if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
+  if (!unitId) throw new ApiError("Unit ID is required.", 400);
 
-  // Path from your Swagger for specific student unit progress
-  const endpoint = `${apiGatewayUrl}/instructor/students/${studentId}/units/${unitId}/progress`;
+  // The server-side lambda for this endpoint will use the instructor's ID (from idToken)
+  // to fetch their permitted students and then get progress for those students for the given unitId.
+  const endpoint = `${apiGatewayUrl}/instructor/units/${unitId}/class-progress`;
 
   console.log(
-    `LIVE API [getInstructorStudentUnitProgress]: Calling GET ${endpoint}`
+    `LIVE API [getInstructorClassUnitProgress]: Calling GET ${endpoint}`
   );
   const response = await fetch(endpoint, {
     method: "GET",
@@ -650,10 +639,10 @@ export async function getInstructorStudentUnitProgress(
       /* ignore */
     }
     console.error(
-      `LIVE API [getInstructorStudentUnitProgress]: Error ${response.status}`,
+      `LIVE API [getInstructorClassUnitProgress]: Error ${response.status}`,
       errorData
     );
     throw new ApiError(errorData.message, response.status, errorData);
   }
-  return response.json() as Promise<StudentUnitProgressResponse>;
+  return response.json() as Promise<ClassUnitProgressResponse>;
 }

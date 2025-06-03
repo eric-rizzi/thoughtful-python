@@ -121,6 +121,24 @@ export interface ListOfInstructorStudentsResponse {
   // lastEvaluatedKey?: Record<string, any> | null; // For future pagination if the list becomes very long
 }
 
+export interface StudentUnitCompletionData {
+  studentId: string;
+  // studentName?: string | null; // Optional: server could still provide this if easily available
+  completedSectionsInUnit: {
+    // Key is full lessonId (e.g., "00_intro/lesson_1")
+    [lessonId: string]: { [sectionId: string]: string };
+  };
+}
+
+// Response from the new batch progress endpoint
+export interface ClassUnitProgressResponse {
+  unitId: string;
+  // unitTitle?: string; // Optional: client can get this from its own data
+  studentProgressData: StudentUnitCompletionData[];
+  // lastEvaluatedKey for paginating students if needed in the future
+}
+
+// Keep these for the table rendering logic (they are client-side display models)
 export interface StudentLessonProgressItem {
   lessonId: string;
   lessonTitle: string;
@@ -130,29 +148,14 @@ export interface StudentLessonProgressItem {
   totalRequiredSectionsInLesson: number;
 }
 
-export interface StudentUnitProgressResponse {
+export interface DisplayableStudentUnitProgress {
+  // This is what the client will compute and use for the table rows
   studentId: string;
   studentName?: string | null;
   unitId: string;
   unitTitle: string;
   lessonsProgress: StudentLessonProgressItem[];
   overallUnitCompletionPercent: number;
-}
-
-// For the "At-a-Glance" summary (if fetched from a dedicated endpoint later)
-export interface ClassLessonSummaryItem {
-  lessonId: string;
-  lessonTitle: string;
-  averageCompletionPercent: number;
-  studentsAttemptedCount: number;
-  studentsCompletedCount: number;
-}
-
-export interface ClassUnitSummaryResponse {
-  unitId: string;
-  unitTitle: string;
-  totalStudentsInView: number;
-  lessonSummaries: ClassLessonSummaryItem[];
 }
 
 // You would also keep your existing types like:
