@@ -170,12 +170,12 @@ export interface DisplayableStudentUnitProgress {
 }
 
 export interface StoredPrimmSubmissionItem {
-  userId: string;
+  userId: UserId;
   submissionCompositeKey: string; // Sort Key: lessonId#sectionId#primmExampleId#timestampIso
-  lessonId: string; // GUID
-  sectionId: string;
+  lessonId: LessonId;
+  sectionId: SectionId;
   primmExampleId: string;
-  timestampIso: string;
+  timestampIso: IsoTimestamp;
   codeSnippet: string;
   userPredictionPromptText: string;
   userPredictionText: string;
