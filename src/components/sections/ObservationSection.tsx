@@ -5,6 +5,7 @@ import type {
   LessonExample,
   SectionId,
   LessonId,
+  UnitId,
 } from "../../types/data";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -14,16 +15,18 @@ import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface ObservationSectionProps {
-  section: LessonSection; // Expects a generic LessonSection, but examples are key
+  unitId: UnitId;
   lessonId: LessonId;
+  section: LessonSection;
 }
 
 // Helper component for each example to use the hook
 const ObservationExample: React.FC<{
   example: LessonExample;
+  unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
-}> = ({ example, lessonId, sectionId }) => {
+}> = ({ example, unitId, lessonId, sectionId }) => {
   const { completeSection } = useProgressActions();
   const exampleHook = useInteractiveExample({
     exampleId: example.id,
@@ -40,7 +43,7 @@ const ObservationExample: React.FC<{
       console.log(
         `Observation section ${sectionId} - example ${example.id} run successfully. Marking complete.`
       );
-      completeSection(lessonId, sectionId);
+      completeSection(unitId, lessonId, sectionId);
     }
     return result;
   };
@@ -56,6 +59,7 @@ const ObservationExample: React.FC<{
 
 const ObservationSection: React.FC<ObservationSectionProps> = ({
   section,
+  unitId,
   lessonId,
 }) => {
   const currentSingleExample = section.example;
@@ -73,6 +77,7 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({
         <ObservationExample
           key={currentSingleExample.id}
           example={currentSingleExample}
+          unitId={unitId}
           lessonId={lessonId}
           sectionId={section.id}
         />

@@ -3,43 +3,64 @@ import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import { useAuthStore } from "./authStore"; // To get idToken for API calls
 import * as apiService from "../lib/apiService"; // Your API service
 import type {
-  SectionCompletionInput,
+  SectionCompletionInput as ApiSectionCompletionInput, // Renaming to avoid conflict if we redefine locally
   UserProgressData,
 } from "../types/apiServiceTypes";
 import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 import { API_GATEWAY_BASE_URL } from "../config";
-import { IsoTimestamp, LessonId, SectionId } from "../types/data";
+import { IsoTimestamp, LessonId, SectionId, UnitId } from "../types/data";
 
-export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v2"; // Make sure this is exported
+export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v3"; // Incremented version due to structure change
+
+// Define SectionCompletionInput to include unitId, as it's needed for store and potentially API
+interface SectionCompletionInput extends ApiSectionCompletionInput {
+  unitId: UnitId; // Ensure this is part of the action data
+  // lessonId and sectionId are already in ApiSectionCompletionInput
+}
 
 const EMPTY_COMPLETED_SECTIONS: { [sectionId: SectionId]: IsoTimestamp } = {};
 const PENALTY_DURATION_MS = 15 * 1000;
 
 interface ProgressStateData {
   completion: {
-    [lessonId: LessonId]: {
-      [sectionId: SectionId]: IsoTimestamp; // timeFirstCompleted
+    [unitId: UnitId]: {
+      [lessonId: LessonId]: {
+        // lessonId here is the GUID
+        [sectionId: SectionId]: IsoTimestamp; // timestamp string
+      };
     };
   };
   penaltyEndTime: number | null;
-  offlineActionQueue: SectionCompletionInput[]; // To store actions made while offline
-  isSyncing: boolean; // True if a sync operation with the server is in progress
-  lastSyncError: string | null; // Stores the last error message from a sync attempt
+  offlineActionQueue: SectionCompletionInput[]; // Now uses the extended SectionCompletionInput
+  isSyncing: boolean;
+  lastSyncError: string | null;
 }
 
 interface ProgressActions {
-  completeSection: (lessonId: LessonId, sectionId: SectionId) => Promise<void>; // Now async
-  isSectionComplete: (lessonId: LessonId, sectionId: SectionId) => boolean;
-  getCompletedSections: (lessonId: LessonId) => {
-    [sectionId: SectionId]: string;
+  completeSection: (
+    unitId: UnitId,
+    lessonId: LessonId,
+    sectionId: SectionId
+  ) => Promise<void>;
+  isSectionComplete: (
+    unitId: UnitId,
+    lessonId: LessonId,
+    sectionId: SectionId
+  ) => boolean;
+  getCompletedSections: (
+    // Returns sections for a specific lesson within a unit
+    unitId: UnitId,
+    lessonId: LessonId
+  ) => {
+    [sectionId: SectionId]: IsoTimestamp;
   };
-  resetLessonProgress: (lessonId: LessonId) => void;
-  resetAllProgress: () => void; // Should also clear offline queue
+  resetLessonProgress: (unitId: UnitId, lessonId: LessonId) => void;
+  resetAllProgress: () => void;
   startPenalty: () => void;
   clearPenalty: () => void;
-  setServerProgress: (serverData: UserProgressData) => void; // New action
-  processOfflineQueue: () => Promise<void>; // New action
-  _addToOfflineQueue: (action: SectionCompletionInput) => void; // Internal helper
+  setServerProgress: (serverData: UserProgressData) => void;
+  processOfflineQueue: () => Promise<void>;
+  _addToOfflineQueue: (action: SectionCompletionInput) => void;
 }
 
 interface ProgressState extends ProgressStateData {
@@ -54,7 +75,6 @@ const initialProgressData: ProgressStateData = {
   lastSyncError: null,
 };
 
-// createUserSpecificStorage (assuming it's defined as in your existing code)
 const createUserSpecificStorage = (baseKey: string): StateStorage => {
   const getEffectiveKey = (): string => {
     const authState = useAuthStore.getState();
@@ -79,138 +99,180 @@ export const useProgressStore = create<ProgressState>()(
         _addToOfflineQueue: (action) => {
           set((state) => ({
             offlineActionQueue: [...state.offlineActionQueue, action],
-            lastSyncError: null, // Clear previous error when new action is queued
+            lastSyncError: null,
           }));
         },
-        completeSection: async (lessonId, sectionId) => {
-          // Correctly get current completions for the lesson as an object
-          const currentLessonCompletions = get().completion[lessonId] || {};
+        completeSection: async (unitId, lessonId, sectionId) => {
+          const currentUnitCompletions = get().completion[unitId] || {};
+          const currentLessonCompletions =
+            currentUnitCompletions[lessonId] || {};
 
           if (currentLessonCompletions[sectionId]) {
-            // Check if the sectionId key exists
             console.log(
-              `[ProgressStore] Section ${lessonId}/${sectionId} already complete locally with timestamp: ${currentLessonCompletions[sectionId]}.`
+              `[ProgressStore] Section ${unitId}/${lessonId}/${sectionId} already complete locally.`
             );
             return;
           }
 
-          const optimisticTimestamp = new Date().toISOString(); // Use a real ISO timestamp
+          const optimisticTimestamp = new Date().toISOString() as IsoTimestamp;
 
-          // Optimistic local update - THIS IS THE CORRECTED PART
-          set((state) => ({
-            completion: {
-              ...state.completion,
-              [lessonId]: {
-                ...(state.completion[lessonId] || {}), // Spread existing sections for this lesson
-                [sectionId]: optimisticTimestamp, // Correctly use dynamic sectionId as key
-              },
-            },
-            lastSyncError: null,
-          }));
+          // Corrected optimistic local update for nested structure
+          set((state) => {
+            const newCompletion = { ...state.completion }; // Top level copy
+            if (!newCompletion[unitId]) {
+              newCompletion[unitId] = {};
+            }
+            const unitCompletion = { ...newCompletion[unitId] }; // Copy unit level
+            if (!unitCompletion[lessonId]) {
+              unitCompletion[lessonId] = {};
+            }
+            const lessonCompletion = { ...unitCompletion[lessonId] }; // Copy lesson level
+
+            lessonCompletion[sectionId] = optimisticTimestamp; // Update section
+            unitCompletion[lessonId] = lessonCompletion;
+            newCompletion[unitId] = unitCompletion;
+
+            return {
+              completion: newCompletion,
+              lastSyncError: null,
+            };
+          });
           console.log(
-            `[ProgressStore] Optimistically completed ${lessonId}/${sectionId} locally at ${optimisticTimestamp}.`
+            `[ProgressStore] Optimistically completed ${unitId}/${lessonId}/${sectionId} locally.`
           );
 
           const { isAuthenticated, actions: authActions } =
             useAuthStore.getState();
           if (!isAuthenticated) {
-            console.log(
-              "[ProgressStore] User not authenticated. Local optimistic update for anonymous user is done."
-            );
+            console.log("[ProgressStore] Anonymous user. Local update done.");
             return;
           }
 
-          const actionToSync: SectionCompletionInput = { lessonId, sectionId };
+          // Ensure actionToSync includes unitId if your API and SectionCompletionInput type expect it
+          const actionToSync: SectionCompletionInput = {
+            unitId, // Included unitId
+            lessonId,
+            sectionId,
+            // If your server's SectionCompletionInput doesn't expect unitId (derives it from lessonId),
+            // then create a separate type for the API payload. For now, assume it's useful.
+          };
 
           if (navigator.onLine) {
             try {
               const idToken = authActions.getIdToken();
-              const apiGatewayUrl = API_GATEWAY_BASE_URL; // Using fixed URL from config
+              const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
               if (idToken && apiGatewayUrl) {
                 console.log(
-                  `[ProgressStore] Attempting to sync completion: ${lessonId}/${sectionId}`
+                  `[ProgressStore] Syncing: ${unitId}/${lessonId}/${sectionId}`
                 );
+                // The API payload for updateUserProgress might only need lessonId and sectionId,
+                // if the server can derive unitId from lessonId (GUID).
+                // Adjust the payload based on what apiService.updateUserProgress expects.
+                // For this example, assuming it takes SectionCompletionInput which now includes unitId.
                 const serverResponseState = await apiService.updateUserProgress(
                   idToken,
                   apiGatewayUrl,
-                  {
-                    completions: [actionToSync],
-                  }
+                  { completions: [actionToSync] } // Send as batch of one
                 );
                 console.log(
-                  `[ProgressStore] Successfully synced completion: ${lessonId}/${sectionId}. Server state:`,
-                  serverResponseState
+                  `[ProgressStore] Synced: ${unitId}/${lessonId}/${sectionId}.`
                 );
-
-                // Crucial: Update local state with the authoritative state from the server
-                // This ensures server timestamps are reflected and reconciles any differences.
                 get().actions.setServerProgress(serverResponseState);
               } else {
-                throw new Error(
-                  "Missing token or API URL for authenticated sync. Queuing action."
-                );
+                throw new Error("Missing token/API URL. Queuing action.");
               }
             } catch (error) {
               console.error(
-                `[ProgressStore] Failed to sync completion ${lessonId}/${sectionId}:`,
+                `[ProgressStore] Sync failed for ${unitId}/${lessonId}/${sectionId}:`,
                 error
               );
-              get().actions._addToOfflineQueue(actionToSync); // Use the internal action
+              get().actions._addToOfflineQueue(actionToSync);
               set({
-                // Update lastSyncError through set for reactivity
                 lastSyncError:
                   error instanceof Error ? error.message : String(error),
               });
             }
           } else {
             console.log(
-              `[ProgressStore] App is offline. Queuing completion: ${lessonId}/${sectionId}`
+              `[ProgressStore] Offline. Queuing: ${unitId}/${lessonId}/${sectionId}`
             );
             get().actions._addToOfflineQueue(actionToSync);
           }
         },
         setServerProgress: (serverData) => {
           console.log(
-            "[ProgressStore] Setting/Merging progress from server data:",
+            "[ProgressStore] Setting/Merging from server:",
             serverData
           );
-
           set((state) => {
-            // Create a deep copy of the current completion state to avoid direct mutation issues
+            // Server data (UserProgressData) should also have the nested structure:
+            // { completion: { [unitId]: { [lessonId]: { [sectionId]: timestamp } } } }
             const newCompletionState = JSON.parse(
               JSON.stringify(state.completion)
             );
 
-            // Merge serverData into newCompletionState
-            // Server data is the source of truth for sections it knows about.
-            for (const lessonId in serverData.completion) {
-              if (!newCompletionState[lessonId]) {
-                newCompletionState[lessonId] = {};
-              }
-              for (const sectionId in serverData.completion[lessonId]) {
-                newCompletionState[lessonId][sectionId] =
-                  serverData.completion[lessonId][sectionId];
+            for (const unitIdStr in serverData.completion) {
+              const unitId = unitIdStr as UnitId;
+              if (
+                Object.prototype.hasOwnProperty.call(
+                  serverData.completion,
+                  unitId
+                )
+              ) {
+                const serverUnitCompletions = serverData.completion[unitId];
+                if (!newCompletionState[unitId])
+                  newCompletionState[unitId] = {};
+
+                for (const lessonIdStr in serverUnitCompletions) {
+                  const lessonId = lessonIdStr as LessonId;
+                  if (
+                    Object.prototype.hasOwnProperty.call(
+                      serverUnitCompletions,
+                      lessonId
+                    )
+                  ) {
+                    const serverLessonCompletions =
+                      serverUnitCompletions[lessonId];
+                    if (!newCompletionState[unitId][lessonId])
+                      newCompletionState[unitId][lessonId] = {};
+
+                    for (const sectionIdStr in serverLessonCompletions) {
+                      const sectionId = sectionIdStr as SectionId;
+                      if (
+                        Object.prototype.hasOwnProperty.call(
+                          serverLessonCompletions,
+                          sectionId
+                        )
+                      ) {
+                        // Server is truth for sections it knows about
+                        newCompletionState[unitId][lessonId][sectionId] =
+                          serverLessonCompletions[sectionId];
+                      }
+                    }
+                  }
+                }
               }
             }
 
-            // Filter offline queue: remove actions already covered by serverData
+            // Filter offline queue: remove actions now confirmed by serverData
             const updatedQueue = state.offlineActionQueue.filter((action) => {
-              const lessonCompletionsOnServer =
-                serverData.completion[action.lessonId] || {};
-              return !(action.sectionId in lessonCompletionsOnServer);
+              const serverUnit = serverData.completion[action.unitId];
+              if (!serverUnit) return true; // Unit not on server, keep action
+              const serverLesson = serverUnit[action.lessonId];
+              if (!serverLesson) return true; // Lesson not on server for this unit, keep action
+              return !(action.sectionId in serverLesson); // If section is now on server, remove from queue
             });
 
             return {
               completion: newCompletionState,
               offlineActionQueue: updatedQueue,
-              lastSyncError: null,
+              lastSyncError: null, // Sync was successful or merged
             };
           });
           console.log("[ProgressStore] Local state updated with server data.");
         },
         processOfflineQueue: async () => {
-          // ... (Ensure this method also uses API_GATEWAY_BASE_URL from config)
           const { isSyncing, offlineActionQueue } = get();
           const { isAuthenticated, actions: authActions } =
             useAuthStore.getState();
@@ -225,41 +287,38 @@ export const useProgressStore = create<ProgressState>()(
           }
 
           set({ isSyncing: true, lastSyncError: null });
-          const queueSnapshot = [...offlineActionQueue]; // Process a snapshot
+          const queueSnapshot = [...offlineActionQueue];
 
           try {
             const idToken = authActions.getIdToken();
-            const apiGatewayUrl = API_GATEWAY_BASE_URL; // Use fixed URL
+            const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
             if (idToken && apiGatewayUrl) {
+              // The items in queueSnapshot are SectionCompletionInput, which include unitId
               const serverResponseState = await apiService.updateUserProgress(
                 idToken,
                 apiGatewayUrl,
-                {
-                  completions: queueSnapshot,
-                }
+                { completions: queueSnapshot }
               );
-              console.log(
-                "[ProgressStore] Successfully synced offline queue batch to server."
-              );
+              console.log("[ProgressStore] Synced offline queue to server.");
+              get().actions.setServerProgress(serverResponseState); // This will also filter the queue
 
-              // Update local state with authoritative server state
-              get().actions.setServerProgress(serverResponseState);
-
-              // Remove only the successfully synced items from the main queue
-              // (setServerProgress might have already cleared some if they were in serverResponseState)
+              // Redundant filter after setServerProgress, but ensures only truly unsynced remain
+              // setServerProgress should ideally handle this fully.
+              // For safety, or if setServerProgress's queue filter is different:
               set((state) => ({
                 offlineActionQueue: state.offlineActionQueue.filter(
                   (item) =>
                     !queueSnapshot.some(
                       (syncedItem) =>
+                        syncedItem.unitId === item.unitId &&
                         syncedItem.lessonId === item.lessonId &&
                         syncedItem.sectionId === item.sectionId
                     )
                 ),
               }));
             } else {
-              throw new Error("Missing token or API URL for offline sync.");
+              throw new Error("Missing token/API URL for offline sync.");
             }
           } catch (error) {
             console.error(
@@ -274,39 +333,43 @@ export const useProgressStore = create<ProgressState>()(
             set({ isSyncing: false });
           }
         },
-        isSectionComplete: (lessonId, sectionId) => {
-          const lessonCompletion = get().completion[lessonId] || [];
-          return sectionId in lessonCompletion;
+        isSectionComplete: (unitId, lessonId, sectionId) => {
+          const unitCompletions = get().completion[unitId];
+          if (!unitCompletions) return false;
+          const lessonCompletions = unitCompletions[lessonId];
+          if (!lessonCompletions) return false;
+          return sectionId in lessonCompletions;
         },
-        getCompletedSections: (lessonId) => {
-          return get().completion[lessonId] || EMPTY_COMPLETED_SECTIONS;
+        getCompletedSections: (unitId, lessonId) => {
+          const unitCompletions = get().completion[unitId];
+          if (!unitCompletions) return EMPTY_COMPLETED_SECTIONS;
+          return unitCompletions[lessonId] || EMPTY_COMPLETED_SECTIONS;
         },
-        resetLessonProgress: (
-          lessonId // This should ideally also inform the server
-        ) =>
+        resetLessonProgress: (unitId, lessonId) =>
           set((state) => {
             const newCompletion = { ...state.completion };
-            delete newCompletion[lessonId];
-            // TODO: Add server call for reset if needed, or queue it.
-            // For now, local reset only.
+            if (newCompletion[unitId]) {
+              const unitCompletion = { ...newCompletion[unitId] };
+              delete unitCompletion[lessonId];
+              if (Object.keys(unitCompletion).length === 0) {
+                delete newCompletion[unitId]; // Clean up empty unit if no lessons left
+              } else {
+                newCompletion[unitId] = unitCompletion;
+              }
+            }
             console.warn(
-              `[ProgressStore] Local reset for lesson ${lessonId}. Server sync for reset not implemented.`
+              `[ProgressStore] Local reset for lesson ${unitId}/${lessonId}.`
             );
             return {
               completion: newCompletion,
-              // Also reset relevant items from offline queue for this lesson
               offlineActionQueue: state.offlineActionQueue.filter(
-                (act) => act.lessonId !== lessonId
+                (act) => !(act.unitId === unitId && act.lessonId === lessonId)
               ),
             };
           }),
         resetAllProgress: () => {
-          // This should also inform the server
-          set({ ...initialProgressData }); // Resets to initial state, including empty offline queue
-          // TODO: Add server call for full reset if needed.
-          console.warn(
-            "[ProgressStore] Local reset for all progress. Server sync for reset not implemented."
-          );
+          set({ ...initialProgressData, completion: {} }); // Ensure completion is also reset
+          console.warn("[ProgressStore] Local reset for all progress.");
         },
         startPenalty: () =>
           set({ penaltyEndTime: Date.now() + PENALTY_DURATION_MS }),
@@ -319,28 +382,19 @@ export const useProgressStore = create<ProgressState>()(
         createUserSpecificStorage(BASE_PROGRESS_STORE_KEY)
       ),
       partialize: (state) => ({
-        // Persist these fields
         completion: state.completion,
         penaltyEndTime: state.penaltyEndTime,
         offlineActionQueue: state.offlineActionQueue,
-        // Do not persist transient fields like isSyncing or lastSyncError directly if they should reset on load
-        // However, for lastSyncError, persisting it might be useful to show to the user on next load.
-        // Let's persist lastSyncError, but isSyncing should reset.
         lastSyncError: state.lastSyncError,
       }),
-      onRehydrateStorage: (state) => {
-        console.log("[ProgressStore] Hydration finished.");
+      onRehydrateStorage: () => {
         return (hydratedState, error) => {
           if (error) {
-            console.error(
-              "[ProgressStore] Error rehydrating progress store:",
-              error
-            );
+            console.error("[ProgressStore] Error rehydrating:", error);
           } else if (hydratedState) {
-            // Reset isSyncing to false on rehydration, as any sync would have been interrupted.
-            hydratedState.isSyncing = false;
+            hydratedState.isSyncing = false; // Always reset isSyncing on load
             console.log(
-              "[ProgressStore] Rehydrated state. isSyncing reset to false. Offline queue length:",
+              "[ProgressStore] Rehydrated. Offline queue:",
               hydratedState.offlineActionQueue?.length
             );
           }
@@ -353,14 +407,18 @@ export const useProgressStore = create<ProgressState>()(
 // Selectors
 export const useProgressActions = () =>
   useProgressStore((state) => state.actions);
+
 export const useCompletedSectionsForLesson = (
-  lessonId: LessonId | undefined
+  unitId: UnitId | undefined | null,
+  lessonId: LessonId | undefined | null
 ): { [sectionId: SectionId]: IsoTimestamp } =>
-  useProgressStore((state) =>
-    lessonId
-      ? state.completion[lessonId] || EMPTY_COMPLETED_SECTIONS
-      : EMPTY_COMPLETED_SECTIONS
-  );
+  useProgressStore((state) => {
+    if (!unitId || !lessonId) return EMPTY_COMPLETED_SECTIONS;
+    const unitCompletions = state.completion[unitId];
+    if (!unitCompletions) return EMPTY_COMPLETED_SECTIONS;
+    return unitCompletions[lessonId] || EMPTY_COMPLETED_SECTIONS;
+  });
+
 export const useAllCompletions = () =>
   useProgressStore((state) => state.completion);
 export const useIsPenaltyActive = (): boolean =>

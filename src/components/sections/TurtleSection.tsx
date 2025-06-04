@@ -3,9 +3,10 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
-  TurtleSection as TurtleSectionData,
+  TurtleSectionData,
   JsTurtleCommand,
   LessonId,
+  UnitId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
@@ -232,8 +233,9 @@ json.dumps(_js_turtle_commands_)
 
 const TurtleSection: React.FC<{
   section: TurtleSectionData;
+  unitId: UnitId;
   lessonId: LessonId;
-}> = ({ section, lessonId }) => {
+}> = ({ section, unitId, lessonId }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const jsTurtleRef = useRef<RealTurtleInstance | null>(null);
 
@@ -424,9 +426,9 @@ json.dumps(_js_turtle_commands_)
       type: isCorrect ? "correct" : "incorrect",
     });
     if (isCorrect) {
-      completeSection(lessonId, section.id);
+      completeSection(unitId, lessonId, section.id);
     }
-  }, [code, runCodeInternal, section, lessonId, completeSection]);
+  }, [code, runCodeInternal, section, unitId, lessonId, completeSection]);
 
   const compareJsTurtleCommandLists = (
     userCmds: JsTurtleCommand[],

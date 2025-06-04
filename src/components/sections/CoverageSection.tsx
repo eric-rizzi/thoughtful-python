@@ -8,6 +8,7 @@ import type {
   InputParam,
   CoverageChallenge,
   LessonId,
+  UnitId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
@@ -16,11 +17,13 @@ import { useSectionProgress } from "../../hooks/useSectionProgress";
 
 interface CoverageSectionProps {
   section: CoverageSectionData;
+  unitId: UnitId;
   lessonId: LessonId;
 }
 
 const CoverageSection: React.FC<CoverageSectionProps> = ({
   section,
+  unitId,
   lessonId,
 }) => {
   const {
@@ -29,7 +32,7 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
     error: pyodideError,
   } = usePyodide();
 
-  const storageKey = `coverageState_${lessonId}_${section.id}`;
+  const storageKey = `coverageState_${unitId}_${lessonId}_${section.id}`;
 
   // Initialize the state for the hook. Each challenge will have an entry.
   const initialHookState = useMemo((): SavedCoverageState => {
@@ -67,6 +70,7 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
     setCoverageHookState,
     isSectionComplete, // Boolean from the hook
   ] = useSectionProgress<SavedCoverageState>(
+    unitId,
     lessonId,
     section.id,
     storageKey,

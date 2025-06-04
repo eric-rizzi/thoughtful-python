@@ -2,16 +2,14 @@
 import React, { useCallback, useMemo } from "react"; // Added useMemo
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type {
-  LessonId,
-  PredictionSection as PredictionSectionData,
-} from "../../types/data";
+import type { LessonId, PredictionSectionData, UnitId } from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import CodeEditor from "../CodeEditor";
 
 interface PredictionSectionProps {
   section: PredictionSectionData;
+  unitId: UnitId;
   lessonId: LessonId;
 }
 
@@ -27,6 +25,7 @@ const STABLE_INITIAL_PREDICTIONS_MAP: PredictionsMap = {};
 
 const PredictionSection: React.FC<PredictionSectionProps> = ({
   section,
+  unitId,
   lessonId,
 }) => {
   const storageKey = `predictState_${lessonId}_${section.id}`;
@@ -49,6 +48,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
 
   const [predictions, setPredictions, isSectionComplete] =
     useSectionProgress<PredictionsMap>(
+      unitId,
       lessonId,
       section.id,
       storageKey,

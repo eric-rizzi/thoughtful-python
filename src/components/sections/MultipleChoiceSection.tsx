@@ -2,17 +2,23 @@
 import React, { useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { LessonId, MultipleChoiceSectionData } from "../../types/data";
+import type {
+  LessonId,
+  MultipleChoiceSectionData,
+  UnitId,
+} from "../../types/data";
 import styles from "./Section.module.css";
 import { useQuizLogic } from "../../hooks/useQuizLogic";
 
 interface MultipleChoiceSectionProps {
   section: MultipleChoiceSectionData;
+  unitId: UnitId;
   lessonId: LessonId;
 }
 
 const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
   section,
+  unitId,
   lessonId,
 }) => {
   const {
@@ -27,6 +33,7 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     handleTryAgain,
     canTryAgain,
   } = useQuizLogic({
+    unitId,
     lessonId,
     section,
     isMultiSelect: false, // Explicitly false for multiple choice

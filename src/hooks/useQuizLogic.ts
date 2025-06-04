@@ -10,6 +10,7 @@ import type {
   LessonId,
   MultipleChoiceSectionData,
   MultipleSelectionSectionData,
+  UnitId,
 } from "../types/data";
 
 // The state managed by useSectionProgress via this hook
@@ -20,17 +21,19 @@ export interface QuizLogicPersistedState {
 }
 
 interface UseQuizLogicProps {
+  unitId: UnitId;
   lessonId: LessonId;
   section: MultipleChoiceSectionData | MultipleSelectionSectionData;
   isMultiSelect: boolean;
 }
 
 export const useQuizLogic = ({
+  unitId,
   lessonId,
   section,
   isMultiSelect,
 }: UseQuizLogicProps) => {
-  const storageKey = `quizState_${lessonId}_${section.id}`; // Unique key for persistence
+  const storageKey = `quizState_${unitId}_${lessonId}_${section.id}`; // Unique key for persistence
   const initialQuizState: QuizLogicPersistedState = {
     selectedIndices: [],
     submitted: false,
@@ -60,6 +63,7 @@ export const useQuizLogic = ({
     setPersistedQuizState, // This updates the state in localStorage and Zustand
     isSectionComplete, // Boolean from useSectionProgress
   ] = useSectionProgress<QuizLogicPersistedState>(
+    unitId,
     lessonId,
     section.id,
     storageKey,

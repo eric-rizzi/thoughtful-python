@@ -10,6 +10,7 @@ import type {
   SavedEnhancedPRIMMSectionState,
   AssessmentLevel,
   LessonId,
+  UnitId,
 } from "../../types/data";
 import type { PrimmEvaluationRequest } from "../../types/apiServiceTypes";
 
@@ -32,10 +33,15 @@ const CONFIDENCE_OPTIONS: { value: number; label: string }[] = [
 
 interface PRIMMSectionProps {
   section: PRIMMSectionData;
+  unitId: UnitId;
   lessonId: LessonId;
 }
 
-const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
+const PRIMMSection: React.FC<PRIMMSectionProps> = ({
+  section,
+  unitId,
+  lessonId,
+}) => {
   const {
     runPythonCode,
     isLoading: isPyodideLoading,
@@ -45,9 +51,9 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const currentExample: PRIMMCodeExample | undefined = section.examples[0];
-  const storageKey = `primmProgressiveFill_${lessonId}_${section.id}_${
-    currentExample?.id || "default"
-  }`;
+  const storageKey = `primmProgressiveFill_${unitId}_${lessonId}_${
+    section.id
+  }_${currentExample?.id || "default"}`;
 
   const initialSingleExampleState: EnhancedPRIMMExampleUserState = useMemo(
     () => ({
@@ -85,6 +91,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({ section, lessonId }) => {
 
   const [savedSectionState, setSavedSectionState, isSectionOverallComplete] =
     useSectionProgress<SavedEnhancedPRIMMSectionState>(
+      unitId,
       lessonId,
       section.id,
       storageKey,

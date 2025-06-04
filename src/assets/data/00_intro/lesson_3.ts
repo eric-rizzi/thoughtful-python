@@ -37,19 +37,9 @@ const lessonData: Lesson = {
             description: "Second number is largest",
           },
           {
-            inputs: [3, 3, 9],
-            expected: 9,
-            description: "Third number is largest",
-          },
-          {
             inputs: [8, 8, 4],
             expected: 8,
             description: "First and second numbers are equal and largest",
-          },
-          {
-            inputs: [10, 10, 10],
-            expected: 10,
-            description: "All numbers are equal",
           },
           {
             inputs: [-1, -3, -5],

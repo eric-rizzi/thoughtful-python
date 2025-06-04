@@ -7,11 +7,12 @@ import {
 } from "../lib/localStorageUtils";
 import { useProgressActions } from "../stores/progressStore";
 import { useAuthStore } from "../stores/authStore";
-import { LessonId, SectionId } from "../types/data";
+import { LessonId, SectionId, UnitId } from "../types/data";
 
 type HookSetStateAction<S> = S | ((prevState: S) => S);
 
 export function useSectionProgress<TState extends object>(
+  unitId: UnitId,
   lessonId: LessonId,
   sectionId: SectionId,
   storageSubKey: string,
@@ -73,9 +74,9 @@ export function useSectionProgress<TState extends object>(
     const isNowComplete = checkCompletion(state);
     setIsLocallyComplete(isNowComplete);
     if (isNowComplete) {
-      completeSection(lessonId, sectionId);
+      completeSection(unitId, lessonId, sectionId);
     }
-  }, [state, lessonId, sectionId, checkCompletion, completeSection]);
+  }, [state, unitId, lessonId, sectionId, checkCompletion, completeSection]);
 
   // Effect to re-load state when authentication status or relevant storage key parts change
   useEffect(() => {

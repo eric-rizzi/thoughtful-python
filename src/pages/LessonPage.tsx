@@ -49,7 +49,10 @@ const LessonPage: React.FC = () => {
   const [currentIndexInUnit, setCurrentIndexInUnit] = useState<number>(-1);
   const [parentUnitId, setParentUnitId] = useState<UnitId | null>(null);
 
-  const completedSectionsMap = useCompletedSectionsForLesson(lessonGuid);
+  const completedSectionsMap = useCompletedSectionsForLesson(
+    parentUnitId,
+    lessonGuid
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -165,6 +168,7 @@ const LessonPage: React.FC = () => {
   const totalLessonsInUnit = unitLessons.length;
 
   const renderSection = (sectionData: AnyLessonSectionData) => {
+    const currentUnitGuid = parentUnitId || ("unknown" as UnitId);
     const currentLessonGuid = lessonGuid || ("unknown" as LessonId);
     switch (sectionData.kind) {
       case "Information":
@@ -175,6 +179,7 @@ const LessonPage: React.FC = () => {
         return (
           <ObservationSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -183,6 +188,7 @@ const LessonPage: React.FC = () => {
         return (
           <TestingSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -191,6 +197,7 @@ const LessonPage: React.FC = () => {
         return (
           <PredictionSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -199,6 +206,7 @@ const LessonPage: React.FC = () => {
         return (
           <MultipleChoiceSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -207,6 +215,7 @@ const LessonPage: React.FC = () => {
         return (
           <MultipleSelectionSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -215,6 +224,7 @@ const LessonPage: React.FC = () => {
         return (
           <TurtleSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -223,6 +233,7 @@ const LessonPage: React.FC = () => {
         return (
           <ReflectionSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -231,6 +242,7 @@ const LessonPage: React.FC = () => {
         return (
           <CoverageSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />
@@ -239,6 +251,7 @@ const LessonPage: React.FC = () => {
         return (
           <PRIMMSection
             key={sectionData.id}
+            unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
           />

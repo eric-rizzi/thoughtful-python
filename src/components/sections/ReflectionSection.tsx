@@ -6,6 +6,7 @@ import type {
   ReflectionSectionData,
   AssessmentLevel,
   LessonId,
+  UnitId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
@@ -30,11 +31,13 @@ const QUALIFYING_ASSESSMENTS_FOR_FINAL: AssessmentLevel[] = [
 
 interface ReflectionSectionProps {
   section: ReflectionSectionData;
+  unitId: UnitId;
   lessonId: LessonId;
 }
 
 const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   section,
+  unitId,
   lessonId,
 }) => {
   const { id: sectionId, title, content } = section;
@@ -62,7 +65,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
   const { completeSection } = useProgressActions();
   const isSectionMarkedCompleteInStore = useProgressStore((state) =>
-    state.actions.isSectionComplete(lessonId, sectionId)
+    state.actions.isSectionComplete(unitId, lessonId, sectionId)
   );
 
   const fetchAndUpdateHistory = useCallback(async () => {
@@ -262,7 +265,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
       alert(
         `Learning entry on ${finalEntryResponse.userTopic} submitted successfully!`
       );
-      completeSection(lessonId, sectionId);
+      completeSection(unitId, lessonId, sectionId);
       fetchAndUpdateHistory();
     } catch (err) {
       console.error("Error submitting final learning entry:", err);
@@ -274,6 +277,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     isAuthenticated,
     idToken,
     apiGatewayUrl,
+    unitId,
     lessonId,
     sectionId,
     draftHistory,

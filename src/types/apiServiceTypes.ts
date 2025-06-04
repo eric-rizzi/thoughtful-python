@@ -10,6 +10,7 @@ import {
 export type AuthToken = string & { readonly __brand: "AuthToken" };
 
 export interface SectionCompletionInput {
+  unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
 }
@@ -17,9 +18,10 @@ export interface SectionCompletionInput {
 export interface UserProgressData {
   userId: UserId; // Server will derive this from the token and include it in response
   completion: {
-    [lessonId: LessonId]: {
-      // Key is lessonId
-      [sectionId: SectionId]: IsoTimestamp; // Key is sectionId, value is timeFirstCompleted (string)
+    [unitId: UnitId]: {
+      [lessonId: LessonId]: {
+        [sectionId: SectionId]: IsoTimestamp;
+      };
     };
   };
 }

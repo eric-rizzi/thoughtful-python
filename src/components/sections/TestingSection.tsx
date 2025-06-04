@@ -7,6 +7,7 @@ import type {
   LessonSection,
   SectionId,
   TestingExample,
+  UnitId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
@@ -21,14 +22,16 @@ import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface TestingSectionProps {
   section: LessonSection;
+  unitId: UnitId;
   lessonId: LessonId;
 }
 
 const TestableExample: React.FC<{
   example: TestingExample;
+  unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
-}> = React.memo(({ example, lessonId, sectionId }) => {
+}> = React.memo(({ example, unitId, lessonId, sectionId }) => {
   const { completeSection } = useProgressActions();
   const {
     runPythonCode: pyodideDirectRunner,
@@ -112,7 +115,7 @@ const TestableExample: React.FC<{
       setTestResults(parsed);
 
       if (allPassed) {
-        completeSection(lessonId, sectionId);
+        completeSection(unitId, lessonId, sectionId);
       }
     } catch (err) {
       console.error(`Error during test execution for ${example.id}:`, err);
@@ -244,6 +247,7 @@ const TestableExample: React.FC<{
 
 const TestingSection: React.FC<TestingSectionProps> = ({
   section,
+  unitId,
   lessonId,
 }) => {
   const currentSingleExample = section.example;
@@ -260,6 +264,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
         <TestableExample
           key={currentSingleExample.id}
           example={currentSingleExample}
+          unitId={unitId}
           lessonId={lessonId}
           sectionId={section.id}
         />
