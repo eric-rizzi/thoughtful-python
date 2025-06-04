@@ -1,137 +1,219 @@
 /* src/pages/InstructorDashboardPage.module.css */
 .dashboardContainer {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 1rem;
+  max-width: 1200px; /* Or your preferred max-width */
+  margin: 1rem auto; /* Reduced top margin */
+  padding: 0 1rem 1rem 1rem; /* No top padding, bottom padding added */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .dashboardHeader {
-  background-color: #306998; /* A theme color */
+  background-color: #306998;
   color: white;
   padding: 1.5rem 2rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0; /* Rounded top corners */
+  margin-bottom: 0; /* Remove bottom margin to connect with tabs */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .dashboardHeader h1 {
   margin: 0;
-  font-size: 2em;
+  font-size: 1.8em; /* Slightly smaller if header is less prominent */
 }
 .dashboardHeader p {
-  margin: 0.5rem 0 0;
+  margin: 0.3rem 0 0;
   font-size: 0.9em;
   opacity: 0.9;
 }
 
-.dashboardLayout {
-  display: flex;
-  gap: 2rem;
+/* --- New Top Tab Navigation Styles --- */
+.topTabNav {
+  background-color: #f0f4f8; /* Light background for tab bar */
+  padding: 0 1.5rem; /* Padding inside the nav bar */
+  border-bottom: 2px solid #0056b3; /* Accent border */
+  margin-bottom: 1.5rem; /* Space below tabs before main content */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.sidebar {
-  flex: 0 0 220px; /* Fixed width sidebar */
-  background-color: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 6px;
-  height: fit-content; /* Adjust as needed */
-  border: 1px solid #e9ecef;
-}
-
-.sidebarTitle {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.2em;
-  color: #333;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.5rem;
-}
-
-.sidebar ul {
+.topTabNav ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex; /* Arrange tabs horizontally */
 }
 
-.sidebar li a,
-.sidebar li .placeholderLink {
+.topTabNav li {
+  margin-right: 0.5rem; /* Space between tabs */
+}
+
+.tabLink,
+.activeTabLink {
   display: block;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
+  padding: 0.8rem 1.2rem;
   text-decoration: none;
-  color: #306998;
-  border-radius: 4px;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.sidebar li a:hover,
-.sidebar li a.activeLink {
-  background-color: #e0eaf3;
-  color: #1c3f5c;
+  color: #306998; /* Default tab link color */
   font-weight: 500;
-}
-.sidebar li .activeLink {
-  font-weight: bold;
-}
-
-.sidebar li .placeholderLink {
-  color: #999;
-  cursor: default;
-  background-color: transparent !important; /* Override hover */
+  border-radius: 6px 6px 0 0; /* Rounded top corners for tab feel */
+  border: 1px solid transparent; /* For border spacing on active */
+  border-bottom: none; /* No bottom border on inactive tabs */
+  position: relative;
+  bottom: -2px; /* Align with the nav bar's bottom border */
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.mainContent {
-  flex-grow: 1;
+.tabLink:hover {
+  background-color: #e0eaf3; /* Hover background */
+  color: #1c3f5c;
+}
+
+.activeTabLink {
+  composes: tabLink; /* Inherit base styles */
+  background-color: #ffffff; /* Active tab background (matches main content) */
+  color: #0056b3; /* Active tab text color */
+  border-color: #0056b3 #0056b3 #ffffff; /* Border to "connect" with content */
+  border-width: 2px;
+  border-style: solid;
+  border-bottom-color: #ffffff; /* Make bottom border white to blend */
+  font-weight: 600;
+}
+/* --- End Top Tab Navigation Styles --- */
+
+/* Removed .dashboardLayout and .sidebar styles as they are no longer used */
+
+.mainContentArea {
+  /* Renamed from mainContent for clarity */
   background-color: #fff;
-  padding: 1.5rem;
-  border-radius: 6px;
-  border: 1px solid #e9ecef;
+  padding: 1.5rem; /* Keep padding for content inside */
+  border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+  border: 1px solid #e0e0e0; /* Optional border if not set by tabs */
+  border-top: none; /* If tabs provide top border */
+  min-height: 400px; /* Ensure some height */
 }
 
-.studentListSection h2 {
+/* Styles for control sections within tabs (like unit selector) */
+.controlSection {
+  margin-bottom: 1.5rem;
+  /* background-color: #f8f9fa; */ /* Optional: if you want sections within tabs to have a bg */
+  /* padding: 1rem; */
+  /* border-radius: 6px; */
+}
+.controlSection h2 {
   margin-top: 0;
   color: #306998;
   border-bottom: 2px solid #e0eaf3;
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
+  font-size: 1.4em;
 }
 
-.studentList {
-  list-style: none;
-  padding: 0;
+.unitSelectorContainer {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f0f4f8; /* Consistent with filter bars in child views */
+  border-radius: 6px;
+  border: 1px solid #dfe6ed;
+  display: flex;
+  align-items: center;
 }
-
-.studentListItem {
-  padding: 0.75rem;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s ease;
-}
-.studentListItem:last-child {
-  border-bottom: none;
-}
-.studentListItem:hover {
-  background-color: #f9f9f9;
-}
-
-.studentId {
+.unitSelectorContainer label {
+  margin-right: 0.75rem;
   font-weight: 500;
   color: #333;
 }
-.studentName {
-  color: #555;
-  font-style: italic;
+.unitSelect {
+  /* This style should ideally be in InstructorViews.module.css and imported if used by children */
+  padding: 0.6rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  font-size: 0.95rem;
+  min-width: 250px;
+  background-color: #fff;
 }
-.studentEmail {
-  color: #777;
-  font-size: 0.9em;
+.unitSelect:disabled {
+  background-color: #e9ecef;
+  opacity: 0.7;
 }
 
-.errorMessage {
-  color: #c0392b;
-  background-color: #f9e4e2;
-  border: 1px solid #f1c0ba;
-  padding: 1rem;
-  border-radius: 4px;
+/* Styles for progress table and summary (can be kept here or moved to ReviewClassProgressView.module.css) */
+.classSummarySection {
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: #eef6ff;
+  border: 1px solid #cce0ff;
+  border-radius: 6px;
+}
+.classSummarySection h4 {
+  margin-top: 0;
+  color: #004085;
+  font-size: 1.1em;
+}
+.summaryList {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0.5rem 0 0 0;
+}
+.summaryList li {
+  margin-bottom: 0.4rem;
+  font-size: 0.95em;
+}
+
+.progressTableContainer {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+.progressTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+.progressTable th,
+.progressTable td {
+  border: 1px solid #ddd;
+  padding: 0.7rem 0.9rem; /* Slightly more padding */
+  text-align: left;
+  min-width: 90px;
+}
+.progressTable th {
+  background-color: #e9ecef; /* Neutral header */
+  color: #343a40;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.progressTable td {
+  background-color: #fff;
+}
+.progressTable tbody tr:nth-child(even) td {
+  background-color: #f9f9f9;
+}
+.progressTable tbody tr:hover td {
+  background-color: #f1f8ff;
+} /* Lighter hover */
+.studentNameCell {
+  font-weight: 500;
+  min-width: 160px;
+}
+.completedCell {
+  font-weight: bold; /* color: #155724; */
+}
+
+.errorMessage,
+.placeholderMessage,
+.loadingStateContainer {
+  color: #6c757d;
+  background-color: #f8f9fa;
+  border: 1px dashed #ced4da;
+  padding: 2rem;
+  border-radius: 6px;
   text-align: center;
+  margin: 2rem auto;
+  max-width: 700px;
+}
+.errorMessage {
+  color: #991b1b;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+}
+.loadingStateContainer {
+  border-style: solid; /* Solid border for loading container */
 }
