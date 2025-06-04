@@ -16,12 +16,13 @@ import type {
   LessonReference,
 } from "../../types/data";
 import {
-  fetchLessonData,
+  fetchLessonData, // Assuming this fetches a single Lesson object by its GUID
   getRequiredSectionsForLesson,
 } from "../../lib/dataLoader";
 
 import LoadingSpinner from "../LoadingSpinner";
-import styles from "../../pages/InstructorDashboardPage.module.css"; // Reuse styles from parent page for now
+// Changed to use InstructorViews.module.css for consistent select styling
+import styles from "./InstructorViews.module.css";
 
 // Client-side computed structure for display
 interface DisplayableStudentUnitProgress {
@@ -42,17 +43,17 @@ interface ClientClassLessonSummary {
 interface ReviewClassProgressViewProps {
   units: Unit[];
   permittedStudents: InstructorStudentInfo[];
-  isLoadingStudents: boolean; // Pass loading state from parent
-  studentsError: string | null; // Pass error state from parent
-  isLoadingUnits: boolean; // Pass loading state from parent
+  isLoadingUnitsGlobal: boolean;
+  isLoadingStudentsGlobal: boolean;
+  studentsErrorGlobal: string | null;
 }
 
 const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
   units,
   permittedStudents,
-  isLoadingStudents,
-  studentsError,
-  isLoadingUnits,
+  isLoadingUnitsGlobal,
+  isLoadingStudentsGlobal,
+  studentsErrorGlobal,
 }) => {
   const { idToken, isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
@@ -68,20 +69,18 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
   const [displayableClassProgress, setDisplayableClassProgress] = useState<
     DisplayableStudentUnitProgress[]
   >([]);
-  const [isLoadingClassProgress, setIsLoadingClassProgress] =
+  const [isLoadingClassProgressLocal, setIsLoadingClassProgressLocal] =
     useState<boolean>(false);
-  const [classProgressError, setClassProgressError] = useState<string | null>(
-    null
-  );
+  const [classProgressErrorLocal, setClassProgressErrorLocal] = useState<
+    string | null
+  >(null);
 
-  // Set default unit if units are loaded and none is selected
   useEffect(() => {
     if (units.length > 0 && !selectedUnitId) {
       setSelectedUnitId(units[0].id);
     }
   }, [units, selectedUnitId]);
 
-  // Fetch lessons for the selected unit AND then fetch class progress
   useEffect(() => {
     if (
       !selectedUnitId ||
@@ -93,12 +92,14 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
       setDisplayableClassProgress([]);
       setSelectedUnitLessons([]);
       setSelectedUnitObject(null);
+      if (units.length > 0 && !selectedUnitId)
+        setIsLoadingClassProgressLocal(false);
       return;
     }
 
     const fetchUnitAndProgressDetails = async () => {
-      setIsLoadingClassProgress(true);
-      setClassProgressError(null);
+      setIsLoadingClassProgressLocal(true);
+      setClassProgressErrorLocal(null);
 
       try {
         const currentUnitData = units.find((u) => u.id === selectedUnitId);
@@ -106,14 +107,14 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
           if (units.length > 0)
             throw new Error(`Unit details not found for ${selectedUnitId}`);
           else {
-            setIsLoadingClassProgress(false);
+            setIsLoadingClassProgressLocal(false);
             return;
           }
         }
         setSelectedUnitObject(currentUnitData);
 
         const lessonPromises = currentUnitData.lessons.map(
-          (lessonRef: LessonReference) => fetchLessonData(lessonRef.path) // Use lessonRef.id (which is the GUID)
+          (lessonRef: LessonReference) => fetchLessonData(lessonRef.path)
         );
         const lessonsForUnitRaw = (await Promise.all(lessonPromises)).filter(
           (l): l is Lesson => l !== null
@@ -124,121 +125,131 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
 
         if (
           lessonsForUnitRaw.length === 0 ||
-          (permittedStudents.length === 0 && !isLoadingStudents)
+          (permittedStudents.length === 0 && !isLoadingStudentsGlobal)
         ) {
-          setIsLoadingClassProgress(false);
+          setIsLoadingClassProgressLocal(false);
           setDisplayableClassProgress([]);
           return;
         }
 
-        const studentIdsToFetchFor = permittedStudents.map(
-          (s) => s.studentId as UserId
-        );
-        const classProgressResponse =
-          await apiService.getInstructorClassUnitProgress(
-            idToken!,
-            apiGatewayUrl!,
-            selectedUnitId,
-            studentIdsToFetchFor
+        if (permittedStudents.length > 0) {
+          const studentIdsToFetchFor = permittedStudents.map(
+            (s) => s.studentId as UserId
           );
-
-        const computedProgress: DisplayableStudentUnitProgress[] =
-          classProgressResponse.studentProgressData.map((studentData) => {
-            const studentInfo = permittedStudents.find(
-              (ps) => ps.studentId === studentData.studentId
+          const classProgressResponse =
+            await apiService.getInstructorClassUnitProgress(
+              idToken!,
+              apiGatewayUrl!,
+              selectedUnitId,
+              studentIdsToFetchFor
             );
-            let totalCompletedInUnit = 0;
-            let totalRequiredInUnit = 0;
 
-            const lessonsProgress: StudentLessonProgressItem[] =
-              lessonsForUnitRaw.map((lesson) => {
-                const requiredSections = getRequiredSectionsForLesson(lesson);
-                const totalRequiredInLesson = requiredSections.length;
-                const completedSectionsMapForLesson =
-                  studentData.completedSectionsInUnit[lesson.guid] || {};
-                const completedInLessonCount = Object.keys(
-                  completedSectionsMapForLesson
-                ).length;
-                const cappedCompletedCount = Math.min(
-                  completedInLessonCount,
-                  totalRequiredInLesson
-                );
+          const computedProgress: DisplayableStudentUnitProgress[] =
+            classProgressResponse.studentProgressData.map((studentData) => {
+              const studentInfo = permittedStudents.find(
+                (ps) => ps.studentId === studentData.studentId
+              );
+              let totalCompletedInUnit = 0;
+              let totalRequiredInUnit = 0;
 
-                totalCompletedInUnit += cappedCompletedCount;
-                totalRequiredInUnit += totalRequiredInLesson;
-                const completionPercent =
-                  totalRequiredInLesson > 0
-                    ? (cappedCompletedCount / totalRequiredInLesson) * 100
-                    : requiredSections.length === 0
-                    ? 100
-                    : 0;
+              const lessonsProgress: StudentLessonProgressItem[] =
+                lessonsForUnitRaw.map((lesson) => {
+                  const requiredSections = getRequiredSectionsForLesson(lesson);
+                  const totalRequiredInLesson = requiredSections.length;
+                  const completedSectionsMapForLesson =
+                    studentData.completedSectionsInUnit[lesson.guid] || {};
+                  const completedInLessonCount = Object.keys(
+                    completedSectionsMapForLesson
+                  ).length;
+                  const cappedCompletedCount = Math.min(
+                    completedInLessonCount,
+                    totalRequiredInLesson
+                  );
 
-                return {
-                  lessonId: lesson.guid,
-                  lessonTitle: lesson.title,
-                  completionPercent: parseFloat(completionPercent.toFixed(1)),
-                  isCompleted: completionPercent >= 100,
-                  completedSectionsCount: cappedCompletedCount,
-                  totalRequiredSectionsInLesson: totalRequiredInLesson,
-                };
-              });
-            const overallUnitCompletionPercent =
-              totalRequiredInUnit > 0
-                ? (totalCompletedInUnit / totalRequiredInUnit) * 100
-                : currentUnitData.lessons.length === 0
-                ? 100
-                : 0;
+                  totalCompletedInUnit += cappedCompletedCount;
+                  totalRequiredInUnit += totalRequiredInLesson;
+                  const completionPercent =
+                    totalRequiredInLesson > 0
+                      ? (cappedCompletedCount / totalRequiredInLesson) * 100
+                      : requiredSections.length === 0
+                      ? 100
+                      : 0;
 
-            return {
-              studentId: studentData.studentId as UserId,
-              studentName: studentInfo?.studentName,
-              lessonsProgress,
-              overallUnitCompletionPercent: parseFloat(
-                overallUnitCompletionPercent.toFixed(1)
-              ),
-            };
-          });
-        setDisplayableClassProgress(computedProgress);
+                  return {
+                    lessonId: lesson.guid,
+                    lessonTitle: lesson.title,
+                    completionPercent: parseFloat(completionPercent.toFixed(1)),
+                    isCompleted: completionPercent >= 100,
+                    completedSectionsCount: cappedCompletedCount,
+                    totalRequiredSectionsInLesson: totalRequiredInLesson,
+                  };
+                });
+              const overallUnitCompletionPercent =
+                totalRequiredInUnit > 0
+                  ? (totalCompletedInUnit / totalRequiredInUnit) * 100
+                  : currentUnitData.lessons.length === 0
+                  ? 100
+                  : 0;
+
+              return {
+                studentId: studentData.studentId as UserId,
+                studentName: studentInfo?.studentName,
+                lessonsProgress,
+                overallUnitCompletionPercent: parseFloat(
+                  overallUnitCompletionPercent.toFixed(1)
+                ),
+              };
+            });
+          setDisplayableClassProgress(computedProgress);
+        } else {
+          setDisplayableClassProgress([]);
+        }
       } catch (err) {
         console.error(
           `Failed to fetch class progress for unit ${selectedUnitId}:`,
           err
         );
         if (err instanceof apiService.ApiError) {
-          setClassProgressError(`Error: ${err.data.message || err.message}`);
+          setClassProgressErrorLocal(
+            `Error: ${err.data.message || err.message}`
+          );
         } else if (err instanceof Error) {
-          setClassProgressError(`Error: ${err.message}`);
+          setClassProgressErrorLocal(`Error: ${err.message}`);
         } else {
-          setClassProgressError("An unknown error occurred.");
+          setClassProgressErrorLocal(
+            "An unknown error occurred while fetching class progress."
+          );
         }
         setSelectedUnitLessons([]);
         setSelectedUnitObject(null);
         setDisplayableClassProgress([]);
       } finally {
-        setIsLoadingClassProgress(false);
+        setIsLoadingClassProgressLocal(false);
       }
     };
 
     if (
       selectedUnitId &&
       units.length > 0 &&
-      (permittedStudents.length > 0 || isLoadingStudents) &&
+      isAuthenticated &&
       idToken &&
       apiGatewayUrl
     ) {
-      fetchUnitAndProgressDetails();
+      if (!isLoadingStudentsGlobal || permittedStudents.length > 0) {
+        fetchUnitAndProgressDetails();
+      }
     } else if (
       selectedUnitId &&
       permittedStudents.length === 0 &&
-      !isLoadingStudents
+      !isLoadingStudentsGlobal
     ) {
       setDisplayableClassProgress([]);
-      setIsLoadingClassProgress(false);
+      setIsLoadingClassProgressLocal(false);
     }
   }, [
     selectedUnitId,
     permittedStudents,
-    isLoadingStudents,
+    isLoadingStudentsGlobal,
     isAuthenticated,
     idToken,
     apiGatewayUrl,
@@ -286,11 +297,14 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
     });
   }, [selectedUnitLessons, displayableClassProgress]);
 
-  const getCellBackgroundColor = (percent: number): string => {
-    if (percent < 0) percent = 0;
-    if (percent > 100) percent = 100;
+  const getCellBackgroundColor = (
+    percent: number | null | undefined
+  ): string => {
+    const safePercent =
+      percent === null || typeof percent === "undefined"
+        ? 0
+        : Math.max(0, Math.min(100, percent));
     const baseOpacity = 0.1;
-    const safePercent = percent === null ? 0 : percent;
     const opacity =
       safePercent > 0
         ? baseOpacity + (safePercent / 100) * 0.6
@@ -303,51 +317,51 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
   };
 
   const renderProgressTableView = () => {
-    if (isLoadingClassProgress && displayableClassProgress.length === 0)
-      return <LoadingSpinner message="Loading class progress..." />;
-    if (classProgressError)
-      return <p className={styles.errorMessage}>{classProgressError}</p>;
-    if (!selectedUnitId && units.length > 0)
+    if (isLoadingUnitsGlobal && units.length === 0)
+      return <LoadingSpinner message="Loading units..." />;
+    if (!isLoadingUnitsGlobal && units.length === 0)
+      return (
+        <p className={styles.placeholderMessage}>
+          No units available to display progress.
+        </p>
+      );
+    if (!selectedUnitId)
       return (
         <p className={styles.placeholderMessage}>
           Please select a unit to view progress.
         </p>
       );
-    if (isLoadingUnits && units.length === 0)
-      return <LoadingSpinner message="Loading units..." />; // Changed from allUnits
-    if (!isLoadingUnits && units.length === 0)
-      return <p className={styles.placeholderMessage}>No units available.</p>;
-    if (permittedStudents.length === 0 && !isLoadingStudents)
+
+    if (isLoadingStudentsGlobal)
+      return <LoadingSpinner message="Loading student list..." />;
+    if (studentsErrorGlobal)
+      return <p className={styles.errorMessage}>{studentsErrorGlobal}</p>;
+    if (permittedStudents.length === 0)
       return (
         <p className={styles.placeholderMessage}>
-          No students assigned to view.
+          No students assigned to view for this instructor.
         </p>
       );
-    if (
-      selectedUnitLessons.length === 0 &&
-      !isLoadingClassProgress &&
-      !classProgressError &&
-      selectedUnitId
-    )
+
+    if (isLoadingClassProgressLocal)
+      return (
+        <LoadingSpinner message="Loading class progress for selected unit..." />
+      );
+    if (classProgressErrorLocal)
+      return <p className={styles.errorMessage}>{classProgressErrorLocal}</p>;
+
+    if (selectedUnitLessons.length === 0 && !isLoadingClassProgressLocal)
       return (
         <p className={styles.placeholderMessage}>
           Selected unit has no lessons defined.
         </p>
       );
-    if (
-      displayableClassProgress.length === 0 &&
-      !isLoadingClassProgress &&
-      !classProgressError &&
-      permittedStudents.length > 0 &&
-      selectedUnitId
-    )
+    if (displayableClassProgress.length === 0 && !isLoadingClassProgressLocal)
       return (
         <p className={styles.placeholderMessage}>
           No progress data available for students in this unit.
         </p>
       );
-    if (displayableClassProgress.length === 0 && isLoadingClassProgress)
-      return <LoadingSpinner message="Loading class progress..." />;
 
     return (
       <div className={styles.progressTableContainer}>
@@ -415,8 +429,8 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
   const renderClassSummaryView = () => {
     if (
       !selectedUnitId ||
-      isLoadingClassProgress ||
-      classProgressError ||
+      isLoadingClassProgressLocal ||
+      classProgressErrorLocal ||
       classLessonSummaries.length === 0
     )
       return null;
@@ -445,38 +459,26 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
     <>
       <section className={styles.controlSection}>
         <h2>Class Progress Overview</h2>
-        {isLoadingStudents && units.length === 0 && (
-          <LoadingSpinner message="Loading initial data..." />
-        )}
-        {studentsError && (
-          <p className={styles.errorMessage}>{studentsError}</p>
-        )}
-
-        {!isLoadingStudents && !studentsError && (
-          <div className={styles.unitSelectorContainer}>
-            <label htmlFor="unit-select">Select Unit: </label>
-            <select
-              id="unit-select"
-              value={selectedUnitId}
-              onChange={(e) => setSelectedUnitId(e.target.value as UnitId)}
-              className={styles.unitSelect}
-              disabled={units.length === 0 || isLoadingUnits}
-            >
-              <option value="" disabled={selectedUnitId !== ""}>
-                -- Choose a Unit --
+        <div className={styles.filters}>
+          <select
+            id="unit-select-progress-view"
+            value={selectedUnitId}
+            onChange={(e) => setSelectedUnitId(e.target.value as UnitId)}
+            className={styles.filterSelect} // Apply the consistent select style
+            disabled={units.length === 0 || isLoadingUnitsGlobal}
+          >
+            <option value="" disabled={selectedUnitId !== ""}>
+              -- Choose a Unit --
+            </option>
+            {units.map((unit) => (
+              <option key={unit.id} value={unit.id}>
+                {unit.title}
               </option>
-              {units.map((unit) => (
-                <option key={unit.id} value={unit.id}>
-                  {unit.title}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+            ))}
+          </select>
+        </div>
       </section>
-      {isLoadingUnits && !selectedUnitId && (
-        <LoadingSpinner message="Loading units..." />
-      )}
+
       {renderClassSummaryView()}
       {renderProgressTableView()}
     </>

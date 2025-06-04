@@ -427,12 +427,6 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
     <div className={styles.viewContainer}>
       <h3>Review by Student</h3>
       <div className={styles.filters}>
-        <label
-          htmlFor="student-select-by-student"
-          style={{ marginRight: "0.5rem", fontWeight: "500" }}
-        >
-          Select Student:
-        </label>
         <select
           id="student-select-by-student"
           value={selectedStudentId}
@@ -440,7 +434,7 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
           className={styles.filterSelect}
           disabled={permittedStudents.length === 0}
         >
-          <option value="">-- Select a Student --</option>
+          <option value="">Select Student</option>
           {permittedStudents.map((student) => (
             <option key={student.studentId} value={student.studentId}>
               {student.studentName || student.studentId}{" "}
