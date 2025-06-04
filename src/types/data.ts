@@ -289,3 +289,15 @@ export interface Unit {
 export interface UnitsData {
   units: Unit[];
 }
+
+export interface DisplayableAssignment {
+  key: string; // A unique key for React lists, e.g., `${lessonGuid}-${sectionId}-${primmExampleId || 'reflection'}`
+  unitId: UnitId;
+  lessonId: LessonId; // GUID
+  lessonTitle: string;
+  sectionId: SectionId;
+  sectionTitle: string;
+  assignmentType: "Reflection" | "PRIMM";
+  primmExampleId?: string; // Only for PRIMM
+  assignmentDisplayTitle: string; // e.g., "Reflection: Variables" or "PRIMM: Example 1 - Loops"
+}

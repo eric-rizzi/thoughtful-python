@@ -1,44 +1,62 @@
-/* src/components/instructor/InstructorViews.module.css */
 .viewContainer {
-  padding: 1rem;
-  /* background-color: #fdfdff; */ /* Optional subtle background */
+  padding: 1rem 0; /* Padding for the content area within the main tab content */
+  /* background-color: #fdfdff; */ /* Optional subtle background for the view area */
 }
 
 .viewContainer h3 {
+  /* Heading for "Review by Assignment" or "Review by Student" */
   margin-top: 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #e0eaf3;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.6em; /* Larger heading for the view title */
+  color: #2c3e50; /* Darker, more prominent heading color */
+  border-bottom: 2px solid #e0eaf3; /* A subtle underline */
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
+/* Filters and Selection Area */
 .filters {
   display: flex;
-  gap: 1rem;
+  gap: 1rem; /* Spacing between filter elements */
   margin-bottom: 1.5rem;
   align-items: center;
   flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
-  padding: 1rem;
-  background-color: #f8f9fa;
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fa; /* Light background for the filter bar */
   border-radius: 6px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .filterSelect {
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   border-radius: 4px;
   border: 1px solid #ced4da;
   font-size: 0.95rem;
-  min-width: 180px;
+  min-width: 200px; /* Good width for select dropdowns */
+  background-color: #fff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.filterSelect:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+.filterSelect:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .filterButton {
-  padding: 0.6rem 1.2rem;
+  padding: 0.65rem 1.3rem;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.95rem;
   transition: background-color 0.2s;
 }
 .filterButton:hover:not(:disabled) {
@@ -46,69 +64,151 @@
 }
 .filterButton:disabled {
   background-color: #6c757d;
-  opacity: 0.7;
-  cursor: not-allowed;
+  opacity: 0.65;
 }
 
+/* Assignment List (for Review by Assignment) */
+.assignmentListContainer {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  max-height: 350px; /* Increased height */
+  overflow-y: auto;
+  border: 1px solid #dfe6ed;
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.assignmentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.assignmentListItem {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.assignmentListItem:last-child {
+  border-bottom: none;
+}
+.assignmentListItem:hover {
+  background-color: #f0f4f8;
+}
+.assignmentListItem.selected {
+  background-color: #d1e7fd; /* Lighter blue for selected */
+  font-weight: 600;
+  color: #052c65; /* Darker blue text for selected */
+  border-left: 4px solid #007bff;
+  padding-left: calc(1.25rem - 4px);
+}
+
+.assignmentTitle {
+  display: block;
+  font-size: 1.05em;
+  color: #0056b3; /* Link-like color */
+  margin-bottom: 0.2rem;
+}
+.assignmentListItem.selected .assignmentTitle {
+  color: #052c65;
+}
+.assignmentMeta {
+  font-size: 0.85em;
+  color: #6c757d;
+}
+
+/* Submission Viewer (for Review by Assignment) */
 .submissionViewer {
   margin-top: 1.5rem;
   border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 1rem;
+  border-radius: 8px;
+  padding: 1.5rem;
   background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
 }
-.submissionViewer h4 {
+.submissionViewer > h4 {
+  /* "Viewing Submission X of Y" */
   margin-top: 0;
-  color: #306998;
-  font-size: 1.1em;
+  color: #4a5568;
+  font-size: 1.1em; /* Slightly larger */
+  margin-bottom: 1.5rem; /* More space below */
+  text-align: center;
+  font-weight: 500;
 }
 
+/* Submission Detail Card (Shared by Reflection and PRIMM displays) */
 .submissionDetailCard {
-  padding: 1rem;
+  padding: 1.5rem;
   margin-bottom: 1rem;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  background-color: #fdfdfd;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: #fdfdff;
 }
-.submissionDetailCard h4 {
+.submissionDetailCard h4,
+.submissionDetailCard h5 {
+  /* Title of the submission, e.g., Reflection topic or "AI Evaluation" */
   margin-top: 0;
-  color: #306998;
-  font-size: 1.2em;
+  color: #1a202c;
+  font-size: 1.25em; /* Consistent heading size */
   margin-bottom: 0.75rem;
 }
 .submissionDetailCard strong {
-  color: #555;
+  /* For labels like "Student:", "Code:" */
+  color: #4a5568;
+  font-weight: 600; /* Make labels a bit bolder */
 }
 .submissionDetailCard pre {
-  background-color: #2d2d2d;
-  color: #f0f0f0;
-  padding: 0.5rem;
+  /* For code snippets */
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 0.75rem 1rem;
   border-radius: 4px;
   overflow-x: auto;
+  font-size: 0.9em;
+  margin: 0.5rem 0 1rem 0; /* Add bottom margin */
 }
 .submissionDetailCard p {
   line-height: 1.6;
+  margin-bottom: 0.75rem; /* Consistent paragraph spacing */
+  color: #2d3748;
+}
+.submissionDetailCard div > p:last-child,
+.submissionDetailCard > p:last-child {
+  margin-bottom: 0;
 }
 
+/* AI Feedback Block within Submission Detail */
 .aiFeedbackBlock {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
-  border-top: 1px dashed #ccc;
+  margin-top: 1.5rem; /* More space before AI feedback */
+  padding-top: 1rem;
+  border-top: 1px dashed #ced4da; /* Softer separator */
 }
 .aiFeedbackBlock p {
-  margin-bottom: 0.3rem;
+  /* Paragraphs within AI feedback, e.g., for individual feedback points */
+  margin-bottom: 0.5rem;
+}
+.aiFeedbackBlock p strong {
+  /* Labels like "Prediction Assessment:" */
+  margin-right: 0.3em;
+}
+.aiFeedbackBlock em {
+  /* For AI's textual feedback */
+  color: #4a5568;
 }
 
+/* Assessment Labels (Shared) */
 .assessmentLabel {
-  /* Copied from PRIMMSection.module.css - consider a global style */
   font-weight: bold;
   font-size: 0.85em;
   margin-left: 0.5em;
-  padding: 0.2em 0.6em;
-  border-radius: 4px;
+  padding: 0.25em 0.7em; /* Adjusted padding */
+  border-radius: 12px;
   text-transform: uppercase;
   display: inline-block;
   vertical-align: middle;
+  line-height: 1.3;
 }
 .assessmentAchieves {
   color: #155724;
@@ -126,28 +226,216 @@
   border: 1px solid #f0dd92;
 }
 .assessmentInsufficient {
-  color: #721c24;
-  background-color: #f8d7da;
+  color: #991b1b;
+  background-color: #fee2e2;
   border: 1px solid #ebc0c3;
 }
 
-.navigationButtons {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: space-between;
-}
-.navigationButtons button {
-  padding: 0.5rem 1rem;
-  min-width: 120px;
+.assessmentLabelSmall {
+  /* For summary lines in lists */
+  composes: assessmentLabel; /* Inherits base styles */
+  font-size: 0.75em;
+  padding: 0.15em 0.5em;
+  margin-left: 0.75em;
 }
 
-.errorMessage {
-  /* Copied from InstructorDashboardPage.module.css */
-  color: #c0392b;
-  background-color: #f9e4e2;
-  border: 1px solid #f1c0ba;
-  padding: 1rem;
+/* Navigation Buttons (for Review by Assignment) */
+.navigationButtons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+.navigationButtons button {
+  padding: 0.6rem 1.2rem;
+  min-width: 150px; /* Ensure good width */
+  font-size: 0.9rem;
+  background-color: #6c757d;
+  color: white;
+  border: none;
   border-radius: 4px;
-  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.navigationButtons button:hover:not(:disabled) {
+  background-color: #5a6268;
+}
+.navigationButtons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.navigationButtons span {
+  /* For "Student X / Y" text */
+  font-size: 0.95em;
+  color: #495057;
+  font-weight: 500;
+}
+
+/* Review by Student View Specifics */
+.studentDataContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for Learning Entries and PRIMM */
+  gap: 2rem;
   margin-top: 1rem;
+}
+.submissionCategory h4 {
+  font-size: 1.2em;
+  color: #306998;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0eaf3;
+}
+.submissionList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px; /* Or adjust */
+  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+.submissionListItem {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f1f1;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.submissionListItem:last-child {
+  border-bottom: none;
+}
+.submissionListItem:hover {
+  background-color: #f8f9fa;
+}
+.submissionListItem strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #0056b3;
+}
+.submissionListItem small {
+  color: #6c757d;
+  font-size: 0.85em;
+  display: block;
+}
+
+/* Modal Styles (for Review by Student details) */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65); /* Darker backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Ensure it's above other content */
+  padding: 1rem; /* Padding for smaller screens */
+  box-sizing: border-box;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 800px; /* Max width for the modal */
+  width: 95%; /* Responsive width */
+  max-height: 90vh; /* Max height */
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative; /* For potential close button positioning */
+}
+.modalContent h3 {
+  margin-top: 0;
+  color: #306998;
+  font-size: 1.5em;
+  margin-bottom: 1rem;
+}
+
+.closeButton {
+  display: block;
+  margin: 2rem auto 0.5rem; /* More space above, less below */
+  padding: 0.7rem 1.8rem;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.closeButton:hover {
+  background-color: #5a6268;
+}
+
+.iterationsContainer {
+  margin-top: 1.5rem;
+}
+.iterationsContainer h4 {
+  font-size: 1.1em;
+  color: #495057;
+  margin-bottom: 0.75rem;
+}
+.iterationsContainer details {
+  margin-bottom: 0.75rem;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+.iterationsContainer summary {
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0.6rem 1rem;
+  background-color: #f0f4f8;
+  border-radius: 3px;
+  display: flex; /* For aligning assessment label */
+  justify-content: space-between;
+  align-items: center;
+}
+.iterationsContainer summary:hover {
+  background-color: #e0eaf3;
+}
+.iterationsContainer details[open] summary {
+  border-bottom: 1px solid #dfe6ed;
+}
+.iterationsContainer .submissionDetailCard {
+  /* Nested card for version details */
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-bottom: 0;
+  padding-top: 1rem;
+}
+
+/* General Utility */
+.errorMessage {
+  color: #991b1b; /* Darker red */
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  text-align: center;
+  margin: 1.5rem 0; /* More prominent margin */
+}
+
+.placeholderMessage {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #6c757d;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border: 1px dashed #ced4da;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.contextLink {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.9em;
+  color: #007bff;
+  text-decoration: none;
+}
+.contextLink:hover {
+  text-decoration: underline;
 }

@@ -1,16 +1,23 @@
-// src/components/instructor/ReviewByAssignmentView.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import type {
   Unit,
+  UnitId,
   Lesson,
   LessonId,
   SectionId,
   AnyLessonSectionData,
   PRIMMCodeExample,
-} from "../../types/data";
+  PRIMMSectionData,
+  ReflectionSectionData,
+  InstructorStudentInfo,
+  DisplayableAssignment, // New type for our list
+} from "../../types/data"; // Assuming DisplayableAssignment is in data.ts
 import type {
   ListOfAssignmentSubmissionsResponse,
   AssignmentSubmission,
+  ReflectionVersionItem,
+  StoredPrimmSubmissionItem,
+  AssessmentLevel,
 } from "../../types/apiServiceTypes";
 import * as dataLoader from "../../lib/dataLoader";
 import * as apiService from "../../lib/apiService";
@@ -18,286 +25,323 @@ import { useAuthStore } from "../../stores/authStore";
 import { API_GATEWAY_BASE_URL } from "../../config";
 import LoadingSpinner from "../LoadingSpinner";
 import styles from "./InstructorViews.module.css";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Link } from "react-router-dom";
 
-// Helper to display Reflection details
-const ReflectionSubmissionDetail: React.FC<{
-  submission: AssignmentSubmission<"Reflection">;
-}> = ({ submission }) => {
-  const details = submission.submissionDetails;
-  // For POC, just show final. Iterations would require more complex state/UI.
+// --- Submission Display Components (copied from previous ReviewByStudentView for brevity) ---
+// These could be moved to a shared file if used by both views identically.
+const ReflectionSubmissionDisplay: React.FC<{
+  submission: ReflectionVersionItem;
+  studentName?: string | null;
+}> = ({ submission, studentName }) => {
   return (
     <div className={styles.submissionDetailCard}>
-      <h4>Reflection: {details.userTopic}</h4>
+      <h4>Reflection Topic: {submission.userTopic}</h4>
       <p>
-        <strong>Student:</strong>{" "}
-        {submission.studentName || submission.studentId}
+        <strong>Student:</strong> {studentName || submission.userId}
       </p>
       <p>
         <strong>Submitted:</strong>{" "}
-        {new Date(details.createdAt).toLocaleString()}
+        {new Date(submission.createdAt).toLocaleString()}
       </p>
-      <div>
+      <Link
+        to={`/lesson/${submission.lessonId}#${submission.sectionId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.contextLink}
+      >
+        View Original Section
+      </Link>
+      <div style={{ marginTop: "0.5rem" }}>
         <strong>Code:</strong>
         <pre>
-          <code>{details.userCode}</code>
+          <code>{submission.userCode}</code>
         </pre>
       </div>
       <div>
         <strong>Explanation:</strong>
-        <p>{details.userExplanation}</p>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {submission.userExplanation}
+        </ReactMarkdown>
       </div>
-      {details.aiAssessment && (
+      {submission.aiAssessment && (
         <div className={styles.aiFeedbackBlock}>
-          <strong>AI Assessment:</strong>{" "}
+          <strong>AI Assessment:</strong>
           <span
             className={`${styles.assessmentLabel} ${
               styles[
                 "assessment" +
-                  details.aiAssessment.charAt(0).toUpperCase() +
-                  details.aiAssessment.slice(1)
+                  submission.aiAssessment.charAt(0).toUpperCase() +
+                  submission.aiAssessment.slice(1)
               ]
             }`}
           >
-            {details.aiAssessment.toUpperCase()}
+            {submission.aiAssessment.toUpperCase()}
           </span>
-          {details.aiFeedback && (
-            <p>
-              <em>{details.aiFeedback}</em>
+          {submission.aiFeedback && (
+            <p className={styles.feedbackText}>
+              <em>{submission.aiFeedback}</em>
             </p>
           )}
         </div>
       )}
+      {submission.isFinal && (
+        <p style={{ fontWeight: "bold", color: "green", marginTop: "0.5rem" }}>
+          This is the finalized Learning Entry.
+        </p>
+      )}
     </div>
   );
 };
 
-// Helper to display PRIMM details
-const PrimmSubmissionDetail: React.FC<{
-  submission: AssignmentSubmission<"PRIMM">;
-}> = ({ submission }) => {
-  const details = submission.submissionDetails;
+const PrimmSubmissionDisplay: React.FC<{
+  submission: StoredPrimmSubmissionItem;
+  studentName?: string | null;
+}> = ({ submission, studentName }) => {
   return (
     <div className={styles.submissionDetailCard}>
-      <h4>
-        PRIMM: {details.primmExampleId} (Lesson: {details.lessonId}, Section:{" "}
-        {details.sectionId})
-      </h4>
+      <h4>PRIMM Analysis: Example '{submission.primmExampleId}'</h4>
       <p>
-        <strong>Student:</strong>{" "}
-        {submission.studentName || submission.studentId}
+        <strong>Student:</strong> {studentName || submission.userId}
       </p>
       <p>
         <strong>Submitted:</strong>{" "}
-        {new Date(details.timestampIso).toLocaleString()}
+        {new Date(submission.timestampIso).toLocaleString()}
       </p>
-      <div>
-        <strong>Code Snippet:</strong>
+      <Link
+        to={`/lesson/${submission.lessonId}#${submission.sectionId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.contextLink}
+      >
+        View Original Section & Example
+      </Link>
+      <div style={{ marginTop: "0.5rem" }}>
+        <strong>Code Snippet Analyzed:</strong>
         <pre>
-          <code>{details.codeSnippet}</code>
+          <code>{submission.codeSnippet}</code>
         </pre>
       </div>
       <p>
-        <strong>Prediction Prompt:</strong> {details.userPredictionPromptText}
+        <strong>Prediction Prompt:</strong>{" "}
+        {submission.userPredictionPromptText}
       </p>
       <p>
-        <strong>User Prediction:</strong> {details.userPredictionText}{" "}
-        (Confidence: {details.userPredictionConfidence})
+        <strong>User's Prediction:</strong> {submission.userPredictionText}
       </p>
-      {details.actualOutputSummary && (
+      <p>
+        <strong>Confidence:</strong> {submission.userPredictionConfidence}/3
+      </p>
+      {submission.actualOutputSummary && (
         <p>
-          <strong>Actual Output Summary:</strong> {details.actualOutputSummary}
+          <strong>Actual Output Summary (User Reported):</strong>{" "}
+          {submission.actualOutputSummary}
         </p>
       )}
       <p>
-        <strong>User Explanation:</strong>{" "}
-        {details.userExplanationText || "N/A"}
+        <strong>User's Explanation:</strong>{" "}
+        {submission.userExplanationText || "N/A"}
       </p>
+
       <div className={styles.aiFeedbackBlock}>
+        <h5>AI Evaluation:</h5>
         <p>
-          <strong>AI Prediction Assessment:</strong>{" "}
+          <strong>Prediction Assessment:</strong>
           <span
             className={`${styles.assessmentLabel} ${
               styles[
                 "assessment" +
-                  details.aiPredictionAssessment.charAt(0).toUpperCase() +
-                  details.aiPredictionAssessment.slice(1)
+                  submission.aiPredictionAssessment.charAt(0).toUpperCase() +
+                  submission.aiPredictionAssessment.slice(1)
               ]
             }`}
           >
-            {details.aiPredictionAssessment.toUpperCase()}
+            {submission.aiPredictionAssessment.toUpperCase()}
           </span>
         </p>
-        {details.aiExplanationAssessment && (
+        {submission.aiExplanationAssessment && (
           <p>
-            <strong>AI Explanation Assessment:</strong>{" "}
+            <strong>Explanation Assessment:</strong>
             <span
               className={`${styles.assessmentLabel} ${
                 styles[
                   "assessment" +
-                    details.aiExplanationAssessment.charAt(0).toUpperCase() +
-                    details.aiExplanationAssessment.slice(1)
+                    submission.aiExplanationAssessment.charAt(0).toUpperCase() +
+                    submission.aiExplanationAssessment.slice(1)
                 ]
               }`}
             >
-              {details.aiExplanationAssessment.toUpperCase()}
+              {submission.aiExplanationAssessment.toUpperCase()}
             </span>
           </p>
         )}
-        {details.aiOverallComment && (
-          <p>
-            <strong>AI Overall Comment:</strong>{" "}
-            <em>{details.aiOverallComment}</em>
+        {submission.aiOverallComment && (
+          <p className={styles.feedbackText}>
+            <strong>Overall Comment:</strong>{" "}
+            <em>{submission.aiOverallComment}</em>
           </p>
         )}
       </div>
     </div>
   );
 };
+// --- End Submission Display Components ---
 
-const ReviewByAssignmentView: React.FC = () => {
+interface ReviewByAssignmentViewProps {
+  units: Unit[];
+  permittedStudents: InstructorStudentInfo[];
+}
+
+const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
+  units,
+  permittedStudents,
+}) => {
   const { idToken, isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
-  const [units, setUnits] = useState<Unit[]>([]);
-  const [selectedUnitId, setSelectedUnitId] = useState<string>("");
-  const [lessons, setLessons] = useState<Lesson[]>([]); // Full Lesson objects
-  const [selectedLessonId, setSelectedLessonId] = useState<LessonId | "">(""); // GUID
-  const [sections, setSections] = useState<AnyLessonSectionData[]>([]);
-  const [selectedSectionId, setSelectedSectionId] = useState<SectionId | "">(
-    ""
-  );
-  const [selectedAssignmentType, setSelectedAssignmentType] = useState<
-    "Reflection" | "PRIMM" | null
-  >(null);
-  const [primmExamples, setPrimmExamples] = useState<PRIMMCodeExample[]>([]);
-  const [selectedPrimmExampleId, setSelectedPrimmExampleId] =
-    useState<string>("");
+  const [selectedUnitId, setSelectedUnitId] = useState<UnitId | "">("");
+  const [assignmentsInUnit, setAssignmentsInUnit] = useState<
+    DisplayableAssignment[]
+  >([]);
+  const [selectedAssignmentKey, setSelectedAssignmentKey] = useState<
+    string | null
+  >(null); // Use the unique key
 
   const [submissions, setSubmissions] = useState<
     AssignmentSubmission<"Reflection" | "PRIMM">[]
   >([]);
   const [currentSubmissionIndex, setCurrentSubmissionIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    units: false,
+    lessons: false,
+    submissions: false,
+  });
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    dataLoader.fetchUnitsData().then((data) => setUnits(data.units));
-  }, []);
-
+  // Populate assignments when unit changes
   useEffect(() => {
     if (selectedUnitId) {
       const unit = units.find((u) => u.id === selectedUnitId);
       if (unit) {
-        Promise.all(
-          unit.lessons.map((lr) => dataLoader.fetchLessonData(lr.path))
-        ).then((loadedLessons) => {
-          setLessons(loadedLessons.filter((l) => l !== null) as Lesson[]);
-          setSelectedLessonId("");
-          setSections([]);
-          setSelectedSectionId("");
-          setPrimmExamples([]);
-          setSelectedPrimmExampleId("");
-        });
+        setIsLoading((prevState) => ({ ...prevState, lessons: true }));
+        setAssignmentsInUnit([]); // Clear previous
+        setSelectedAssignmentKey(null);
+        setSubmissions([]);
+
+        const lessonPromises = unit.lessons.map((lr) =>
+          dataLoader.fetchLessonData(lr.path)
+        ); // lr.id is GUID
+        Promise.all(lessonPromises)
+          .then((loadedLessonsFull) => {
+            const displayableAssignments: DisplayableAssignment[] = [];
+            loadedLessonsFull.forEach((lesson) => {
+              if (lesson) {
+                // lesson is Lesson object with .guid
+                lesson.sections.forEach((section) => {
+                  if (section.kind === "Reflection") {
+                    displayableAssignments.push({
+                      key: `${lesson.guid}-${section.id}-reflection`,
+                      unitId: unit.id,
+                      lessonId: lesson.guid,
+                      lessonTitle: lesson.title,
+                      sectionId: section.id,
+                      sectionTitle: section.title,
+                      assignmentType: "Reflection",
+                      assignmentDisplayTitle: `Reflection: "${section.title}" (Lesson: ${lesson.title})`,
+                    });
+                  } else if (section.kind === "PRIMM") {
+                    (section as PRIMMSectionData).examples.forEach(
+                      (example, idx) => {
+                        displayableAssignments.push({
+                          key: `${lesson.guid}-${section.id}-primm-${example.id}`,
+                          unitId: unit.id,
+                          lessonId: lesson.guid,
+                          lessonTitle: lesson.title,
+                          sectionId: section.id,
+                          sectionTitle: section.title,
+                          assignmentType: "PRIMM",
+                          primmExampleId: example.id,
+                          assignmentDisplayTitle: `PRIMM: Ex. "${example.id}" in "${section.title}" (Lesson: ${lesson.title})`,
+                        });
+                      }
+                    );
+                  }
+                });
+              }
+            });
+            setAssignmentsInUnit(displayableAssignments);
+          })
+          .catch((err) => {
+            console.error("Error loading lessons for unit assignments:", err);
+            setError("Failed to load assignments for the selected unit.");
+          })
+          .finally(() =>
+            setIsLoading((prevState) => ({ ...prevState, lessons: false }))
+          );
       }
     } else {
-      setLessons([]);
-      setSelectedLessonId("");
+      setAssignmentsInUnit([]);
+      setSelectedAssignmentKey(null);
+      setSubmissions([]);
     }
   }, [selectedUnitId, units]);
 
-  useEffect(() => {
-    if (selectedLessonId) {
-      const lesson = lessons.find((l) => l.guid === selectedLessonId); // Lesson objects have .guid
-      if (lesson) {
-        const relevantSections = lesson.sections.filter(
-          (s) => s.kind === "Reflection" || s.kind === "PRIMM"
-        );
-        setSections(relevantSections);
-        setSelectedSectionId("");
-        setPrimmExamples([]);
-        setSelectedPrimmExampleId("");
-      }
-    } else {
-      setSections([]);
-      setSelectedSectionId("");
-    }
-  }, [selectedLessonId, lessons]);
-
-  useEffect(() => {
-    if (selectedSectionId) {
-      const section = sections.find((s) => s.id === selectedSectionId);
-      if (section?.kind === "PRIMM") {
-        setSelectedAssignmentType("PRIMM");
-        setPrimmExamples(section.examples);
-        setSelectedPrimmExampleId(section.examples[0]?.id || "");
-      } else if (section?.kind === "Reflection") {
-        setSelectedAssignmentType("Reflection");
-        setPrimmExamples([]);
-        setSelectedPrimmExampleId("");
-      } else {
-        setSelectedAssignmentType(null);
-      }
-    } else {
-      setSelectedAssignmentType(null);
-    }
-  }, [selectedSectionId, sections]);
-
-  const fetchSubmissions = useCallback(async () => {
-    if (
-      !isAuthenticated ||
-      !idToken ||
-      !apiGatewayUrl ||
-      !selectedUnitId ||
-      !selectedLessonId ||
-      !selectedSectionId ||
-      !selectedAssignmentType
-    ) {
-      setSubmissions([]);
-      return;
-    }
-    if (selectedAssignmentType === "PRIMM" && !selectedPrimmExampleId) {
-      setSubmissions([]);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setSubmissions([]);
+  const handleAssignmentSelection = (assignmentKey: string) => {
+    setSelectedAssignmentKey(assignmentKey);
+    setSubmissions([]); // Clear previous submissions
     setCurrentSubmissionIndex(0);
-    try {
-      const response = await apiService.getSubmissionsForAssignment(
-        idToken,
-        apiGatewayUrl,
-        selectedUnitId,
-        selectedLessonId,
-        selectedSectionId,
-        selectedAssignmentType,
-        selectedAssignmentType === "PRIMM" ? selectedPrimmExampleId : undefined
-      );
-      setSubmissions(response.submissions);
-    } catch (err) {
-      /* ... error handling ... */
-      console.error("Failed to fetch assignment submissions:", err);
-      if (err instanceof apiService.ApiError) {
-        setError(`Error: ${err.data.message || err.message}`);
-      } else {
-        setError("An unknown error occurred.");
-      }
-    } finally {
-      setIsLoading(false);
+    setError(null);
+    // Automatically load submissions when an assignment is selected
+    const assignment = assignmentsInUnit.find((a) => a.key === assignmentKey);
+    if (assignment) {
+      fetchSubmissionsForSelectedAssignment(assignment);
     }
-  }, [
-    isAuthenticated,
-    idToken,
-    apiGatewayUrl,
-    selectedUnitId,
-    selectedLessonId,
-    selectedSectionId,
-    selectedAssignmentType,
-    selectedPrimmExampleId,
-  ]);
+  };
 
-  const currentSubmission = submissions[currentSubmissionIndex];
+  const fetchSubmissionsForSelectedAssignment = useCallback(
+    async (assignment: DisplayableAssignment) => {
+      if (!isAuthenticated || !idToken || !apiGatewayUrl || !assignment) return;
+
+      setIsLoading((prevState) => ({ ...prevState, submissions: true }));
+      setError(null);
+
+      try {
+        const response = await apiService.getSubmissionsForAssignment(
+          idToken,
+          apiGatewayUrl,
+          assignment.unitId,
+          assignment.lessonId,
+          assignment.sectionId,
+          assignment.assignmentType,
+          assignment.primmExampleId
+        );
+        setSubmissions(response.submissions);
+        if (response.submissions.length === 0) {
+          setError("No submissions found for this assignment.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch assignment submissions:", err);
+        if (err instanceof apiService.ApiError) {
+          setError(
+            `Error fetching submissions: ${err.data.message || err.message}`
+          );
+        } else if (err instanceof Error) {
+          setError(`Error fetching submissions: ${err.message}`);
+        } else {
+          setError("An unknown error occurred while fetching submissions.");
+        }
+      } finally {
+        setIsLoading((prevState) => ({ ...prevState, submissions: false }));
+      }
+    },
+    [isAuthenticated, idToken, apiGatewayUrl]
+  );
+
+  const currentSubmissionData = submissions[currentSubmissionIndex];
+  const currentStudentInfo = permittedStudents.find(
+    (s) => s.studentId === currentSubmissionData?.studentId
+  );
 
   return (
     <div className={styles.viewContainer}>
@@ -305,7 +349,7 @@ const ReviewByAssignmentView: React.FC = () => {
       <div className={styles.filters}>
         <select
           value={selectedUnitId}
-          onChange={(e) => setSelectedUnitId(e.target.value)}
+          onChange={(e) => setSelectedUnitId(e.target.value as UnitId)}
           className={styles.filterSelect}
         >
           <option value="">Select Unit</option>
@@ -315,109 +359,121 @@ const ReviewByAssignmentView: React.FC = () => {
             </option>
           ))}
         </select>
-        <select
-          value={selectedLessonId}
-          onChange={(e) => setSelectedLessonId(e.target.value as LessonId)}
-          disabled={!selectedUnitId}
-          className={styles.filterSelect}
-        >
-          <option value="">Select Lesson</option>
-          {lessons.map((lesson) => (
-            <option key={lesson.guid} value={lesson.guid}>
-              {lesson.title}
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedSectionId}
-          onChange={(e) => setSelectedSectionId(e.target.value as SectionId)}
-          disabled={!selectedLessonId}
-          className={styles.filterSelect}
-        >
-          <option value="">Select Section (Reflection/PRIMM)</option>
-          {sections.map((section) => (
-            <option key={section.id} value={section.id}>
-              {section.title} ({section.kind})
-            </option>
-          ))}
-        </select>
-        {selectedAssignmentType === "PRIMM" && primmExamples.length > 0 && (
-          <select
-            value={selectedPrimmExampleId}
-            onChange={(e) => setSelectedPrimmExampleId(e.target.value)}
-            disabled={!selectedSectionId}
-            className={styles.filterSelect}
-          >
-            <option value="">Select PRIMM Example</option>
-            {primmExamples.map((ex) => (
-              <option key={ex.id} value={ex.id}>
-                Example: {ex.id}
-              </option>
-            ))}
-          </select>
-        )}
-        <button
-          onClick={fetchSubmissions}
-          disabled={
-            isLoading ||
-            !selectedSectionId ||
-            (selectedAssignmentType === "PRIMM" && !selectedPrimmExampleId)
-          }
-          className={styles.filterButton}
-        >
-          Load Submissions
-        </button>
+        {/* The "Load Submissions" button is removed; loading happens on assignment click */}
       </div>
 
-      {isLoading && <LoadingSpinner message="Loading submissions..." />}
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {isLoading.lessons && <LoadingSpinner message="Loading assignments..." />}
 
-      {!isLoading && !error && submissions.length > 0 && currentSubmission && (
-        <div className={styles.submissionViewer}>
-          <h4>
-            Viewing Submission {currentSubmissionIndex + 1} of{" "}
-            {submissions.length}
-          </h4>
-          {currentSubmission.submissionDetails.kind === "Reflection" ? ( // Need a way to distinguish or trust selectedAssignmentType
-            <ReflectionSubmissionDetail
-              submission={
-                currentSubmission as AssignmentSubmission<"Reflection">
-              }
-            />
-          ) : currentSubmission.submissionDetails.primmExampleId ? ( // Check if it's a PRIMM submission
-            <PrimmSubmissionDetail
-              submission={currentSubmission as AssignmentSubmission<"PRIMM">}
-            />
-          ) : (
-            <p>Unsupported submission type.</p>
-          )}
-          <div className={styles.navigationButtons}>
-            <button
-              onClick={() =>
-                setCurrentSubmissionIndex((prev) => Math.max(0, prev - 1))
-              }
-              disabled={currentSubmissionIndex === 0}
-            >
-              Previous Student
-            </button>
-            <button
-              onClick={() =>
-                setCurrentSubmissionIndex((prev) =>
-                  Math.min(submissions.length - 1, prev + 1)
-                )
-              }
-              disabled={currentSubmissionIndex === submissions.length - 1}
-            >
-              Next Student
-            </button>
-          </div>
+      {selectedUnitId &&
+        !isLoading.lessons &&
+        assignmentsInUnit.length === 0 && (
+          <p className={styles.placeholderMessage}>
+            No reviewable assignments (Reflections/PRIMM) found in this unit.
+          </p>
+        )}
+
+      {assignmentsInUnit.length > 0 && (
+        <div className={styles.assignmentListContainer}>
+          <ul className={styles.assignmentList}>
+            {assignmentsInUnit.map((assignment) => (
+              <li
+                key={assignment.key}
+                className={`${styles.assignmentListItem} ${
+                  selectedAssignmentKey === assignment.key
+                    ? styles.selected
+                    : ""
+                }`}
+                onClick={() => handleAssignmentSelection(assignment.key)}
+              >
+                <span className={styles.assignmentTitle}>
+                  {assignment.assignmentDisplayTitle}
+                </span>
+                <span className={styles.assignmentMeta}>
+                  Type: {assignment.assignmentType}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
-      {!isLoading &&
+
+      {isLoading.submissions && (
+        <LoadingSpinner message="Loading submissions..." />
+      )}
+      {error && !isLoading.submissions && (
+        <p className={styles.errorMessage}>{error}</p>
+      )}
+
+      {!isLoading.submissions &&
         !error &&
-        submissions.length === 0 &&
-        (selectedSectionId || selectedPrimmExampleId) && (
-          <p>No submissions found for this assignment.</p>
+        submissions.length > 0 &&
+        currentSubmissionData && (
+          <div className={styles.submissionViewer}>
+            <h4>
+              Viewing Submission {currentSubmissionIndex + 1} of{" "}
+              {submissions.length}
+              {currentStudentInfo?.studentName
+                ? ` (${currentStudentInfo.studentName})`
+                : ` (Student ID: ${currentSubmissionData.studentId})`}
+            </h4>
+
+            {currentSubmissionData.submissionDetails.hasOwnProperty(
+              "userTopic"
+            ) ? ( // Heuristic for Reflection
+              <ReflectionSubmissionDisplay
+                submission={
+                  currentSubmissionData.submissionDetails as ReflectionVersionItem
+                }
+                studentName={currentStudentInfo?.studentName}
+              />
+            ) : currentSubmissionData.submissionDetails.hasOwnProperty(
+                "primmExampleId"
+              ) ? ( // Heuristic for PRIMM
+              <PrimmSubmissionDisplay
+                submission={
+                  currentSubmissionData.submissionDetails as StoredPrimmSubmissionItem
+                }
+                studentName={currentStudentInfo?.studentName}
+              />
+            ) : (
+              <p>Selected assignment type not recognized for display.</p>
+            )}
+
+            <div className={styles.navigationButtons}>
+              <button
+                onClick={() =>
+                  setCurrentSubmissionIndex((prev) => Math.max(0, prev - 1))
+                }
+                disabled={currentSubmissionIndex === 0}
+              >
+                &larr; Previous Student
+              </button>
+              <span>
+                Student {currentSubmissionIndex + 1} / {submissions.length}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentSubmissionIndex((prev) =>
+                    Math.min(submissions.length - 1, prev + 1)
+                  )
+                }
+                disabled={currentSubmissionIndex >= submissions.length - 1}
+              >
+                Next Student &rarr;
+              </button>
+            </div>
+          </div>
+        )}
+      {!isLoading.submissions &&
+        !error &&
+        selectedAssignmentKey &&
+        submissions.length === 0 && (
+          // This message is covered by setError in fetchSubmissions if API returns empty.
+          // If fetchSubmissions itself isn't called yet, this won't show.
+          // The error state handles "No submissions found".
+          <p className={styles.placeholderMessage}>
+            Awaiting submissions or none found for the selected assignment.
+          </p>
         )}
     </div>
   );

@@ -664,85 +664,118 @@ export async function getInstructorClassUnitProgress(
 export async function getSubmissionsForAssignment<
   T extends "Reflection" | "PRIMM"
 >(
-  idToken: string,
-  apiGatewayUrl: string,
-  unitId: string,
-  lessonId: string, // GUID
-  sectionId: string, // ID of the Reflection or PRIMM section
+  idToken: AuthToken, // For API consistency, even if mock doesn't use it for auth
+  apiGatewayUrl: string, // For API consistency
+  unitId: UnitId,
+  lessonId: LessonId, // GUID
+  sectionId: SectionId, // ID of the Reflection or PRIMM section
   assignmentType: T,
   primmExampleId?: string // Only if assignmentType is "PRIMM"
 ): Promise<ListOfAssignmentSubmissionsResponse<T>> {
-  if (USE_MOCKED_API) {
+  // This mock will always run if USE_MOCKED_API is true, regardless of other params for now
+  if (true) {
     console.log(
-      `MOCKED API [getSubmissionsForAssignment]: unitId: ${unitId}, lessonId: ${lessonId}, sectionId: ${sectionId}, type: ${assignmentType}`
+      `MOCKED API [getSubmissionsForAssignment]: unitId: ${unitId}, lessonId: ${lessonId}, sectionId: ${sectionId}, type: ${assignmentType}` +
+        (primmExampleId ? `, primmExampleId: ${primmExampleId}` : "")
     );
-    await mockApiDelay(1000);
+    await mockApiDelay(1000); // Simulate network delay
 
     const submissions: AssignmentSubmission<T>[] = [];
-    const studentIds = [
-      "USER#student_alpha_123",
-      "USER#student_beta_456",
-      "USER#student_gamma_789",
+    // Simulate 3-5 student submissions for the selected assignment
+    const studentIdsForMock: UserId[] = [
+      "student_alpha_123",
+      "student_beta_456",
+      "student_gamma_789",
+      "student_delta_000",
     ];
 
-    studentIds.forEach((sId, index) => {
+    studentIdsForMock.forEach((sId, index) => {
       const submissionTimestamp = new Date(
-        Date.now() - index * 3600000
-      ).toISOString(); // Offset by an hour
+        Date.now() - index * 3600000 * 24 - index * 123456
+      ).toISOString() as IsoTimestamp;
+
       if (assignmentType === "Reflection") {
+        // For reflections, the AssignmentSubmission.submissionDetails is a ReflectionVersionItem
+        // We'll mock the *final* version for simplicity in this list view.
+        // A more complex mock could return multiple versions if the UI is to show history here.
+        const reflectionDetail: ReflectionVersionItem = {
+          versionId: `rv_mock_${lessonId}_${sectionId}_${sId}_final`,
+          userId: sId,
+          lessonId: lessonId,
+          sectionId: sectionId,
+          userTopic: `Reflection on ${sectionId} by Student ${index + 1}`,
+          userCode: `print("Student ${
+            index + 1
+          }'s code for ${sectionId}")\n# Some more code`,
+          userExplanation: `This is student ${
+            sId.split("_")[1]
+          }'s insightful final explanation for the reflection topic in section ${sectionId} of lesson ${lessonId.substring(
+            0,
+            8
+          )}. They discussed various aspects with clarity.`,
+          aiFeedback: `Mocked AI: Student ${
+            index + 1
+          } provided a comprehensive reflection. Well done on articulating your thoughts on [key concept from section ${sectionId}].`,
+          aiAssessment: (
+            ["achieves", "mostly", "developing"] as AssessmentLevel[]
+          )[index % 3],
+          createdAt: submissionTimestamp,
+          isFinal: true,
+          sourceVersionId: `rv_mock_${lessonId}_${sectionId}_${sId}_draft2`, // Fictional previous draft
+          finalEntryCreatedAt: submissionTimestamp,
+        };
         submissions.push({
           studentId: sId,
-          studentName: `Student ${sId.split("_")[1].charAt(0).toUpperCase()}`,
+          studentName: `Student ${sId
+            .split("_")[1]
+            .charAt(0)
+            .toUpperCase()}${sId.split("_")[1].substring(1, 4)}`,
           submissionTimestamp,
-          submissionDetails: {
-            // Mocked ReflectionVersionItem
-            versionId: `rv_mock_${index}`,
-            userId: sId,
-            lessonId: lessonId,
-            sectionId: sectionId,
-            userTopic: `Mocked Topic by ${sId}`,
-            userCode: "print('reflection mock code')",
-            userExplanation: `This is student ${sId}'s final reflection text for section ${sectionId}. It's insightful.`,
-            aiFeedback:
-              "Mocked AI: This is a well-articulated final reflection.",
-            aiAssessment: (["achieves", "mostly"] as AssessmentLevel[])[
-              index % 2
-            ],
-            createdAt: submissionTimestamp,
-            isFinal: true, // Assuming we fetch the final one for this view
-            sourceVersionId: `rv_draft_mock_${index}`,
-            finalEntryCreatedAt: submissionTimestamp,
-          } as ReflectionVersionItem, // Cast to satisfy T
-        } as AssignmentSubmission<T>); // Outer cast
+          submissionDetails: reflectionDetail as any, // Cast to 'any' then to T to satisfy TypeScript
+        } as AssignmentSubmission<T>);
       } else if (assignmentType === "PRIMM" && primmExampleId) {
+        // For PRIMM, submissionDetails is a StoredPrimmSubmissionItem
+        const primmDetail: StoredPrimmSubmissionItem = {
+          userId: sId,
+          submissionCompositeKey: `${lessonId}#${sectionId}#${primmExampleId}#${submissionTimestamp}`,
+          lessonId: lessonId,
+          sectionId: sectionId,
+          primmExampleId: primmExampleId,
+          timestampIso: submissionTimestamp,
+          createdAt: submissionTimestamp, // Add createdAt if your StoredPrimmSubmissionItem has it
+          codeSnippet: `def example_func():\n  val = ${
+            index * 5
+          }\n  print(f"Value is {val}")\nexample_func()`,
+          userPredictionPromptText: `What will be the output of the code for example ${primmExampleId}?`,
+          userPredictionText: `Student ${
+            sId.split("_")[1]
+          } predicted the output for example ${primmExampleId} would be 'Value is ${
+            index * 5
+          }'.`,
+          userPredictionConfidence: ((index % 3) + 1) as 1 | 2 | 3, // 1, 2, or 3
+          actualOutputSummary: `Value is ${index * 5}`,
+          userExplanationText: `Student ${
+            sId.split("_")[1]
+          } explained that the function calculates and prints the value. Their prediction was accurate.`,
+          aiPredictionAssessment: (
+            ["achieves", "mostly", "developing"] as AssessmentLevel[]
+          )[index % 3],
+          aiExplanationAssessment: (
+            ["achieves", "mostly"] as AssessmentLevel[]
+          )[(index + 1) % 2],
+          aiOverallComment: `Mocked AI overall comment for ${
+            sId.split("_")[1]
+          } on PRIMM example ${primmExampleId}. Focus on detailing execution flow.`,
+        };
         submissions.push({
           studentId: sId,
-          studentName: `Student ${sId.split("_")[1].charAt(0).toUpperCase()}`,
+          studentName: `Student ${sId
+            .split("_")[1]
+            .charAt(0)
+            .toUpperCase()}${sId.split("_")[1].substring(1, 4)}`,
           submissionTimestamp,
-          submissionDetails: {
-            // Mocked StoredPrimmSubmissionItem
-            userId: sId,
-            submissionCompositeKey: `${lessonId}#${sectionId}#${primmExampleId}#${submissionTimestamp}`,
-            lessonId: lessonId,
-            sectionId: sectionId,
-            primmExampleId: primmExampleId,
-            timestampIso: submissionTimestamp,
-            codeSnippet: "print('Hello PRIMM')",
-            userPredictionPromptText: "What will this print?",
-            userPredictionText: `Student ${sId} predicted it would print 'Hello PRIMM'.`,
-            userPredictionConfidence: (index % 3) + 1, // 1, 2, or 3
-            actualOutputSummary: "Hello PRIMM",
-            userExplanationText: `Student ${sId} explained the print function.`,
-            aiPredictionAssessment: (
-              ["achieves", "mostly", "developing"] as AssessmentLevel[]
-            )[index % 3],
-            aiExplanationAssessment: (
-              ["achieves", "mostly"] as AssessmentLevel[]
-            )[index % 2],
-            aiOverallComment: `Mocked AI overall comment for ${sId} on PRIMM example ${primmExampleId}.`,
-            createdAt: submissionTimestamp,
-          } as StoredPrimmSubmissionItem, // Cast to satisfy T
-        } as AssignmentSubmission<T>); // Outer cast
+          submissionDetails: primmDetail as any, // Cast to 'any' then to T
+        } as AssignmentSubmission<T>);
       }
     });
 
@@ -753,13 +786,183 @@ export async function getSubmissionsForAssignment<
       sectionId,
       primmExampleId: assignmentType === "PRIMM" ? primmExampleId : undefined,
       submissions,
-    } as ListOfAssignmentSubmissionsResponse<T>);
+    } as ListOfAssignmentSubmissionsResponse<T>); // Ensure the outer cast matches
   }
 
-  // TODO: Implement REAL API call for getSubmissionsForAssignment
-  console.warn("LIVE API for getSubmissionsForAssignment not implemented yet.");
-  throw new ApiError(
-    "getSubmissionsForAssignment live API not implemented.",
-    501
+  // --- REAL API CALL LOGIC (to be implemented when backend is ready) ---
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
+
+  // Construct the endpoint based on your Swagger definition
+  // Example: /instructor/assignments/submissions?unitId=...&lessonId=...&sectionId=...&type=...
+  // This will depend on how your backend API for this is designed.
+  // For now, let's assume a placeholder path and query params.
+  let queryParams = `unitId=${encodeURIComponent(
+    unitId
+  )}&lessonId=${encodeURIComponent(lessonId)}&sectionId=${encodeURIComponent(
+    sectionId
+  )}&assignmentType=${assignmentType}`;
+  if (assignmentType === "PRIMM" && primmExampleId) {
+    queryParams += `&primmExampleId=${encodeURIComponent(primmExampleId)}`;
+  }
+  const endpoint = `${apiGatewayUrl}/instructor/assignment-submissions?${queryParams}`; // Placeholder endpoint
+
+  console.log(
+    `LIVE API [getSubmissionsForAssignment]: Calling GET ${endpoint}`
   );
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorData: { message: string; details?: any; type?: string } = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      const parsedJson = await response.json();
+      errorData = {
+        message: parsedJson.message || errorData.message,
+        type: parsedJson.type || undefined,
+        details: parsedJson.details || undefined,
+      };
+    } catch (e) {
+      /* ignore */
+    }
+    console.error(
+      `LIVE API [getSubmissionsForAssignment]: Error ${response.status}`,
+      errorData
+    );
+    throw new ApiError(errorData.message, response.status, errorData);
+  }
+  return response.json() as Promise<ListOfAssignmentSubmissionsResponse<T>>;
+}
+
+// Mocked functions for fetching individual student's detailed entries
+// (These would call your /instructor/students/{studentId}/learning-entries and /primm-submissions endpoints)
+export async function getInstructorStudentLearningEntries(
+  idToken: string,
+  apiGatewayUrl: string,
+  studentId: string
+): Promise<StudentLearningEntriesResponse> {
+  if (USE_MOCKED_API) {
+    console.log(
+      `MOCKED API [getInstructorStudentLearningEntries]: studentId: ${studentId}`
+    );
+    await mockApiDelay(600);
+    const entries: ReflectionVersionItem[] = [];
+    const lessonIds = [
+      "lesson-guid-abc" as LessonId,
+      "lesson-guid-def" as LessonId,
+    ];
+    lessonIds.forEach((lId, lIdx) => {
+      const sectionId = `reflection-${lIdx + 1}` as SectionId;
+      for (let i = 0; i < 2; i++) {
+        // Mock 2 versions per reflection
+        const isFinal = i === 1;
+        const ts = new Date(
+          Date.now() - lIdx * 100000000 - i * 5000000
+        ).toISOString();
+        entries.push({
+          versionId: `s_${studentId}_${lId}_${sectionId}_v${i + 1}`,
+          userId: studentId,
+          lessonId: lId,
+          sectionId: sectionId,
+          userTopic: `Topic for ${lId.substring(
+            0,
+            10
+          )} by ${studentId.substring(0, 10)} v${i + 1}`,
+          userCode: `print("Version ${i + 1}")`,
+          userExplanation: `Explanation v${i + 1}. This is ${
+            isFinal ? "final." : "a draft."
+          }`,
+          aiAssessment: isFinal
+            ? "achieves"
+            : (["developing", "mostly"] as AssessmentLevel[])[i % 2],
+          aiFeedback: isFinal
+            ? "Excellent final thoughts."
+            : "Good start, consider adding more detail.",
+          createdAt: ts,
+          isFinal: isFinal,
+          sourceVersionId:
+            i > 0 ? `s_${studentId}_${lId}_${sectionId}_v${i}` : null,
+          finalEntryCreatedAt: isFinal ? ts : null,
+        });
+      }
+    });
+    return {
+      entries: entries.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      ),
+    };
+  }
+  // Real API call
+  const endpoint = `${apiGatewayUrl}/instructor/students/${studentId}/learning-entries`;
+  const response = await fetch(endpoint, {
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
+  if (!response.ok)
+    throw new ApiError(
+      "Failed to fetch student learning entries",
+      response.status
+    );
+  return response.json();
+}
+
+export async function getInstructorStudentPrimmSubmissions(
+  idToken: string,
+  apiGatewayUrl: string,
+  studentId: string
+): Promise<StudentPrimmSubmissionsResponse> {
+  if (USE_MOCKED_API) {
+    console.log(
+      `MOCKED API [getInstructorStudentPrimmSubmissions]: studentId: ${studentId}`
+    );
+    await mockApiDelay(650);
+    const submissions: StoredPrimmSubmissionItem[] = [];
+    const lessonIds = [
+      "lesson-guid-xyz" as LessonId,
+      "lesson-guid-123" as LessonId,
+    ];
+    lessonIds.forEach((lId, lIdx) => {
+      const sectionId = `primm-sec-${lIdx + 1}` as SectionId;
+      const exampleId = `ex${lIdx + 1}`;
+      const ts = new Date(Date.now() - lIdx * 150000000).toISOString();
+      submissions.push({
+        userId: studentId,
+        submissionCompositeKey: `${lId}#${sectionId}#${exampleId}#${ts}`,
+        lessonId: lId,
+        sectionId,
+        primmExampleId: exampleId,
+        timestampIso: ts,
+        createdAt: ts,
+        codeSnippet: `print("PRIMM ${exampleId}")`,
+        userPredictionPromptText: "What does this do?",
+        userPredictionText: "It prints something.",
+        userPredictionConfidence: 2,
+        actualOutputSummary: "It printed: PRIMM " + exampleId,
+        userExplanationText:
+          "My prediction was okay, but the explanation is key.",
+        aiPredictionAssessment: "developing",
+        aiExplanationAssessment: "mostly",
+        aiOverallComment: "Good effort on PRIMM example " + exampleId,
+      });
+    });
+    return { submissions };
+  }
+  // Real API call
+  const endpoint = `${apiGatewayUrl}/instructor/students/${studentId}/primm-submissions`;
+  const response = await fetch(endpoint, {
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
+  if (!response.ok)
+    throw new ApiError(
+      "Failed to fetch student PRIMM submissions",
+      response.status
+    );
+  return response.json();
 }
