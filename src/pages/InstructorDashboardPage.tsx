@@ -139,7 +139,7 @@ const InstructorDashboardPage: React.FC = () => {
         setSelectedUnitObject(currentUnitData);
 
         const lessonPromises = currentUnitData.lessons.map((lessonReference) =>
-          fetchLessonData(lessonReference.guid)
+          fetchLessonData(lessonReference.path)
         );
         const lessonsForUnit = (await Promise.all(lessonPromises)).filter(
           (l) => l !== null
@@ -173,6 +173,7 @@ const InstructorDashboardPage: React.FC = () => {
             const studentInfo = permittedStudents.find(
               (ps) => ps.studentId === studentData.studentId
             );
+            console.log(studentInfo?.studentId);
             let totalCompletedInUnit = 0;
             let totalRequiredInUnit = 0;
 
@@ -183,6 +184,7 @@ const InstructorDashboardPage: React.FC = () => {
 
                 const completedSectionsMapForLesson =
                   studentData.completedSectionsInUnit[lesson.guid] || {};
+                console.log(completedSectionsMapForLesson);
                 const completedInLessonCount = Object.keys(
                   completedSectionsMapForLesson
                 ).length;
@@ -296,9 +298,10 @@ const InstructorDashboardPage: React.FC = () => {
 
       displayableClassProgress.forEach((studentDisplayProgress) => {
         const lessonProg = studentDisplayProgress.lessonsProgress.find(
-          (lp) => lp.lessonId === lesson.title
+          (lp) => lp.lessonId === lesson.guid
         );
         if (lessonProg) {
+          console.log("here!");
           totalPercentSum += lessonProg.completionPercent;
           validStudentProgressCount++; // Count students for whom we have this lesson's progress
           if (
@@ -312,6 +315,13 @@ const InstructorDashboardPage: React.FC = () => {
           }
         }
       });
+      console.log(
+        validStudentProgressCount,
+        lesson.guid,
+        lesson.title,
+        attemptedCount,
+        completedCount
+      );
       return {
         lessonId: lesson.guid,
         lessonTitle: lesson.title,
@@ -377,7 +387,7 @@ const InstructorDashboardPage: React.FC = () => {
                 </td>
                 {selectedUnitLessons.map((lesson) => {
                   const lessonProg = studentProgress.lessonsProgress.find(
-                    (lp) => lp.lessonId === lesson.title
+                    (lp) => lp.lessonId === lesson.guid
                   );
                   const percent = lessonProg ? lessonProg.completionPercent : 0;
                   const cellTitle = lessonProg
