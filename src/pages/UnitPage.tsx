@@ -106,9 +106,12 @@ const UnitPage: React.FC = () => {
         } else if (lesson) {
           try {
             let completedSectionsForThisLesson = new Set<string>();
-            if (allCompletions && lessonReference.guid in allCompletions) {
+            if (
+              allCompletions &&
+              lessonReference.guid in allCompletions[unit.id]
+            ) {
               completedSectionsForThisLesson = new Set(
-                Object.keys(allCompletions[lessonReference.guid])
+                Object.keys(allCompletions[unit.id][lessonReference.guid])
               );
             }
             const requiredSections = getRequiredSectionsForLesson(lesson);
