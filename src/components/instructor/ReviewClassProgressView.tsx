@@ -457,8 +457,8 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
 
   return (
     <>
-      <section className={styles.controlSection}>
-        <h2>Class Progress Overview</h2>
+      <section className={styles.viewContainer}>
+        <h3>Class Progress Overview</h3>
         <div className={styles.filters}>
           <select
             id="unit-select-progress-view"

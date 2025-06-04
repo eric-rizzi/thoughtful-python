@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import type {
   UserId,
   LessonId,
-  SectionId,
   Unit,
+  SectionId,
   IsoTimestamp,
 } from "../../types/data";
 import type {
@@ -12,220 +12,17 @@ import type {
   StoredPrimmSubmissionItem,
 } from "../../types/apiServiceTypes";
 import * as apiService from "../../lib/apiService";
-import * as dataLoader from "../../lib/dataLoader"; // To get lesson titles
+import * as dataLoader from "../../lib/dataLoader";
 import { useAuthStore } from "../../stores/authStore";
 import { API_GATEWAY_BASE_URL } from "../../config";
 import LoadingSpinner from "../LoadingSpinner";
-import styles from "./InstructorViews.module.css"; // Reuse styles
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { Link } from "react-router-dom";
+import styles from "./InstructorViews.module.css";
 
-// --- Display Components (Can be shared or adapted from ReviewByAssignmentView) ---
-const IterativeReflectionDisplay: React.FC<{
-  versions: ReflectionVersionItem[];
-  studentName?: string | null;
-}> = ({ versions, studentName }) => {
-  if (!versions || versions.length === 0) return <p>No versions.</p>;
-  const sortedVersions = [...versions].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
-  const finalOrLatestVersion =
-    sortedVersions.find((v) => v.isFinal) || sortedVersions[0];
+import RenderReflectionVersions from "./shared/RenderReflectionVersions";
+import RenderPrimmActivity from "./shared/RenderPrimmActivity";
 
-  return (
-    <div
-      className={styles.submissionDetailCard}
-      style={{ border: "none", padding: 0 }}
-    >
-      <h4>Topic: {finalOrLatestVersion.userTopic}</h4>
-      <p>
-        <strong>Student:</strong> {studentName || finalOrLatestVersion.userId}
-      </p>
-      <Link
-        to={`/lesson/${finalOrLatestVersion.lessonId}#${finalOrLatestVersion.sectionId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.contextLink}
-      >
-        View Original Section
-      </Link>
-      <div className={styles.iterationsContainer} style={{ marginTop: "1rem" }}>
-        <h5>Version History (Newest First):</h5>
-        {sortedVersions.map((version, index) => (
-          <details
-            key={version.versionId}
-            className={styles.iterationDetail}
-            open={index === 0}
-          >
-            <summary>
-              Version {sortedVersions.length - index} (
-              {version.isFinal ? "Final" : "Draft"}) -{" "}
-              {new Date(version.createdAt).toLocaleDateString()}
-              {version.aiAssessment && (
-                <span
-                  className={`${styles.assessmentLabelSmall} ${
-                    styles[
-                      "assessment" +
-                        version.aiAssessment.charAt(0).toUpperCase() +
-                        version.aiAssessment.slice(1)
-                    ]
-                  }`}
-                >
-                  {version.aiAssessment.toUpperCase()}
-                </span>
-              )}
-            </summary>
-            <div
-              className={styles.submissionDetailCard}
-              style={{ borderTop: "1px solid #eee", marginTop: "0.5rem" }}
-            >
-              <p>
-                <strong>Submitted:</strong>{" "}
-                {new Date(version.createdAt).toLocaleString()}
-              </p>
-              <div>
-                <strong>Code:</strong>
-                <pre>
-                  <code>{version.userCode}</code>
-                </pre>
-              </div>
-              <div>
-                <strong>Explanation:</strong>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {version.userExplanation}
-                </ReactMarkdown>
-              </div>
-              {version.aiAssessment && (
-                <div className={styles.aiFeedbackBlock}>
-                  <strong>AI Assessment:</strong>
-                  <span
-                    className={`${styles.assessmentLabel} ${
-                      styles[
-                        "assessment" +
-                          version.aiAssessment.charAt(0).toUpperCase() +
-                          version.aiAssessment.slice(1)
-                      ]
-                    }`}
-                  >
-                    {version.aiAssessment.toUpperCase()}
-                  </span>
-                  {version.aiFeedback && (
-                    <p className={styles.feedbackText}>
-                      <em>{version.aiFeedback}</em>
-                    </p>
-                  )}
-                </div>
-              )}
-              {!version.aiAssessment && (
-                <p>
-                  <em>No AI feedback recorded for this version.</em>
-                </p>
-              )}
-            </div>
-          </details>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const PrimmSubmissionDisplay: React.FC<{
-  submission: StoredPrimmSubmissionItem;
-  studentName?: string | null;
-}> = ({ submission, studentName }) => {
-  return (
-    <div
-      className={styles.submissionDetailCard}
-      style={{ border: "none", padding: 0 }}
-    >
-      <h4>PRIMM Analysis: Example '{submission.primmExampleId}'</h4>
-      <p>
-        <strong>Student:</strong> {studentName || submission.userId}
-      </p>
-      <p>
-        <strong>Submitted:</strong>{" "}
-        {new Date(submission.timestampIso).toLocaleString()}
-      </p>
-      <Link
-        to={`/lesson/${submission.lessonId}#${submission.sectionId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.contextLink}
-      >
-        View Original Section & Example
-      </Link>
-      <div style={{ marginTop: "0.5rem" }}>
-        <strong>Code Snippet Analyzed:</strong>
-        <pre>
-          <code>{submission.codeSnippet}</code>
-        </pre>
-      </div>
-      <p>
-        <strong>Prediction Prompt:</strong>{" "}
-        {submission.userPredictionPromptText}
-      </p>
-      <p>
-        <strong>User's Prediction:</strong> {submission.userPredictionText}
-      </p>
-      <p>
-        <strong>Confidence:</strong> {submission.userPredictionConfidence}/3
-      </p>
-      {submission.actualOutputSummary && (
-        <p>
-          <strong>Actual Output Summary (User Reported):</strong>{" "}
-          {submission.actualOutputSummary}
-        </p>
-      )}
-      <p>
-        <strong>User's Explanation:</strong>{" "}
-        {submission.userExplanationText || "N/A"}
-      </p>
-      <div className={styles.aiFeedbackBlock}>
-        <h5>AI Evaluation:</h5>
-        <p>
-          <strong>Prediction Assessment:</strong>
-          <span
-            className={`${styles.assessmentLabel} ${
-              styles[
-                "assessment" +
-                  submission.aiPredictionAssessment.charAt(0).toUpperCase() +
-                  submission.aiPredictionAssessment.slice(1)
-              ]
-            }`}
-          >
-            {submission.aiPredictionAssessment.toUpperCase()}
-          </span>
-        </p>
-        {submission.aiExplanationAssessment && (
-          <p>
-            <strong>Explanation Assessment:</strong>
-            <span
-              className={`${styles.assessmentLabel} ${
-                styles[
-                  "assessment" +
-                    submission.aiExplanationAssessment.charAt(0).toUpperCase() +
-                    submission.aiExplanationAssessment.slice(1)
-                ]
-              }`}
-            >
-              {submission.aiExplanationAssessment.toUpperCase()}
-            </span>
-          </p>
-        )}
-        {submission.aiOverallComment && (
-          <p className={styles.feedbackText}>
-            <strong>Overall Comment:</strong>{" "}
-            <em>{submission.aiOverallComment}</em>
-          </p>
-        )}
-      </div>
-    </div>
-  );
-};
-// --- End Display Components ---
-
-interface DisplayableStudentWorkItem {
+// Type for the combined list of student's work items
+interface StudentWorkListItem {
   key: string;
   type: "Reflection" | "PRIMM";
   title: string;
@@ -262,7 +59,7 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const [allDisplayableWork, setAllDisplayableWork] = useState<
-    DisplayableStudentWorkItem[]
+    StudentWorkListItem[]
   >([]);
   const [currentWorkItemIndex, setCurrentWorkItemIndex] = useState<
     number | null
@@ -276,23 +73,26 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
   useEffect(() => {
     const fetchAllLessonTitles = async () => {
       const newMap = new Map<LessonId, string>();
-      for (const unit of units) {
-        for (const lessonRef of unit.lessons) {
-          if (!newMap.has(lessonRef.guid)) {
-            // lessonRef.id is the GUID
-            const lessonData = await dataLoader.fetchLessonData(lessonRef.path);
-            if (lessonData) {
-              newMap.set(lessonRef.guid, lessonData.title);
+      // units prop might be empty initially if parent is still loading them
+      if (units && units.length > 0) {
+        for (const unit of units) {
+          for (const lessonRef of unit.lessons) {
+            if (!newMap.has(lessonRef.guid)) {
+              // lessonRef.id is the GUID
+              const lessonData = await dataLoader.fetchLessonData(
+                lessonRef.path
+              );
+              if (lessonData) {
+                newMap.set(lessonRef.guid, lessonData.title);
+              }
             }
           }
         }
       }
       setLessonTitlesMap(newMap);
     };
-    if (units.length > 0) {
-      fetchAllLessonTitles();
-    }
-  }, [units]);
+    fetchAllLessonTitles();
+  }, [units]); // Re-run if units prop changes
 
   useEffect(() => {
     if (selectedStudentId && isAuthenticated && idToken && apiGatewayUrl) {
@@ -320,7 +120,6 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
           setStudentLearningEntries(entriesResponse.entries);
           setStudentPrimmSubmissions(primmResponse.submissions);
         } catch (err) {
-          /* ... error handling ... */
           console.error(
             `Failed to fetch data for student ${selectedStudentId}:`,
             err
@@ -345,9 +144,8 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
 
   // Combine and sort all work items when entries or submissions change
   useEffect(() => {
-    const combinedWork: DisplayableStudentWorkItem[] = [];
+    const combinedWork: StudentWorkListItem[] = [];
 
-    // Group reflections by lessonId and sectionId to treat iterations as one "assignment"
     const groupedReflections: Record<string, ReflectionVersionItem[]> = {};
     studentLearningEntries.forEach((entry) => {
       const groupKey = `${entry.lessonId}-${entry.sectionId}`;
@@ -360,7 +158,7 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
         versions.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        ); // Newest first
+        );
         const latestVersion = versions[0];
         combinedWork.push({
           key: `reflection-${latestVersion.lessonId}-${latestVersion.sectionId}`,
@@ -372,10 +170,10 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
           lessonTitle:
             lessonTitlesMap.get(latestVersion.lessonId) || "Unknown Lesson",
           sectionId: latestVersion.sectionId,
-          sectionTitle: `Section: ${latestVersion.sectionId}`, // Placeholder, ideally get section title too
+          // sectionTitle: "Section Title Placeholder", // TODO: Get section title if available
           date: latestVersion.createdAt,
           sortDate: new Date(latestVersion.createdAt),
-          data: versions, // Pass all versions
+          data: versions, // Pass all versions for this reflection assignment
         });
       }
     });
@@ -384,22 +182,23 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
       combinedWork.push({
         key: `primm-${sub.submissionCompositeKey}`,
         type: "PRIMM",
-        title: `PRIMM: Example ${sub.primmExampleId}`,
+        title: `PRIMM: Example ${sub.primmExampleId} (Sec: ${sub.sectionId})`,
         lessonGuid: sub.lessonId,
         lessonTitle: lessonTitlesMap.get(sub.lessonId) || "Unknown Lesson",
         sectionId: sub.sectionId,
-        sectionTitle: `Section: ${sub.sectionId}`, // Placeholder
+        // sectionTitle: "Section Title Placeholder",
         date: sub.timestampIso,
         sortDate: new Date(sub.timestampIso),
-        data: sub,
+        data: sub, // Single PRIMM submission item
       });
     });
 
-    combinedWork.sort((a, b) => b.sortDate.getTime() - a.sortDate.getTime()); // Newest first
+    combinedWork.sort((a, b) => b.sortDate.getTime() - a.sortDate.getTime());
     setAllDisplayableWork(combinedWork);
-    if (combinedWork.length > 0) {
-      setCurrentWorkItemIndex(0); // Default to showing the first item
-    } else {
+    if (combinedWork.length > 0 && currentWorkItemIndex === null) {
+      // Set to first item if not already set
+      setCurrentWorkItemIndex(0);
+    } else if (combinedWork.length === 0) {
       setCurrentWorkItemIndex(null);
     }
   }, [studentLearningEntries, studentPrimmSubmissions, lessonTitlesMap]);
@@ -430,11 +229,15 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
         <select
           id="student-select-by-student"
           value={selectedStudentId}
-          onChange={(e) => setSelectedStudentId(e.target.value as UserId)}
+          onChange={(e) => {
+            setSelectedStudentId(e.target.value as UserId);
+            setCurrentWorkItemIndex(null);
+            setAllDisplayableWork([]);
+          }}
           className={styles.filterSelect}
           disabled={permittedStudents.length === 0}
         >
-          <option value="">Select Student</option>
+          <option value="">-- Select a Student --</option>
           {permittedStudents.map((student) => (
             <option key={student.studentId} value={student.studentId}>
               {student.studentName || student.studentId}{" "}
@@ -458,7 +261,7 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
           {allDisplayableWork.length > 0 ? (
             <div
               className={styles.assignmentListContainer}
-              style={{ maxHeight: "250px", marginBottom: "1rem" }}
+              style={{ maxHeight: "300px", marginBottom: "1rem" }}
             >
               <p
                 style={{
@@ -468,7 +271,8 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
                   color: "#555",
                 }}
               >
-                Select an assignment to view details:
+                Select an assignment from{" "}
+                {selectedStudentInfo?.studentName || selectedStudentId}'s work:
               </p>
               <ul className={styles.assignmentList}>
                 {allDisplayableWork.map((item, index) => (
@@ -490,33 +294,25 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
             </div>
           ) : (
             <p className={styles.placeholderMessage}>
-              No submissions found for this student.
+              No submissions (Reflections or PRIMM) found for this student.
             </p>
           )}
 
           {currentWorkItem && (
             <div className={styles.submissionViewer}>
-              <h4>
-                Viewing: {currentWorkItem.title}
-                <span
-                  style={{
-                    fontSize: "0.9em",
-                    fontWeight: "normal",
-                    marginLeft: "10px",
-                  }}
-                >
-                  (Lesson: {currentWorkItem.lessonTitle})
-                </span>
-              </h4>
               {currentWorkItem.type === "Reflection" ? (
-                <IterativeReflectionDisplay
+                <RenderReflectionVersions
                   versions={currentWorkItem.data as ReflectionVersionItem[]}
                   studentName={selectedStudentInfo?.studentName}
+                  lessonGuid={currentWorkItem.lessonGuid}
+                  sectionId={currentWorkItem.sectionId as SectionId}
                 />
               ) : currentWorkItem.type === "PRIMM" ? (
-                <PrimmSubmissionDisplay
+                <RenderPrimmActivity
                   submission={currentWorkItem.data as StoredPrimmSubmissionItem}
                   studentName={selectedStudentInfo?.studentName}
+                  lessonGuid={currentWorkItem.lessonGuid}
+                  sectionId={currentWorkItem.sectionId as SectionId}
                 />
               ) : null}
 
@@ -552,6 +348,11 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
             </div>
           )}
         </>
+      )}
+      {!selectedStudentId && permittedStudents.length > 0 && (
+        <p className={styles.placeholderMessage}>
+          Please select a student to view their work.
+        </p>
       )}
     </div>
   );
