@@ -3,21 +3,15 @@ import type {
   Unit,
   Lesson,
   LessonId,
-  SectionId,
-  AnyLessonSectionData,
-  PRIMMCodeExample,
   PRIMMSectionData,
-  ReflectionSectionData,
-  InstructorStudentInfo,
   DisplayableAssignment,
   UnitId,
 } from "../../types/data";
 import type {
-  ListOfAssignmentSubmissionsResponse,
   AssignmentSubmission,
+  InstructorStudentInfo,
   ReflectionVersionItem,
   StoredPrimmSubmissionItem,
-  AssessmentLevel,
 } from "../../types/apiServiceTypes";
 import * as dataLoader from "../../lib/dataLoader";
 import * as apiService from "../../lib/apiService";
