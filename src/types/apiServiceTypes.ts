@@ -169,6 +169,47 @@ export interface DisplayableStudentUnitProgress {
   overallUnitCompletionPercent: number;
 }
 
+export interface StoredPrimmSubmissionItem {
+  userId: string;
+  submissionCompositeKey: string; // Sort Key: lessonId#sectionId#primmExampleId#timestampIso
+  lessonId: string; // GUID
+  sectionId: string;
+  primmExampleId: string;
+  timestampIso: string;
+  codeSnippet: string;
+  userPredictionPromptText: string;
+  userPredictionText: string;
+  userPredictionConfidence: number;
+  actualOutputSummary?: string | null;
+  userExplanationText?: string | null;
+  aiPredictionAssessment: AssessmentLevel;
+  aiExplanationAssessment?: AssessmentLevel | null;
+  aiOverallComment?: string | null;
+  createdAt: string;
+}
+
+export interface AssignmentSubmission<T extends "Reflection" | "PRIMM"> {
+  studentId: UserId;
+  studentName?: string | null;
+  submissionTimestamp: IsoTimestamp; // When this specific version/submission was made
+  submissionDetails: T extends "Reflection"
+    ? ReflectionVersionItem
+    : StoredPrimmSubmissionItem;
+  // If Reflection, submissionDetails will be the full ReflectionVersionItem, allowing access to iterations if needed later.
+  // If PRIMM, it's the StoredPrimmSubmissionItem.
+}
+
+export interface ListOfAssignmentSubmissionsResponse<
+  T extends "Reflection" | "PRIMM"
+> {
+  assignmentType: T;
+  unitId: UnitId;
+  lessonId: LessonId;
+  sectionId: SectionId;
+  primmExampleId?: string; // Only for PRIMM
+  submissions: AssignmentSubmission<T>[];
+}
+
 // You would also keep your existing types like:
 // ErrorResponse, UserProgress, BatchCompletionsInput, SectionCompletionInput
 // For example:

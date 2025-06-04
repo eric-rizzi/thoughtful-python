@@ -14,6 +14,9 @@ import type {
   ClassUnitProgressResponse,
   StudentUnitCompletionData,
   AuthToken,
+  StoredPrimmSubmissionItem,
+  AssignmentSubmission,
+  ListOfAssignmentSubmissionsResponse,
 } from "../types/apiServiceTypes";
 import {
   AssessmentLevel,
@@ -656,4 +659,107 @@ export async function getInstructorClassUnitProgress(
     throw new ApiError(errorData.message, response.status, errorData);
   }
   return response.json() as Promise<ClassUnitProgressResponse>;
+}
+
+export async function getSubmissionsForAssignment<
+  T extends "Reflection" | "PRIMM"
+>(
+  idToken: string,
+  apiGatewayUrl: string,
+  unitId: string,
+  lessonId: string, // GUID
+  sectionId: string, // ID of the Reflection or PRIMM section
+  assignmentType: T,
+  primmExampleId?: string // Only if assignmentType is "PRIMM"
+): Promise<ListOfAssignmentSubmissionsResponse<T>> {
+  if (USE_MOCKED_API) {
+    console.log(
+      `MOCKED API [getSubmissionsForAssignment]: unitId: ${unitId}, lessonId: ${lessonId}, sectionId: ${sectionId}, type: ${assignmentType}`
+    );
+    await mockApiDelay(1000);
+
+    const submissions: AssignmentSubmission<T>[] = [];
+    const studentIds = [
+      "USER#student_alpha_123",
+      "USER#student_beta_456",
+      "USER#student_gamma_789",
+    ];
+
+    studentIds.forEach((sId, index) => {
+      const submissionTimestamp = new Date(
+        Date.now() - index * 3600000
+      ).toISOString(); // Offset by an hour
+      if (assignmentType === "Reflection") {
+        submissions.push({
+          studentId: sId,
+          studentName: `Student ${sId.split("_")[1].charAt(0).toUpperCase()}`,
+          submissionTimestamp,
+          submissionDetails: {
+            // Mocked ReflectionVersionItem
+            versionId: `rv_mock_${index}`,
+            userId: sId,
+            lessonId: lessonId,
+            sectionId: sectionId,
+            userTopic: `Mocked Topic by ${sId}`,
+            userCode: "print('reflection mock code')",
+            userExplanation: `This is student ${sId}'s final reflection text for section ${sectionId}. It's insightful.`,
+            aiFeedback:
+              "Mocked AI: This is a well-articulated final reflection.",
+            aiAssessment: (["achieves", "mostly"] as AssessmentLevel[])[
+              index % 2
+            ],
+            createdAt: submissionTimestamp,
+            isFinal: true, // Assuming we fetch the final one for this view
+            sourceVersionId: `rv_draft_mock_${index}`,
+            finalEntryCreatedAt: submissionTimestamp,
+          } as ReflectionVersionItem, // Cast to satisfy T
+        } as AssignmentSubmission<T>); // Outer cast
+      } else if (assignmentType === "PRIMM" && primmExampleId) {
+        submissions.push({
+          studentId: sId,
+          studentName: `Student ${sId.split("_")[1].charAt(0).toUpperCase()}`,
+          submissionTimestamp,
+          submissionDetails: {
+            // Mocked StoredPrimmSubmissionItem
+            userId: sId,
+            submissionCompositeKey: `${lessonId}#${sectionId}#${primmExampleId}#${submissionTimestamp}`,
+            lessonId: lessonId,
+            sectionId: sectionId,
+            primmExampleId: primmExampleId,
+            timestampIso: submissionTimestamp,
+            codeSnippet: "print('Hello PRIMM')",
+            userPredictionPromptText: "What will this print?",
+            userPredictionText: `Student ${sId} predicted it would print 'Hello PRIMM'.`,
+            userPredictionConfidence: (index % 3) + 1, // 1, 2, or 3
+            actualOutputSummary: "Hello PRIMM",
+            userExplanationText: `Student ${sId} explained the print function.`,
+            aiPredictionAssessment: (
+              ["achieves", "mostly", "developing"] as AssessmentLevel[]
+            )[index % 3],
+            aiExplanationAssessment: (
+              ["achieves", "mostly"] as AssessmentLevel[]
+            )[index % 2],
+            aiOverallComment: `Mocked AI overall comment for ${sId} on PRIMM example ${primmExampleId}.`,
+            createdAt: submissionTimestamp,
+          } as StoredPrimmSubmissionItem, // Cast to satisfy T
+        } as AssignmentSubmission<T>); // Outer cast
+      }
+    });
+
+    return Promise.resolve({
+      assignmentType,
+      unitId,
+      lessonId,
+      sectionId,
+      primmExampleId: assignmentType === "PRIMM" ? primmExampleId : undefined,
+      submissions,
+    } as ListOfAssignmentSubmissionsResponse<T>);
+  }
+
+  // TODO: Implement REAL API call for getSubmissionsForAssignment
+  console.warn("LIVE API for getSubmissionsForAssignment not implemented yet.");
+  throw new ApiError(
+    "getSubmissionsForAssignment live API not implemented.",
+    501
+  );
 }
