@@ -191,9 +191,9 @@ export interface StoredPrimmSubmissionItem {
 export interface AssignmentSubmission<T extends "Reflection" | "PRIMM"> {
   studentId: UserId;
   studentName?: string | null;
-  submissionTimestamp: IsoTimestamp; // When this specific version/submission was made
+  submissionTimestamp: IsoTimestamp;
   submissionDetails: T extends "Reflection"
-    ? ReflectionVersionItem
+    ? ReflectionVersionItem[]
     : StoredPrimmSubmissionItem;
   // If Reflection, submissionDetails will be the full ReflectionVersionItem, allowing access to iterations if needed later.
   // If PRIMM, it's the StoredPrimmSubmissionItem.
