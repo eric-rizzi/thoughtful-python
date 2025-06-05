@@ -215,7 +215,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
           disabled={units.length === 0 || isLoading.units}
         >
           <option value="">
-            {isLoading.units ? "Loading Units..." : "Select Unit"}
+            {isLoading.units ? "Loading Units..." : "-- Select Unit --"}
           </option>
           {units.map((unit) => (
             <option key={unit.id} value={unit.id}>

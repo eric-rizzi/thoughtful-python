@@ -76,12 +76,6 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
   >(null);
 
   useEffect(() => {
-    if (units.length > 0 && !selectedUnitId) {
-      setSelectedUnitId(units[0].id);
-    }
-  }, [units, selectedUnitId]);
-
-  useEffect(() => {
     if (
       !selectedUnitId ||
       !isAuthenticated ||
@@ -467,9 +461,7 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
             className={styles.filterSelect} // Apply the consistent select style
             disabled={units.length === 0 || isLoadingUnitsGlobal}
           >
-            <option value="" disabled={selectedUnitId !== ""}>
-              -- Choose a Unit --
-            </option>
+            <option value="">-- Select Unit --</option>
             {units.map((unit) => (
               <option key={unit.id} value={unit.id}>
                 {unit.title}

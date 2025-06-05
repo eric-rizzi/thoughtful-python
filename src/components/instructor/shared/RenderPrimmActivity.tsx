@@ -1,9 +1,5 @@
 import React from "react";
-import type {
-  AssessmentLevel,
-  LessonPath,
-  SectionId,
-} from "../../../types/data";
+import type { AssessmentLevel, SectionId } from "../../../types/data";
 import styles from "../InstructorViews.module.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

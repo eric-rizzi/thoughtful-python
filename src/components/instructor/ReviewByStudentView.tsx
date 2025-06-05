@@ -237,7 +237,7 @@ const ReviewByStudentView: React.FC<ReviewByStudentViewProps> = ({
           className={styles.filterSelect}
           disabled={permittedStudents.length === 0}
         >
-          <option value="">-- Select a Student --</option>
+          <option value="">-- Select Student --</option>
           {permittedStudents.map((student) => (
             <option key={student.studentId} value={student.studentId}>
               {student.studentName || student.studentId}{" "}

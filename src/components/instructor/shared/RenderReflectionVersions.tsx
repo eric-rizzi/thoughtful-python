@@ -1,15 +1,15 @@
 import React from "react";
-import type { AssessmentLevel, LessonId, SectionId } from "../../../types/data"; // Adjust path as per your project structure
-import styles from "../InstructorViews.module.css"; // Assuming shared styles
+import type { AssessmentLevel, LessonId, SectionId } from "../../../types/data";
+import styles from "../InstructorViews.module.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Link } from "react-router-dom";
 import { ReflectionVersionItem } from "../../../types/apiServiceTypes";
 
 interface RenderReflectionVersionsProps {
-  versions: ReflectionVersionItem[]; // All versions for a specific reflection assignment by one student
+  versions: ReflectionVersionItem[];
   studentName?: string | null;
-  lessonGuid: LessonId; // GUID of the lesson
+  lessonGuid: LessonId;
   sectionId: SectionId;
   // lessonPath?: string; // Optional: if you want to construct links using path instead of GUID directly
 }
