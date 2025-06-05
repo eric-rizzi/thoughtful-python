@@ -928,6 +928,65 @@ export async function getInstructorStudentLearningEntries(
   return response.json();
 }
 
+export async function getInstructorStudentFinalLearningEntries(
+  idToken: AuthToken,
+  apiGatewayUrl: string,
+  studentId: UserId
+): Promise<StudentLearningEntriesResponse> {
+  if (true) {
+    console.log(
+      `MOCKED API [getInstructorStudentFinalLearningEntries]: studentId: ${studentId}`
+    );
+    await mockApiDelay(600);
+    // Leverage the existing mock that generates all versions, then filter
+    const allEntriesResponse = await getInstructorStudentLearningEntries(
+      idToken,
+      apiGatewayUrl,
+      studentId
+    );
+    const finalEntries = allEntriesResponse.entries.filter(
+      (entry) => entry.isFinal
+    );
+    console.log(
+      `Mock returning ${finalEntries.length} final entries for ${studentId}`
+    );
+    return Promise.resolve({ entries: finalEntries });
+  }
+  // Real API call: add ?isFinal=true query parameter
+  const endpoint = `${apiGatewayUrl}/instructor/students/${studentId}/learning-entries?isFinal=true`;
+  console.log(
+    `LIVE API [getInstructorStudentFinalLearningEntries]: Calling GET ${endpoint}`
+  );
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    let errorData: ErrorResponse = {
+      message: `HTTP error ${response.status}: ${response.statusText}`,
+    };
+    try {
+      errorData = await response.json();
+    } catch (e) {
+      /* ignore */
+    }
+    console.error(
+      `LIVE API [getInstructorStudentFinalLearningEntries]: Error ${response.status}`,
+      errorData
+    );
+    throw new ApiError(
+      errorData.message ||
+        `Failed to fetch final learning entries: ${response.status}`,
+      response.status,
+      errorData
+    );
+  }
+  return response.json() as Promise<StudentLearningEntriesResponse>;
+}
+
 export async function getInstructorStudentPrimmSubmissions(
   idToken: AuthToken,
   apiGatewayUrl: string,

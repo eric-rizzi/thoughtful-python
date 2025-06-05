@@ -14,8 +14,14 @@ import styles from "./InstructorDashboardPage.module.css";
 import ReviewClassProgressView from "../components/instructor/ReviewClassProgressView";
 import ReviewByAssignmentView from "../components/instructor/ReviewByAssignmentView";
 import ReviewByStudentView from "../components/instructor/ReviewByStudentView";
+import ReviewLearningEntriesView from "../components/instructor/ReviewLearningEntriesView";
 
-type InstructorDashboardTab = "progress" | "byAssignment" | "byStudent";
+// Define the possible tabs for the dashboard
+type InstructorDashboardTab =
+  | "progress"
+  | "byAssignment"
+  | "byStudent"
+  | "learningEntries";
 
 const InstructorDashboardPage: React.FC = () => {
   const { idToken, isAuthenticated, user } = useAuthStore();
@@ -27,7 +33,8 @@ const InstructorDashboardPage: React.FC = () => {
     if (
       hash === "byAssignment" ||
       hash === "byStudent" ||
-      hash === "progress"
+      hash === "progress" ||
+      hash === "learningEntries"
     ) {
       return hash as InstructorDashboardTab;
     }
@@ -152,28 +159,36 @@ const InstructorDashboardPage: React.FC = () => {
       );
     }
 
-    const sharedPropsForTabs = {
+    const commonViewProps = {
       units: allUnits,
       permittedStudents: permittedStudents,
-      isLoadingUnitsGlobal: isLoadingUnits,
-      isLoadingStudentsGlobal: isLoadingStudents,
-      studentsErrorGlobal: studentsError,
     };
 
     switch (activeTab) {
       case "progress":
-        return <ReviewClassProgressView {...sharedPropsForTabs} />;
-      case "byAssignment":
-        return <ReviewByAssignmentView {...sharedPropsForTabs} />;
-      case "byStudent":
         return (
-          <ReviewByStudentView
-            permittedStudents={permittedStudents}
-            units={allUnits}
+          <ReviewClassProgressView
+            {...commonViewProps}
+            isLoadingUnitsGlobal={isLoadingUnits}
+            isLoadingStudentsGlobal={isLoadingStudents}
+            studentsErrorGlobal={studentsError}
           />
         );
+      case "byAssignment":
+        return <ReviewByAssignmentView {...commonViewProps} />;
+      case "byStudent":
+        return <ReviewByStudentView {...commonViewProps} />;
+      case "learningEntries":
+        return <ReviewLearningEntriesView {...commonViewProps} />;
       default:
-        return <ReviewClassProgressView {...sharedPropsForTabs} />;
+        return (
+          <ReviewClassProgressView
+            {...commonViewProps}
+            isLoadingUnitsGlobal={isLoadingUnits}
+            isLoadingStudentsGlobal={isLoadingStudents}
+            studentsErrorGlobal={studentsError}
+          />
+        );
     }
   };
 
@@ -186,7 +201,6 @@ const InstructorDashboardPage: React.FC = () => {
         )}
       </header>
 
-      {/* New Top Tab Navigation */}
       <nav className={styles.topTabNav}>
         <ul>
           <li>
@@ -232,13 +246,28 @@ const InstructorDashboardPage: React.FC = () => {
                   : styles.tabLink
               }
             >
-              By Student
+              Student Full View
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="#learningEntries"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab("learningEntries");
+              }}
+              className={
+                activeTab === "learningEntries"
+                  ? styles.activeTabLink
+                  : styles.tabLink
+              }
+            >
+              Final Learning Entries
             </Link>
           </li>
         </ul>
       </nav>
 
-      {/* Main content area - no longer needs dashboardLayout for sidebar */}
       <main className={styles.mainContentArea}>{renderCurrentTab()}</main>
     </div>
   );
