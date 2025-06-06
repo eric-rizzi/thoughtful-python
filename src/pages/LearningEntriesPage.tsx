@@ -1,6 +1,8 @@
 // src/pages/LearningEntriesPage.tsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import styles from "./LearningEntriesPage.module.css";
 import { useAuthStore } from "../stores/authStore";
 import * as apiService from "../lib/apiService";
@@ -64,15 +66,6 @@ const LearningEntriesPage: React.FC = () => {
     if (!topicValue || !topicValue.trim()) return "Untitled Entry";
     const trimmedTopic = topicValue.trim();
     return trimmedTopic.charAt(0).toUpperCase() + trimmedTopic.slice(1);
-  };
-
-  const getLessonDisplayIdentifier = (lessonPath: string): string => {
-    const match = lessonPath.match(/lesson_(\d+)$/);
-    if (match && match[1]) {
-      return `Lesson ${match[1]}`;
-    }
-    const parts = lessonPath.split("/");
-    return parts[parts.length - 1] || lessonPath;
   };
 
   if (!isAuthenticated && !isLoading) {
@@ -140,18 +133,6 @@ const LearningEntriesPage: React.FC = () => {
                     {formatDate(entry.createdAt)}
                   </span>
                 </div>
-                <span className={styles.entryLesson}>
-                  From:{" "}
-                  <Link to={`/lesson/${entry.lessonId}#${entry.sectionId}`}>
-                    {getLessonDisplayIdentifier(entry.lessonId)} - Section:{" "}
-                    {entry.sectionId}
-                  </Link>
-                  {entry.sourceVersionId && (
-                    <small style={{ display: "block", color: "#777" }}>
-                      (Based on draft: ...{entry.sourceVersionId.slice(-12)})
-                    </small>
-                  )}
-                </span>
               </div>
               <div className={styles.entryContent}>
                 {entry.userCode && (
@@ -165,23 +146,11 @@ const LearningEntriesPage: React.FC = () => {
                 {entry.userExplanation && (
                   <div className={styles.entryExplanation}>
                     <h4>Your Explanation:</h4>
-                    <p>{entry.userExplanation}</p>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {entry.userExplanation}
+                    </ReactMarkdown>
                   </div>
                 )}
-              </div>
-              <div
-                style={{
-                  marginTop: "1rem",
-                  fontSize: "0.85em",
-                  color: "#555",
-                  borderTop: "1px dashed #eee",
-                  paddingTop: "0.75rem",
-                }}
-              >
-                <em>
-                  The qualifying AI feedback and assessment for this entry can
-                  be found on the source draft within the lesson.
-                </em>
               </div>
             </div>
           ))}

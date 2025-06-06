@@ -33,8 +33,6 @@ const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
     return styles[`assessment${capitalizedAssessment}`] || "";
   };
 
-  const lessonLinkPath = `/lesson/${entry.lessonId}`; // Assuming entry.lessonId is the GUID
-
   return (
     <div className={styles.submissionDetailCard}>
       <h4>Learning Entry: {entry.userTopic || "Untitled"}</h4>
@@ -47,18 +45,8 @@ const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
         <strong>Submitted:</strong> {new Date(entry.createdAt).toLocaleString()}
       </p>
       <p>
-        <strong>Context:</strong> Lesson:{" "}
-        {lessonTitle || entry.lessonId.substring(0, 12) + "..."} / Section:{" "}
-        {entry.sectionId}
+        <strong>Lesson:</strong> {lessonTitle}
       </p>
-      <Link
-        to={`${lessonLinkPath}#${entry.sectionId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.contextLink}
-      >
-        View Original Section in Lesson
-      </Link>
 
       <div style={{ marginTop: "1rem" }}>
         <div className={styles.infoEntry}>
@@ -103,14 +91,6 @@ const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
             </div>
           )}
         </div>
-      )}
-      {!entry.aiAssessment && entry.isFinal && (
-        <p className={styles.feedbackText} style={{ marginTop: "1rem" }}>
-          <em>
-            No specific AI assessment recorded for this final entry (feedback
-            was on drafts).
-          </em>
-        </p>
       )}
     </div>
   );

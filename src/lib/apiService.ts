@@ -933,7 +933,7 @@ export async function getInstructorStudentFinalLearningEntries(
   apiGatewayUrl: string,
   studentId: UserId
 ): Promise<StudentLearningEntriesResponse> {
-  if (true) {
+  if (USE_MOCKED_API) {
     console.log(
       `MOCKED API [getInstructorStudentFinalLearningEntries]: studentId: ${studentId}`
     );
@@ -1005,7 +1005,9 @@ export async function getInstructorStudentPrimmSubmissions(
     lessonGuids.forEach((lId, lIdx) => {
       const sectionId = `primm-sec-${lIdx + 1}` as SectionId;
       const exampleId = `ex${lIdx + 1}_${studentId.substring(5, 7)}`;
-      const ts = new Date(Date.now() - lIdx * 150000000).toISOString();
+      const ts = new Date(
+        Date.now() - lIdx * 150000000
+      ).toISOString() as IsoTimestamp;
       submissions.push({
         userId: studentId,
         submissionCompositeKey: `${lId}#${sectionId}#${exampleId}#${ts}`,
