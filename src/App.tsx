@@ -1,4 +1,4 @@
-import { useEffect } from "react"; // Added useEffect
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import UnitPage from "./pages/UnitPage";
@@ -10,40 +10,30 @@ import ConfigurationPage from "./pages/ConfigurationPage";
 import InstructorDashboardPage from "./pages/InstructorDashboardPage";
 import Layout from "./components/Layout";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
-import { useProgressStore, useProgressActions } from "./stores/progressStore"; // Import store and actions
+import { useProgressStore, useProgressActions } from "./stores/progressStore";
 
 function App() {
-  // Get penaltyEndTime and clearPenalty action from the store
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
   const { clearPenalty } = useProgressActions();
 
-  // Effect to monitor and clear penalty when time expires
   useEffect(() => {
+    // ... (existing penalty timer logic is unchanged) ...
     if (penaltyEndTime === null) {
-      return; // No active penalty, do nothing
+      return;
     }
-
     const checkPenalty = () => {
       if (Date.now() >= penaltyEndTime) {
         clearPenalty();
-        // console.log("Penalty cleared by App.tsx timer.");
       }
     };
-
-    // Check immediately in case the page was refreshed and penalty already expired
     checkPenalty();
-
-    // Set up an interval to check periodically
-    // This ensures the penalty clears even if the user stays on the page
-    const intervalId = setInterval(checkPenalty, 1000); // Check every second
-
-    // Cleanup function to clear the interval when the component unmounts
-    // or when penaltyEndTime changes (which will re-run this effect)
+    const intervalId = setInterval(checkPenalty, 1000);
     return () => clearInterval(intervalId);
-  }, [penaltyEndTime, clearPenalty]); // Re-run effect if penaltyEndTime or clearPenalty changes
+  }, [penaltyEndTime, clearPenalty]);
 
   return (
     <Routes>
+      {/* Routes that use the standard student-facing layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="unit/:unitId" element={<UnitPage />} />
@@ -60,14 +50,6 @@ function App() {
           }
         />
         <Route
-          path="instructor-dashboard"
-          element={
-            <AuthenticatedRoute>
-              <InstructorDashboardPage />
-            </AuthenticatedRoute>
-          }
-        />
-        <Route
           path="*"
           element={
             <div>
@@ -76,6 +58,15 @@ function App() {
           }
         />
       </Route>
+
+      <Route
+        path="instructor-dashboard"
+        element={
+          <AuthenticatedRoute>
+            <InstructorDashboardPage />
+          </AuthenticatedRoute>
+        }
+      />
     </Routes>
   );
 }

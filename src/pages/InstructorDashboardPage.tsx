@@ -1,66 +1,73 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { googleLogout } from "@react-oauth/google";
+
 import * as apiService from "../lib/apiService";
-import { useAuthStore } from "../stores/authStore";
+import { useAuthStore, useAuthActions } from "../stores/authStore";
 import { API_GATEWAY_BASE_URL } from "../config";
 import type { InstructorStudentInfo } from "../types/apiServiceTypes";
 import type { Unit } from "../types/data";
 import { fetchUnitsData } from "../lib/dataLoader";
 
 import LoadingSpinner from "../components/LoadingSpinner";
+import Footer from "../components/Footer"; // Import the standard footer
 import styles from "./InstructorDashboardPage.module.css";
 
-// Import the view components that will render the content for each tab
+// Import the view components
 import ReviewClassProgressView from "../components/instructor/ReviewClassProgressView";
 import ReviewByAssignmentView from "../components/instructor/ReviewByAssignmentView";
 import ReviewByStudentView from "../components/instructor/ReviewByStudentView";
 import ReviewLearningEntriesView from "../components/instructor/ReviewLearningEntriesView";
 
-// Define the possible tabs for the dashboard
 type InstructorDashboardTab =
   | "progress"
   | "byAssignment"
   | "byStudent"
   | "learningEntries";
 
+const navLinks: { key: InstructorDashboardTab; label: string }[] = [
+  { key: "progress", label: "Class Progress" },
+  { key: "byAssignment", label: "By Assignment" },
+  { key: "byStudent", label: "By Student" },
+  { key: "learningEntries", label: "Final Learning Entries" },
+];
+
 const InstructorDashboardPage: React.FC = () => {
-  const { idToken, isAuthenticated, user } = useAuthStore();
+  // --- All existing state and data fetching hooks remain unchanged ---
+  const { isAuthenticated, user } = useAuthStore();
+  const { logout } = useAuthActions();
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [activeTab, setActiveTab] =
+    useState<InstructorDashboardTab>("progress");
+  // ... (rest of the existing state and useEffect hooks for data fetching are unchanged) ...
   const getActiveTabFromHash = (): InstructorDashboardTab => {
     const hash = location.hash.replace("#", "");
-    if (
-      hash === "byAssignment" ||
-      hash === "byStudent" ||
-      hash === "progress" ||
-      hash === "learningEntries"
-    ) {
+    const validTabs: InstructorDashboardTab[] = [
+      "progress",
+      "byAssignment",
+      "byStudent",
+      "learningEntries",
+    ];
+    if (validTabs.includes(hash as InstructorDashboardTab)) {
       return hash as InstructorDashboardTab;
     }
     return "progress"; // Default tab
   };
 
-  const [activeTab, setActiveTab] = useState<InstructorDashboardTab>(
-    getActiveTabFromHash()
-  );
-
   useEffect(() => {
+    // Sync URL hash when activeTab state changes
     if (`#${activeTab}` !== location.hash) {
       navigate(`#${activeTab}`, { replace: true });
     }
   }, [activeTab, navigate, location.hash]);
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setActiveTab(getActiveTabFromHash());
-    };
-    setActiveTab(getActiveTabFromHash());
-
+    // Listen for browser back/forward navigation
+    const handleHashChange = () => setActiveTab(getActiveTabFromHash());
     window.addEventListener("hashchange", handleHashChange);
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange);
-    };
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   const [permittedStudents, setPermittedStudents] = useState<
@@ -74,7 +81,7 @@ const InstructorDashboardPage: React.FC = () => {
   const [unitsError, setUnitsError] = useState<string | null>(null);
 
   const fetchPermittedStudents = useCallback(async () => {
-    if (!isAuthenticated || !idToken) {
+    if (!isAuthenticated) {
       setStudentsError("Authentication required to view student data.");
       setIsLoadingStudents(false);
       setPermittedStudents([]);
@@ -83,6 +90,8 @@ const InstructorDashboardPage: React.FC = () => {
     setIsLoadingStudents(true);
     setStudentsError(null);
     try {
+      const idToken = useAuthStore.getState().idToken;
+      if (!idToken) throw new Error("ID Token not available");
       const response = await apiService.getInstructorPermittedStudents(
         idToken,
         API_GATEWAY_BASE_URL
@@ -105,7 +114,7 @@ const InstructorDashboardPage: React.FC = () => {
     } finally {
       setIsLoadingStudents(false);
     }
-  }, [isAuthenticated, idToken]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -135,7 +144,14 @@ const InstructorDashboardPage: React.FC = () => {
     }
   }, [fetchPermittedStudents, isAuthenticated]);
 
+  const handleLogout = () => {
+    googleLogout();
+    logout();
+    navigate("/"); // Navigate to home after logout
+  };
+
   const renderCurrentTab = () => {
+    // ... (This function's internal logic is unchanged) ...
     if (
       (isLoadingStudents || isLoadingUnits) &&
       !studentsError &&
@@ -150,7 +166,6 @@ const InstructorDashboardPage: React.FC = () => {
     if (studentsError)
       return <p className={styles.errorMessage}>{studentsError}</p>;
     if (unitsError) return <p className={styles.errorMessage}>{unitsError}</p>;
-
     if (!isAuthenticated) {
       return (
         <p className={styles.placeholderMessage}>
@@ -193,82 +208,63 @@ const InstructorDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.dashboardContainer}>
-      <header className={styles.dashboardHeader}>
-        <h1>Instructor Dashboard</h1>
-        {isAuthenticated && user && (
-          <p>Viewing as: {user.name || user.email}</p>
-        )}
+    <div className={styles.pageWrapper}>
+      {/* NEW INSTRUCTOR HEADER with AUTH STATUS */}
+      <header className={styles.instructorHeader}>
+        <div className={styles.headerMain}>
+          <div>
+            <h1>Thoughtful Dashboard</h1>
+            <Link to="/" className={styles.backToStudentLink}>
+              &larr; back to student view
+            </Link>
+          </div>
+          {/* Auth section copied from the main Header.tsx */}
+          <div className={styles.authSection}>
+            {isAuthenticated && user ? (
+              <>
+                {user.picture && (
+                  <img
+                    src={user.picture}
+                    alt={user.name || "User"}
+                    className={styles.profileImage}
+                  />
+                )}
+                <span className={styles.userName}>
+                  {user.name || user.email}
+                </span>
+                <button onClick={handleLogout} className={styles.authButton}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <p>Not logged in</p> // Should not be seen due to AuthenticatedRoute
+            )}
+          </div>
+        </div>
+        <nav className={styles.instructorNav}>
+          {navLinks.map((link) => (
+            <Link
+              key={link.key}
+              to={`#${link.key}`}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab(link.key);
+              }}
+              className={
+                activeTab === link.key
+                  ? styles.instructorNavLinkActive
+                  : styles.instructorNavLink
+              }
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </header>
 
-      <nav className={styles.topTabNav}>
-        <ul>
-          <li>
-            <Link
-              to="#progress"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("progress");
-              }}
-              className={
-                activeTab === "progress" ? styles.activeTabLink : styles.tabLink
-              }
-            >
-              Class Progress
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="#byAssignment"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("byAssignment");
-              }}
-              className={
-                activeTab === "byAssignment"
-                  ? styles.activeTabLink
-                  : styles.tabLink
-              }
-            >
-              By Assignment
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="#byStudent"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("byStudent");
-              }}
-              className={
-                activeTab === "byStudent"
-                  ? styles.activeTabLink
-                  : styles.tabLink
-              }
-            >
-              Student Full View
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="#learningEntries"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("learningEntries");
-              }}
-              className={
-                activeTab === "learningEntries"
-                  ? styles.activeTabLink
-                  : styles.tabLink
-              }
-            >
-              Final Learning Entries
-            </Link>
-          </li>
-        </ul>
-      </nav>
-
       <main className={styles.mainContentArea}>{renderCurrentTab()}</main>
+
+      <Footer />
     </div>
   );
 };

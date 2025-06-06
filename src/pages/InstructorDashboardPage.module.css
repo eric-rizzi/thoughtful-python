@@ -1,99 +1,139 @@
 /* src/pages/InstructorDashboardPage.module.css */
+
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.mainContentArea {
+  flex-grow: 1; /* This will push the footer down */
+  padding: 0 1rem; /* Add horizontal padding back to the main content area */
+}
+
+.headerMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.authSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0; /* Prevent this section from shrinking */
+}
+
+.profileImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.userName {
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.authButton {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.authButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Ensure the nav is below the headerMain section */
+.instructorNav {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 1rem;
+}
+
+.instructorHeader {
+  background-color: #2c3e50; /* A dark, professional blue/grey */
+  color: white;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.instructorHeader h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+.backToStudentLink {
+  color: #a7c7e7; /* Lighter blue for the link */
+  text-decoration: none;
+  font-size: 0.9em;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.backToStudentLink:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.instructorNav {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 1rem;
+}
+
+.instructorNavLink,
+.instructorNavLinkActive {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.instructorNavLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.instructorNavLinkActive {
+  background-color: #4b8bbe; /* A brighter blue to show active state */
+  font-weight: 600;
+}
+
+/* --- EXISTING STYLES (MOSTLY UNCHANGED) --- */
 .dashboardContainer {
-  margin: 1rem auto; /* Reduced top margin */
-  padding: 0 1rem 1rem 1rem; /* No top padding, bottom padding added */
+  margin: 1rem auto;
+  padding: 0 1rem 1rem 1rem;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-.dashboardHeader {
-  background-color: #306998;
-  color: white;
-  padding: 1.5rem 2rem;
-  border-radius: 8px 8px 0 0; /* Rounded top corners */
-  margin-bottom: 0; /* Remove bottom margin to connect with tabs */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.dashboardHeader h1 {
-  margin: 0;
-  font-size: 1.8em; /* Slightly smaller if header is less prominent */
-}
-.dashboardHeader p {
-  margin: 0.3rem 0 0;
-  font-size: 0.9em;
-  opacity: 0.9;
-}
-
-/* --- New Top Tab Navigation Styles --- */
-.topTabNav {
-  background-color: #f0f4f8; /* Light background for tab bar */
-  padding: 0 1.5rem; /* Padding inside the nav bar */
-  border-bottom: 2px solid #0056b3; /* Accent border */
-  margin-bottom: 1.5rem; /* Space below tabs before main content */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.topTabNav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex; /* Arrange tabs horizontally */
-}
-
-.topTabNav li {
-  margin-right: 0.5rem; /* Space between tabs */
-}
-
-.tabLink,
-.activeTabLink {
-  display: block;
-  padding: 0.8rem 1.2rem;
-  text-decoration: none;
-  color: #306998; /* Default tab link color */
-  font-weight: 500;
-  border-radius: 6px 6px 0 0; /* Rounded top corners for tab feel */
-  border: 1px solid transparent; /* For border spacing on active */
-  border-bottom: none; /* No bottom border on inactive tabs */
-  position: relative;
-  bottom: -2px; /* Align with the nav bar's bottom border */
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.tabLink:hover {
-  background-color: #e0eaf3; /* Hover background */
-  color: #1c3f5c;
-}
-
-.activeTabLink {
-  composes: tabLink; /* Inherit base styles */
-  background-color: #ffffff; /* Active tab background (matches main content) */
-  color: #0056b3; /* Active tab text color */
-  border-color: #0056b3 #0056b3 #ffffff; /* Border to "connect" with content */
-  border-width: 2px;
-  border-style: solid;
-  border-bottom-color: #ffffff; /* Make bottom border white to blend */
-  font-weight: 600;
-}
-/* --- End Top Tab Navigation Styles --- */
-
-/* Removed .dashboardLayout and .sidebar styles as they are no longer used */
+/* REMOVED .dashboardHeader and .topTabNav styles as they are replaced */
 
 .mainContentArea {
-  /* Renamed from mainContent for clarity */
-  background-color: #fff;
-  padding: 1.5rem; /* Keep padding for content inside */
-  border-radius: 0 0 8px 8px; /* Rounded bottom corners */
-  border: 1px solid #e0e0e0; /* Optional border if not set by tabs */
-  border-top: none; /* If tabs provide top border */
-  min-height: 400px; /* Ensure some height */
+  /* This container no longer needs its own background/border as it's just a content wrapper now */
+  padding: 0;
+  min-height: 400px;
 }
 
-/* Styles for control sections within tabs (like unit selector) */
+/* ... all other existing styles for .controlSection, .progressTable, .errorMessage, etc. remain the same ... */
+
 .controlSection {
   margin-bottom: 1.5rem;
-  /* background-color: #f8f9fa; */ /* Optional: if you want sections within tabs to have a bg */
-  /* padding: 1rem; */
-  /* border-radius: 6px; */
 }
 .controlSection h2 {
   margin-top: 0;
@@ -119,7 +159,6 @@
   color: #333;
 }
 .unitSelect {
-  /* This style should ideally be in InstructorViews.module.css and imported if used by children */
   padding: 0.6rem 0.8rem;
   border-radius: 4px;
   border: 1px solid #ced4da;
@@ -132,7 +171,6 @@
   opacity: 0.7;
 }
 
-/* Styles for progress table and summary (can be kept here or moved to ReviewClassProgressView.module.css) */
 .classSummarySection {
   margin-bottom: 2rem;
   padding: 1rem 1.5rem;
@@ -167,12 +205,12 @@
 .progressTable th,
 .progressTable td {
   border: 1px solid #ddd;
-  padding: 0.7rem 0.9rem; /* Slightly more padding */
+  padding: 0.7rem 0.9rem;
   text-align: left;
   min-width: 90px;
 }
 .progressTable th {
-  background-color: #e9ecef; /* Neutral header */
+  background-color: #e9ecef;
   color: #343a40;
   font-weight: 600;
   position: sticky;
@@ -187,13 +225,13 @@
 }
 .progressTable tbody tr:hover td {
   background-color: #f1f8ff;
-} /* Lighter hover */
+}
 .studentNameCell {
   font-weight: 500;
   min-width: 160px;
 }
 .completedCell {
-  font-weight: bold; /* color: #155724; */
+  font-weight: bold;
 }
 
 .errorMessage,
@@ -214,5 +252,5 @@
   border: 1px solid #fca5a5;
 }
 .loadingStateContainer {
-  border-style: solid; /* Solid border for loading container */
+  border-style: solid;
 }
