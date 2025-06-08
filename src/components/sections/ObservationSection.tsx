@@ -1,11 +1,11 @@
 // src/components/sections/ObservationSection.tsx
 import React from "react";
 import type {
-  LessonSection,
   LessonExample,
   SectionId,
   LessonId,
   UnitId,
+  ObservationSectionData,
 } from "../../types/data";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -17,7 +17,7 @@ import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 interface ObservationSectionProps {
   unitId: UnitId;
   lessonId: LessonId;
-  section: LessonSection;
+  section: ObservationSectionData;
 }
 
 // Helper component for each example to use the hook

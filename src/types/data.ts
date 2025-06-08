@@ -15,7 +15,6 @@ export type SectionId = string & { readonly __brand: "SectionId" };
 export interface LessonExample {
   id: string;
   title: string;
-  description: string;
   code: string;
 }
 
@@ -44,6 +43,7 @@ export type SectionKind =
   | "Prediction"
   | "MultipleChoice"
   | "MultipleSelection"
+  | "Matching"
   | "Turtle"
   | "Reflection"
   | "Coverage"
@@ -103,6 +103,21 @@ export interface MultipleSelectionSectionData extends LessonSection {
   correctAnswers: number[];
   feedback: {
     correct: string;
+  };
+}
+
+export interface MatchingSectionData extends LessonSection {
+  kind: "Matching";
+  prompts: Array<{
+    id: string; // e.g., 'prompt-1'
+    text: string; // e.g., '5 * 3'
+  }>;
+  options: Array<{
+    id: string; // e.g., 'option-a'
+    text: string; // e.g., '15'
+  }>;
+  solution: {
+    [promptId: string]: string; // Maps prompt ID to the correct option ID
   };
 }
 
@@ -232,6 +247,7 @@ export interface PRIMMCodeExample {
 export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
   examples: PRIMMCodeExample[]; // Array of PRIMM blocks for this section
+  conclusion?: string;
 }
 
 // This will be the structure stored per PRIMM example via useSectionProgress
@@ -261,6 +277,7 @@ export type AnyLessonSectionData =
   | PredictionSectionData
   | MultipleChoiceSectionData
   | MultipleSelectionSectionData
+  | MatchingSectionData
   | TurtleSectionData
   | ReflectionSectionData
   | CoverageSectionData

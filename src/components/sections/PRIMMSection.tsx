@@ -159,7 +159,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
       return "(No output or error during run)";
     const lines = fullOutput.trim().split("\n");
     return lines.length > 0
-      ? lines[lines.length - 1].trim()
+      ? lines.join("\n")
       : "(No distinct last line of output)";
   };
 
@@ -529,7 +529,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
                   textAlign: "center",
                 }}
               >
-                This PRIMM activity is complete!
+                {section.conclusion || "This PRIMM activity is complete!"}
               </p>
             )}
           {submitActionError && (
