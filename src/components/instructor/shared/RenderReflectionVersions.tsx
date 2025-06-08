@@ -150,14 +150,6 @@ const RenderReflectionVersions: React.FC<RenderReflectionVersionsProps> = ({
                   <em>No AI feedback was requested for this draft version.</em>
                 </p>
               )}
-              {version.isFinal && !version.aiAssessment && (
-                <p className={styles.feedbackText}>
-                  <em>
-                    This final entry did not have direct AI feedback (feedback
-                    was on drafts).
-                  </em>
-                </p>
-              )}
             </div>
           </details>
         ))}

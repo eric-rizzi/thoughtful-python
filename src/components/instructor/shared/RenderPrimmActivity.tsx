@@ -40,23 +40,15 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
   return (
     <div className={styles.submissionDetailCard}>
       <h4>PRIMM Analysis: Example '{submission.primmExampleId}'</h4>
-      <div className={styles.infoEntry}>
-        <span className={styles.infoLabel}>Student:</span>
-        <span className={styles.infoText}>
-          {studentName || submission.userId}
-        </span>
-      </div>
-      <div className={styles.infoEntry}>
-        <span className={styles.infoLabel}>Submitted:</span>
-        <span className={styles.infoText}>
-          {new Date(submission.timestampIso).toLocaleString()}
-        </span>
-      </div>
-      <div className={styles.infoEntry}>
-        <span className={styles.infoLabel}>Context:</span>
-        <span className={styles.infoText}>
-          Lesson: {lessonTitle}, Section: {submission.sectionId}
-        </span>
+      <div>
+        {studentName && (
+          <p>
+            <strong>Student:</strong> {studentName}
+          </p>
+        )}
+        <p>
+          <strong>Lesson/Section:</strong> {lessonTitle} / {sectionId}
+        </p>
         <Link
           to={`${lessonLinkPath}#${sectionId}`} // Use sectionId from props for the hash
           target="_blank"
@@ -72,52 +64,49 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
         {/* Group for student's work */}
         <h5>Student's Work:</h5>
         <div className={styles.infoEntry}>
-          <span className={styles.infoLabel}>Code Snippet Analyzed:</span>
+          <strong>Code Snippet Analyzed:</strong>
           <pre>
             <code>{submission.codeSnippet}</code>
           </pre>
         </div>
         <div className={styles.infoEntry}>
-          <span className={styles.infoLabel}>Prediction Prompt Given:</span>
-          <p className={styles.infoText}>
+          <strong>Prediction Prompt Given:</strong>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {submission.userPredictionPromptText}
-          </p>
+          </ReactMarkdown>
         </div>
         <div className={styles.infoEntry}>
-          <span className={styles.infoLabel}>Student's Prediction:</span>
-          <p className={styles.infoText}>{submission.userPredictionText}</p>
+          <strong>Student's Prediction:</strong>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {submission.userPredictionText}
+          </ReactMarkdown>
         </div>
         <div className={styles.infoEntry}>
-          <span className={styles.infoLabel}>Confidence:</span>
+          <strong>Confidence: </strong>
           <span className={styles.infoText}>
             {submission.userPredictionConfidence}/3
-          </span>{" "}
+          </span>
           {/* Assuming 1-3 scale */}
         </div>
         {submission.actualOutputSummary && (
           <div className={styles.infoEntry}>
-            <span className={styles.infoLabel}>
-              Actual Output Summary (User Reported):
-            </span>
-            <p className={styles.infoText}>{submission.actualOutputSummary}</p>
+            <strong>Actual Output Summary (User Reported):</strong>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {submission.actualOutputSummary}
+            </ReactMarkdown>
           </div>
         )}
         <div className={styles.infoEntry}>
-          <span className={styles.infoLabel}>
-            Student's Explanation/Reflection:
-          </span>
-          {/* Using div for infoText for ReactMarkdown to render block elements correctly if any */}
-          <div className={styles.infoText}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {submission.userExplanationText || "(No explanation provided)"}
-            </ReactMarkdown>
-          </div>
+          <strong>Student's Explanation/Reflection:</strong>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {submission.userExplanationText || "(No explanation provided)"}
+          </ReactMarkdown>
         </div>
       </div>
       <div className={styles.aiFeedbackBlock}>
         <h5>AI Evaluation:</h5>
         <div className={styles.evaluationItem}>
-          <strong>Prediction Assessment:</strong>
+          <strong>Prediction Assessment: </strong>
           {submission.aiPredictionAssessment ? (
             <span
               className={`${styles.assessmentLabel} ${getAssessmentLabelClass(
@@ -139,7 +128,7 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
         {/* Only show explanation assessment if it exists */}
         {submission.aiExplanationAssessment && (
           <div className={styles.evaluationItem}>
-            <strong>Explanation Assessment:</strong>
+            <strong>Explanation Assessment: </strong>
             <span
               className={`${styles.assessmentLabel} ${getAssessmentLabelClass(
                 submission.aiExplanationAssessment
@@ -154,7 +143,7 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
           <div
             className={`${styles.evaluationItem} ${styles.aiOverallComment}`}
           >
-            <strong>Overall Comment:</strong>
+            <strong>Overall Comment: </strong>
             <p>
               <em>{submission.aiOverallComment}</em>
             </p>

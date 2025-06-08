@@ -179,6 +179,9 @@
   margin-bottom: 0;
 }
 
+.infoEntry {
+  margin-top: 1rem;
+}
 /* AI Feedback Block within Submission Detail */
 .aiFeedbackBlock {
   margin-top: 1.5rem; /* More space before AI feedback */
