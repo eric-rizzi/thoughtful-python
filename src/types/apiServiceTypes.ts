@@ -5,6 +5,7 @@ import {
   UnitId,
   UserId,
   IsoTimestamp,
+  SectionKind,
 } from "./data";
 
 export type AuthToken = string & { readonly __brand: "AuthToken" };
@@ -217,4 +218,46 @@ export interface ErrorResponse {
   message: string;
   errorCode?: string;
   details?: any;
+}
+
+/**
+ * Represents the status and details of a single section for a student.
+ */
+export interface SectionStatusItem {
+  sectionId: SectionId;
+  sectionTitle: string;
+  sectionKind: SectionKind;
+  status: "completed" | "submitted" | "not_started";
+  submissionTimestamp?: IsoTimestamp | null;
+  submissionDetails?:
+    | ReflectionVersionItem[]
+    | StoredPrimmSubmissionItem
+    | null;
+}
+
+/**
+ * Represents a student's progress and submissions for all sections within a single lesson.
+ */
+export interface LessonProgressProfile {
+  lessonId: LessonId;
+  lessonTitle: string;
+  sections: SectionStatusItem[];
+}
+
+/**
+ * Represents a student's progress and submissions for all lessons within a single unit.
+ */
+export interface UnitProgressProfile {
+  unitId: UnitId;
+  unitTitle: string;
+  lessons: LessonProgressProfile[];
+}
+
+/**
+ * The main response object from the GET /instructor/students/{studentId}/detailed-progress endpoint.
+ */
+export interface StudentDetailedProgressResponse {
+  studentId: UserId;
+  studentName?: string | null;
+  profile: UnitProgressProfile[];
 }

@@ -1067,3 +1067,138 @@ export async function getInstructorStudentPrimmSubmissions(
     );
   return response.json();
 }
+
+export async function getStudentDetailedProgress(
+  idToken: AuthToken,
+  apiGatewayUrl: string,
+  studentId: UserId
+): Promise<StudentDetailedProgressResponse> {
+  // This function is currently mocked to allow for UI development.
+  // The 'true' flag can be changed to USE_MOCKED_API when ready.
+  if (true) {
+    console.log(
+      `MOCKED API [getStudentDetailedProgress]: Called for studentId: ${studentId}`
+    );
+    await mockApiDelay(800);
+
+    const mockReflectionSubmission: ReflectionVersionItem[] = [
+      {
+        versionId: "mock_final_v3",
+        userId: studentId,
+        lessonId: "ab5bed79-7662-423e-90ef-952539f59099" as LessonId,
+        sectionId: "python-reflection" as SectionId,
+        userTopic: "Using For Loops",
+        userCode: 'for i in range(5):\n  print("Hello", i)',
+        userExplanation: "This was my final, best explanation of for loops.",
+        createdAt: new Date().toISOString() as IsoTimestamp,
+        isFinal: true,
+        sourceVersionId: "mock_draft_v2",
+        finalEntryCreatedAt: new Date().toISOString() as IsoTimestamp,
+      },
+      {
+        versionId: "mock_draft_v2",
+        userId: studentId,
+        lessonId: "ab5bed79-7662-423e-90ef-952539f59099" as LessonId,
+        sectionId: "python-reflection" as SectionId,
+        userTopic: "Using For Loops",
+        userCode: 'for i in range(5):\n  print("Hello", i)',
+        userExplanation: "This was my second draft, incorporating feedback.",
+        aiFeedback:
+          "Excellent improvement! Your explanation is much clearer now.",
+        aiAssessment: "achieves",
+        createdAt: new Date(Date.now() - 3600000).toISOString() as IsoTimestamp, // 1 hour ago
+        isFinal: false,
+      },
+    ];
+
+    const mockResponse: StudentDetailedProgressResponse = {
+      studentId: studentId,
+      studentName: "Beta Bronson (Mocked)",
+      profile: [
+        {
+          unitId: "intro_python" as UnitId,
+          unitTitle: "Introduction to Python",
+          lessons: [
+            {
+              lessonId: "3c1e0332-e7ec-4e6a-b0c6-f9c9890999c5" as LessonId,
+              lessonTitle: "Python Basics",
+              sections: [
+                {
+                  sectionId: "python-history" as SectionId,
+                  sectionTitle: "The History of Python",
+                  sectionKind: "Information",
+                  status: "completed",
+                },
+                {
+                  sectionId: "print-function" as SectionId,
+                  sectionTitle: "The Print Function",
+                  sectionKind: "Observation",
+                  status: "completed",
+                },
+                {
+                  sectionId: "comments" as SectionId,
+                  sectionTitle: "Comments",
+                  sectionKind: "Observation",
+                  status: "not_started",
+                },
+              ],
+            },
+            {
+              lessonId: "ab5bed79-7662-423e-90ef-952539f59099" as LessonId,
+              lessonTitle: "Reflection and Self-Assessment",
+              sections: [
+                {
+                  sectionId: "reflection-intro" as SectionId,
+                  sectionTitle: "Introduction to Reflection",
+                  sectionKind: "Information",
+                  status: "completed",
+                },
+                {
+                  sectionId: "python-reflection" as SectionId,
+                  sectionTitle: "Python Concept Reflection",
+                  sectionKind: "Reflection",
+                  status: "submitted",
+                  submissionTimestamp: mockReflectionSubmission[0].createdAt,
+                  submissionDetails: mockReflectionSubmission,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          unitId: "python_strings" as UnitId,
+          unitTitle: "Python Strings Deep Dive",
+          lessons: [
+            {
+              lessonId: "03cff8d8-33a0-49ed-98c4-d51613995340" as LessonId,
+              lessonTitle: "String Formatting and f-strings",
+              sections: [
+                {
+                  sectionId: "primm-print-analysis" as SectionId,
+                  sectionTitle: "Predict, Run, Investigate: Print Statements",
+                  sectionKind: "PRIMM",
+                  status: "not_started",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    return Promise.resolve(mockResponse);
+  }
+
+  // Real API call logic would go here
+  const endpoint = `${apiGatewayUrl}/instructor/students/${studentId}/detailed-progress`;
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
+  if (!response.ok) {
+    throw new ApiError(
+      "Failed to fetch student detailed progress",
+      response.status
+    );
+  }
+  return response.json();
+}
