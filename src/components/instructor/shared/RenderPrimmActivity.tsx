@@ -5,17 +5,16 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Link } from "react-router-dom";
 import { StoredPrimmSubmissionItem } from "../../../types/apiServiceTypes";
+import { getLessonPathSync } from "../../../lib/dataLoader";
 
 interface RenderPrimmActivityProps {
   submission: StoredPrimmSubmissionItem;
-  studentName?: string | null;
   lessonTitle: string;
   sectionId: SectionId;
 }
 
 const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
   submission,
-  studentName,
   lessonTitle,
   sectionId,
 }) => {
@@ -33,9 +32,9 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
     );
   };
 
-  // Construct lesson path for link.
-  // This assumes your lesson routes are like /lesson/{lessonGuid}
-  const lessonLinkPath = `/lesson/${"todo"}`;
+  // Use the new sync function to get the correct path
+  const lessonPath = getLessonPathSync(submission.lessonId);
+  const lessonLinkPath = lessonPath ? `/lesson/${lessonPath}` : "#";
 
   return (
     <div className={styles.submissionDetailCard}>
@@ -43,19 +42,14 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
         Lesson/Section: {lessonTitle} / {sectionId}
       </h4>
       <div>
-        {studentName && (
-          <p>
-            <strong>Student:</strong> {studentName}
-          </p>
-        )}
         <Link
-          to={`${lessonLinkPath}#${sectionId}`} // Use sectionId from props for the hash
+          to={lessonLinkPath}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.contextLink}
-          style={{ display: "block", marginTop: "0.25rem" }}
+          title={lessonPath ? "View original lesson" : "Lesson path not found"}
         >
-          View Original Section & Example
+          View Original Section in Lesson
         </Link>
       </div>
       <div style={{ marginTop: "1rem" }}>

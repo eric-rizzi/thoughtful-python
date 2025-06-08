@@ -249,3 +249,13 @@ export function hasReviewableAssignments(lesson: Lesson): boolean {
     (s) => s.kind === "Reflection" || s.kind === "PRIMM"
   );
 }
+
+export function getLessonPathSync(lessonId: LessonId): LessonPath | null {
+  if (!lessonIdToPathMap) {
+    console.error(
+      "dataLoader has not been initialized. Cannot call getLessonPathSync."
+    );
+    return null;
+  }
+  return lessonIdToPathMap.get(lessonId) || null;
+}

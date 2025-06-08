@@ -1,20 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { AssessmentLevel } from "../../../types/data";
 import styles from "../InstructorViews.module.css";
 import { ReflectionVersionItem } from "../../../types/apiServiceTypes";
+import { getLessonPathSync } from "../../../lib/dataLoader";
+import { Link } from "react-router-dom";
 
 interface RenderFinalLearningEntryProps {
   entry: ReflectionVersionItem;
-  studentName?: string | null;
   lessonTitle?: string;
 }
 
 const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
   entry,
-  studentName,
   lessonTitle,
 }) => {
   if (!entry || !entry.isFinal) {
@@ -33,14 +32,22 @@ const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
     return styles[`assessment${capitalizedAssessment}`] || "";
   };
 
+  // Use the new sync function to get the correct path
+  const lessonPath = getLessonPathSync(entry.lessonId);
+  const lessonLinkPath = lessonPath ? `/lesson/${lessonPath}` : "#";
+
   return (
     <div className={styles.submissionDetailCard}>
       <h4>Learning Entry: {entry.userTopic || "Untitled"}</h4>
-      {studentName && (
-        <p>
-          <strong>Student:</strong> {studentName}
-        </p>
-      )}
+      <Link
+        to={lessonLinkPath}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.contextLink}
+        title={lessonPath ? "View original lesson" : "Lesson path not found"}
+      >
+        View Original Section in Lesson
+      </Link>
       <p>
         <strong>Submitted:</strong> {new Date(entry.createdAt).toLocaleString()}
       </p>
@@ -56,7 +63,7 @@ const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
           </pre>
         </div>
         <div className={styles.infoEntry}>
-          <span className={styles.infoLabel}>Student's Explanation:</span>
+          <span className={styles.infoLabel}>Explanation:</span>
           <div className={styles.infoText}>
             {" "}
             {/* Use a div for block content from markdown */}

@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Link } from "react-router-dom";
 import { ReflectionVersionItem } from "../../../types/apiServiceTypes";
+import { getLessonPathSync } from "../../../lib/dataLoader";
 
 interface RenderReflectionVersionsProps {
   versions: ReflectionVersionItem[];
@@ -46,10 +47,8 @@ const RenderReflectionVersions: React.FC<RenderReflectionVersionsProps> = ({
     );
   };
 
-  // Construct lesson path for link if not directly provided (assuming lessonGuid is the path or part of it)
-  // For GUIDs, you might need a lookup service if paths are complex.
-  // For simplicity, if lessonGuid is the path or can be used in the path:
-  const lessonLinkPath = `/lesson/${lessonGuid}`; // Adjust if your routing uses paths differently
+  const lessonPath = getLessonPathSync(lessonGuid);
+  const lessonLinkPath = lessonPath ? `/lesson/${lessonPath}` : "#";
 
   return (
     <div className={styles.submissionDetailCard}>
@@ -59,10 +58,11 @@ const RenderReflectionVersions: React.FC<RenderReflectionVersionsProps> = ({
         Reflection: {finalOrLatestVersion.userTopic || "Untitled Reflection"}
       </h4>
       <Link
-        to={`${lessonLinkPath}#${sectionId}`}
+        to={lessonLinkPath}
         target="_blank"
         rel="noopener noreferrer"
         className={styles.contextLink}
+        title={lessonPath ? "View original lesson" : "Lesson path not found"}
       >
         View Original Section in Lesson
       </Link>
