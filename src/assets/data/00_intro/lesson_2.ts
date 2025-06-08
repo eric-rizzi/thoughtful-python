@@ -21,7 +21,7 @@ const lessonData: Lesson = {
       id: "introduction",
       title: "New Data Types",
       content:
-        "In the previous lesson, you learned about strings and how to print them. In this lesson, we'll introduce a new **data type** and explain why it's so important to distinguish between them.",
+        "In the previous lesson, you learned about strings and how to print them. In this lesson, we'll introduce a new **data type** and explain why it's so important to distinguish between different data types.",
     } as InformationSectionData,
 
     {
@@ -29,7 +29,7 @@ const lessonData: Lesson = {
       id: "print-numbers" as SectionId,
       title: "Integers",
       content:
-        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our program. We'll start with whole numbers, called **integers** in Python. In the example below, there's an example of integers being operated on. Notice in particular, the lack of quotation marks.",
+        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, called **integers** in Python.\n\nIn the example below, there's an example of integers being operated on. Notice in particular, the lack of quotation marks. Run the code and be amazed by how fast computers can do math!",
       example: {
         id: "function-basic",
         title: "Integer Operations",
@@ -41,13 +41,13 @@ const lessonData: Lesson = {
       id: "primm-strings-and-integers" as SectionId,
       title: "Operating on Integers and Strings",
       content:
-        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer handles them differently. In particular the string `"5"` is not the same as the integer `5`. Below is a simple Python program that will highlight this difference.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.',
+        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer operates on them differently. In particular the string `"5"` is not the same as the integer `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.',
       examples: [
         {
           id: "primm-quote-issue",
           code: 'print(5 + 5)\nprint("5" + "5")',
           predictPrompt:
-            "The two print statements above will print out different thigns. This is because on is doing an integer operation and the other is doing a string operation. What do you think the will happen when you run the code?",
+            "The two print statements above will print out different things. This is because in one case the `+` is operating on integers and in the other case it's operating on strings. What do you think the will happen when you run the code?",
         },
       ],
       conclusion:
@@ -56,22 +56,22 @@ const lessonData: Lesson = {
     {
       kind: "MultipleChoice",
       id: "integers-added" as SectionId,
-      title: "Adding Integers",
+      title: "Operating Integers",
       content:
-        "Ok, now it's time to test your intution: Which of the following is the result of running `print(3 + 4)`. Notice that both are integers!",
+        "Ok, now it's time to test your intuition: Which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
       options: ["7", "34", "333", "An error"],
       correctAnswer: 0,
       feedback: {
         correct:
-          "Correct. When you use `+` with two integers, the result is aaddition.",
+          "Correct. When you use `+` with two integers, the result is addition.",
       },
     } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
       id: "strings-added" as SectionId,
-      title: "Adding Strings",
+      title: "Operating on Strings",
       content:
-        'Which of the following is the result of running `print("3" + "4")`. Notice that both are strings!',
+        'Which of the following is the result of running `print("3" + "4")`. Notice that **both are strings**!',
       options: ["7", "34", "333", "An error"],
       correctAnswer: 1,
       feedback: {
@@ -84,7 +84,7 @@ const lessonData: Lesson = {
       id: "operations-test" as SectionId,
       title: "Various Operations",
       content:
-        "There are a bunch of other operations that you can use on integers and strings. Some (like `+`, work on both). In the space below, experiment with the `-`, `*`, and `**` operations to see what they do to different data types.",
+        "There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `-`, `*`, and `**` operations to see what they do to different data types.",
       example: {
         id: "temp-conversion",
         title: "Testing Operations",
@@ -96,7 +96,7 @@ const lessonData: Lesson = {
       id: "python-ops-match" as SectionId,
       title: "Matching Operations",
       content:
-        "Match each of the following Python operations with their output:",
+        "Having undoubtedly done exhaustive experiments in the previous section, match each of the following Python operations with their output:",
       prompts: [
         { id: "p1", text: "5 * 3" },
         { id: "p2", text: '"5" * 3' },
@@ -119,12 +119,6 @@ const lessonData: Lesson = {
         p5: "E",
       },
     } as MatchingSectionData,
-    {
-      kind: "Information",
-      id: "testing",
-      title: "Identifying Types",
-      content: "",
-    } as InformationSectionData,
     {
       kind: "Reflection",
       id: "data-type-reflection" as SectionId,
