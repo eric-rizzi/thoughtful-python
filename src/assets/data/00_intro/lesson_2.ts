@@ -3,101 +3,147 @@ import type {
   Lesson,
   ObservationSectionData,
   TestingSectionData,
+  LessonId,
+  SectionId,
+  PRIMMSectionData,
+  MultipleChoiceSectionData,
+  MatchingSectionData,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Functions and Temperature Conversion",
-  guid: "65ddff46-b4af-4443-ac0a-5b6a714e405e",
-  description:
-    "Learn how to create and use functions in Python, with a focus on converting temperatures between Celsius and Fahrenheit.",
+  title: "Strings vs. Integers",
+  guid: "65ddff46-b4af-4443-ac0a-5b6a714e405e" as LessonId,
+  description: "",
   sections: [
     {
       kind: "Information",
       id: "introduction",
-      title: "Introduction",
+      title: "New Data Types",
       content:
-        "In this lesson, you'll learn how to create and use functions in Python. Functions allow us to organize code into reusable blocks that perform specific tasks.",
+        "In the previous lesson, you learned about strings and how to print them. In this lesson, we'll introduce a new **data type** and explain why it's so important to distinguish between them.",
     } as InformationSectionData,
+
     {
       kind: "Observation",
-      id: "functions",
-      title: "Python Functions",
+      id: "print-numbers" as SectionId,
+      title: "Integers",
       content:
-        "Functions are defined using the def keyword, followed by the function name and parentheses. Any parameters the function takes are placed inside the parentheses.",
+        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our program. We'll start with whole numbers, called **integers** in Python. In the example below, there's an example of integers being operated on. Notice in particular, the lack of quotation marks.",
       example: {
         id: "function-basic",
-        title: "Basic Function",
-        description: "Here's a simple function that greets a person by name.",
-        code: 'def greet(name):\n    """This function greets the person passed in as a parameter"""\n    return f"Hello, {name}!"\n\n# Call the function\nmessage = greet("Alice")\nprint(message)\n\n# Call it again with a different name\nprint(greet("Bob"))',
+        title: "Integer Operations",
+        code: "print(5)\nprint(5 + 3)\nprint(5 + 3 - 1)\nprint(10000 * 173671)",
       },
     } as ObservationSectionData,
+    {
+      kind: "PRIMM",
+      id: "primm-strings-and-integers" as SectionId,
+      title: "Operating on Integers and Strings",
+      content:
+        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer handles them differently. In particular the string `"5"` is not the same as the integer `5`. Below is a simple Python program that will highlight this difference.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.',
+      examples: [
+        {
+          id: "primm-quote-issue",
+          code: 'print(5 + 5)\nprint("5" + "5")',
+          predictPrompt:
+            "The two print statements above will print out different thigns. This is because on is doing an integer operation and the other is doing a string operation. What do you think the will happen when you run the code?",
+        },
+      ],
+      conclusion:
+        "When you use `+` with two integers, the result is addition. When you use `+` with two strings, the result is combining (technically called concatentation)",
+    } as PRIMMSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "integers-added" as SectionId,
+      title: "Adding Integers",
+      content:
+        "Ok, now it's time to test your intution: Which of the following is the result of running `print(3 + 4)`. Notice that both are integers!",
+      options: ["7", "34", "333", "An error"],
+      correctAnswer: 0,
+      feedback: {
+        correct:
+          "Correct. When you use `+` with two integers, the result is aaddition.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "strings-added" as SectionId,
+      title: "Adding Strings",
+      content:
+        'Which of the following is the result of running `print("3" + "4")`. Notice that both are strings!',
+      options: ["7", "34", "333", "An error"],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct. When you use `+` with two strings, the result is combination.",
+      },
+    } as MultipleChoiceSectionData,
     {
       kind: "Observation",
-      id: "temperature",
-      title: "Temperature Conversion",
+      id: "operations-test" as SectionId,
+      title: "Various Operations",
       content:
-        "One common application of functions is to convert between different units of measurement. Let's look at how to convert between Celsius and Fahrenheit temperatures.\n\nTo convert from Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32\n\nWhere F is the temperature in Fahrenheit and C is the temperature in Celsius.",
+        "There are a bunch of other operations that you can use on integers and strings. Some (like `+`, work on both). In the space below, experiment with the `-`, `*`, and `**` operations to see what they do to different data types.",
       example: {
         id: "temp-conversion",
-        title: "Converting Celsius to Fahrenheit",
-        description:
-          "This function converts a temperature from Celsius to Fahrenheit using the formula F = (C × 9/5) + 32.",
-        code: 'def celsius_to_fahrenheit(celsius):\n    """Convert Celsius temperature to Fahrenheit"""\n    fahrenheit = (celsius * 9/5) + 32\n    return fahrenheit\n\n# Test the function with some values\nfreezing_c = 0\nfreezing_f = celsius_to_fahrenheit(freezing_c)\nprint(f"{freezing_c}°C is {freezing_f}°F")\n\nbody_temp_c = 37\nbody_temp_f = celsius_to_fahrenheit(body_temp_c)\nprint(f"{body_temp_c}°C is {body_temp_f}°F")\n\nboiling_c = 100\nboiling_f = celsius_to_fahrenheit(boiling_c)\nprint(f"{boiling_c}°C is {boiling_f}°F")',
+        title: "Testing Operations",
+        code: 'print(5 + 3)\nprint("5" * 3)',
       },
     } as ObservationSectionData,
     {
-      kind: "Testing",
-      id: "challenge",
-      title: "Coding Challenge: Temperature Converter",
+      kind: "Matching",
+      id: "python-ops-match" as SectionId,
+      title: "Matching Operations",
       content:
-        "Now it's your turn! Create a function called celsius_to_fahrenheit that:\n- Takes a temperature in Celsius as input\n- Converts it to Fahrenheit using the formula: F = (C × 9/5) + 32\n- Returns the Fahrenheit temperature as a number",
-      example: {
-        id: "challenge",
-        title: "Your Task",
-        description: "Implement the celsius_to_fahrenheit function below:",
-        code: "def celsius_to_fahrenheit(celsius):\n    # Write your function here\n    pass  # Delete this line and add your code\n\n# You can test your function with different values here\nprint(celsius_to_fahrenheit(0))  # Should print 32.0\nprint(celsius_to_fahrenheit(100))  # Should print 212.0",
-        testCases: [
-          {
-            input: 0,
-            expected: 32,
-            description: "Freezing point of water (0°C)",
-          },
-          {
-            input: 100,
-            expected: 212,
-            description: "Boiling point of water (100°C)",
-          },
-          {
-            input: 37,
-            expected: 98.6,
-            description: "Human body temperature (37°C)",
-          },
-          {
-            input: -40,
-            expected: -40,
-            description: "Equal point (-40°C)",
-          },
-          {
-            input: 25,
-            expected: 77,
-            description: "Room temperature (25°C)",
-          },
-          {
-            input: -10,
-            expected: 14,
-            description: "Cold winter day (-10°C)",
-          },
-          { input: 42, expected: 107.6, description: "Hot day (42°C)" },
-        ],
-        functionToTest: "celsius_to_fahrenheit",
+        "Match each of the following Python operations with their output:",
+      prompts: [
+        { id: "p1", text: "5 * 3" },
+        { id: "p2", text: '"5" * 3' },
+        { id: "p3", text: "5 + 3" },
+        { id: "p4", text: '"5" + "3"' },
+        { id: "p5", text: '5 + "3"' },
+      ],
+      options: [
+        { id: "C", text: "8" },
+        { id: "A", text: "15" },
+        { id: "D", text: '"53"' },
+        { id: "B", text: '"555"' },
+        { id: "E", text: "Error" },
+      ],
+      solution: {
+        p1: "A",
+        p2: "B",
+        p3: "C",
+        p4: "D",
+        p5: "E",
       },
-    } as TestingSectionData,
+    } as MatchingSectionData,
     {
       kind: "Information",
       id: "testing",
-      title: "Understanding Testing",
+      title: "Identifying Types",
+      content: "",
+    } as InformationSectionData,
+    {
+      kind: "Reflection",
+      id: "data-type-reflection" as SectionId,
+      title: "Data Type Reflection",
       content:
-        'Testing is a crucial part of software development. When you click the "Test Solution" button, our system will run your function with various inputs and check if the outputs match the expected results.\n\nThe test cases include:\n- Standard temperatures (freezing point, boiling point)\n- Body temperature\n- Negative temperatures\n- Edge cases\n\nYour function should handle all these cases correctly to pass the tests.',
+        "Identifying the **data type** that is being operated on is crucial in understanding how Python works. It's the single greatest source of frustration for new people who are learning to code.\n\nCreate a simple 2-3 line code example that demonstrates the different between strings and integers, and write 3-4 sentences explaining how the example works.",
+      topic: "Strings vs. Integers",
+      isTopicPredefined: true,
+      code: "Create a simple example that demonstrates this topic",
+      isCodePredefined: false,
+      explanation: "Explain how your example works (3-4 sentences)",
+      isExplanationPredefined: false,
+    } as ReflectionSectionData,
+    {
+      kind: "Information",
+      id: "reflection-conclusion",
+      title: "Conclusion",
+      content:
+        "Congratulations on completing the strings vs. integers lesson. As stated above, it is a major source of confusion and frustration. If you ever seen a `TypeError`, take you time and think about what _type_ of things the program is operating on.",
     } as InformationSectionData,
   ],
 };
