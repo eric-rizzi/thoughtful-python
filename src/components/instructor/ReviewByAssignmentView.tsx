@@ -103,7 +103,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
             sectionId: section.id,
             sectionTitle: section.title,
             assignmentType: "Reflection",
-            assignmentDisplayTitle: `Reflection: "${section.title}" (Lesson: ${lesson.title})`,
+            assignmentDisplayTitle: `Reflection: "${section.title}" (in Lesson: ${lesson.title})`,
           });
         } else if (section.kind === "PRIMM") {
           ((section as PRIMMSectionData).examples || []).forEach((example) => {
@@ -116,7 +116,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
               sectionTitle: section.title,
               assignmentType: "PRIMM",
               primmExampleId: example.id,
-              assignmentDisplayTitle: `PRIMM: Ex. "${example.id}" in "${section.title}" (Lesson: ${lesson.title})`,
+              assignmentDisplayTitle: `PRIMM: "${section.title}" (in Lesson: ${lesson.title})`,
             });
           });
         }
@@ -279,7 +279,6 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
                   versions={
                     currentSubmissionData.submissionDetails as ReflectionVersionItem[]
                   }
-                  studentName={currentStudentInfo?.studentName}
                   lessonGuid={selectedAssignmentDetails.lessonId}
                   sectionId={selectedAssignmentDetails.sectionId}
                 />
@@ -288,7 +287,6 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
                   submission={
                     currentSubmissionData.submissionDetails as StoredPrimmSubmissionItem
                   }
-                  studentName={currentStudentInfo?.studentName}
                   lessonTitle={selectedAssignmentDetails.lessonTitle}
                   sectionId={selectedAssignmentDetails.sectionId}
                 />

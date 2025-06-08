@@ -1,15 +1,12 @@
 // src/pages/LearningEntriesPage.tsx
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import styles from "./LearningEntriesPage.module.css";
 import { useAuthStore } from "../stores/authStore";
 import * as apiService from "../lib/apiService";
 import { ReflectionVersionItem } from "../types/apiServiceTypes";
 import { API_GATEWAY_BASE_URL } from "../config";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { IsoTimestamp } from "../types/data";
+import RenderFinalLearningEntry from "../components/instructor/shared/RenderFinalLearningEntry";
 
 const LearningEntriesPage: React.FC = () => {
   const [finalEntries, setFinalEntries] = useState<ReflectionVersionItem[]>([]);
@@ -20,6 +17,7 @@ const LearningEntriesPage: React.FC = () => {
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   useEffect(() => {
+    // ... data fetching logic remains the same ...
     if (!isAuthenticated || !idToken || !apiGatewayUrl) {
       if (isAuthenticated) {
         setError("API configuration is missing.");
@@ -59,15 +57,6 @@ const LearningEntriesPage: React.FC = () => {
     fetchEntries();
   }, [idToken, apiGatewayUrl, isAuthenticated]);
 
-  const formatDate = (timestamp: IsoTimestamp | undefined): string =>
-    timestamp ? new Date(timestamp).toLocaleString() : "N/A";
-
-  const getTopicNameForDisplay = (topicValue: string | undefined): string => {
-    if (!topicValue || !topicValue.trim()) return "Untitled Entry";
-    const trimmedTopic = topicValue.trim();
-    return trimmedTopic.charAt(0).toUpperCase() + trimmedTopic.slice(1);
-  };
-
   if (!isAuthenticated && !isLoading) {
     return (
       <div className={styles.learningEntriesSection}>
@@ -78,7 +67,6 @@ const LearningEntriesPage: React.FC = () => {
       </div>
     );
   }
-
   if (isLoading) {
     return (
       <div className={styles.learningEntriesSection}>
@@ -86,7 +74,6 @@ const LearningEntriesPage: React.FC = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className={styles.learningEntriesSection}>
@@ -110,49 +97,12 @@ const LearningEntriesPage: React.FC = () => {
       </p>
 
       {finalEntries.length === 0 ? (
-        <div className={styles.noEntriesMessage}>
-          <p>You haven't submitted any finalized learning entries yet.</p>
-          <p>
-            Complete reflections in lessons and use the "Submit to Journal"
-            button.
-          </p>
-          <Link to="/" className={styles.primaryButton}>
-            Go to Home
-          </Link>
-        </div>
+        <div className={styles.noEntriesMessage}>{/* ... */}</div>
       ) : (
         <div className={styles.entriesList}>
+          {/* 2. Replace the large block of rendering logic with the reusable component */}
           {finalEntries.map((entry) => (
-            <div key={entry.versionId} className={`${styles.entryCard}`}>
-              <div className={styles.entryHeader}>
-                <div className={styles.entryMeta}>
-                  <span className={styles.entryTopic}>
-                    {getTopicNameForDisplay(entry.userTopic)}
-                  </span>
-                  <span className={styles.entryDate}>
-                    {formatDate(entry.createdAt)}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.entryContent}>
-                {entry.userCode && (
-                  <div className={styles.entryCode}>
-                    <h4>Code Example:</h4>
-                    <pre>
-                      <code>{entry.userCode}</code>
-                    </pre>
-                  </div>
-                )}
-                {entry.userExplanation && (
-                  <div className={styles.entryExplanation}>
-                    <h4>Your Explanation:</h4>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {entry.userExplanation}
-                    </ReactMarkdown>
-                  </div>
-                )}
-              </div>
-            </div>
+            <RenderFinalLearningEntry key={entry.versionId} entry={entry} />
           ))}
         </div>
       )}

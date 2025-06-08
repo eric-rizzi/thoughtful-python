@@ -9,7 +9,6 @@ import { getLessonPathSync } from "../../../lib/dataLoader";
 
 interface RenderReflectionVersionsProps {
   versions: ReflectionVersionItem[];
-  studentName?: string | null;
   lessonGuid: LessonId;
   sectionId: SectionId;
   // lessonPath?: string; // Optional: if you want to construct links using path instead of GUID directly
@@ -17,10 +16,8 @@ interface RenderReflectionVersionsProps {
 
 const RenderReflectionVersions: React.FC<RenderReflectionVersionsProps> = ({
   versions,
-  studentName,
   lessonGuid,
   sectionId,
-  // lessonPath,
 }) => {
   if (!versions || versions.length === 0) {
     return (
