@@ -122,8 +122,6 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-/* REMOVED .dashboardHeader and .topTabNav styles as they are replaced */
-
 .mainContentArea {
   /* This container no longer needs its own background/border as it's just a content wrapper now */
   padding: 0;

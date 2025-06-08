@@ -11,6 +11,7 @@ import InstructorDashboardPage from "./pages/InstructorDashboardPage";
 import Layout from "./components/Layout";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import { useProgressStore, useProgressActions } from "./stores/progressStore";
+import StudentLayout from "./components/StudentLayout";
 
 function App() {
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
@@ -34,29 +35,31 @@ function App() {
   return (
     <Routes>
       {/* Routes that use the standard student-facing layout */}
-      <Route path="/" element={<Layout />}>
-        <Route index element={<HomePage />} />
-        <Route path="unit/:unitId" element={<UnitPage />} />
-        <Route path="lesson/*" element={<LessonPage />} />
-        <Route path="editor" element={<CodeEditorPage />} />
-        <Route path="learning-entries" element={<LearningEntriesPage />} />
-        <Route path="configure" element={<ConfigurationPage />} />
-        <Route
-          path="progress"
-          element={
-            <AuthenticatedRoute>
-              <ProgressPage />
-            </AuthenticatedRoute>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <div>
-              <h2>404 - Page Not Found</h2>
-            </div>
-          }
-        />
+      <Route element={<StudentLayout />}>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="unit/:unitId" element={<UnitPage />} />
+          <Route path="lesson/*" element={<LessonPage />} />
+          <Route path="editor" element={<CodeEditorPage />} />
+          <Route path="learning-entries" element={<LearningEntriesPage />} />
+          <Route path="configure" element={<ConfigurationPage />} />
+          <Route
+            path="progress"
+            element={
+              <AuthenticatedRoute>
+                <ProgressPage />
+              </AuthenticatedRoute>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <div>
+                <h2>404 - Page Not Found</h2>
+              </div>
+            }
+          />
+        </Route>
       </Route>
 
       <Route

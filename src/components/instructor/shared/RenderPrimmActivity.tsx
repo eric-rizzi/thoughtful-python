@@ -39,16 +39,15 @@ const RenderPrimmActivity: React.FC<RenderPrimmActivityProps> = ({
 
   return (
     <div className={styles.submissionDetailCard}>
-      <h4>PRIMM Analysis: Example '{submission.primmExampleId}'</h4>
+      <h4>
+        Lesson/Section: {lessonTitle} / {sectionId}
+      </h4>
       <div>
         {studentName && (
           <p>
             <strong>Student:</strong> {studentName}
           </p>
         )}
-        <p>
-          <strong>Lesson/Section:</strong> {lessonTitle} / {sectionId}
-        </p>
         <Link
           to={`${lessonLinkPath}#${sectionId}`} // Use sectionId from props for the hash
           target="_blank"

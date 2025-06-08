@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, NavLink, useNavigate } from "react-router-dom"; // Import routing components
+import { Routes, Route, NavLink, useNavigate, Link } from "react-router-dom"; // Import routing components
 import { googleLogout } from "@react-oauth/google";
 
 import * as apiService from "../lib/apiService";
@@ -85,7 +85,33 @@ const InstructorDashboardPage: React.FC = () => {
   return (
     <div className={styles.pageWrapper}>
       <header className={styles.instructorHeader}>
-        <h1>Thoughtful Dashboard</h1>
+        <div className={styles.headerMain}>
+          <div>
+            <h1>Thoughtful Dashboard</h1>
+            <Link to="/" className={styles.backToStudentLink}>
+              &larr; Back to Student View
+            </Link>
+          </div>
+          <div className={styles.authSection}>
+            {user && (
+              <>
+                {user.picture && (
+                  <img
+                    src={user.picture}
+                    alt={user.name || "User"}
+                    className={styles.profileImage}
+                  />
+                )}
+                <span className={styles.userName}>
+                  {user.name || user.email}
+                </span>
+                <button onClick={handleLogout} className={styles.authButton}>
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
+        </div>
         <nav className={styles.instructorNav}>
           {navLinks.map((link) => (
             <NavLink

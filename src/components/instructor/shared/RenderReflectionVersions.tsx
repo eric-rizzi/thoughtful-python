@@ -58,14 +58,6 @@ const RenderReflectionVersions: React.FC<RenderReflectionVersionsProps> = ({
       <h4>
         Reflection: {finalOrLatestVersion.userTopic || "Untitled Reflection"}
       </h4>
-      {studentName && (
-        <p>
-          <strong>Student:</strong> {studentName}
-        </p>
-      )}
-      <p>
-        <strong>Lesson/Section:</strong> {lessonGuid} / {sectionId}
-      </p>
       <Link
         to={`${lessonLinkPath}#${sectionId}`}
         target="_blank"
