@@ -240,3 +240,12 @@ export async function getLessonPath(
   if (!unitsDataProcessed) await fetchUnitsData(); // Ensure map is populated
   return lessonIdToPathMap?.get(lessonId) || null;
 }
+
+export function hasReviewableAssignments(lesson: Lesson): boolean {
+  if (!lesson || !lesson.sections) {
+    return false;
+  }
+  return lesson.sections.some(
+    (s) => s.kind === "Reflection" || s.kind === "PRIMM"
+  );
+}

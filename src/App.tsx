@@ -60,7 +60,7 @@ function App() {
       </Route>
 
       <Route
-        path="instructor-dashboard"
+        path="instructor-dashboard/*"
         element={
           <AuthenticatedRoute>
             <InstructorDashboardPage />

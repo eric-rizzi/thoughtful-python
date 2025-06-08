@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import type {
   Unit,
   Lesson,
@@ -35,27 +36,28 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
   const { idToken, isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
+  // State for the UI
   const [selectedUnitId, setSelectedUnitId] = useState<UnitId | "">("");
   const [lessonsInSelectedUnit, setLessonsInSelectedUnit] = useState<
     (Lesson & { guid: LessonId })[]
   >([]);
-
   const [selectedAssignmentKey, setSelectedAssignmentKey] = useState<
     string | null
   >(null);
-
   const [submissions, setSubmissions] = useState<
     AssignmentSubmission<"Reflection" | "PRIMM">[]
   >([]);
   const [currentSubmissionIndex, setCurrentSubmissionIndex] = useState(0);
   const [isLoading, setIsLoadingState] = useState({
-    units: false,
     lessons: false,
     submissions: false,
   });
   const [error, setError] = useState<string | null>(null);
 
-  // Effect to load lessons when a unit is selected (to build assignmentsInUnit)
+  // Hook to read and write URL query parameters (e.g., ?unit=...&lesson=...)
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // This effect loads lessons when the selected unit changes
   useEffect(() => {
     if (selectedUnitId) {
       const unit = units.find((u) => u.id === selectedUnitId);
@@ -72,10 +74,9 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
               })[]
             );
           })
-          .catch((err) => {
-            setError("Failed to load lessons for assignment list.");
-            console.error(err);
-          })
+          .catch((err) =>
+            setError("Failed to load lessons for assignment list.")
+          )
           .finally(() =>
             setIsLoadingState((prev) => ({ ...prev, lessons: false }))
           );
@@ -83,14 +84,16 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
     } else {
       setLessonsInSelectedUnit([]);
     }
+    // When the unit changes, we reset the assignment selection
     setSelectedAssignmentKey(null);
     setSubmissions([]);
     setError(null);
   }, [selectedUnitId, units]);
 
-  // Memoize the list of displayable assignments
+  // This effect computes the list of available assignments from the loaded lessons
   const assignmentsInUnit: DisplayableAssignment[] = useMemo(() => {
     if (!selectedUnitId || !lessonsInSelectedUnit.length) return [];
+    // ... (logic to generate assignments list from lessons)
     const displayableAssignments: DisplayableAssignment[] = [];
     const unit = units.find((u) => u.id === selectedUnitId);
     if (!unit) return [];
@@ -107,7 +110,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
               sectionId: section.id,
               sectionTitle: section.title,
               assignmentType: "Reflection",
-              assignmentDisplayTitle: `Reflection: ${section.title} (in Lesson: ${lesson.title})`,
+              assignmentDisplayTitle: `Reflection: "${section.title}" (Lesson: ${lesson.title})`,
             });
           } else if (section.kind === "PRIMM") {
             ((section as PRIMMSectionData).examples || []).forEach(
@@ -132,8 +135,32 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
     return displayableAssignments;
   }, [selectedUnitId, lessonsInSelectedUnit, units]);
 
+  // This new useEffect hook keeps the component's state in sync with the URL
+  useEffect(() => {
+    const unitIdFromUrl = searchParams.get("unit") as UnitId;
+    const lessonIdFromUrl = searchParams.get("lesson");
+
+    // If the URL has a unit, make sure our dropdown matches
+    if (unitIdFromUrl && unitIdFromUrl !== selectedUnitId) {
+      setSelectedUnitId(unitIdFromUrl);
+    }
+
+    // If the URL has a lesson, find its corresponding assignment and select it
+    if (lessonIdFromUrl && assignmentsInUnit.length > 0) {
+      const targetAssignment = assignmentsInUnit.find(
+        (a) => a.lessonId === lessonIdFromUrl
+      );
+      if (targetAssignment && targetAssignment.key !== selectedAssignmentKey) {
+        setSelectedAssignmentKey(targetAssignment.key);
+      }
+    } else if (!lessonIdFromUrl) {
+      setSelectedAssignmentKey(null);
+    }
+  }, [searchParams, selectedUnitId, assignmentsInUnit, selectedAssignmentKey]);
+
   const fetchSubmissionsForSelectedAssignment = useCallback(
     async (assignment: DisplayableAssignment) => {
+      // ... (this function's internal logic is unchanged)
       if (!isAuthenticated || !idToken || !apiGatewayUrl || !assignment) return;
 
       setIsLoadingState((prev) => ({ ...prev, submissions: true }));
@@ -175,7 +202,6 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
     [isAuthenticated, idToken, apiGatewayUrl]
   );
 
-  // Auto-load submissions when selectedAssignmentKey changes and is valid
   useEffect(() => {
     const assignment = assignmentsInUnit.find(
       (a) => a.key === selectedAssignmentKey
@@ -183,7 +209,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
     if (assignment) {
       fetchSubmissionsForSelectedAssignment(assignment);
     } else {
-      setSubmissions([]); // Clear if no valid assignment selected
+      setSubmissions([]);
     }
   }, [
     selectedAssignmentKey,
@@ -191,9 +217,16 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
     fetchSubmissionsForSelectedAssignment,
   ]);
 
+  // These handlers now update the URL, which triggers the useEffect above to update state
+  const handleUnitSelectionChange = (newUnitId: UnitId | "") => {
+    setSearchParams(newUnitId ? { unit: newUnitId } : {});
+  };
+
   const handleAssignmentSelection = (assignmentKey: string) => {
-    setSelectedAssignmentKey(assignmentKey);
-    // Submissions will be fetched by the useEffect above
+    const assignment = assignmentsInUnit.find((a) => a.key === assignmentKey);
+    if (assignment) {
+      setSearchParams({ unit: assignment.unitId, lesson: assignment.lessonId });
+    }
   };
 
   const currentSubmissionData = submissions[currentSubmissionIndex];
@@ -210,13 +243,13 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
       <div className={styles.filters}>
         <select
           value={selectedUnitId}
-          onChange={(e) => setSelectedUnitId(e.target.value as UnitId)}
+          onChange={(e) =>
+            handleUnitSelectionChange(e.target.value as UnitId | "")
+          }
           className={styles.filterSelect}
-          disabled={units.length === 0 || isLoading.units}
+          disabled={units.length === 0}
         >
-          <option value="">
-            {isLoading.units ? "Loading Units..." : "-- Select Unit --"}
-          </option>
+          <option value="">-- Select Unit --</option>
           {units.map((unit) => (
             <option key={unit.id} value={unit.id}>
               {unit.title}
@@ -226,29 +259,10 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
       </div>
 
       {isLoading.lessons && selectedUnitId && (
-        <LoadingSpinner message="Loading assignments for unit..." />
+        <LoadingSpinner message="Loading assignments..." />
       )}
-
-      {selectedUnitId &&
-        !isLoading.lessons &&
-        assignmentsInUnit.length === 0 && (
-          <p className={styles.placeholderMessage}>
-            No reviewable assignments (Reflections/PRIMM) found in this unit.
-          </p>
-        )}
-
       {assignmentsInUnit.length > 0 && (
         <div className={styles.assignmentListContainer}>
-          <p
-            style={{
-              padding: "0.5rem 1rem",
-              margin: 0,
-              fontSize: "0.9em",
-              color: "#555",
-            }}
-          >
-            Select an assignment to review submissions:
-          </p>
           <ul className={styles.assignmentList}>
             {assignmentsInUnit.map((assignment) => (
               <li
@@ -259,7 +273,6 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
                     : ""
                 }`}
                 onClick={() => handleAssignmentSelection(assignment.key)}
-                title={`Click to load submissions for: ${assignment.assignmentDisplayTitle}`}
               >
                 <span className={styles.assignmentTitle}>
                   {assignment.assignmentDisplayTitle}
@@ -308,12 +321,10 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
                   currentSubmissionData.submissionDetails as StoredPrimmSubmissionItem
                 }
                 studentName={currentStudentInfo?.studentName}
-                lessonTitle={selectedAssignmentDetails.sectionTitle}
+                lessonTitle={selectedAssignmentDetails.lessonTitle}
                 sectionId={selectedAssignmentDetails.sectionId}
               />
-            ) : (
-              <p>Selected assignment type not recognized for display.</p>
-            )}
+            ) : null}
 
             {submissions.length > 1 && (
               <div className={styles.navigationButtons}>
@@ -341,15 +352,6 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
               </div>
             )}
           </div>
-        )}
-      {!isLoading.submissions &&
-        selectedAssignmentKey &&
-        submissions.length === 0 &&
-        !error && (
-          <p className={styles.placeholderMessage}>
-            Select an assignment or no submissions yet for the current
-            selection.
-          </p>
         )}
     </div>
   );

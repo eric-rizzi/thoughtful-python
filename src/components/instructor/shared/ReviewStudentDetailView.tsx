@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // Import router hooks
 import * as apiService from "../../../lib/apiService";
 import { useAuthStore } from "../../../stores/authStore";
 import { API_GATEWAY_BASE_URL } from "../../../config";
@@ -10,18 +11,14 @@ import type { UserId } from "../../../types/data";
 import LoadingSpinner from "../../LoadingSpinner";
 import styles from "./ReviewStudentDetailView.module.css";
 import instructorStyles from "../InstructorViews.module.css";
-import RenderReflectionVersions from "./RenderReflectionVersions";
-import RenderPrimmActivity from "./RenderPrimmActivity";
+import RenderReflectionVersions from "../shared/RenderReflectionVersions";
+import RenderPrimmActivity from "../shared/RenderPrimmActivity";
 
-interface ReviewStudentDetailViewProps {
-  studentId: UserId;
-  onBack: () => void; // Function to go back to the student list
-}
+// This component no longer needs props
+const ReviewStudentDetailView: React.FC = () => {
+  const { studentId } = useParams<{ studentId: string }>(); // Get studentId from URL
+  const navigate = useNavigate(); // Get the navigate function for the back button
 
-const ReviewStudentDetailView: React.FC<ReviewStudentDetailViewProps> = ({
-  studentId,
-  onBack,
-}) => {
   const [studentProfile, setStudentProfile] =
     useState<StudentDetailedProgressResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,13 +35,19 @@ const ReviewStudentDetailView: React.FC<ReviewStudentDetailViewProps> = ({
         setIsLoading(false);
         return;
       }
+      if (!studentId) {
+        setError("Student ID not found in URL.");
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       try {
         const profileData = await apiService.getStudentDetailedProgress(
           idToken,
           API_GATEWAY_BASE_URL,
-          studentId
+          studentId as UserId
         );
         setStudentProfile(profileData);
       } catch (err) {
@@ -62,6 +65,11 @@ const ReviewStudentDetailView: React.FC<ReviewStudentDetailViewProps> = ({
     fetchProfile();
   }, [studentId, idToken]);
 
+  const handleBack = () => {
+    navigate("/instructor-dashboard/students"); // Always navigate back to the main student list page
+  };
+
+  // ... (renderStatusBadge and renderSubmissionModal functions remain the same)
   const renderStatusBadge = (
     status: "completed" | "submitted" | "not_started"
   ) => {
@@ -81,7 +89,8 @@ const ReviewStudentDetailView: React.FC<ReviewStudentDetailViewProps> = ({
   const renderSubmissionModal = () => {
     if (!viewingSubmission || !viewingSubmission.submissionDetails) return null;
 
-    const { sectionKind, submissionDetails } = viewingSubmission;
+    const { sectionKind, submissionDetails, sectionTitle, sectionId } =
+      viewingSubmission;
 
     return (
       <div
@@ -98,8 +107,8 @@ const ReviewStudentDetailView: React.FC<ReviewStudentDetailViewProps> = ({
           {sectionKind === "PRIMM" && !Array.isArray(submissionDetails) && (
             <RenderPrimmActivity
               submission={submissionDetails}
-              lessonTitle={viewingSubmission.sectionTitle}
-              sectionId={viewingSubmission.sectionId}
+              lessonTitle={sectionTitle}
+              sectionId={sectionId}
             />
           )}
           <button
@@ -126,17 +135,16 @@ const ReviewStudentDetailView: React.FC<ReviewStudentDetailViewProps> = ({
   return (
     <div className={styles.viewContainer}>
       <div className={styles.header}>
-        <button onClick={onBack} className={styles.backButton}>
+        <button onClick={handleBack} className={styles.backButton}>
           &larr; Back to Student List
         </button>
         <h3>{studentProfile.studentName || studentProfile.studentId}</h3>
       </div>
-
+      {/* ... rest of the rendering logic remains the same ... */}
       {studentProfile.profile.map((unit) => (
         <details key={unit.unitId} className={styles.unitAccordion} open>
           <summary className={styles.unitSummary}>
             <span>{unit.unitTitle}</span>
-            {/* You can add a progress bar here later */}
           </summary>
           <div className={styles.unitDetails}>
             {unit.lessons.map((lesson) => (

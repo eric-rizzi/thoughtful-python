@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import * as apiService from "../../lib/apiService";
+import { Link } from "react-router-dom";
+import { hasReviewableAssignments } from "../../lib/dataLoader";
 import { useAuthStore } from "../../stores/authStore";
 import { API_GATEWAY_BASE_URL } from "../../config";
 import type {
@@ -363,11 +365,24 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
           <thead>
             <tr>
               <th>Student</th>
-              {selectedUnitLessons.map((lesson) => (
-                <th key={lesson.guid} title={lesson.guid}>
-                  {lesson.title}
-                </th>
-              ))}
+              {selectedUnitLessons.map((lesson) => {
+                const hasAssignments = hasReviewableAssignments(lesson);
+                const lessonLink = `/instructor-dashboard/assignments?unit=${selectedUnitId}&lesson=${lesson.guid}`;
+                return (
+                  <th key={lesson.guid} title={lesson.guid}>
+                    {hasAssignments ? (
+                      <Link
+                        to={lessonLink}
+                        title={`Review assignments for ${lesson.title}`}
+                      >
+                        {lesson.title} ↗
+                      </Link>
+                    ) : (
+                      lesson.title
+                    )}
+                  </th>
+                );
+              })}
               <th>Unit Avg.</th>
             </tr>
           </thead>
@@ -375,7 +390,11 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
             {displayableClassProgress.map((studentProgress) => (
               <tr key={studentProgress.studentId}>
                 <td className={styles.studentNameCell}>
-                  {studentProgress.studentName || studentProgress.studentId}
+                  <Link
+                    to={`/instructor-dashboard/students/${studentProgress.studentId}`}
+                  >
+                    {studentProgress.studentName || studentProgress.studentId}
+                  </Link>
                 </td>
                 {selectedUnitLessons.map((lesson) => {
                   const lessonProg = studentProgress.lessonsProgress.find(
@@ -402,16 +421,6 @@ const ReviewClassProgressView: React.FC<ReviewClassProgressViewProps> = ({
                     </td>
                   );
                 })}
-                <td
-                  style={{
-                    fontWeight: "bold",
-                    backgroundColor: getCellBackgroundColor(
-                      studentProgress.overallUnitCompletionPercent
-                    ),
-                  }}
-                >
-                  {studentProgress.overallUnitCompletionPercent.toFixed(0)}%
-                </td>
               </tr>
             ))}
           </tbody>
