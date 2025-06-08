@@ -672,7 +672,8 @@ export async function getSubmissionsForAssignment<
   assignmentType: T,
   primmExampleId?: string
 ): Promise<ListOfAssignmentSubmissionsResponse<T>> {
-  if (true) {
+  // The mock implementation can be updated or removed as needed.
+  if (USE_MOCKED_API) {
     console.log(
       `MOCKED API [getSubmissionsForAssignment]: unit: ${unitId}, lesson: ${lessonId}, section: ${sectionId}, type: ${assignmentType}`
     );
@@ -748,7 +749,7 @@ export async function getSubmissionsForAssignment<
           submissionDetails: reflectionVersions as any, // Cast to 'any' then to T
         } as AssignmentSubmission<T>);
       } else if (assignmentType === "PRIMM" && primmExampleId) {
-        const ts = new Date(baseTs).toISOString();
+        const ts = new Date(baseTs).toISOString() as IsoTimestamp;
         const primmDetail: StoredPrimmSubmissionItem = {
           userId: sId,
           submissionCompositeKey: `${lessonId}#${sectionId}#${primmExampleId}#${ts}`,
@@ -784,18 +785,33 @@ export async function getSubmissionsForAssignment<
       submissions,
     } as ListOfAssignmentSubmissionsResponse<T>);
   }
-  // Real API Call
-  let queryParams = `unitId=${encodeURIComponent(
-    unitId
-  )}&lessonId=${encodeURIComponent(lessonId)}&sectionId=${encodeURIComponent(
-    sectionId
-  )}&assignmentType=${assignmentType}`;
-  if (assignmentType === "PRIMM" && primmExampleId)
-    queryParams += `&primmExampleId=${encodeURIComponent(primmExampleId)}`;
-  const endpoint = `${apiGatewayUrl}/instructor/assignment-submissions?${queryParams}`; // Placeholder
-  const response = await fetch(endpoint, {
-    headers: { Authorization: `Bearer ${idToken}` },
+
+  if (!idToken) throw new ApiError("Authentication token is required.", 401);
+  if (!apiGatewayUrl) throw new ApiError("API Gateway URL is required.", 500);
+
+  const basePath = `${apiGatewayUrl}/instructor/units/${unitId}/lessons/${lessonId}/sections/${sectionId}/assignment-submissions`;
+  const queryParams = new URLSearchParams({
+    assignmentType: assignmentType,
   });
+
+  if (assignmentType === "PRIMM" && primmExampleId) {
+    queryParams.append("primmExampleId", primmExampleId);
+  }
+
+  const endpoint = `${basePath}?${queryParams.toString()}`;
+
+  console.log(
+    `LIVE API [getSubmissionsForAssignment]: Calling GET ${endpoint}`
+  );
+
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+
   if (!response.ok) {
     let errorData: { message: string; details?: any; type?: string } = {
       message: `HTTP error ${response.status}: ${response.statusText}`,
@@ -808,7 +824,7 @@ export async function getSubmissionsForAssignment<
         details: parsedJson.details || undefined,
       };
     } catch (e) {
-      /* ignore */
+      /* ignore if response body is not JSON */
     }
     console.error(
       `LIVE API [getSubmissionsForAssignment]: Error ${response.status}`,
