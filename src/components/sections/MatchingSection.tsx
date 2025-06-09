@@ -94,14 +94,6 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
     });
   };
 
-  const unmatchPrompt = (promptId: string) => {
-    setSavedState((prevState) => {
-      const newUserMatches = { ...prevState.userMatches };
-      newUserMatches[promptId] = null;
-      return { userMatches: newUserMatches };
-    });
-  };
-
   return (
     <section id={section.id} className={sectionStyles.section}>
       <h2 className={sectionStyles.title}>{section.title}</h2>
@@ -132,12 +124,6 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
                   {matchedOption ? (
                     <div className={styles.matchedOption}>
                       {matchedOption.text}
-                      <button
-                        onClick={() => unmatchPrompt(prompt.id)}
-                        className={styles.unmatchButton}
-                      >
-                        ×
-                      </button>
                     </div>
                   ) : (
                     <span className={styles.dropZonePlaceholder}>
