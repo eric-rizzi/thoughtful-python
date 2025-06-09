@@ -2,6 +2,27 @@ import { Unit, UnitId } from "../../types/data";
 
 const unitData: Unit[] = [
   {
+    id: "learning_to_learn" as UnitId,
+    title: "Learning to Learn",
+    description:
+      'Understand how this website differs from other "Learn Python" websites and learn a little bit about learning.',
+    lessons: [
+      {
+        path: "xx_learning/lesson_1",
+        guid: "dbd45993-6473-4df3-959a-04b7289a229e",
+      },
+      {
+        path: "xx_learning/lesson_2",
+        guid: "f950d6b1-7c06-485c-8a23-9cd17f72a7ba",
+      },
+      {
+        path: "xx_learning/lesson_3",
+        guid: "3c201468-453b-42f3-a4f6-51a0ad3c93f8",
+      },
+    ],
+    image: "unit_xx_learning.svg",
+  } as Unit,
+  {
     id: "intro_python" as UnitId,
     title: "Introduction to Python",
     description:
