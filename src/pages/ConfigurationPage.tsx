@@ -2,6 +2,7 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import styles from "./ConfigurationPage.module.css";
 import { useAuthStore } from "../stores/authStore";
+import { useThemeStore, Theme } from "../stores/themeStore";
 import {
   saveProgress as saveToLocalStorage,
   loadProgress as loadFromLocalStorage,
@@ -19,6 +20,7 @@ const ConfigurationPage: React.FC = () => {
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
 
+  const { theme, setTheme } = useThemeStore();
   const authUser = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
@@ -83,6 +85,49 @@ const ConfigurationPage: React.FC = () => {
             <small>
               This name may be used in reflections or future features. It's
               stored locally in your browser.
+            </small>
+          </div>
+        </div>
+
+        <div className={styles.configSection}>
+          <h3>Appearance</h3>
+          <div className={styles.formGroup}>
+            <label>Theme</label>
+            <div className={styles.radioGroup}>
+              <label>
+                <input
+                  type="radio"
+                  name="theme"
+                  value="light"
+                  checked={theme === "light"}
+                  onChange={(e) => setTheme(e.target.value as Theme)}
+                />
+                Light
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="theme"
+                  value="dark"
+                  checked={theme === "dark"}
+                  onChange={(e) => setTheme(e.target.value as Theme)}
+                />
+                Dark (Work in Progress)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="theme"
+                  value="system"
+                  checked={theme === "system"}
+                  onChange={(e) => setTheme(e.target.value as Theme)}
+                />
+                System (Work in Progress)
+              </label>
+            </div>
+            <small>
+              Choose how the application should look. 'System' will follow your
+              OS setting.
             </small>
           </div>
         </div>

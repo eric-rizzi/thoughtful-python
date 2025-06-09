@@ -2,26 +2,73 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-left: 10%;
   padding-right: 10%;
+
+  color-scheme: light dark;
+
+  --background-color: #ffffff;
+  --text-color: #213547;
+  --content-text-color: #444;
+  --link-color: #306998;
+  --link-hover-color: #535bf2;
+  --primary-color: #4b8bbe;
+  --primary-dark-color: #306998;
+  --card-background-color: #f9f9f9;
+  --card-border-color: #e0e0e0;
+  --button-bg-color: #f9f9f9;
+  --button-text-color: #213547;
+  --button-hover-border-color: #646cff;
+
+  /* Apply base colors */
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
+
+/* --- DARK THEME OVERRIDES --- */
+/* This rule applies for the 'system' setting */
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light) {
+    --background-color: #4d4d4d;
+    --text-color: rgba(255, 255, 255, 0.87);
+    --content-text-color: rgba(255, 255, 255, 0.8);
+    --link-color: #58a6ff;
+    --link-hover-color: #747bff;
+    --primary-color: #58a6ff;
+    --card-background-color: #242424;
+    --card-border-color: #3a3a3a;
+    --button-bg-color: #1a1a1a;
+    --button-text-color: rgba(255, 255, 255, 0.87);
+  }
+}
+
+/* This rule applies for the manual 'dark' theme selection */
+.theme-dark:root {
+  --background-color: #434343;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --content-text-color: rgba(255, 255, 255, 0.8);
+  --link-color: #58a6ff;
+  --link-hover-color: #747bff;
+  --primary-color: #58a6ff;
+  --card-background-color: #242424;
+  --card-border-color: #3a3a3a;
+  --button-bg-color: #1a1a1a;
+  --button-text-color: rgba(255, 255, 255, 0.87);
+}
+
+/* --- BASE ELEMENT STYLES USING VARIABLES --- */
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--link-color);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--link-hover-color);
 }
 
 body {
@@ -43,27 +90,15 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--button-hover-border-color);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

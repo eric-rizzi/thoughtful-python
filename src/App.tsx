@@ -10,12 +10,27 @@ import ConfigurationPage from "./pages/ConfigurationPage";
 import InstructorDashboardPage from "./pages/InstructorDashboardPage";
 import Layout from "./components/Layout";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import { useThemeStore } from "./stores/themeStore";
 import { useProgressStore, useProgressActions } from "./stores/progressStore";
 import StudentLayout from "./components/StudentLayout";
 
 function App() {
+  const theme = useThemeStore((state) => state.theme);
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
   const { clearPenalty } = useProgressActions();
+
+  useEffect(() => {
+    console.log("hi eric");
+    const root = document.documentElement;
+    root.classList.remove("theme-light", "theme-dark");
+
+    if (theme === "light") {
+      root.classList.add("theme-light");
+    } else if (theme === "dark") {
+      root.classList.add("theme-dark");
+    }
+    // If theme is 'system', no class is added, and the CSS media query takes over.
+  }, [theme]);
 
   useEffect(() => {
     if (penaltyEndTime === null) {

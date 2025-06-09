@@ -29,7 +29,7 @@
 .content {
   margin-bottom: 1.5rem;
   line-height: 1.6; /* Good readability */
-  color: #444; /* Dark gray for text */
+  color: var(--content-text-color);
   white-space: pre-wrap; /* Preserve newlines from JSON content */
 }
 
