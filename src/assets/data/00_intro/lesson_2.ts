@@ -51,7 +51,7 @@ const lessonData: Lesson = {
         },
       ],
       conclusion:
-        "When you use `+` with two integers, the result is addition. When you use `+` with two strings, the result is combining (technically called concatentation)",
+        "When you use `+` with two integers, the result is addition. When you use `+` with two strings, the result is combining (technically called concatenation )",
     } as PRIMMSectionData,
     {
       kind: "MultipleChoice",

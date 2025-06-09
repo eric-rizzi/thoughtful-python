@@ -56,7 +56,7 @@ const lessonData: Lesson = {
     {
       kind: "PRIMM",
       id: "double-quote-strings" as SectionId,
-      title: "Quotating Someone",
+      title: "Quoting Someone",
       content:
         "Below is Python code that attempts to print a quotation. Unfortunately, there's a problem.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, use the feedback from AI to refine/correct your mental model.",
       examples: [
@@ -72,7 +72,7 @@ const lessonData: Lesson = {
     } as PRIMMSectionData,
     {
       kind: "Observation",
-      id: "signle-quote-strings" as SectionId,
+      id: "single-quote-strings" as SectionId,
       title: "Single Quote Strings",
       content:
         "Luckily, there's a way around this problem: single quotes! Single quotes (`'`) can be used whenever you have a string that has a double quote (`\"`) inside it.\n\nThe code below is almost exactly like the code in the example above, except it uses single quotes at the start and end of the string. This simple change prevent the computer from getting confused. Run the program to verify it works as expected.",
