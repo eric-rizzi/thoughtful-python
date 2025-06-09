@@ -161,7 +161,7 @@ export async function getLessonGuidByPath(
 export async function fetchLessonData(
   lessonFilePath: LessonPath
 ): Promise<Lesson | null> {
-  if (!unitsDataProcessed) await fetchUnitsData(); // Ensure map is populated
+  if (!unitsDataProcessed) await fetchUnitsData();
 
   const lessonId = lessonPathToIdMap?.get(lessonFilePath);
   if (!lessonId) {
@@ -193,6 +193,19 @@ export async function fetchLessonData(
         return null;
       }
 
+      if (lessonData.sections) {
+        const seenSectionIds = new Set<SectionId>();
+        for (const section of lessonData.sections) {
+          if (seenSectionIds.has(section.id)) {
+            // Log a detailed error to the console if a duplicate is found
+            console.error(
+              `Data Integrity Error: Duplicate sectionId '${section.id}' found within the same lesson file: '${lessonFilePath}.ts'. Section IDs must be unique per lesson.`
+            );
+          } else {
+            seenSectionIds.add(section.id);
+          }
+        }
+      }
       lessonContentCache.set(lessonId, lessonData);
       return lessonData;
     } catch (error) {
