@@ -4,6 +4,7 @@ import type {
   LessonId,
   ReflectionSectionData,
   MultipleChoiceSectionData,
+  MultipleSelectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -17,7 +18,7 @@ const lessonData: Lesson = {
       id: "reflection-intro",
       title: "The Importance of Reflection",
       content:
-        'There is a quote by a famous educational philosopher named John Dewey that sums up the philosophy of this website: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in optimal learning. This final section of the introduction discusses the most powerful tool that this website has in it\'s belt: iterative reflection.',
+        'There is a quote by a famous educational philosopher named John Dewey that sums up the philosophy of this website: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in optimal learning. This section highlights the most powerful tool that this website has in it\'s belt: iterative reflection.',
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
@@ -26,7 +27,7 @@ const lessonData: Lesson = {
       content: "Why is reflection such a powerful tool in learning?",
       options: [
         "It proves to the teacher that you did the work.",
-        "It forces you to retrieve information and organize it in your own words, strengthening memory.",
+        "It forces you to retrieve information and organize it in your own words.",
         "It's the fastest way to get through a lesson.",
         "It allows you to skip the parts of the code you don't understand.",
       ],
@@ -56,6 +57,32 @@ const lessonData: Lesson = {
       explanation: "Explain how your example works (3-4 sentences)",
       isExplanationPredefined: false,
     } as ReflectionSectionData,
+    {
+      kind: "MultipleSelection",
+      id: "learning-through-reflection-quiz",
+      title: "Getting the Most Out of Reflection",
+      content:
+        "Which of the following will allow you to get the most out of an AI/Reflection combo:",
+      options: [
+        "Being hasty so you can get to the next lesson quickly",
+        "Being honest in identifying things you don't understand",
+        "Being careful in constructing the simplest example possible",
+        "Being specific as you discuss important parts of the example",
+        "Being open to feedback from the AI",
+      ],
+      correctAnswers: [1, 2, 3, 4],
+      feedback: {
+        correct:
+          "Correct! Reflection is work, but it's work that will solidify your understanding of difficult topics.",
+      },
+    } as MultipleSelectionSectionData,
+    {
+      kind: "Information",
+      id: "reflection-wrap-up",
+      title: "Wrapping Up Reflection",
+      content:
+        "That's it! Hopefully you now understand what the website is trying to do and why. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+    } as InformationSectionData,
   ],
 };
 

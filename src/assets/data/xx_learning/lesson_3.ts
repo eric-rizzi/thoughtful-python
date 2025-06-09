@@ -8,17 +8,94 @@ import type {
 
 const lessonData: Lesson = {
   title: "The Science Behind Our Method",
-  guid: "dbd45993-6473-4df3-959a-04b7289a229e" as LessonId, // Kept original GUID
+  guid: "dbd45993-6473-4df3-959a-04b7289a229e" as LessonId,
   description:
-    "Now that you've used PRIMM and Reflection, let's explore the learning science that makes them effective.",
+    "Learning is a well researched process. Understand what best practices are and how this website aligns with them.",
   sections: [
     {
       kind: "Information",
       id: "thoughtful-intro",
       title: "Why This Works",
       content:
-        "You've just experienced the core learning loops of this website: PRIMM and Reflection. These aren't random activities; they are based on well-researched best practices for learning complex skills. Understanding these practices will not only help you get the most out of this site, but will help you learn anything more effectively.",
+        "You've just experienced the core learning strategies of this website: PRIMM and Reflection. These aren't random activities; they are based on well-researched best practices for learning complex skills. Understanding these practices will not only help you get the most out of this site, but will help you learn anything more effectively. The core techniques for learning are: _spaced-practice_, _interleaving_, _retrieval-practice_, _elaboration_, _concrete examples_, and _dual coding_.",
     } as InformationSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "best-practice-quiz" as SectionId,
+      title: "Not Best Practice?",
+      content:
+        "Which of the following **is not** one of the learning best-practices?",
+      options: [
+        "Elaboration",
+        "Spaced Practice",
+        "Timed Focus",
+        "Interleaving",
+        "Concrete Examples",
+      ],
+      correctAnswer: 2,
+      feedback: {
+        correct: "Correct!",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "Information",
+      id: "active-reading" as SectionId,
+      title: "Active Reading is Hard",
+      content:
+        "I'm going to bet that a fair number of you only read the `Learning Best Practices` section once you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. Therefore, this course will minimize the passive text and maximize the active processes.",
+    } as InformationSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "interleaving-quiz" as SectionId,
+      title: "Learning Through Interleaving",
+      content:
+        "This course relies heavily on _interleaving_ throughout all of the lessons to ingrain important concepts in your head. _Interleaving_ is the process of mixing up the types of problems you're working on. An example would be in math where, instead of doing all your addition problems, then all of your multiplication problems, then all of your division problems, you mix them up. This has the dual benefit of teaching you the operation (`+`, `/`, `*`) AND teaching you how to identify when to use the operation.\n\nBased on this explanation, how do you think this website will utilize _interleaving_?",
+      options: [
+        "By having quizzes only the most important topic at the the end of lesson",
+        "By asking questions about the material in the order it's presented",
+        "By having review sections that mix up important topics in varying orders",
+      ],
+      correctAnswer: 2,
+      feedback: {
+        correct: "Correct!",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "retrieval-practice-quiz",
+      title: "Learning Through Retrieval Practice",
+      content:
+        '_Retrieval practice_ is the process of "bringing learned information to mind from long-term memory". It basically is improving your ability to recall and use information that you learned before. Retrieval practice is **very** important for programming. This is because you need to remember/utilize a lot of different pieces of information to write a useful program.\n\nSince this topic is about retrieval practice, which of the following topics would require you to retrieve knowledge you already learned?',
+      options: [
+        "Remembering that retrieval practice is about practicing remembering previously learned information",
+        "Remembering that interleaving is about mixing up the order that your review topics in",
+        "Predicting that elaboration is about strengthening your mental model by looking for connections",
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct! Short-term memory is different from long-term memory. Continually returning to old lessons increases the chances they will be useful.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "spaced-practice-quiz",
+      title: "Learning Through Spaced Practice",
+      content:
+        "_Spaced practice_ is basically forcing yourself not to cram. It's very similar to _retrieval practice_ but, whereas _retrieval practice_ is about increasing the number of times you access information in your long-term memory, _spaced practice_ is about making sure your practice over a long period of time. It's a bit like the gym: you can go and try and do every exercise in a single day, but you'll get much better results if your make a habit of going.\n\nBased on this explanation what do you think the optimal strategy is if you have seven problems due next week.",
+      options: [
+        "Do them all now so you can relax",
+        "Do them all at the last minute so it will be fresh",
+        "Do one a day so you practice recalling the information",
+        "Change strategies over time to keep yourself on your toes",
+      ],
+      correctAnswer: 2,
+      feedback: {
+        correct:
+          "Correct! Practicing retrieval from your long-term memory is both about number of reps AND about spacing over time.",
+      },
+    } as MultipleChoiceSectionData,
+
     {
       kind: "MultipleChoice",
       id: "primm-best-practice-quiz",
@@ -43,47 +120,6 @@ const lessonData: Lesson = {
       feedback: {
         correct:
           "Correct! Elaboration is the process of explaining and describing ideas with many details. It involves connecting new ideas to what you already know, which is exactly what you do in a good reflection.",
-      },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "Information",
-      id: "learning-best-practices" as SectionId,
-      title: "Other Best Practices Used Here",
-      content:
-        "This website also relies heavily on other best practices you'll see throughout the lessons:",
-    } as InformationSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "interleaving-quiz" as SectionId,
-      title: "Learning Through Interleaving",
-      content:
-        "_Interleaving_ is the process of mixing up the types of problems you're working on. Instead of doing 10 addition problems and then 10 multiplication problems, you mix them up. This teaches you how to identify which strategy to use. How might this website use interleaving?",
-      options: [
-        "By having review sections that mix up important topics from different lessons.",
-        "By having quizzes only on the most important topic at the the end of lesson.",
-        "By asking questions about the material in the order it's presented.",
-      ],
-      correctAnswer: 0,
-      feedback: {
-        correct:
-          "Correct! Mixing up different concepts in review helps you build more flexible and durable knowledge.",
-      },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "spaced-practice-quiz",
-      title: "Learning Through Spaced Practice",
-      content:
-        "_Spaced practice_ is the opposite of cramming. It's about practicing over a longer period of time. It's like going to the gym: it's better to go for an hour three times a week than for three hours straight once a week. Based on this, what's the best way to approach the lessons on this site?",
-      options: [
-        "Do them all in one sitting to get them done.",
-        "Do one lesson every day or every few days.",
-        "Wait until the day before a test to review everything.",
-      ],
-      correctAnswer: 1,
-      feedback: {
-        correct:
-          "Correct! Spacing out your learning over time is a proven way to build long-term retention.",
       },
     } as MultipleChoiceSectionData,
     {
