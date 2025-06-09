@@ -124,14 +124,30 @@ const InstructorDashboardPage: React.FC = () => {
     return (
       <div className={styles.pageWrapper}>
         <header className={styles.instructorHeader}>
-          <h1>Instructor Dashboard</h1>
-          <p style={{ opacity: 0.8, marginTop: "0.5rem" }}>
-            A powerful set of tools to view student progress and submissions.
-          </p>
+          <div className={styles.headerMain}>
+            <div>
+              <h1>Thoughtful Dashboard</h1>
+              <Link to="/" className={styles.backToStudentLink}>
+                &larr; Back to Student View
+              </Link>
+            </div>
+          </div>
+          <nav className={styles.instructorNav}>
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                className={getNavLinkClass}
+                end
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
         </header>
         <main
           className={styles.mainContentArea}
-          style={{ textAlign: "center", padding: "3rem 1rem" }}
+          style={{ textAlign: "center", padding: "1rem 1rem" }}
         >
           <h2>Please Log In to Continue</h2>
           <p style={{ maxWidth: "600px", margin: "1rem auto 2rem auto" }}>
@@ -210,11 +226,6 @@ const InstructorDashboardPage: React.FC = () => {
               be able to see progress overviews, review submissions by
               assignment or student, and view individual student details.
             </p>
-          </div>
-          <div style={{ marginTop: "3rem" }}>
-            <Link to="/" className={styles.backToStudentLink}>
-              &larr; Go back to the student site
-            </Link>
           </div>
         </main>
         <Footer />
