@@ -3,123 +3,80 @@ import type {
   Lesson,
   LessonId,
   SectionId,
-  MultipleChoiceSectionData,
+  MultipleSelectionSectionData,
+  PRIMMSectionData,
+  MatchingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Best Practice",
-  guid: "dbd45993-6473-4df3-959a-04b7289a229e" as LessonId,
+  title: "A Guided Tour: PRIMM",
+  guid: "f950d6b1-7c06-485c-8a23-9cd17f72a7ba" as LessonId,
   description:
-    "Learning is a well researched process. Understand what best practices are and how this website aligns with them.",
+    "PRIMM is a paradigm for learning programming. It scaffolds from basic understanding all the way up to code creation.",
   sections: [
     {
-      kind: "Information",
-      id: "thoughtful-intro",
-      title: "Thoughtful Intro",
+      kind: "Observation",
+      id: "running-code" as SectionId,
+      title: "Running Code",
       content:
-        "Welcome to _Thoughtful Python_! This website was created by a teacher with an interest in how to best teach Programming.\n\nProgramming is difficult! It's a new kind of thinking. It's probably a bit easier than learning a new language, but it's definitely not easy. It requires a whole new way of thinking and of limiting your vocabulary so one of the dumbest things in the world (a computer) can understand you.",
-    } as InformationSectionData,
-    {
-      kind: "Information",
-      id: "learning-best-practices" as SectionId,
-      title: "Learning Best Practices",
-      content:
-        "Learning itself is a complex process. Luckily, there are some known best-practices that will help you learn and retain knowledge more effectively. My hope is not only that you learn about programming, but you also learn what if feels like to learn. This will allow you to push yourself into a good mental state when you really care about something. The core techniques for learning are: _spaced-practice_, _interleaving_, _retrieval-practice_, _elaboration_, _concrete examples_, and _dual coding_.",
-    } as InformationSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "best-practice-quiz" as SectionId,
-      title: "Not Best Practice?",
-      content:
-        "Which of the following **is not** one of the learning best-practices?",
-      options: [
-        "Elaboration",
-        "Spaced Practice",
-        "Timed Focus",
-        "Interleaving",
-        "Concrete Examples",
-      ],
-      correctAnswer: 2,
-      feedback: {
-        correct: "Correct!",
+        "Writing code is great. Running it is where the power is, though. This website allows you to quickly write, run, and observe programs. It helps you avoid a lot of the annoying set up that you might otherwise have to do. Below is your first program. Don't worry about fully understanding it... just make sure that you can see the output of the program after you click `Run Code`.",
+      example: {
+        id: "hello-world1",
+        title: "Hello, World",
+        code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
       },
-    } as MultipleChoiceSectionData,
+    } as ObservationSectionData,
     {
       kind: "Information",
-      id: "active-reading" as SectionId,
-      title: "Active Reading is Hard",
+      id: "primm-history",
+      title: "The History of PRIMM",
       content:
-        "I'm going to bet that a significant number of you only read the `Learning Best Practices` section once you realized that there was a quiz on it. In fact, I'm betting only a small number of you are reading this section now. This is because _just_ reading information and learning from it is hard. Therefore, this course will minimize the passive text and maximize the active processes.",
+        'PRIMM is a particular method for teaching programming developed by various British teachers. They realized that many people struggle to pick up programming because traditionally there\'s very little "scaffolding". It\'s basically just "write this program from scratch". PRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of approaching new problems that models the real world. Very rarely in the real world do you create something from scratch. Instead, you start with something that\'s close and then slowly mold it to be what you want.',
     } as InformationSectionData,
     {
-      kind: "MultipleChoice",
-      id: "active-reading-quiz" as SectionId,
-      title: "Anyone There?",
-      content: "Did you read the above section carefully?",
-      options: ["Yes", "No"],
-      correctAnswer: 0,
-      feedback: {
-        correct: "Correct (and hopefully honest) answer!",
-      },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "interleaving-quiz" as SectionId,
-      title: "Learning Through Interleaving",
-      content:
-        "This course relies heavily on _interleaving_ throughout all of the lessons to ingrain important concepts in your head. _Interleaving_ is the process of mixing up the types of problems you're working on. An example would be in math where, instead of doing all your addition problems, then all of your multiplication problems, then all of your division problems, you mix them up. This has the dual benefit of teaching you the operation (`+`, `/`, `*`) AND teaching you how to identify when to use the operation.\n\nBased on this explanation, how do you think this website will utilize _interleaving_?",
-      options: [
-        "By having quizzes only the most important topic at the the end of lesson",
-        "By asking questions about the material in the order it's presented",
-        "By having review sections that mix up important topics in varying orders",
+      kind: "Matching",
+      id: "primm-quiz" as SectionId,
+      title: "Matching PRIMM",
+      content: "Match each part of PRIMM with its purpose:",
+      prompts: [
+        { id: "p1", text: "PREDICT" },
+        { id: "p2", text: "RUN" },
+        { id: "p3", text: "INVESTIGATE" },
+        { id: "p4", text: "MODIFY" },
+        { id: "p5", text: "MAKE" },
       ],
-      correctAnswer: 2,
-      feedback: {
-        correct: "Correct!",
-      },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "retrieval-practice-quiz",
-      title: "Learning Through Retrieval Practice",
-      content:
-        '_Retrieval practice_ is the process of "bringing learned information to mind from long-term memory". It basically is improving your ability to recall and use information that you learned before. Retrieval practice is **very** important for programming. This is because you need to remember/utilize a lot of different pieces of information to write a useful program.\n\nSince this topic is about retrieval practice, which of the following topics would require you to retrieve knowledge you already learned?',
       options: [
-        "Remembering that retrieval practice is about practicing remembering previously learned information",
-        "Remembering that interleaving is about mixing up the order that your review topics in",
-        "Predicting that elaboration is about strengthening your mental model by looking for connections",
+        { id: "B", text: "Compare your understanding with the actual results" },
+        { id: "A", text: "Force yourself to try and understand a program" },
+        { id: "E", text: "Challenge yourself to implement your own ideas" },
+        { id: "D", text: "Challenge yourself to expand on the existing ideas" },
+        { id: "C", text: "Correct any mistakes in your mental model" },
       ],
-      correctAnswer: 1,
-      feedback: {
-        correct:
-          "Correct! Short-term memory is different from long-term memory. Continually returning to old lessons increases the chances they will be useful.",
-      },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "spaced-practice-quiz",
-      title: "Learning Through Spaced Practice",
-      content:
-        "_Spaced practice_ is basically forcing yourself not to cram. It's very similar to _retrieval practice_ but, whereas _retrieval practice_ is about increasing the number of times you access information in your long-term memory, _spaced practice_ is about making sure your practice over a long period of time. It's a bit like the gym: you can go and try and do every exercise in a single day, but you'll get much better results if your make a habit of going.\n\nBased on this explanation what do you think the optimal strategy is if you have seven problems due next week.",
-      options: [
-        "Do them all now so you can relax",
-        "Do them all at the last minute so it will be fresh",
-        "Do one a day so you practice recalling the information",
-        "Change strategies over time to keep yourself on your toes",
-      ],
-      correctAnswer: 2,
-      feedback: {
-        correct:
-          "Correct! Practicing retrieval from your long-term memory is both about number of reps AND about spacing over time.",
-      },
-    } as MultipleChoiceSectionData,
+      solution: { p1: "A", p2: "B", p3: "C", p4: "D", p5: "E" },
+    } as MatchingSectionData,
     {
       kind: "Information",
-      id: "best-practice-wrap-up" as SectionId,
-      title: "Wrapping Up Best Practices",
+      id: "ai-feedback",
+      title: "AI ChatBots",
       content:
-        "We're not going to go into all of the best practices in teaching. The hope is that you realize that this website takes your learning seriously and scientifically. The techniques above can help you approach pretty much anything you want to learn. In the next lesson we will talk about how this website approaches CS problems in particular.",
+        "AI has gotten incredibly good at programming. It is so good that I've become of the opinion that **writing code** is no longer that important: the AI will do it for you. **Reading code,** however, has never been more important. Code is something that _controls_ your life and being passive in understanding it puts you at a disadvantage.\n\nThe question is how to use the power of the ChatBots. They are very powerful, but they also can make it very difficult to learn because they just the thing for you. The solution seems to be AI with guard-rails.",
     } as InformationSectionData,
+    {
+      kind: "PRIMM",
+      id: "print-primm" as SectionId,
+      title: "Using PRIMM on Code",
+      content:
+        "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing AI with PRIMM. The result is that AI provides feedback and hints when your mental model is off. This can catch inconsistencies in your thinking and help you grow more quickly.\n\nBelow is a PRIMM problem of the code above. To properly execute it, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the program and explain what (if anything) was wrong\n4. Meld the feedback from the AI with your understanding\n\nThe key is to be as **specific as possible* in your prediction and interpretation. Only then will the ChatBot be able to help you.",
+      examples: [
+        {
+          id: "primm-quote-issue",
+          code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
+          predictPrompt: "What do you think the program will print out?",
+        },
+      ],
+      conclusion:
+        "PRIMM increases learning by making you read code carefully and then confront anything you got wrong",
+    } as PRIMMSectionData,
   ],
 };
 

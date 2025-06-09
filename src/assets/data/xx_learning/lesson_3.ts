@@ -3,84 +3,95 @@ import type {
   Lesson,
   LessonId,
   SectionId,
-  MultipleSelectionSectionData,
-  ReflectionSectionData,
   MultipleChoiceSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "PRIMM + Reflection",
-  guid: "3c201468-453b-42f3-a4f6-51a0ad3c93f8" as LessonId,
+  title: "The Science Behind Our Method",
+  guid: "dbd45993-6473-4df3-959a-04b7289a229e" as LessonId, // Kept original GUID
   description:
-    "Without reflection there is no learning. See how this website leverages AI to help you reflect, correct, and internalize new information.",
+    "Now that you've used PRIMM and Reflection, let's explore the learning science that makes them effective.",
   sections: [
     {
       kind: "Information",
-      id: "reflection-intro",
-      title: "The Importance of Reflection",
+      id: "thoughtful-intro",
+      title: "Why This Works",
       content:
-        'There is a quote by a quote by a famous educational philosopher named John Dewey that sums up the philosophy of this website: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in optimal learning. This final section of the introduction discusses the most powerful tool that this website has in it\'s belt: iterative reflection.',
+        "You've just experienced the core learning loops of this website: PRIMM and Reflection. These aren't random activities; they are based on well-researched best practices for learning complex skills. Understanding these practices will not only help you get the most out of this site, but will help you learn anything more effectively.",
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
-      id: "reflection-quiz",
-      title: "Why Reflection?",
-      content: "Why is reflection such a powerful tool in learning?",
-      options: [
-        "It captures what your understanding",
-        "It does a thing",
-        "It does another thing",
-      ],
+      id: "primm-best-practice-quiz",
+      title: "PRIMM and Best Practices",
+      content:
+        "The **Predict** step in PRIMM is a powerful form of which learning best-practice? It asks you to bring information to mind *before* you see the answer.",
+      options: ["Interleaving", "Retrieval Practice", "Dual Coding"],
       correctAnswer: 1,
       feedback: {
-        correct: "Correct!",
+        correct:
+          "Correct! The act of predicting forces you to retrieve what you already know (or think you know) from memory, which is a powerful way to strengthen it.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "reflection-best-practice-quiz",
+      title: "Reflection and Best Practices",
+      content:
+        "The **Reflection** section, where you write an explanation of a code snippet in your own words, is a prime example of which learning best-practice?",
+      options: ["Elaboration", "Spaced Practice", "Interleaving"],
+      correctAnswer: 0,
+      feedback: {
+        correct:
+          "Correct! Elaboration is the process of explaining and describing ideas with many details. It involves connecting new ideas to what you already know, which is exactly what you do in a good reflection.",
       },
     } as MultipleChoiceSectionData,
     {
       kind: "Information",
-      id: "reflection-analysis",
-      title: "The Importance of Reflection",
+      id: "learning-best-practices" as SectionId,
+      title: "Other Best Practices Used Here",
       content:
-        'As with PRIMM, ChatBots have a the potential to super-charge reflection for learning. This is because they can provide quick feedback on any mistakes your have. In addition, they can provide a "bar" to make sure you are taking the reflection seriously. Below there is an example Reflection Section similar to ones that will pop up in other units. It works by:\n1. Having you choose a topic\n2. Having you create a small snippet of code\n3. Have you explain how the code works\n4. Asking the ChatBot if there is any room for improvement\n\nThe section enforces a bar of "mostly" understanding by having you iterate with the ChatBot to improve your code/text. It will force you to keep improving your explanation until your get it right. Annoying? Yes! Effective? Also yes! Try it out below.',
+        "This website also relies heavily on other best practices you'll see throughout the lessons:",
     } as InformationSectionData,
     {
-      kind: "Reflection",
-      id: "reflection-reflection",
-      title: "Using Reflection for Learning",
+      kind: "MultipleChoice",
+      id: "interleaving-quiz" as SectionId,
+      title: "Learning Through Interleaving",
       content:
-        "Explain in your own words what the following snippet of code will print out",
-      topic: "Print Statements",
-      isTopicPredefined: true,
-      code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
-      isCodePredefined: true,
-      explanation: "Explain how your example works (3-4 sentences)",
-      isExplanationPredefined: false,
-    } as ReflectionSectionData,
-    {
-      kind: "MultipleSelection",
-      id: "learning-through-reflection-quiz",
-      title: "Getting the Most Out of Reflection",
-      content:
-        "Which of the following which allow you to get the most of an AI/Reflection combo:",
+        "_Interleaving_ is the process of mixing up the types of problems you're working on. Instead of doing 10 addition problems and then 10 multiplication problems, you mix them up. This teaches you how to identify which strategy to use. How might this website use interleaving?",
       options: [
-        "Be as specific as possible in your prediction",
-        "Be as verbose as possible to let the ChatBot know you're smart",
-        "Be as honest as possible in your assessment of your certainty",
-        "Be as critical as possible in your interpretation",
-        "Be as careful as possible when reading the AI's feedback",
+        "By having review sections that mix up important topics from different lessons.",
+        "By having quizzes only on the most important topic at the the end of lesson.",
+        "By asking questions about the material in the order it's presented.",
       ],
-      correctAnswers: [0, 2, 3],
+      correctAnswer: 0,
       feedback: {
         correct:
-          "Correct! Practicing retrieval from your long-term memory is both about number of reps AND about spacing over time.",
+          "Correct! Mixing up different concepts in review helps you build more flexible and durable knowledge.",
       },
-    } as MultipleSelectionSectionData,
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "spaced-practice-quiz",
+      title: "Learning Through Spaced Practice",
+      content:
+        "_Spaced practice_ is the opposite of cramming. It's about practicing over a longer period of time. It's like going to the gym: it's better to go for an hour three times a week than for three hours straight once a week. Based on this, what's the best way to approach the lessons on this site?",
+      options: [
+        "Do them all in one sitting to get them done.",
+        "Do one lesson every day or every few days.",
+        "Wait until the day before a test to review everything.",
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct! Spacing out your learning over time is a proven way to build long-term retention.",
+      },
+    } as MultipleChoiceSectionData,
     {
       kind: "Information",
-      id: "reflection-wrap-up" as SectionId,
-      title: "Wrapping Up Reflection",
+      id: "best-practice-wrap-up" as SectionId,
+      title: "Wrapping Up",
       content:
-        "That's it! Hopefully you now understand what the website is trying to do and why. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+        "Now you know the 'secret sauce' behind this website's design. By engaging honestly with the PRIMM and Reflection activities, you are automatically using scientifically-backed methods to learn more effectively. Good luck!",
     } as InformationSectionData,
   ],
 };

@@ -1,115 +1,61 @@
 import type {
   InformationSectionData,
   Lesson,
-  ObservationSectionData,
   LessonId,
-  SectionId,
-  MultipleSelectionSectionData,
-  PRIMMSectionData,
-  MatchingSectionData,
+  ReflectionSectionData,
+  MultipleChoiceSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "PRIMM",
-  guid: "f950d6b1-7c06-485c-8a23-9cd17f72a7ba" as LessonId,
+  title: "Deepen Your Learning: Reflection",
+  guid: "3c201468-453b-42f3-a4f6-51a0ad3c93f8" as LessonId,
   description:
-    "PRIMM is a paradigm for learning programming. It scaffolds from based understanding all the way up to code creation.",
+    "Without reflection there is no learning. See how this website leverages AI to help you reflect, correct, and internalize new information.",
   sections: [
     {
-      kind: "Observation",
-      id: "running-code" as SectionId,
-      title: "Running Code",
-      content:
-        "Writing code is great. Running it is where the power is, though. This website allows your to quickly write, run, and observe programs. It helps you avoid a lot of the annoying set up that you might otherwise have to do. Below is your first program. Don't worry about fully understanding it... just make sure that you can see the output of the program after you click `Run Code`.",
-      example: {
-        id: "hello-world1",
-        title: "Hello, World",
-        code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
-      },
-    } as ObservationSectionData,
-    {
       kind: "Information",
-      id: "primm-history",
-      title: "The History of PRIMM",
+      id: "reflection-intro",
+      title: "The Importance of Reflection",
       content:
-        'PRIMM is a particular method for teaching programming developed by various British teachers. They realized that many people struggle to pick up programming because traditionally there\'s very little "scaffolding". It\'s basically just "write this program from scratch". PRIMM (which stands for Predict, Run, Interpret, Modify, Make) is a way of approaching new problems that models the real world. Very rarely in the real world do you create something from scratch. Instead, you start with something that\'s close and then slowly mold it to be what you want.',
+        'There is a quote by a famous educational philosopher named John Dewey that sums up the philosophy of this website: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in optimal learning. This final section of the introduction discusses the most powerful tool that this website has in it\'s belt: iterative reflection.',
     } as InformationSectionData,
     {
-      kind: "Matching",
-      id: "primm-quiz" as SectionId,
-      title: "Matching PRIMM",
-      content: "Match each part of PRIMM with its purpose:",
-      prompts: [
-        { id: "p1", text: "PREDICT" },
-        { id: "p2", text: "RUN" },
-        { id: "p3", text: "INVESTIGATE" },
-        { id: "p4", text: "MODIFY" },
-        { id: "p5", text: "MAKE" },
-      ],
+      kind: "MultipleChoice",
+      id: "reflection-quiz",
+      title: "Why Reflection?",
+      content: "Why is reflection such a powerful tool in learning?",
       options: [
-        { id: "B", text: "Compare your understanding with the actual results" },
-        { id: "A", text: "Force yourself to try and understand a program" },
-        { id: "E", text: "Challenge yourself to implement your own ideas" },
-        { id: "D", text: "Challenge yourself to expand on the existing ideas" },
-        { id: "C", text: "Correct any mistakes in your mental model" },
+        "It proves to the teacher that you did the work.",
+        "It forces you to retrieve information and organize it in your own words, strengthening memory.",
+        "It's the fastest way to get through a lesson.",
+        "It allows you to skip the parts of the code you don't understand.",
       ],
-      solution: {
-        p1: "A",
-        p2: "B",
-        p3: "C",
-        p4: "D",
-        p5: "E",
-      },
-    } as MatchingSectionData,
-    {
-      kind: "Information",
-      id: "ai-feedback",
-      title: "AI ChatBots",
-      content:
-        "AI has gotten incredibly good at programming. It is so good that I've become of the opinion that **writing code** is no longer that important: the AI will do it for you. **Reading code,** however, has never been more important. Code is something that _controls_ your life and being passive in understanding it puts you at a disadvantage.\n\nThe question is how to use the power of the ChatBots. They are very powerful, but they also can make it very difficult to learn because they just the thing for you. The solution seems to be AI with guard-rails.",
-    } as InformationSectionData,
-    {
-      kind: "PRIMM",
-      id: "print-primm" as SectionId,
-      title: "Using PRIMM on Code",
-      content:
-        "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing AI with PRIMM. The result is that AI provides feedback and hints when your mental model is off. This can catch inconsistencies in your thinking and help you grow more quickly.\n\nBelow is a PRIMM problem of the code above. To properly execute it, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the program and explain what (if anything) was wrong\n4. Meld the feedback from the AI with your understanding\n\nThe key is to be as **specific as possible* in your prediction and interpretation. Only then will the ChatBot be able to help you.",
-      examples: [
-        {
-          id: "primm-quote-issue",
-          code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
-          predictPrompt: "What do you think the program will print out?",
-        },
-      ],
-      conclusion:
-        "PRIMM increases learning by making you read code carefully and then confront anything you got wrong",
-    } as PRIMMSectionData,
-    {
-      kind: "MultipleSelection",
-      id: "learning-through-primm",
-      title: "Getting the Most Out of PRIMM",
-      content:
-        "Which of the following which allow you to get the most of an AI/PRIMM combo:",
-      options: [
-        "Be as specific as possible in your prediction",
-        "Be as verbose as possible to let the ChatBot know you're smart",
-        "Be as honest as possible in your assessment of your certainty",
-        "Be as critical as possible in your interpretation",
-        "Be as careful as possible when reading the AI's feedback",
-      ],
-      correctAnswers: [0, 2, 3],
+      correctAnswer: 1,
       feedback: {
         correct:
-          "Correct! Practicing retrieval from your long-term memory is both about number of reps AND about spacing over time.",
+          "Correct! Re-organizing and explaining concepts is a proven way to build stronger, more durable knowledge.",
       },
-    } as MultipleSelectionSectionData,
+    } as MultipleChoiceSectionData,
     {
       kind: "Information",
-      id: "primm-wrapup" as SectionId,
-      title: "Wrapping Up PRIMM",
+      id: "reflection-analysis",
+      title: "The Importance of Reflection",
       content:
-        "Hopefully you can see the power of combining written interpreting of a program with expert-level feedback. By being willing to read the feedback carefully, you will have essentially a 1:1 tutor guiding you towards a better understanding.\n\nAs said in the section above, reading for understanding is hard. Being careful with the feedback and thinking about it is probably the best place to spend your time.",
+        'As with PRIMM, ChatBots have a the potential to super-charge reflection for learning. This is because they can provide quick feedback on any mistakes your have. In addition, they can provide a "bar" to make sure you are taking the reflection seriously. Below there is an example Reflection Section similar to ones that will pop up in other units. It works by:\n1. Having you choose a topic\n2. Having you create a small snippet of code\n3. Have you explain how the code works\n4. Asking the ChatBot if there is any room for improvement\n\nThe section enforces a bar of "mostly" understanding by having you iterate with the ChatBot to improve your code/text. It will force you to keep improving your explanation until your get it right. Annoying? Yes! Effective? Also yes! Try it out below.',
     } as InformationSectionData,
+    {
+      kind: "Reflection",
+      id: "reflection-reflection",
+      title: "Using Reflection for Learning",
+      content:
+        "Explain in your own words what the following snippet of code will print out.",
+      topic: "Print Statements",
+      isTopicPredefined: true,
+      code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
+      isCodePredefined: true,
+      explanation: "Explain how your example works (3-4 sentences)",
+      isExplanationPredefined: false,
+    } as ReflectionSectionData,
   ],
 };
 
