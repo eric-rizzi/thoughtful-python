@@ -52,12 +52,13 @@
 
 .content ul,
 .content ol {
+  margin: 0em;
+  margin-top: -1.5em;
   margin-left: 1.5em; /* Indent lists */
-  margin-bottom: 1em;
 }
 
 .content li {
-  margin-bottom: 0.5em; /* Spacing between list items */
+  margin: 0em; /* Spacing between list items */
 }
 
 .content code {

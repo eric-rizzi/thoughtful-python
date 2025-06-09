@@ -43,7 +43,7 @@ const lessonData: Lesson = {
       id: "reflection",
       title: "The Importance of Reflection",
       content:
-        'As with PRIMM, ChatBots have a the potential to super-charge reflection for learning. This is because they can provide quick feedback on any mistakes your have. In addition, they can provide a "bar" to make sure you are taking the reflection seriously. Below there is an example Reflection Section similar to ones that will pop up in other units. It works by:\n1. Having you choose a topic\n2. Having you create a small snippet of code\n3. Have you explain how the code works\n4. Asking the ChatBot if there is any room for improvement\nThe section enforces a bar of "mostly" understanding by having you iterate with the ChatBot to improve your code/text. Try it out below.',
+        'As with PRIMM, ChatBots have a the potential to super-charge reflection for learning. This is because they can provide quick feedback on any mistakes your have. In addition, they can provide a "bar" to make sure you are taking the reflection seriously. Below there is an example Reflection Section similar to ones that will pop up in other units. It works by:\n1. Having you choose a topic\n2. Having you create a small snippet of code\n3. Have you explain how the code works\n4. Asking the ChatBot if there is any room for improvement\n\nThe section enforces a bar of "mostly" understanding by having you iterate with the ChatBot to improve your code/text. It will force you to keep improving your explanation until your get it right. Annoying? Yes! Effective? Also yes! Try it out below.',
     } as InformationSectionData,
     {
       kind: "Reflection",
