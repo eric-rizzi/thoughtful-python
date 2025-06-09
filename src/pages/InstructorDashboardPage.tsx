@@ -8,7 +8,7 @@ import {
 
 import * as apiService from "../lib/apiService";
 import { useAuthStore, useAuthActions } from "../stores/authStore";
-import { API_GATEWAY_BASE_URL } from "../config";
+import { API_GATEWAY_BASE_URL, BASE_PATH } from "../config";
 import type {
   AuthToken,
   InstructorStudentInfo,
@@ -138,10 +138,79 @@ const InstructorDashboardPage: React.FC = () => {
             Access to the instructor dashboard is restricted. Please log in with
             your authorized Google account to view student data.
           </p>
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={() => console.error("Google Login Failed")}
-          />
+          {/* Added styling for the GoogleLogin button */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              marginBottom: "2rem",
+            }}
+          >
+            <div style={{ width: "300px" }}>
+              <GoogleLogin
+                onSuccess={handleLoginSuccess}
+                onError={() => console.error("Google Login Failed")}
+                render={(renderProps) => (
+                  <button
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      backgroundColor: "#fff",
+                      color: "#333",
+                      cursor: "pointer",
+                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                    }}
+                  >
+                    <img
+                      src="https://developers.google.com/identity/images/g-logo.png"
+                      alt="Google logo"
+                      style={{ marginRight: "0.5rem", height: "20px" }}
+                    />
+                    Sign in with Google
+                  </button>
+                )}
+              />
+            </div>
+          </div>
+          {/* Added the example image */}
+          <div
+            style={{
+              maxWidth: "800px",
+              margin: "2rem auto",
+              border: "1px solid #eee",
+              borderRadius: "8px",
+              overflow: "hidden",
+            }}
+          >
+            <h3>Example Dashboard View (Logged In)</h3>
+            <img
+              src={`${BASE_PATH}images/instructor-dashboard-example.png`}
+              alt="Example Instructor Dashboard"
+              style={{ display: "block", width: "100%" }}
+            />
+            <p
+              style={{
+                padding: "1rem",
+                backgroundColor: "#f9f9f9",
+                fontSize: "0.9em",
+                color: "#777",
+                textAlign: "left",
+              }}
+            >
+              This is an example of what the instructor dashboard looks like
+              when you are logged in and have student data available. You will
+              be able to see progress overviews, review submissions by
+              assignment or student, and view individual student details.
+            </p>
+          </div>
           <div style={{ marginTop: "3rem" }}>
             <Link to="/" className={styles.backToStudentLink}>
               &larr; Go back to the student site
