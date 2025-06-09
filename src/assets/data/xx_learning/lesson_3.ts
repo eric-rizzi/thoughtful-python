@@ -1,11 +1,9 @@
 import type {
   InformationSectionData,
   Lesson,
-  ObservationSectionData,
   LessonId,
   SectionId,
   MultipleSelectionSectionData,
-  PRIMMSectionData,
   ReflectionSectionData,
   MultipleChoiceSectionData,
 } from "../../../types/data";
@@ -18,14 +16,14 @@ const lessonData: Lesson = {
   sections: [
     {
       kind: "Information",
-      id: "reflection",
+      id: "reflection-intro",
       title: "The Importance of Reflection",
       content:
         'There is a quote by a quote by a famous educational philosopher named John Dewey that sums up the philosophy of this website: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in optimal learning. This final section of the introduction discusses the most powerful tool that this website has in it\'s belt: iterative reflection.',
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
-      id: "what-is-a-string-again",
+      id: "reflection-quiz",
       title: "Why Reflection?",
       content: "Why is reflection such a powerful tool in learning?",
       options: [
@@ -40,15 +38,15 @@ const lessonData: Lesson = {
     } as MultipleChoiceSectionData,
     {
       kind: "Information",
-      id: "reflection",
+      id: "reflection-analysis",
       title: "The Importance of Reflection",
       content:
         'As with PRIMM, ChatBots have a the potential to super-charge reflection for learning. This is because they can provide quick feedback on any mistakes your have. In addition, they can provide a "bar" to make sure you are taking the reflection seriously. Below there is an example Reflection Section similar to ones that will pop up in other units. It works by:\n1. Having you choose a topic\n2. Having you create a small snippet of code\n3. Have you explain how the code works\n4. Asking the ChatBot if there is any room for improvement\n\nThe section enforces a bar of "mostly" understanding by having you iterate with the ChatBot to improve your code/text. It will force you to keep improving your explanation until your get it right. Annoying? Yes! Effective? Also yes! Try it out below.',
     } as InformationSectionData,
     {
       kind: "Reflection",
-      id: "python-reflection",
-      title: "Python Concept Reflection",
+      id: "reflection-reflection",
+      title: "Using Reflection for Learning",
       content:
         "Explain in your own words what the following snippet of code will print out",
       topic: "Print Statements",
@@ -60,7 +58,7 @@ const lessonData: Lesson = {
     } as ReflectionSectionData,
     {
       kind: "MultipleSelection",
-      id: "learning-through-reflection",
+      id: "learning-through-reflection-quiz",
       title: "Getting the Most Out of Reflection",
       content:
         "Which of the following which allow you to get the most of an AI/Reflection combo:",

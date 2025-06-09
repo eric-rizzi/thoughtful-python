@@ -29,14 +29,14 @@ const lessonData: Lesson = {
     } as ObservationSectionData,
     {
       kind: "Information",
-      id: "python-history",
+      id: "primm-history",
       title: "The History of PRIMM",
       content:
         'PRIMM is a particular method for teaching programming developed by various British teachers. They realized that many people struggle to pick up programming because traditionally there\'s very little "scaffolding". It\'s basically just "write this program from scratch". PRIMM (which stands for Predict, Run, Interpret, Modify, Make) is a way of approaching new problems that models the real world. Very rarely in the real world do you create something from scratch. Instead, you start with something that\'s close and then slowly mold it to be what you want.',
     } as InformationSectionData,
     {
       kind: "Matching",
-      id: "python-ops-match" as SectionId,
+      id: "primm-quiz" as SectionId,
       title: "Matching PRIMM",
       content: "Match each part of PRIMM with its purpose:",
       prompts: [
@@ -63,27 +63,26 @@ const lessonData: Lesson = {
     } as MatchingSectionData,
     {
       kind: "Information",
-      id: "python-history",
+      id: "ai-feedback",
       title: "AI ChatBots",
       content:
         "AI has gotten incredibly good at programming. It is so good that I've become of the opinion that **writing code** is no longer that important: the AI will do it for you. **Reading code,** however, has never been more important. Code is something that _controls_ your life and being passive in understanding it puts you at a disadvantage.\n\nThe question is how to use the power of the ChatBots. They are very powerful, but they also can make it very difficult to learn because they just the thing for you. The solution seems to be AI with guard-rails.",
     } as InformationSectionData,
     {
       kind: "PRIMM",
-      id: "primm-strings-and-integers" as SectionId,
-      title: "Operating on Integers and Strings",
+      id: "print-primm" as SectionId,
+      title: "Using PRIMM on Code",
       content:
         "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing AI with PRIMM. The result is that AI provides feedback and hints when your mental model is off. This can catch inconsistencies in your thinking and help you grow more quickly.\n\nBelow is a PRIMM problem of the code above. To properly execute it, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the program and explain what (if anything) was wrong\n4. Meld the feedback from the AI with your understanding\nThe key is to be as **specific as possible* in your prediction and interpretation. Only then will the ChatBot be able to help you.",
       examples: [
         {
           id: "primm-quote-issue",
-          code: 'print(5 + 5)\nprint("5" + "5")',
-          predictPrompt:
-            "The two print statements above will print out different things. This is because in one case the `+` is operating on integers and in the other case it's operating on strings. What do you think the will happen when you run the code?",
+          code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
+          predictPrompt: "What do you think the program will print out?",
         },
       ],
       conclusion:
-        "When you use `+` with two integers, the result is addition. When you use `+` with two strings, the result is combining (technically called concatenation)",
+        "PRIMM increases learning by making you read code carefully and then confront anything you got wrong",
     } as PRIMMSectionData,
     {
       kind: "MultipleSelection",
