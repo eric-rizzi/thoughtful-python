@@ -20,7 +20,7 @@ const lessonData: Lesson = {
       id: "thoughtful-intro",
       title: "Thoughtful Intro",
       content:
-        "Welcome to _Thoughtful Python_! This website was created by a teacher with an interest in how to best teach Programming.\n\nProgramming is difficult! It's a new kind of thinking. It's probably a bit easier than learning a new language, but it's definitely not easy. It requires a whole new way of thinking and of limiting your vocabulary so one of the dumbest things in the world (a computer) can understand you.",
+        "Welcome to _Thoughtful Python_! This website was created by a CS teacher with an interest in how to best teach Programming.\n\nProgramming is difficult! It's probably a bit easier than learning a new language, but it's definitely not easy. It requires a whole new way of thinking and of limiting your vocabulary so one of the dumbest things in the world (a computer) can understand you.",
     } as InformationSectionData,
     {
       kind: "Observation",
@@ -39,7 +39,7 @@ const lessonData: Lesson = {
       id: "primm-history",
       title: "The History of PRIMM",
       content:
-        'PRIMM is a particular method for teaching programming developed by various British teachers. They realized that many people struggle to pick up programming because traditionally there\'s very little "scaffolding". It\'s basically just "write this program from scratch". PRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of approaching new problems that models the way programs are written by real engineers. Very rarely do they create something from scratch. Instead, they start with something that\'s close and then slowly mold it to be what they want.',
+        'PRIMM is a particular method for teaching programming developed by various British teachers in the 2000s. They realized that many people struggle to pick up programming because traditionally there\'s very little "scaffolding". It\'s basically just "write this program from scratch". PRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of programming that mimics how real engineers work. Very rarely do they create something from scratch. Instead, they start with something that\'s close and then slowly mold it to be what they want.',
     } as InformationSectionData,
     {
       kind: "Matching",
@@ -67,14 +67,14 @@ const lessonData: Lesson = {
       id: "ai-feedback",
       title: "AI ChatBots",
       content:
-        "AI has gotten incredibly good at programming. It is so good that wer're of the opinion that **writing code** is no longer that important: the AI will do it for you. **Reading code,** however, has never been more important. Code is something that _controls_ your life; being passive in understanding it puts you at a disadvantage.\n\nThe question is how to use the power of the ChatBots. They are very powerful, but they also can make it very difficult to learn because they just the thing for you. The solution seems to be AI with guard-rails.",
+        "AI has gotten incredibly good at programming. It is so good that we're of the opinion that **writing code** is no longer that important: the AI will do it for you. **Reading code,** however, has never been more important. Code is something that _controls_ your life; being passive in understanding it puts you at a disadvantage.\n\nThe question is how to use the power of ChatBots. They are very powerful, but they also can make it very difficult to learn because they can just the do the thing for you. The solution seems to be AI with guard-rails.",
     } as InformationSectionData,
     {
       kind: "PRIMM",
       id: "print-primm" as SectionId,
       title: "Using PRIMM on Code",
       content:
-        "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing AI with PRIMM. The result is that AI provides feedback and hints when your mental model is off. This can catch inconsistencies in your thinking and help you grow more quickly.\n\nBelow is a PRIMM problem of the code above. To properly execute it, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the program and explain what (if anything) was wrong\n4. Meld the feedback from the AI with your understanding\n\nThe key is to be as **specific as possible* in your prediction and interpretation. Only then will the ChatBot be able to help you.",
+        "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing PRIMM with AI. The result is one of iterative growth where the AI provides feedback and hints when your mental model is off. This type of quick, iterative feedback can help you grow more quickly.\n\nBelow is a PRIMM problem of the code you ran above. To complete the problem, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the output and explain what (if anything) was wrong with your prediction\n4. Correct any mistakes by reading the feedback from the AI\n\nThe key is to be as **specific as possible** in your prediction and interpretation. Only then will the ChatBot be able to help you.",
       examples: [
         {
           id: "primm-quote-issue",
@@ -90,7 +90,7 @@ const lessonData: Lesson = {
       id: "learning-through-reflection-quiz",
       title: "Getting the Most Out of Reflection",
       content:
-        "Which of the following will allow you to get the most out of an AI/Reflection combo:",
+        "Which of the following will allow you to get the most out of a PRIMM + AI combo:",
       options: [
         "Be as specific as possible in your prediction",
         "Be as verbose as possible to let the ChatBot know you're smart",
@@ -98,7 +98,7 @@ const lessonData: Lesson = {
         "Be as critical as possible in your interpretation",
         "Be as careful as possible when reading the AI's feedback",
       ],
-      correctAnswers: [0, 2, 3],
+      correctAnswers: [0, 2, 3, 4],
       feedback: {
         correct: "Correct!",
       },

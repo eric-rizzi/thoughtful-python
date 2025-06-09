@@ -42,14 +42,14 @@ const lessonData: Lesson = {
       id: "active-reading" as SectionId,
       title: "Active Reading is Hard",
       content:
-        "I'm going to bet that a fair number of you only read the `Learning Best Practices` section once you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. Therefore, this course will minimize the passive text and maximize the active processes.",
+        "I'm going to bet that a fair number had to go back and reread the `Learning Best Practices` section when you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. Therefore, this course will minimize the passive text and maximize active learning processes.",
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
       id: "interleaving-quiz" as SectionId,
       title: "Learning Through Interleaving",
       content:
-        "This course relies heavily on _interleaving_ throughout all of the lessons to ingrain important concepts in your head. _Interleaving_ is the process of mixing up the types of problems you're working on. An example would be in math where, instead of doing all your addition problems, then all of your multiplication problems, then all of your division problems, you mix them up. This has the dual benefit of teaching you the operation (`+`, `/`, `*`) AND teaching you how to identify when to use the operation.\n\nBased on this explanation, how do you think this website will utilize _interleaving_?",
+        "This site relies heavily on _interleaving_ to ingrain important concepts in your head. _Interleaving_ is a learning technique where you mix up the types of problems you're working on. An example would be in math where, instead of doing all the addition problems, then all the multiplication problems, then all the division problems, you mix them up. This has the dual benefit of teaching you the operation (`+`, `/`, `*`) AND teaching you how to identify when to use the operation.\n\nBased on this explanation, how do you think this website will utilize _interleaving_?",
       options: [
         "By having quizzes only the most important topic at the the end of lesson",
         "By asking questions about the material in the order it's presented",
@@ -65,7 +65,7 @@ const lessonData: Lesson = {
       id: "retrieval-practice-quiz",
       title: "Learning Through Retrieval Practice",
       content:
-        '_Retrieval practice_ is the process of "bringing learned information to mind from long-term memory". It basically is improving your ability to recall and use information that you learned before. Retrieval practice is **very** important for programming. This is because you need to remember/utilize a lot of different pieces of information to write a useful program.\n\nSince this topic is about retrieval practice, which of the following topics would require you to retrieve knowledge you already learned?',
+        '_Retrieval practice_ is the process of "bringing learned information to mind from long-term memory". It is a technique that improves your ability to recall and use information that you learned before. Retrieval practice is **very** important for programming. This is because you need to remember/utilize a lot of different pieces of information to write a useful program.\n\nSince this topic is about retrieval practice, which of the following topics would require you to retrieve knowledge you already learned?',
       options: [
         "Remembering that retrieval practice is about practicing remembering previously learned information",
         "Remembering that interleaving is about mixing up the order that your review topics in",
@@ -127,7 +127,7 @@ const lessonData: Lesson = {
       id: "best-practice-wrap-up" as SectionId,
       title: "Wrapping Up",
       content:
-        "Now you know the 'secret sauce' behind this website's design. By engaging honestly with the PRIMM and Reflection activities, you are automatically using scientifically-backed methods to learn more effectively. Good luck!",
+        "Real learning isn't easy. It's an active process that requires effort. If you're willing to put forth the effort, however, this website provides you the opportunity to learn more effectively and deeply. Good luck!",
     } as InformationSectionData,
   ],
 };
