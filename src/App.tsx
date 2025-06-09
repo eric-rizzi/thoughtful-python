@@ -18,7 +18,6 @@ function App() {
   const { clearPenalty } = useProgressActions();
 
   useEffect(() => {
-    // ... (existing penalty timer logic is unchanged) ...
     if (penaltyEndTime === null) {
       return;
     }
@@ -64,11 +63,7 @@ function App() {
 
       <Route
         path="instructor-dashboard/*"
-        element={
-          <AuthenticatedRoute>
-            <InstructorDashboardPage />
-          </AuthenticatedRoute>
-        }
+        element={<InstructorDashboardPage />}
       />
     </Routes>
   );

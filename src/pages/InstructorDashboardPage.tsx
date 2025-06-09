@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, NavLink, useNavigate, Link } from "react-router-dom"; // Import routing components
-import { googleLogout } from "@react-oauth/google";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  googleLogout,
+} from "@react-oauth/google";
 
 import * as apiService from "../lib/apiService";
 import { useAuthStore, useAuthActions } from "../stores/authStore";
 import { API_GATEWAY_BASE_URL } from "../config";
-import type { InstructorStudentInfo } from "../types/apiServiceTypes";
+import type {
+  AuthToken,
+  InstructorStudentInfo,
+} from "../types/apiServiceTypes";
 import type { Unit } from "../types/data";
 import { fetchUnitsData } from "../lib/dataLoader";
 
@@ -30,8 +37,8 @@ const navLinks = [
 ];
 
 const InstructorDashboardPage: React.FC = () => {
-  const { user } = useAuthStore();
-  const { logout } = useAuthActions();
+  const { isAuthenticated, user } = useAuthStore();
+  const { login, logout } = useAuthActions();
   const navigate = useNavigate();
 
   // States to fetch shared data now live here
@@ -41,11 +48,14 @@ const InstructorDashboardPage: React.FC = () => {
   const [allUnits, setAllUnits] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const { idToken, isAuthenticated } = useAuthStore();
+  const { idToken } = useAuthStore();
 
   // Fetch data needed by multiple child pages
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
     const loadCommonData = async () => {
       if (!isAuthenticated || !idToken) return;
       setIsLoading(true);
@@ -76,11 +86,72 @@ const InstructorDashboardPage: React.FC = () => {
     navigate("/");
   };
 
+  const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
+    if (credentialResponse.credential) {
+      const idToken = credentialResponse.credential as AuthToken;
+      try {
+        const base64Url = idToken.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+        );
+        const decodedToken = JSON.parse(jsonPayload);
+        const userProfile = {
+          userId: decodedToken.sub,
+          name: decodedToken.name,
+          email: decodedToken.email,
+          picture: decodedToken.picture,
+        };
+        login(userProfile, idToken);
+      } catch (e) {
+        console.error("Error decoding ID token:", e);
+      }
+    }
+  };
+
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string => {
     return isActive
       ? `${styles.instructorNavLink} ${styles.instructorNavLinkActive}`
       : styles.instructorNavLink;
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className={styles.pageWrapper}>
+        <header className={styles.instructorHeader}>
+          <h1>Instructor Dashboard</h1>
+          <p style={{ opacity: 0.8, marginTop: "0.5rem" }}>
+            A powerful set of tools to view student progress and submissions.
+          </p>
+        </header>
+        <main
+          className={styles.mainContentArea}
+          style={{ textAlign: "center", padding: "3rem 1rem" }}
+        >
+          <h2>Please Log In to Continue</h2>
+          <p style={{ maxWidth: "600px", margin: "1rem auto 2rem auto" }}>
+            Access to the instructor dashboard is restricted. Please log in with
+            your authorized Google account to view student data.
+          </p>
+          <GoogleLogin
+            onSuccess={handleLoginSuccess}
+            onError={() => console.error("Google Login Failed")}
+          />
+          <div style={{ marginTop: "3rem" }}>
+            <Link to="/" className={styles.backToStudentLink}>
+              &larr; Go back to the student site
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pageWrapper}>
