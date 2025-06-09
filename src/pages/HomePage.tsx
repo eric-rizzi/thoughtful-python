@@ -107,11 +107,7 @@ const HomePage: React.FC = () => {
   return (
     <div className={styles.homePageContainer}>
       <section className={styles.welcome}>
-        <h2>Welcome to Interactive Python Learning</h2>
-        <p>
-          Learn Python programming directly in your browser - no installation
-          required!
-        </p>
+        <h2>Welcome to a thoughtful approach to learning Python</h2>
       </section>
       <section className={styles.philosophySection}>
         <h3>Philosophy:</h3>

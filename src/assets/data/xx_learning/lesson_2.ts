@@ -73,7 +73,7 @@ const lessonData: Lesson = {
       id: "print-primm" as SectionId,
       title: "Using PRIMM on Code",
       content:
-        "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing AI with PRIMM. The result is that AI provides feedback and hints when your mental model is off. This can catch inconsistencies in your thinking and help you grow more quickly.\n\nBelow is a PRIMM problem of the code above. To properly execute it, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the program and explain what (if anything) was wrong\n4. Meld the feedback from the AI with your understanding\nThe key is to be as **specific as possible* in your prediction and interpretation. Only then will the ChatBot be able to help you.",
+        "AI is incredibly powerful and can augment your learning process when used effectively. This website attempts to do that by pairing AI with PRIMM. The result is that AI provides feedback and hints when your mental model is off. This can catch inconsistencies in your thinking and help you grow more quickly.\n\nBelow is a PRIMM problem of the code above. To properly execute it, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the program and explain what (if anything) was wrong\n4. Meld the feedback from the AI with your understanding\n\nThe key is to be as **specific as possible* in your prediction and interpretation. Only then will the ChatBot be able to help you.",
       examples: [
         {
           id: "primm-quote-issue",

@@ -77,10 +77,10 @@ const lessonData: Lesson = {
     } as MultipleSelectionSectionData,
     {
       kind: "Information",
-      id: "reflection-wrapup" as SectionId,
-      title: "Wrapping Up Reflecting",
+      id: "reflection-wrap-up" as SectionId,
+      title: "Wrapping Up Reflection",
       content:
-        "That's it! Hopefully you now understand what the website is trying to do and why. If you follow best practices for learning, predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+        "That's it! Hopefully you now understand what the website is trying to do and why. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
     } as InformationSectionData,
   ],
 };

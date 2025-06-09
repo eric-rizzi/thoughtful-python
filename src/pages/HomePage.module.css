@@ -48,6 +48,8 @@
   background-color: #f9f9f9; /* A light background to distinguish it */
   padding: 2rem;
   margin-bottom: 2.5rem; /* Space before learning paths */
+  margin-left: 5em;
+  margin-right: 5em;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
 }
