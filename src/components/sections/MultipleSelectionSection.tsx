@@ -98,6 +98,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
             <label
               htmlFor={`${section.id}-option-${index}`}
               className={styles.quizOptionLabel}
+              onClick={(e) => e.stopPropagation()}
             >
               <input
                 type="checkbox"
