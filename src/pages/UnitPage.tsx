@@ -96,7 +96,7 @@ const UnitPage: React.FC = () => {
     if (unit) {
       unit.lessons.forEach((lessonReference) => {
         let status: CompletionStatus = {
-          text: "Loading info...",
+          text: "Not Started", // Default status
           class: "not-started",
         };
         const lesson = lessonsData.get(lessonReference.guid);
@@ -106,23 +106,22 @@ const UnitPage: React.FC = () => {
         } else if (lesson) {
           try {
             let completedSectionsForThisLesson = new Set<string>();
-            if (
-              allCompletions &&
-              lessonReference.guid in allCompletions[unit.id]
-            ) {
+            if (allCompletions?.[unit.id]?.[lessonReference.guid]) {
               completedSectionsForThisLesson = new Set(
                 Object.keys(allCompletions[unit.id][lessonReference.guid])
               );
             }
+
             const requiredSections = getRequiredSectionsForLesson(lesson);
             if (requiredSections.length === 0) {
-              status = { text: "Not applicable", class: "not-started" };
+              status = { text: "No sections", class: "not-started" };
             } else if (completedSectionsForThisLesson.size === 0) {
-              status = { text: "Not started", class: "not-started" };
+              status = { text: "Not Started", class: "not-started" };
             } else {
               const completedRequiredCount = requiredSections.filter(
                 (sectionId) => completedSectionsForThisLesson.has(sectionId)
               ).length;
+
               if (completedRequiredCount >= requiredSections.length) {
                 status = { text: "Completed", class: "completed" };
               } else if (completedRequiredCount > 0) {
@@ -130,7 +129,7 @@ const UnitPage: React.FC = () => {
                   (completedRequiredCount / requiredSections.length) * 100
                 );
                 status = {
-                  text: `${percentage}% complete`,
+                  text: `${percentage}% Complete`,
                   class: "in-progress",
                 };
               } else {
