@@ -18,7 +18,7 @@ const lessonData: Lesson = {
       id: "reflection-intro",
       title: "The Importance of Reflection",
       content:
-        'There is a quote by a famous educational philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This section showcases another tool that this website has in its tool belt: reflection.',
+        'There is a quote by a famous educational philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This section showcases another powerful learning tool that this website has in its tool belt: reflection.',
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
@@ -42,7 +42,7 @@ const lessonData: Lesson = {
       id: "reflection-analysis",
       title: "The Importance of Reflection",
       content:
-        "Reflecting on things that you struggled with and then forcing yourself to articulate what you struggled with is an incredibly powerful learning tool. This form of \"journaling\" can also form a record of everything you've learned in case you forget or get stuck. These types of journals are considered best practice for anyone who takes their learning seriously: think of scientists' notebooks or writers' journals.\n\nAs with PRIMM, AI has the potential to super-charge reflection. This is because it can provide quick feedback on any mistakes you have. In addition, it can provide a \"speed bump\" to make you slow down and take the reflection seriously. Below is an example reflection section. It works by:\n1. Having you choose a topic (it's been set to `Print Statements`)\n2. Having you create a small snippet of code (also set)\n3. Having you explain how the code works\n4. Asking the ChatBot if there is any room for improvement\n\nThe section forces you to iterate with a ChatBot to improve your code/text until you demonstrate sufficient understanding. Annoying? A bit! Effective? Definitely! Try it out below.",
+        "Reflecting on things that you struggled with and then forcing yourself to articulate **why** you struggled is an incredibly powerful learning tool. This form of \"journaling\" can then form a record of everything you've learned in case you forget or get stuck sometime later. These types of journals are considered best practice for anyone who takes their learning seriously: think of a scientist's notebook or writer's journal.\n\nAs with PRIMM, AI has the potential to super-charge reflection. This is because it can provide quick feedback on your mistakes. In addition, it can provide a \"speed bump\" to make you slow down and take the reflection seriously. Below is an example reflection section. It works by:\n1. Having you choose a topic (it's been set to `Print Statements`)\n2. Having you create a small snippet of code (also set)\n3. Having you explain how the code works\n4. Asking the AI if there is any room for improvement\n\nThe section forces you to iterate with AI to improve your code/text until you demonstrate deep understanding. Annoying? A bit! Effective? Definitely! Try it out below.",
     } as InformationSectionData,
     {
       kind: "Reflection",
@@ -81,7 +81,7 @@ const lessonData: Lesson = {
       id: "reflection-wrap-up",
       title: "Wrapping Up Reflection",
       content:
-        "That's it! Hopefully you now understand what the website is trying to do and why. Deep learning isn't easy and the website is designed to help you nudge you towards expanding your own understanding. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+        "That's it! Hopefully you can appreciate why this website pushes you towards reflection so strongly. Deep learning isn't easy and the website is designed to help you nudge you towards expanding your own understanding. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
     } as InformationSectionData,
   ],
 };

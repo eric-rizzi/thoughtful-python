@@ -27,7 +27,7 @@ const lessonData: Lesson = {
       id: "running-code" as SectionId,
       title: "Running Code",
       content:
-        "This website allows you to quickly write, run, and debug programs. Below is your first program. Run it by clicking the `Run Code` button and compare the program with the resulting output to try and understand what is happening.",
+        "This website is designed to allow you to quickly write, run, and debug programs. Below is your first program. Run it by clicking the `Run Code` button and compare the program with the resulting output to try and understand what is happening.",
       example: {
         id: "hello-world1",
         title: "Hello, World",
@@ -37,9 +37,9 @@ const lessonData: Lesson = {
     {
       kind: "Information",
       id: "primm-history",
-      title: "The History of PRIMM",
+      title: "A Systematic Approach",
       content:
-        "That worked, but here's the issue: if all you do is run code and copy examples, you're not really learning to think like a programmer. For this reason, this website takes a very opinionated approach to learning by relying on a technique called PRIMM. PRIMM is a method for teaching programming developed in the 2000s. It's based on the realization that people often struggle to learn programming because traditionally there's very little \"scaffolding\". It's basically just \"write this program from scratch\".\n\nPRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of programming that mimics how real engineers work. Very rarely do they create something from scratch. Instead, they start with something that's close and then slowly mold it to be what they want.",
+        "That worked, but here's the issue: if all you do is run code and copy examples, you're not really learning to think like a programmer. For this reason, this website takes a very opinionated approach to learning by using a method for teaching programming called PRIMM. PRIMM is based on the realization that people often struggle to learn programming because writing a program from scratch involves **a lot** of things happening at once. For novices, handling all of the necessary details can quickly become overwhelming.\n\nPRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of programming that mimics how real engineers work. Very rarely do they create something from scratch. Instead, they start with something that's close and then slowly mold it to be what they want.",
     } as InformationSectionData,
     {
       kind: "Matching",
@@ -54,7 +54,7 @@ const lessonData: Lesson = {
         { id: "p5", text: "MAKE" },
       ],
       options: [
-        { id: "B", text: "Compare your understanding with the actual results" },
+        { id: "B", text: "Compare your prediction with the actual results" },
         { id: "A", text: "Force yourself to try and understand a program" },
         { id: "E", text: "Challenge yourself to implement your own ideas" },
         { id: "D", text: "Challenge yourself to expand on the existing ideas" },
@@ -67,7 +67,7 @@ const lessonData: Lesson = {
       id: "print-primm" as SectionId,
       title: "Using PRIMM on Code",
       content:
-        "Now, let's try things the PRIMM way so you can see the difference. Below is a PRIMM problem of the code you ran above. To complete the section, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the output and explain what (if anything) was wrong with your prediction\n\n\nThe key is to be as **specific as possible** in your prediction and interpretation.",
+        "Now, let's try things the PRIMM way so you can see the difference. Below is a PRIMM-ified version of the code you ran above. To complete the section, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the output and explain what (if anything) was wrong with your prediction\n\n\nThe key is to be as **specific as possible** in your prediction and interpretation.",
 
       examples: [
         {
@@ -84,7 +84,7 @@ const lessonData: Lesson = {
       id: "ai-feedback",
       title: "PRIMM + AI",
       content:
-        "There's two things to notice from the previous section:\n1. PRIMM is a way of systematically approaching new code\n2. This website uses AI to supercharge PRIMM\n\nIf you look at the final few lines in the section, you'll see that AI gave you feedback on what you wrote. This website has been  designed to use AI to keep you honest with yourself.\n\nPRIMM works best when you really push yourself to make specific predictions and carefully interpret the output. The AI is there to prevent you from coasting and moving too fast. Put another way, the AI is there to make sure you're actually learning.",
+        "There's two things to notice from the previous section:\n1. PRIMM is a way of systematically approaching new code\n2. This website uses AI to supercharge PRIMM\n\nIf you look at the final few lines in the section, you'll see that AI gave you feedback on what you wrote. This website has been designed to use AI to catch (and explain) and mistakes you might make AND to keep you honest with yourself.\n\nPRIMM works best when you really push yourself to make specific predictions and carefully interpret the output. The AI is there to prevent you from coasting and moving too fast. Put another way, the AI is there to make sure you're actually learning.",
     } as InformationSectionData,
     {
       kind: "MultipleSelection",
@@ -94,14 +94,15 @@ const lessonData: Lesson = {
         "Which of the following will allow you to get the most out of a PRIMM + AI combo:",
       options: [
         "Be as specific as possible in your prediction",
-        "Be as verbose as possible to let the ChatBot know you're smart",
+        "Be as verbose as possible to let the AI know you're smart",
         "Be as honest as possible in your assessment of your certainty",
         "Be as critical as possible in your interpretation",
         "Be as careful as possible when reading the AI's feedback",
       ],
       correctAnswers: [0, 2, 3, 4],
       feedback: {
-        correct: "Correct!",
+        correct:
+          "Correct! The more you open yourself up to feedback, the more opportunity there is to learn.",
       },
     } as MultipleSelectionSectionData,
     {
@@ -109,7 +110,7 @@ const lessonData: Lesson = {
       id: "primm-wrapup" as SectionId,
       title: "Wrapping Up PRIMM",
       content:
-        "Hopefully you can appreciate the power of PRIMM + AI. PRIMM is a systematic way of approaching code that's proven to work. The AI is there to help you slow down, focus on important concents, and provide hints when your mental models is off.\n\nThis type of quick, iterative feedback can help you grow more quickly. By being willing to read the feedback carefully, you will have a 1:1 tutor guiding you towards a better understanding.",
+        "Hopefully you can appreciate the power of PRIMM + AI. PRIMM is a systematic way of approaching code that's proven to work. The AI is there to help you slow down, focus on important concepts, and provide hints when your mental model is off.",
     } as InformationSectionData,
   ],
 };
