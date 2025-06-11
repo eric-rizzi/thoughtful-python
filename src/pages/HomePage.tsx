@@ -119,12 +119,19 @@ const HomePage: React.FC = () => {
       )}
       <div className={styles.homePageContainer}>
         <section className={styles.welcome}>
-          <h2>Welcome to a thoughtful approach to learning Python</h2>
+          <h2>A Thoughtful Approach to Learning Python</h2>
         </section>
         <section className={styles.philosophySection}>
+          <p>
+            This website can be viewed as the first step on your programming
+            journey. It will help you establish a strong foundation in Python
+            fundamentals and effective learning processes. Once you feel more
+            confident, you will be well-prepared to explore other, more powerful
+            tools.
+          </p>
           <h3>Philosophy:</h3>
           <ul>
-            <li>Anyone can learn Python</li>
+            <li>Anyone can learn Python.</li>
             <li>
               Python is a wonderful way to order your thoughts and accomplish
               complex tasks.
@@ -149,13 +156,6 @@ const HomePage: React.FC = () => {
               powerful tools.
             </li>
           </ul>
-          <p>
-            This website can be viewed as the first step on your programming
-            journey. It will help you establish a strong foundation in Python
-            fundamentals and effective learning processes. Once you feel more
-            confident, you'll be well-prepared to explore other more powerful
-            tools.
-          </p>
         </section>
         <section className={styles.learningPaths}>
           <h2>Learning Paths</h2>

@@ -1,23 +1,5 @@
 /* src/pages/HomePage.module.css */
 
-/* Welcome Section Styles (Optional - based on original index.html) */
-.welcome {
-  text-align: center;
-  padding: 2rem 0;
-  margin-bottom: 2rem;
-}
-
-.welcome h2 {
-  color: #306998;
-  margin-bottom: 1rem;
-  font-size: 2rem;
-}
-
-.welcome p {
-  font-size: 1.1rem;
-  color: #555;
-}
-
 .homePageContainer {
   /* If you want to constrain the overall width of the homepage content */
   max-width: 1200px;
@@ -27,8 +9,8 @@
 
 .welcome {
   text-align: center;
-  padding: 2rem 0;
-  margin-bottom: 1rem; /* Adjusted margin */
+  padding: 1rem 0;
+  margin-bottom: 1rem;
 }
 
 .welcome h2 {
@@ -48,8 +30,8 @@
   background-color: #f9f9f9; /* A light background to distinguish it */
   padding: 2rem;
   margin-bottom: 2.5rem; /* Space before learning paths */
-  margin-left: 5em;
-  margin-right: 5em;
+  margin-left: 7em;
+  margin-right: 7em;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
 }
