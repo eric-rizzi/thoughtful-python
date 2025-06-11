@@ -39,7 +39,7 @@ const lessonData: Lesson = {
       id: "primm-history",
       title: "A Systematic Approach",
       content:
-        "That worked, but here's the issue: if all you do is run code and copy examples, you're not really learning to think like a programmer. For this reason, this website takes a very opinionated approach to learning by using a method for teaching programming called PRIMM. PRIMM is based on the realization that people often struggle to learn programming because writing a program from scratch involves **a lot** of things happening at once. For novices, handling all of the necessary details can quickly become overwhelming.\n\nPRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of programming that mimics how real engineers work. Very rarely do engineers create something from scratch. Instead, they start with something that's close and then slowly mold it to be what they want.",
+        "That worked, but here's the issue: if all you do is run code and copy examples, you're not really learning to think like a programmer. For this reason, this website takes a very opinionated approach to learning by using a method for teaching programming called PRIMM. PRIMM is based on the realization that people often struggle to learn programming because writing a program from scratch involves **a lot** of things happening at once. For novices, handling all the necessary details can quickly become overwhelming.\n\nPRIMM (which stands for Predict, Run, Investigate, Modify, Make) is a way of programming that mimics how real engineers work. Very rarely do engineers create something from scratch. Instead, they start with something that's close and then slowly mold it to be what they want.",
     } as InformationSectionData,
     {
       kind: "Matching",
@@ -67,7 +67,7 @@ const lessonData: Lesson = {
       id: "print-primm" as SectionId,
       title: "Using PRIMM on Code",
       content:
-        "Now, let's try things the PRIMM way so you can see the difference. Below is a PRIMM-ified version of the code you ran above. To complete the section, you have to:\n1. Predict what will happen\n2. Run the program\n3. Investigate the output and explain what (if anything) was wrong with your prediction\n\n\nThe key is to be as **specific as possible** in your prediction and interpretation.",
+        "Now, let's try things the PRIMM way so you can see the difference. Below is a PRIMM-ified version of the code you ran above. To complete the section, you must:\n1. Predict what will happen\n2. Run the program\n3. Investigate the output and explain what (if anything) was wrong with your prediction\n\n\nThe key is to be as **specific as possible** in your prediction and interpretation.",
 
       examples: [
         {
@@ -84,7 +84,7 @@ const lessonData: Lesson = {
       id: "ai-feedback",
       title: "PRIMM + AI",
       content:
-        "There's two things to notice from the previous section:\n1. PRIMM is a way of systematically approaching new code\n2. This website uses AI to supercharge PRIMM\n\nIf you look at the final few lines in the section, you'll see that AI gave you feedback on what you wrote. This website has been designed to use AI to catch (and explain) any mistakes you might make AND to keep you honest with yourself.\n\nPRIMM works best when you push yourself to make specific predictions and carefully interpret the output. The AI is there to prevent you from coasting and moving too fast. Put another way, the AI is there to make sure you're actually learning.",
+        "There are two things to notice from the previous section:\n1. PRIMM is a way of systematically approaching new code\n2. This website uses AI to supercharge PRIMM\n\nIf you look at the final few lines in the section, you'll see that AI gave you feedback on what you wrote. This website has been designed to use AI to catch (and explain) any mistakes you might make AND to keep you honest with yourself.\n\nPRIMM works best when you push yourself to make specific predictions and carefully interpret the output. The AI is there to prevent you from coasting and moving too fast. Put another way, the AI is there to make sure you're actually learning.",
     } as InformationSectionData,
     {
       kind: "MultipleSelection",

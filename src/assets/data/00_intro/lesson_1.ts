@@ -6,6 +6,7 @@ import type {
   SectionId,
   MultipleSelectionSectionData,
   PRIMMSectionData,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -19,7 +20,7 @@ const lessonData: Lesson = {
       id: "python-history",
       title: "The History of Python",
       content:
-        "Python was created by _Guido van Rossum_ and first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose. Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others.",
+        'Python was first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose. Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this section, you\'ll learn about how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
     } as InformationSectionData,
     {
       kind: "Observation",
@@ -75,7 +76,7 @@ const lessonData: Lesson = {
       id: "single-quote-strings" as SectionId,
       title: "Single Quote Strings",
       content:
-        "Luckily, there's a way around this problem: single quotes! Single quotes (`'`) can be used whenever you have a string that has a double quote (`\"`) inside it.\n\nThe code below is almost exactly like the code in the example above, except it uses single quotes at the start and end of the string. This simple change prevent the computer from getting confused. Run the program to verify it works as expected.",
+        "Luckily, there's a way around this problem: single quotes! Single quotes (`'`) can be used whenever you have a string that has a double quote (`\"`) inside it.\n\nThe code below is almost exactly like the code in the example above, except it uses single quotes at the start and end of the string. This simple change prevents the computer from getting confused about where the string ends. Run the program to verify it works as expected.",
       example: {
         id: "double-quote-strings",
         title: "Someone Once Said",
@@ -102,6 +103,26 @@ const lessonData: Lesson = {
           "Correct! Strings start and stop with the same quotation character and don't have any other instance of that character between them.",
       },
     } as MultipleSelectionSectionData,
+    {
+      kind: "Testing",
+      id: "problem1-task-grammatical-greeting" as SectionId,
+      title: "Challenge: Perfecting the Greeting",
+      content:
+        "Now it's your turn to write some code of your own! Write a program that outputs the following two sentences, one after the other:\n\n1. `Who's candy is that?`\n2. `I heard Eric call \"dibs\".`",
+      example: {
+        id: "strings-challenge-code",
+        title: "Implement Your Solution",
+        code: "print()\nprint()",
+        testCases: [
+          {
+            input: null,
+            expected: 'Who\'s candy is that?\nI heard Eric call "dibs".',
+            description: "Test that program produces expected output",
+          },
+        ],
+        functionToTest: "__main__",
+      },
+    } as TestingSectionData,
   ],
 };
 

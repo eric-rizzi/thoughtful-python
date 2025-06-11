@@ -28,7 +28,7 @@ const lessonData: Lesson = {
       id: "print-numbers" as SectionId,
       title: "Integers",
       content:
-        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice in particular, the lack of quotation marks. Run the code and be amazed by how fast computers can do math!",
+        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice in particular, the lack of quotation marks. Run the code code. Pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
       example: {
         id: "function-basic",
         title: "Integer Operations",
@@ -40,7 +40,7 @@ const lessonData: Lesson = {
       id: "primm-strings-and-integers" as SectionId,
       title: "Operating on Integers and Strings",
       content:
-        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer operates on them differently. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.',
+        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer **operates on them differently**. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
       examples: [
         {
           id: "primm-quote-issue",
@@ -83,7 +83,7 @@ const lessonData: Lesson = {
       id: "primm-type-error" as SectionId,
       title: "Data Type Mixup",
       content:
-        "Now the question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue. First, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.",
+        'Now the question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
       examples: [
         {
           id: "primm-type-issue",
@@ -100,7 +100,7 @@ const lessonData: Lesson = {
       id: "operations-test" as SectionId,
       title: "Various Operations",
       content:
-        "There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types.",
+        'There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types. In particular, be sure to experiment with the following bits of code:\n- 5 + 3 vs. "5" + "3"\n- 5 * 3 vs. "5" * 3\n- 5 - 3 vs. "5" - "3"',
       example: {
         id: "temp-conversion",
         title: "Testing Operations",

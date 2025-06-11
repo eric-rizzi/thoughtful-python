@@ -87,7 +87,7 @@ const lessonData: Lesson = {
       id: "reflection-wrap-up",
       title: "Wrapping Up Reflection",
       content:
-        "There's only one last thing to know about reflections. All of your submitted entries are stored in a special section of this website. If you click on the `Learning Entries` tab at the top of the page, you will see the first of your finalized entries. Think of this as a special section you can flip to if you ever have that nagging feeling you've already solved a problem.\n\nThat's it! Hopefully you can appreciate why this website pushes you towards reflection so strongly. Deep learning isn't easy and the website is designed to help nudge you towards expanding your own understanding. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+        "There's only one last thing to know about reflections. All of your submitted entries are stored in a special section of this website. If you click on the `Learning Entries` tab at the top of the page, you will see the first of your finalized entries. Think of this as a special section you can flip to if you ever have that nagging feeling you've already solved a problem.\n\nThat's it! Hopefully you can appreciate why this website pushes you towards reflection so strongly. Deep learning isn't easy, and the website is designed to help nudge you towards expanding your own understanding. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
     } as InformationSectionData,
   ],
 };
