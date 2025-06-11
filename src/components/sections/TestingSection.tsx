@@ -1,27 +1,23 @@
-// src/components/sections/TestingSection.tsx
 import React, { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
   LessonId,
-  LessonSection,
-  SectionId,
+  TestingSectionData,
   TestingExample,
   UnitId,
+  SectionId,
 } from "../../types/data";
+import type { TestResult } from "../../lib/pyodideUtils";
 import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
-import {
-  generateTestCode,
-  parseTestResults,
-  TestResult,
-} from "../../lib/pyodideUtils";
+import { generateTestCode, parseTestResults } from "../../lib/pyodideUtils";
 import { useProgressActions } from "../../stores/progressStore";
 import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
 
 interface TestingSectionProps {
-  section: LessonSection;
+  section: TestingSectionData;
   unitId: UnitId;
   lessonId: LessonId;
 }
@@ -35,10 +31,11 @@ const TestableExample: React.FC<{
   const { completeSection } = useProgressActions();
   const {
     runPythonCode: pyodideDirectRunner,
-    isLoading: isPyodideDirectLoading,
-    error: pyodideDirectError,
+    isLoading: isPyodideLoading,
+    error: pyodideError,
   } = usePyodide();
 
+  // This hook manages the code editor and the output of the "Run Code" button
   const exampleHook = useInteractiveExample({
     exampleId: example.id,
     initialCode: example.code,
@@ -52,37 +49,39 @@ const TestableExample: React.FC<{
   const [testResults, setTestResults] = useState<
     TestResult[] | { test_error: string } | null
   >(null);
-  const [testRunHasBeenAttempted, setTestRunHasBeenAttempted] =
-    useState<boolean>(false);
 
-  const functionNameToTest = example.functionToTest;
+  // This new state tracks the user's most recent action to decide what to display
+  const [lastAction, setLastAction] = useState<"run" | "test" | null>(null);
 
+  // This handler wraps the "Run Code" action to set the last action state
+  const handleRunCode = useCallback(async () => {
+    setLastAction("run");
+    return exampleHook.onRunCode();
+  }, [exampleHook.onRunCode]);
+
+  // This handler runs the tests and sets the last action state
   const handleTestSolution = useCallback(async () => {
-    if (isPyodideDirectLoading || pyodideDirectError) {
-      setTestResults({
-        test_error: "Python environment not ready for testing.",
-      });
-      setTestRunHasBeenAttempted(true);
+    setLastAction("test");
+
+    if (isPyodideLoading || pyodideError) {
+      setTestResults({ test_error: "Python environment not ready." });
       return;
     }
     if (!example.testCases || example.testCases.length === 0) {
       setTestResults({ test_error: "No test cases defined for this example." });
-      setTestRunHasBeenAttempted(true);
       return;
     }
 
     setIsTesting(true);
     setTestResults(null);
-    setTestRunHasBeenAttempted(true);
 
     try {
       const testScript = generateTestCode(
         exampleHook.code,
-        functionNameToTest,
+        example.functionToTest,
         example.testCases
       );
       const result = await pyodideDirectRunner(testScript);
-
       let parsed: TestResult[] | { test_error: string };
       let allPassed = false;
 
@@ -97,12 +96,6 @@ const TestableExample: React.FC<{
             allPassed = parsed.every((r) => r.passed);
           }
         } catch (parseError) {
-          console.error(
-            "Failed to parse test results:",
-            parseError,
-            "\nRaw output:",
-            result.output
-          );
           parsed = {
             test_error: `Failed to parse results: ${
               parseError instanceof Error
@@ -118,7 +111,6 @@ const TestableExample: React.FC<{
         completeSection(unitId, lessonId, sectionId);
       }
     } catch (err) {
-      console.error(`Error during test execution for ${example.id}:`, err);
       setTestResults({
         test_error: `Testing failed: ${
           err instanceof Error ? err.message : String(err)
@@ -130,18 +122,20 @@ const TestableExample: React.FC<{
   }, [
     exampleHook.code,
     example.testCases,
-    functionNameToTest,
+    example.functionToTest,
     pyodideDirectRunner,
-    isPyodideDirectLoading,
-    pyodideDirectError,
+    isPyodideLoading,
+    pyodideError,
     completeSection,
     lessonId,
     sectionId,
-    example.id,
+    unitId,
   ]);
 
+  // This helper function renders the test results table
   const renderTestResultsDisplay = () => {
-    if (!testRunHasBeenAttempted || !testResults) return null;
+    // Only render this if the last action was 'test'
+    if (lastAction !== "test" || !testResults) return null;
 
     if ("test_error" in testResults) {
       return (
@@ -220,26 +214,25 @@ const TestableExample: React.FC<{
     <InteractiveExampleDisplay
       example={example}
       {...exampleHook}
+      onRunCode={handleRunCode}
       isRunning={exampleHook.isRunning || isTesting}
-      hasBeenRun={exampleHook.hasBeenRun || testRunHasBeenAttempted}
-      preventPasteInEditor={true} // Prevent paste in TestingSection CodeEditor
-      renderExtraControls={() =>
-        example.testCases &&
-        example.testCases.length > 0 && (
-          <button
-            onClick={handleTestSolution}
-            disabled={
-              exampleHook.isPyodideLoading ||
-              pyodideDirectError ||
-              exampleHook.isRunning ||
-              isTesting
-            }
-            className={styles.testButton}
-          >
-            {isTesting ? "Testing..." : "Test Solution"}
-          </button>
-        )
-      }
+      hasBeenRun={exampleHook.hasBeenRun}
+      preventPasteInEditor={true}
+      showOutputBox={lastAction === "run"}
+      renderExtraControls={() => (
+        <button
+          onClick={handleTestSolution}
+          disabled={
+            exampleHook.isRunning ||
+            isTesting ||
+            isPyodideLoading ||
+            !!pyodideError
+          }
+          className={styles.testButton}
+        >
+          {isTesting ? "Testing..." : "Test Solution"}
+        </button>
+      )}
       renderExtraOutput={renderTestResultsDisplay}
     />
   );
@@ -250,8 +243,6 @@ const TestingSection: React.FC<TestingSectionProps> = ({
   unitId,
   lessonId,
 }) => {
-  const currentSingleExample = section.example;
-
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
@@ -260,16 +251,14 @@ const TestingSection: React.FC<TestingSectionProps> = ({
           {section.content}
         </ReactMarkdown>
       </div>
-      {currentSingleExample ? (
+      {section.example && (
         <TestableExample
-          key={currentSingleExample.id}
-          example={currentSingleExample}
+          key={section.example.id}
+          example={section.example}
           unitId={unitId}
           lessonId={lessonId}
           sectionId={section.id}
         />
-      ) : (
-        <p>No example for this observation section.</p>
       )}
     </section>
   );

@@ -16,7 +16,8 @@ interface InteractiveExampleDisplayProps {
   onRunCode: () => Promise<{ output: string; error: string | null }>;
   renderExtraControls?: () => React.ReactNode;
   renderExtraOutput?: () => React.ReactNode;
-  preventPasteInEditor?: boolean; // New prop
+  preventPasteInEditor?: boolean;
+  showOutputBox?: boolean;
 }
 
 const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
@@ -31,7 +32,8 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
   onRunCode,
   renderExtraControls,
   renderExtraOutput,
-  preventPasteInEditor = false, // Default to false
+  preventPasteInEditor = false,
+  showOutputBox = true,
 }) => {
   const canRun = !isPyodideLoading && !pyodideError && !isRunning;
 
@@ -66,7 +68,7 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
         </div>
       </div>
 
-      {(isRunning || hasBeenRun || output) && (
+      {showOutputBox && (isRunning || hasBeenRun || output) && (
         <div className={styles.outputArea}>
           <pre>
             {output ||
