@@ -39,7 +39,7 @@ const lessonData: Lesson = {
     } as ObservationSectionData,
     {
       kind: "MultipleSelection",
-      id: "variable-parts-",
+      id: "variable-parts",
       title: "Parts of a Variable",
       content:
         'Looking at the line `name = "Alice"` from the example above, which of the following statements are true?',
@@ -62,7 +62,7 @@ const lessonData: Lesson = {
       id: "integer-variables" as SectionId,
       title: "Variables with Numbers",
       content:
-        "Variables can store more than just strings - they can also store integers! Below is a program that creates a variable with an integer value and then uses it in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
+        "Variables can store more than just strings - they can also store integers. Below is a program that creates a variable with an integer value and then uses it in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
       examples: [
         {
           id: "integer-variable-primm",
@@ -133,12 +133,12 @@ const lessonData: Lesson = {
       example: {
         id: "variable-challenge",
         title: "Implement Your Solution",
-        code: "# Create your variables here\n\n# Print the required outputs here",
+        code: "favorite_color = \nlucky_number =\n",
         testCases: [
           {
             input: null,
-            expected: "blue\n7\n17",
-            description: "Test with favorite_color='blue' and lucky_number=7",
+            expected: "green\n7\n17",
+            description: "Test with favorite_color='green' and lucky_number=7",
           },
         ],
         functionToTest: "__main__",
@@ -162,7 +162,7 @@ const lessonData: Lesson = {
       id: "variables-conclusion",
       title: "Conclusion",
       content:
-        "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems. In the next lesson, you'll learn about probably the most important concept in computing: functions.",
+        "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. You've learned some of the most important concepts in programming. The will come up over and over again. In the next lesson, we'll basically pause and reflect on everything so far.",
     } as InformationSectionData,
   ],
 };
