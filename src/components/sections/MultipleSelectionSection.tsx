@@ -110,7 +110,13 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
                 disabled={isSubmitted || isLocallyDisabled}
                 tabIndex={-1}
               />
-              {option}
+              <ReactMarkdown
+                children={option}
+                remarkPlugins={[remarkGfm]}
+                // These two props are the solution
+                disallowedElements={["p"]}
+                unwrapDisallowed={true}
+              />
             </label>
           </div>
         ))}

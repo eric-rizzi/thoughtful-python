@@ -13,7 +13,8 @@ import type {
 const lessonData: Lesson = {
   title: "Strings vs. Integers",
   guid: "65ddff46-b4af-4443-ac0a-5b6a714e405e" as LessonId,
-  description: "",
+  description:
+    "Understand the types of data that computers can operate on and see what can happen if you accidentally mix them up.",
   sections: [
     {
       kind: "Information",
@@ -22,7 +23,6 @@ const lessonData: Lesson = {
       content:
         "In the previous lesson, you learned about strings and how to print them. In this lesson, we'll introduce a new **data type** and explain why it's so important to distinguish between different data types.",
     } as InformationSectionData,
-
     {
       kind: "Observation",
       id: "print-numbers" as SectionId,
@@ -93,18 +93,25 @@ const lessonData: Lesson = {
         },
       ],
       conclusion:
-        "Error messages can be overwhelming, but the key line is `TypeError: unsupported operand type(s) for -: 'str' and 'int'`",
+        "Error messages can be overwhelming! Read the next section carefully for how to approach them.",
     } as PRIMMSectionData,
+    {
+      kind: "Information",
+      id: "understanding-type-errors" as SectionId,
+      title: "Understanding TypeErrors",
+      content:
+        "Getting errors while you're writing a program is very common. This is likely the first error you've encountered but it definitely won't be the last. Learning how to interpret them now will save you **a ton of time** later.\n\nLook carefully at the last line of the error. The line is communicating that are trying to do an operation (`+`) that can't handle two different data types. This makes sense since the original, offending like was `print(3 + 4)`",
+    } as InformationSectionData,
     {
       kind: "Observation",
       id: "operations-test" as SectionId,
       title: "Various Operations",
       content:
-        'There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types. In particular, be sure to experiment with the following bits of code:\n- 5 + 3 vs. "5" + "3"\n- 5 * 3 vs. "5" * 3\n- 5 - 3 vs. "5" - "3"',
+        'There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types. In particular, be sure to experiment with the following bits of code:\n- `5 + 3` vs. `"5" + "3"`\n- `5 * 3` vs. `"5" * 3`\n- `5 - 3` vs. `"5" - "3"`',
       example: {
         id: "temp-conversion",
         title: "Testing Operations",
-        code: 'print(5 + 3)\nprint("5" - 3)',
+        code: "print(5 + 3)",
       },
     } as ObservationSectionData,
     {
@@ -112,7 +119,7 @@ const lessonData: Lesson = {
       id: "python-ops-match" as SectionId,
       title: "Matching Operations",
       content:
-        "Having undoubtedly done exhaustive experiments in the previous section, match each of the following Python operations with their output:",
+        "Having experimented with different data types and different operations in the previous section, match each of the following bits of code with their output:",
       prompts: [
         { id: "p1", text: "5 + 3" },
         { id: "p2", text: '"5" + "3"' },

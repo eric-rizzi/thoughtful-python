@@ -1,5 +1,7 @@
 // src/components/sections/DebuggerSection.tsx
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import styles from "./DebuggerSection.module.css";
@@ -665,10 +667,9 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
       {/* Optional: Render section.content if it exists */}
       {section.content && (
         <div className={sectionStyles.content}>
-          {/* Assuming content is Markdown, if not, render directly */}
-          {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>{section.content}</ReactMarkdown> */}
-          <p>{section.content}</p>{" "}
-          {/* Simpler rendering for plain text content */}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {section.content}
+          </ReactMarkdown>
         </div>
       )}
 
