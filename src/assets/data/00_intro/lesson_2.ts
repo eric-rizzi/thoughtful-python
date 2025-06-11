@@ -2,7 +2,6 @@ import type {
   InformationSectionData,
   Lesson,
   ObservationSectionData,
-  TestingSectionData,
   LessonId,
   SectionId,
   PRIMMSectionData,
@@ -29,7 +28,7 @@ const lessonData: Lesson = {
       id: "print-numbers" as SectionId,
       title: "Integers",
       content:
-        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, called **integers** in Python.\n\nIn the example below, there's an example of integers being operated on. Notice in particular, the lack of quotation marks. Run the code and be amazed by how fast computers can do math!",
+        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice in particular, the lack of quotation marks. Run the code and be amazed by how fast computers can do math!",
       example: {
         id: "function-basic",
         title: "Integer Operations",
@@ -41,7 +40,7 @@ const lessonData: Lesson = {
       id: "primm-strings-and-integers" as SectionId,
       title: "Operating on Integers and Strings",
       content:
-        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer operates on them differently. In particular the string `"5"` is not the same as the integer `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.',
+        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer operates on them differently. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.',
       examples: [
         {
           id: "primm-quote-issue",
@@ -51,7 +50,7 @@ const lessonData: Lesson = {
         },
       ],
       conclusion:
-        "When you use `+` with two integers, the result is addition. When you use `+` with two strings, the result is combining (technically called concatenation )",
+        "When you use `+` with two integers, the result is addition. When you use `+` with two strings, the result is combining (technically called concatenation)",
     } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
@@ -76,19 +75,36 @@ const lessonData: Lesson = {
       correctAnswer: 1,
       feedback: {
         correct:
-          "Correct. When you use `+` with two strings, the result is combination.",
+          "Correct. When you use `+` with two strings, the result is concatenation.",
       },
     } as MultipleChoiceSectionData,
+    {
+      kind: "PRIMM",
+      id: "primm-type-error" as SectionId,
+      title: "Data Type Mixup",
+      content:
+        "Now the question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue. First, predict what you think the code will do when run and then see if your prediction is correct. Finally, get some help from AI with your answer if need be.",
+      examples: [
+        {
+          id: "primm-type-issue",
+          code: 'print(3 + "4")',
+          predictPrompt:
+            "We are trying to do use the `+` operator on a string and an integer. What do you think will happen when you run the code?",
+        },
+      ],
+      conclusion:
+        "Error messages can be overwhelming, but the key line is `TypeError: unsupported operand type(s) for -: 'str' and 'int'`",
+    } as PRIMMSectionData,
     {
       kind: "Observation",
       id: "operations-test" as SectionId,
       title: "Various Operations",
       content:
-        "There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `-`, `*`, and `**` operations to see what they do to different data types.",
+        "There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types.",
       example: {
         id: "temp-conversion",
         title: "Testing Operations",
-        code: 'print(5 + 3)\nprint("5" * 3)',
+        code: 'print(5 + 3)\nprint("5" - 3)',
       },
     } as ObservationSectionData,
     {
@@ -98,24 +114,24 @@ const lessonData: Lesson = {
       content:
         "Having undoubtedly done exhaustive experiments in the previous section, match each of the following Python operations with their output:",
       prompts: [
-        { id: "p1", text: "5 * 3" },
-        { id: "p2", text: '"5" * 3' },
-        { id: "p3", text: "5 + 3" },
-        { id: "p4", text: '"5" + "3"' },
-        { id: "p5", text: '5 + "3"' },
+        { id: "p1", text: "5 + 3" },
+        { id: "p2", text: '"5" + "3"' },
+        { id: "p3", text: '5 + "3"' },
+        { id: "p4", text: "5 - 3" },
+        { id: "p5", text: '5 - "3"' },
       ],
       options: [
-        { id: "C", text: "8" },
-        { id: "A", text: "15" },
-        { id: "D", text: '"53"' },
-        { id: "B", text: '"555"' },
-        { id: "E", text: "Error" },
+        { id: "A", text: "2" },
+        { id: "B", text: "8" },
+        { id: "C", text: '"53"' },
+        { id: "D", text: "TypeError: unsupported operand type(s) for +" },
+        { id: "E", text: "TypeError: unsupported operand type(s) for -" },
       ],
       solution: {
-        p1: "A",
-        p2: "B",
-        p3: "C",
-        p4: "D",
+        p1: "B",
+        p2: "C",
+        p3: "D",
+        p4: "A",
         p5: "E",
       },
     } as MatchingSectionData,

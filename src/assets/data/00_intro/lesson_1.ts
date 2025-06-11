@@ -19,7 +19,7 @@ const lessonData: Lesson = {
       id: "python-history",
       title: "The History of Python",
       content:
-        "Python was created by _Guido van Rossum_ and first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost reads like English prose. Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others.",
+        "Python was created by _Guido van Rossum_ and first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose. Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others.",
     } as InformationSectionData,
     {
       kind: "Observation",
@@ -38,7 +38,7 @@ const lessonData: Lesson = {
       id: "what-is-a-string",
       title: "What's a String?",
       content:
-        'The first thing to appreciate about Python is that it\'s primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** to know is **string**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example above, there are two strings. Which are they?',
+        'The first thing to appreciate about all programming languages is that they\'re primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** to know is **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example above, there are two strings. Which are they?',
       options: [
         "print",
         "Hello, World!",
