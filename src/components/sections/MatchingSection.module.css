@@ -23,20 +23,21 @@
 
 .promptItem {
   flex: 1;
-  padding: 0.75rem;
+  padding: 0.5rem;
   background-color: #e9ecef;
   border-radius: 4px;
   font-family: "Menlo", "Consolas", monospace;
+  font-size: 0.9em;
   text-align: right;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .dropZone {
   flex: 1;
-  padding: 0.75rem;
+  padding: 0.35rem;
   border: 2px dashed #ced4da;
   border-radius: 4px;
-  min-height: 40px;
+  min-height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +56,7 @@
 }
 
 .optionsPool {
-  margin-top: 1rem;
+  margin-top: 0rem;
   padding-top: 1rem;
   border-top: 1px solid #dee2e6;
   display: flex;
@@ -73,12 +74,13 @@
 
 .draggableOption,
 .matchedOption {
-  padding: 0.6rem 1rem;
+  padding: 0.35rem 0.5rem;
   background-color: white;
   border: 1px solid #b8c2cc;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: grab;
   font-family: "Menlo", "Consolas", monospace;
+  font-size: 0.9em;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s;
 }
@@ -98,23 +100,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.unmatchButton {
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.unmatchButton:hover {
-  background: #5a6268;
 }
 
 .correct {
