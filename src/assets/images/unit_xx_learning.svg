@@ -23,6 +23,4 @@
   <!-- Wood grain effect on frame -->
   <line x1="60" y1="70" x2="140" y2="70" stroke="#654321" stroke-width="0.5" opacity="0.3"/>
   <line x1="60" y1="120" x2="140" y2="120" stroke="#654321" stroke-width="0.5" opacity="0.3"/>
-  
-  <text x="100" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#495057" font-weight="bold">How to Use</text>
 </svg>

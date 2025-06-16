@@ -5,8 +5,7 @@
   <!-- Decision diamond -->
   <g transform="translate(100, 60)">
     <polygon points="0,-20 20,0 0,20 -20,0" fill="#4fc3f7" stroke="#0277bd" stroke-width="2"/>
-    <text x="0" y="-5" text-anchor="middle" font-family="monospace" font-size="10" fill="#01579b" font-weight="bold">if</text>
-    <text x="0" y="5" text-anchor="middle" font-family="monospace" font-size="8" fill="#01579b">x > 5</text>
+    <text x="0" y="3" text-anchor="middle" font-family="monospace" font-size="10" fill="#01579b" font-weight="bold">if</text>
   </g>
   
   <!-- Flow arrows -->
@@ -25,23 +24,17 @@
   
   <!-- True path -->
   <g transform="translate(145, 105)">
-    <rect x="-20" y="-10" width="40" height="20" rx="5" fill="#4caf50" opacity="0.8"/>
-    <text x="0" y="-2" text-anchor="middle" font-family="monospace" font-size="9" fill="white">True</text>
-    <text x="0" y="8" text-anchor="middle" font-family="monospace" font-size="7" fill="white">print("Big!")</text>
+    <rect x="-20" y="-10" width="40" height="20" rx="5" fill="#f44336" opacity="0.8"/>
   </g>
   
   <!-- False path -->
   <g transform="translate(55, 105)">
-    <rect x="-20" y="-10" width="40" height="20" rx="5" fill="#f44336" opacity="0.8"/>
-    <text x="0" y="-2" text-anchor="middle" font-family="monospace" font-size="9" fill="white">False</text>
-    <text x="0" y="8" text-anchor="middle" font-family="monospace" font-size="7" fill="white">print("Small")</text>
+    <rect x="-20" y="-10" width="40" height="20" rx="5" fill="#4caf50" opacity="0.8"/>
   </g>
   
   <!-- elif branch -->
   <g transform="translate(100, 135)">
     <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#ff9800" opacity="0.8"/>
-    <text x="0" y="-2" text-anchor="middle" font-family="monospace" font-size="9" fill="white">elif</text>
-    <text x="0" y="8" text-anchor="middle" font-family="monospace" font-size="7" fill="white">x == 5</text>
   </g>
   
 </svg>
