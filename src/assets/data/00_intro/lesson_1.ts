@@ -63,7 +63,7 @@ const lessonData: Lesson = {
       examples: [
         {
           id: "primm-quote-issue",
-          code: 'print("John Dewey said: "We do not learn from experience. We learn from reflecting on experience.")',
+          code: 'print("John Dewey said: "We learn from reflecting on experience.")',
           predictPrompt:
             "There's something wrong with the code above. What is the problem and what do you think will happen when you run the code?",
         },
@@ -80,7 +80,7 @@ const lessonData: Lesson = {
       example: {
         id: "double-quote-strings",
         title: "Someone Once Said",
-        code: "print('John Dewey said: \"We do not learn from experience. We learn from reflecting on experience.\"')",
+        code: "print('John Dewey said: \"We learn from reflecting on experience.\"')",
       },
     } as ObservationSectionData,
     {

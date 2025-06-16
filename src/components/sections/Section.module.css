@@ -189,7 +189,7 @@
   overflow-y: auto; /* Allow scrolling */
   white-space: pre-wrap; /* Wrap long lines */
   border: 1px solid #444; /* Darker border */
-  width: 100;
+  width: 100%;
 }
 
 .outputArea pre {
