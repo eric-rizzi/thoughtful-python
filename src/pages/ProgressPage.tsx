@@ -7,12 +7,13 @@ import {
   getRequiredSectionsForLesson,
 } from "../lib/dataLoader";
 import { useAllCompletions } from "../stores/progressStore";
-import type { Lesson, LessonId, UnitId } from "../types/data";
+import type { Lesson, LessonId, LessonPath, UnitId } from "../types/data";
 import styles from "./ProgressPage.module.css";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 interface LessonCompletionStatus {
   lessonId: LessonId;
+  lessonPath: LessonPath;
   title: string;
   isCompleted: boolean;
 }
@@ -43,7 +44,7 @@ const ProgressPage: React.FC = () => {
           const lessonPromises = unit.lessons.map(async (lessonReference) => {
             let lesson: Lesson | null = null;
             try {
-              lesson = await fetchLessonData(lessonReference.guid);
+              lesson = await fetchLessonData(lessonReference.path);
             } catch (lessonError) {
               console.error(
                 `Failed to load lesson data for ${lessonReference.guid}:`,
@@ -51,6 +52,7 @@ const ProgressPage: React.FC = () => {
               );
               return {
                 lessonId: lessonReference.guid,
+                lessonPath: lessonReference.path,
                 title: `Lesson ${
                   lessonReference.path
                     .split("/")
@@ -61,11 +63,12 @@ const ProgressPage: React.FC = () => {
               };
             }
 
-            // Get completed sections for this specific lesson from the global store
-            const lessonProgressObject = allCompletions[lessonReference.guid];
+            const lessonProgressObject =
+              allCompletions[unit.id]?.[lessonReference.guid];
             const completedSectionsForLesson = new Set<string>(
               lessonProgressObject ? Object.keys(lessonProgressObject) : []
             );
+
             const requiredSections = lesson
               ? getRequiredSectionsForLesson(lesson)
               : [];
@@ -78,6 +81,7 @@ const ProgressPage: React.FC = () => {
 
             return {
               lessonId: lessonReference.guid,
+              lessonPath: lessonReference.path,
               title:
                 lesson?.title ||
                 `Lesson ${
@@ -130,7 +134,7 @@ const ProgressPage: React.FC = () => {
         <div className={styles.lessonsCircles}>
           {unit.lessons.map((lesson, index) => (
             <Link
-              to={`/lesson/${lesson.lessonId}`}
+              to={`/lesson/${lesson.lessonPath}`}
               key={lesson.lessonId}
               className={styles.lessonCircleLink}
               title={`${lesson.title} (${
