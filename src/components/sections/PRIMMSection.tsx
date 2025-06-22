@@ -514,6 +514,8 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
               >
                 {isLoadingAiFeedback
                   ? "Getting Feedback..."
+                  : !isAuthenticated
+                  ? "Please log in to Get AI Feedback"
                   : "Get AI Feedback"}
               </button>
             </div>

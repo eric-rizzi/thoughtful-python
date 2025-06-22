@@ -397,7 +397,11 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
                 : "Get AI feedback"
             }
           >
-            {isLoading && !submitError ? "Processing..." : "Get Feedback"}
+            {isLoading && !submitError
+              ? "Processing..."
+              : !isAuthenticated
+              ? "Please log in to Get AI Feedback"
+              : "Get Feedback"}
           </button>
           <button
             onClick={handleFinalSubmit}
