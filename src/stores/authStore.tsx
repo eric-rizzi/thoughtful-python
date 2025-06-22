@@ -2,7 +2,19 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import * as apiService from "../lib/apiService";
 import { API_GATEWAY_BASE_URL } from "../config";
-import type { UserId, AccessTokenId, RefreshTokenId } from "../types/data"; // Assuming these types exist
+import type {
+  UserId,
+  AccessTokenId,
+  RefreshTokenId,
+  LessonId,
+  SectionId,
+  UnitId,
+} from "../types/data";
+import { useProgressStore, BASE_PROGRESS_STORE_KEY } from "./progressStore";
+import {
+  ANONYMOUS_USER_ID_PLACEHOLDER,
+  clearAllAnonymousData,
+} from "../lib/localStorageUtils";
 
 export interface UserProfile {
   userId: UserId;
@@ -45,21 +57,75 @@ export const useAuthStore = create<AuthState>()(
           if (!apiGatewayUrl)
             throw new Error("API Gateway URL is not configured.");
 
+          // Step 1: Capture any anonymous progress before logging in
+          const anonymousProgressKey = `${ANONYMOUS_USER_ID_PLACEHOLDER}_${BASE_PROGRESS_STORE_KEY}`;
+          const anonymousProgressRaw =
+            localStorage.getItem(anonymousProgressKey);
+          const anonymousCompletions: {
+            unitId: UnitId;
+            lessonId: LessonId;
+            sectionId: SectionId;
+          }[] = [];
+          if (anonymousProgressRaw) {
+            try {
+              const anonymousProgressData = JSON.parse(anonymousProgressRaw);
+              const completionData = anonymousProgressData?.state?.completion;
+              if (completionData) {
+                for (const unitId in completionData) {
+                  for (const lessonId in completionData[unitId]) {
+                    for (const sectionId in completionData[unitId][lessonId]) {
+                      anonymousCompletions.push({
+                        unitId: unitId as UnitId,
+                        lessonId: lessonId as LessonId,
+                        sectionId: sectionId as SectionId,
+                      });
+                    }
+                  }
+                }
+              }
+            } catch (e) {
+              console.error("Failed to parse anonymous progress", e);
+            }
+          }
+
+          // Step 2: Log in and get application tokens
           const { accessToken, refreshToken } =
             await apiService.loginWithGoogle(apiGatewayUrl, googleIdToken);
 
           const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
           const userProfile: UserProfile = {
             userId: decodedToken.sub,
-            // You might want to fetch more user details from a dedicated /me endpoint later
+            name: decodedToken.name,
+            email: decodedToken.email,
+            picture: decodedToken.picture,
           };
 
+          // Step 3: Set the new authentication state immediately
           set({
             isAuthenticated: true,
             accessToken,
             refreshToken,
             user: userProfile,
           });
+
+          // Step 4: Fetch/Sync user progress
+          let finalProgress;
+          if (anonymousCompletions.length > 0) {
+            console.log(
+              `Migrating ${anonymousCompletions.length} anonymous completions.`
+            );
+            finalProgress = await apiService.updateUserProgress(apiGatewayUrl, {
+              completions: anonymousCompletions,
+            });
+            clearAllAnonymousData();
+          } else {
+            finalProgress = await apiService.getUserProgress(apiGatewayUrl);
+          }
+
+          // Step 5: Update the progress store with the latest data
+          useProgressStore.getState().actions.setServerProgress(finalProgress);
+
+          // The page does not need to reload.
         },
         logout: async () => {
           const { refreshToken } = get();
@@ -74,7 +140,12 @@ export const useAuthStore = create<AuthState>()(
               );
             }
           }
+
           set({ ...initialAuthState });
+          useProgressStore.getState().actions.resetAllProgress();
+
+          // A reload is still the cleanest way to ensure all components re-render with anonymous data.
+          window.location.reload();
         },
         setTokens: ({ accessToken, refreshToken }) => {
           set({ accessToken, refreshToken });
@@ -84,10 +155,9 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage-v2", // New name to avoid conflicts with old structure
+      name: "auth-storage-v2",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        // Only persist the user and tokens
         isAuthenticated: state.isAuthenticated,
         user: state.user,
         accessToken: state.accessToken,
