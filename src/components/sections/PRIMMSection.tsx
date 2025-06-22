@@ -47,7 +47,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
     isLoading: isPyodideLoading,
     error: pyodideError,
   } = usePyodide();
-  const { idToken, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const currentExample: PRIMMCodeExample | undefined = section.examples[0];
@@ -200,7 +200,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
   };
 
   const handleGetAIFeedback = async () => {
-    if (!currentExample || !isAuthenticated || !idToken || !apiGatewayUrl) {
+    if (!currentExample || !isAuthenticated || !apiGatewayUrl) {
       setSubmitActionError("Authentication or configuration error.");
       return;
     }
@@ -227,7 +227,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
 
     try {
       const aiResponse = await apiService.submitPrimmEvaluation(
-        idToken,
         apiGatewayUrl,
         payload
       );

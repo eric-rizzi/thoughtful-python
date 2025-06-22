@@ -48,7 +48,6 @@ const InstructorDashboardPage: React.FC = () => {
   const [allUnits, setAllUnits] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { idToken } = useAuthStore();
 
   // Fetch data needed by multiple child pages
   useEffect(() => {
@@ -57,15 +56,12 @@ const InstructorDashboardPage: React.FC = () => {
       return;
     }
     const loadCommonData = async () => {
-      if (!isAuthenticated || !idToken) return;
+      if (!isAuthenticated) return;
       setIsLoading(true);
       setError(null);
       try {
         const [studentsResponse, unitsData] = await Promise.all([
-          apiService.getInstructorPermittedStudents(
-            idToken,
-            API_GATEWAY_BASE_URL
-          ),
+          apiService.getInstructorPermittedStudents(API_GATEWAY_BASE_URL),
           fetchUnitsData(),
         ]);
         setPermittedStudents(studentsResponse.students);
@@ -78,7 +74,7 @@ const InstructorDashboardPage: React.FC = () => {
       }
     };
     loadCommonData();
-  }, [idToken, isAuthenticated]);
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     googleLogout();
@@ -86,31 +82,15 @@ const InstructorDashboardPage: React.FC = () => {
     navigate("/");
   };
 
-  const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
+  const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
     if (credentialResponse.credential) {
-      const idToken = credentialResponse.credential as AuthToken;
       try {
-        const base64Url = idToken.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split("")
-            .map(function (c) {
-              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join("")
-        );
-        const decodedToken = JSON.parse(jsonPayload);
-        const userProfile = {
-          userId: decodedToken.sub,
-          name: decodedToken.name,
-          email: decodedToken.email,
-          picture: decodedToken.picture,
-        };
-        login(userProfile, idToken);
+        await login(credentialResponse.credential);
       } catch (e) {
-        console.error("Error decoding ID token:", e);
+        console.error("Login process failed:", e);
       }
+    } else {
+      console.error("Login failed: No credential returned from Google.");
     }
   };
 

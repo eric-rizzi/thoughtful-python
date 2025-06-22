@@ -6,6 +6,8 @@ import { PrimmEvaluationResponse } from "./apiServiceTypes";
 
 export type UserId = string & { readonly __brand: "UserId" };
 export type IsoTimestamp = string & { readonly __brand: "IsoTimestamp" };
+export type AccessTokenId = string & { readonly __brand: "AccessTokenId" };
+export type RefreshTokenId = string & { readonly __brand: "RefreshTokenId" };
 
 export type UnitId = string & { readonly __brand: "UnitId" };
 export type LessonId = string & { readonly __brand: "LessonId" };

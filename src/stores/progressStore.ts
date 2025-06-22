@@ -141,8 +141,7 @@ export const useProgressStore = create<ProgressState>()(
             `[ProgressStore] Optimistically completed ${unitId}/${lessonId}/${sectionId} locally.`
           );
 
-          const { isAuthenticated, actions: authActions } =
-            useAuthStore.getState();
+          const { isAuthenticated } = useAuthStore.getState();
           if (!isAuthenticated) {
             console.log("[ProgressStore] Anonymous user. Local update done.");
             return;
@@ -159,10 +158,9 @@ export const useProgressStore = create<ProgressState>()(
 
           if (navigator.onLine) {
             try {
-              const idToken = authActions.getIdToken();
               const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
-              if (idToken && apiGatewayUrl) {
+              if (apiGatewayUrl) {
                 console.log(
                   `[ProgressStore] Syncing: ${unitId}/${lessonId}/${sectionId}`
                 );
@@ -171,7 +169,6 @@ export const useProgressStore = create<ProgressState>()(
                 // Adjust the payload based on what apiService.updateUserProgress expects.
                 // For this example, assuming it takes SectionCompletionInput which now includes unitId.
                 const serverResponseState = await apiService.updateUserProgress(
-                  idToken,
                   apiGatewayUrl,
                   { completions: [actionToSync] } // Send as batch of one
                 );
@@ -274,8 +271,7 @@ export const useProgressStore = create<ProgressState>()(
         },
         processOfflineQueue: async () => {
           const { isSyncing, offlineActionQueue } = get();
-          const { isAuthenticated, actions: authActions } =
-            useAuthStore.getState();
+          const { isAuthenticated } = useAuthStore.getState();
 
           if (
             !isAuthenticated ||
@@ -290,13 +286,11 @@ export const useProgressStore = create<ProgressState>()(
           const queueSnapshot = [...offlineActionQueue];
 
           try {
-            const idToken = authActions.getIdToken();
             const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
-            if (idToken && apiGatewayUrl) {
+            if (apiGatewayUrl) {
               // The items in queueSnapshot are SectionCompletionInput, which include unitId
               const serverResponseState = await apiService.updateUserProgress(
-                idToken,
                 apiGatewayUrl,
                 { completions: queueSnapshot }
               );

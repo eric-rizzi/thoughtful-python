@@ -13,12 +13,12 @@ const LearningEntriesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { idToken, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   useEffect(() => {
     // ... data fetching logic remains the same ...
-    if (!isAuthenticated || !idToken || !apiGatewayUrl) {
+    if (!isAuthenticated || !apiGatewayUrl) {
       if (isAuthenticated) {
         setError("API configuration is missing.");
       } else {
@@ -34,7 +34,6 @@ const LearningEntriesPage: React.FC = () => {
       setError(null);
       try {
         const response = await apiService.getFinalizedLearningEntries(
-          idToken,
           apiGatewayUrl
         );
         const sortedEntries = response.entries.sort(
@@ -55,7 +54,7 @@ const LearningEntriesPage: React.FC = () => {
     };
 
     fetchEntries();
-  }, [idToken, apiGatewayUrl, isAuthenticated]);
+  }, [apiGatewayUrl, isAuthenticated]);
 
   if (!isAuthenticated && !isLoading) {
     return (

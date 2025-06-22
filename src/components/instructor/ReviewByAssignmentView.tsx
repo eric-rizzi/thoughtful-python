@@ -32,7 +32,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
   units,
   permittedStudents,
 }) => {
-  const { idToken, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const [selectedUnitId, setSelectedUnitId] = useState<UnitId | "">("");
@@ -147,14 +147,13 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
 
   const fetchSubmissionsForSelectedAssignment = useCallback(
     async (assignment: DisplayableAssignment) => {
-      if (!isAuthenticated || !idToken || !apiGatewayUrl || !assignment) return;
+      if (!isAuthenticated || !apiGatewayUrl || !assignment) return;
       setIsLoadingState((prev) => ({ ...prev, submissions: true }));
       setError(null);
       setSubmissions([]);
       setCurrentSubmissionIndex(0);
       try {
         const response = await apiService.getSubmissionsForAssignment(
-          idToken,
           apiGatewayUrl,
           assignment.unitId,
           assignment.lessonId,
@@ -176,7 +175,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
         setIsLoadingState((prev) => ({ ...prev, submissions: false }));
       }
     },
-    [isAuthenticated, idToken, apiGatewayUrl]
+    [isAuthenticated, apiGatewayUrl]
   );
 
   useEffect(() => {

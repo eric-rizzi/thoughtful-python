@@ -3,11 +3,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useAuthStore, useAuthActions } from "../stores/authStore";
-import {
-  GoogleLogin,
-  googleLogout,
-  CredentialResponse,
-} from "@react-oauth/google";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 
 const SettingsIcon = () => (
   <svg
@@ -34,39 +30,16 @@ const Header: React.FC = () => {
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink;
 
-  const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
+  const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
     if (credentialResponse.credential) {
-      const idToken = credentialResponse.credential;
-      // Decode token to get user info (for client-side display only)
-      // IMPORTANT: Real verification of the ID token MUST happen on your backend.
       try {
-        const base64Url = idToken.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split("")
-            .map(function (c) {
-              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join("")
-        );
-        const decodedToken = JSON.parse(jsonPayload);
-
-        const userProfile = {
-          userId: decodedToken.sub,
-          name: decodedToken.name,
-          email: decodedToken.email,
-          picture: decodedToken.picture,
-        };
-        login(userProfile, idToken); // Save to Zustand store
-        console.log("Login successful, user profile:", userProfile);
+        // Just call the login action with the Google token
+        await login(credentialResponse.credential);
       } catch (e) {
-        console.error("Error decoding ID token or processing login:", e);
-        // Handle error, maybe show a message to the user
+        console.error("Login process failed:", e);
       }
     } else {
       console.error("Login failed: No credential returned.");
-      // Handle error
     }
   };
 
@@ -76,9 +49,7 @@ const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
-    googleLogout(); // Clears Google's session
-    logout(); // Clears your app's session in Zustand
-    console.log("User logged out");
+    logout(); // The logout action now handles the API call
   };
 
   return (

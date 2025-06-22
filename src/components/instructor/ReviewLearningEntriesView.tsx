@@ -40,7 +40,7 @@ const ReviewLearningEntriesView: React.FC<ReviewLearningEntriesViewProps> = ({
   permittedStudents,
   units,
 }) => {
-  const { idToken, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
   const [selectedStudentId, setSelectedStudentId] = useState<UserId | "">("");
@@ -86,7 +86,7 @@ const ReviewLearningEntriesView: React.FC<ReviewLearningEntriesViewProps> = ({
   }, [units]);
 
   useEffect(() => {
-    if (selectedStudentId && isAuthenticated && idToken && apiGatewayUrl) {
+    if (selectedStudentId && isAuthenticated && apiGatewayUrl) {
       const fetchStudentFinalEntries = async () => {
         setIsLoadingData(true);
         setError(null);
@@ -98,7 +98,6 @@ const ReviewLearningEntriesView: React.FC<ReviewLearningEntriesViewProps> = ({
           // Call the new API service function
           const response =
             await apiService.getInstructorStudentFinalLearningEntries(
-              idToken,
               apiGatewayUrl,
               selectedStudentId
             );
@@ -123,7 +122,7 @@ const ReviewLearningEntriesView: React.FC<ReviewLearningEntriesViewProps> = ({
       setDisplayableFinalEntries([]);
       setCurrentEntryIndex(null);
     }
-  }, [selectedStudentId, isAuthenticated, idToken, apiGatewayUrl]);
+  }, [selectedStudentId, isAuthenticated, apiGatewayUrl]);
 
   // Process fetched final entries into a displayable list
   useEffect(() => {
