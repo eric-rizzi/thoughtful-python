@@ -219,8 +219,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
       codeSnippet: currentExample.code,
       userPredictionPromptText: currentExample.predictPrompt,
       userPredictionText: currentExampleUserState.userEnglishPrediction,
-      userPredictionConfidence:
-        currentExampleUserState.userPredictionConfidence,
+      userPredictionConfidence: 2,
       actualOutputSummary: currentExampleUserState.keyOutputSnippet,
       userExplanationText: currentExampleUserState.userExplanationText,
     };
@@ -253,8 +252,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
   }
 
   const isPredictionInputValid =
-    currentExampleUserState.userEnglishPrediction.length >= 1 &&
-    currentExampleUserState.userPredictionConfidence > 0;
+    currentExampleUserState.userEnglishPrediction.length >= 1;
   const isExplanationInputValid =
     currentExampleUserState.userExplanationText.length >= 1;
 
@@ -326,20 +324,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
               </span>
             </div>
           )}
-
-          {currentExampleUserState.isPredictionLocked &&
-            currentExampleUserState.userPredictionConfidence > 0 && (
-              <div className={primmStyles.infoEntry}>
-                <span className={primmStyles.infoLabel}>Confidence:</span>
-                <span className={primmStyles.infoText}>
-                  {CONFIDENCE_OPTIONS.find(
-                    (c) =>
-                      c.value ===
-                      currentExampleUserState.userPredictionConfidence
-                  )?.label || "Not Set"}
-                </span>
-              </div>
-            )}
 
           {(currentExampleUserState.currentUiStep === "EXPLAIN_AFTER_RUN" ||
             currentExampleUserState.currentUiStep === "VIEW_AI_FEEDBACK") &&
@@ -422,39 +406,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
                 rows={3}
                 disabled={isLoadingAiFeedback} // Disable while AI is processing
               />
-              <div
-                className={primmStyles.inputGroup}
-                style={{ marginTop: "0.75rem" }}
-              >
-                <label
-                  className={primmStyles.inputLabel}
-                  style={{ marginBottom: "0.25rem" }}
-                >
-                  Your Confidence:
-                </label>
-                <div className={primmStyles.confidenceSelectContainer}>
-                  {CONFIDENCE_OPTIONS.map((opt) => (
-                    <label key={opt.value}>
-                      <input
-                        type="radio"
-                        name={`confidence-${currentExample.id}`}
-                        value={opt.value}
-                        checked={
-                          currentExampleUserState.userPredictionConfidence ===
-                          opt.value
-                        }
-                        onChange={() =>
-                          updatePersistedExampleState({
-                            userPredictionConfidence: opt.value,
-                          })
-                        }
-                        disabled={currentExampleUserState.isPredictionLocked} // Keep disabled if locked
-                      />{" "}
-                      {opt.label}
-                    </label>
-                  ))}
-                </div>
-              </div>
               <button
                 onClick={handleRunCode}
                 disabled={
