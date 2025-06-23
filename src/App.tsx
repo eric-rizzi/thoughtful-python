@@ -20,7 +20,6 @@ function App() {
   const { clearPenalty } = useProgressActions();
 
   useEffect(() => {
-    console.log("hi eric");
     const root = document.documentElement;
     root.classList.remove("theme-light", "theme-dark");
 
