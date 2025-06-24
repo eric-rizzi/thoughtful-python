@@ -8,15 +8,15 @@ const unitData: Unit[] = [
       'Understand how this website differs from other "Learn Python" websites and learn a little bit about learning.',
     lessons: [
       {
-        path: "xx_learning/lesson_1",
+        path: "xx_learning/lesson_01",
         guid: "f950d6b1-7c06-485c-8a23-9cd17f72a7ba",
       },
       {
-        path: "xx_learning/lesson_2",
+        path: "xx_learning/lesson_02",
         guid: "3c201468-453b-42f3-a4f6-51a0ad3c93f8",
       },
       {
-        path: "xx_learning/lesson_3",
+        path: "xx_learning/lesson_03",
         guid: "dbd45993-6473-4df3-959a-04b7289a229e",
       },
     ],
@@ -29,40 +29,44 @@ const unitData: Unit[] = [
       "Learn the fundamentals of Python programming through interactive lessons that run directly in your browser.",
     lessons: [
       {
-        path: "00_intro/lesson_1",
+        path: "00_intro/lesson_01",
         guid: "3c1e0332-e7ec-4e6a-b0c6-f9c9890999c5",
       },
       {
-        path: "00_intro/lesson_2",
+        path: "00_intro/lesson_02",
         guid: "65ddff46-b4af-4443-ac0a-5b6a714e405e",
       },
       {
-        path: "00_intro/lesson_3",
+        path: "00_intro/lesson_03",
         guid: "5c3c6f3b-722f-4b19-b3ed-d532b7961f92",
       },
       {
-        path: "00_intro/lesson_4",
+        path: "00_intro/lesson_04",
         guid: "14f3ba03-2020-44e6-b68d-ae8dde46da7e",
       },
       {
-        path: "00_intro/lesson_5",
+        path: "00_intro/lesson_05",
         guid: "3ad2a551-618e-4398-918a-02342f824ab1",
       },
       {
-        path: "00_intro/lesson_6",
-        guid: "5831a4e6-9d52-42bb-9a45-c3cd5ba53a51",
+        path: "00_intro/lesson_06",
+        guid: "bfa974e1-7042-48a4-a568-19a1816ea474",
       },
       {
-        path: "00_intro/lesson_7",
+        path: "00_intro/lesson_07",
         guid: "ab5bed79-7662-423e-90ef-952539f59099",
       },
       {
-        path: "00_intro/lesson_8",
+        path: "00_intro/lesson_08",
         guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98",
       },
       {
-        path: "00_intro/lesson_9",
+        path: "00_intro/lesson_09",
         guid: "09289f01-6463-4420-8b74-2146850a28cf",
+      },
+      {
+        path: "00_intro/lesson_10",
+        guid: "5831a4e6-9d52-42bb-9a45-c3cd5ba53a51",
       },
     ],
     image: "unit_00_intro.svg",
