@@ -81,6 +81,7 @@
 .restartButton,
 .stepIntoButton,
 .stepOverButton,
+.stepOutButton,
 .continueButton {
   background-color: #007bff;
   color: white;
@@ -97,6 +98,7 @@
 .restartButton:hover:not(:disabled),
 .stepIntoButton:hover:not(:disabled),
 .stepOverButton:hover:not(:disabled),
+.stepOutButton:hover:not(:disabled),
 .continueButton:hover:not(:disabled) {
   background-color: #0056b3;
 }
@@ -105,6 +107,7 @@
 .restartButton:disabled,
 .stepIntoButton:disabled,
 .stepOverButton:disabled,
+.stepOutButton:disabled,
 .continueButton:disabled {
   background-color: #6c757d;
   cursor: not-allowed;

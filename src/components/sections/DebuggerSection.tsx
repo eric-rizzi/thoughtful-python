@@ -259,10 +259,23 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
     setIsTracing(false);
   }, [userCode, runPythonCode, isPyodideLoading, pyodideHookError]);
 
-  const handleRestart = () => {
-    if (parsedPayload) {
-      setCurrentStepIndex(0);
+  const handleContinue = () => {
+    if (!parsedPayload || currentStepIndex >= parsedPayload.steps.length - 1)
+      return;
+
+    let nextBreakpointIndex = -1;
+    for (let i = currentStepIndex + 1; i < parsedPayload.steps.length; i++) {
+      if (breakpoints.has(parsedPayload.steps[i].line_number)) {
+        nextBreakpointIndex = i;
+        break;
+      }
     }
+
+    setCurrentStepIndex(
+      nextBreakpointIndex !== -1
+        ? nextBreakpointIndex
+        : parsedPayload.steps.length - 1
+    );
   };
 
   const handleStepInto = () => {
@@ -293,23 +306,41 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
     setCurrentStepIndex(parsedPayload.steps.length - 1);
   }, [parsedPayload, currentStepIndex]);
 
-  const handleContinue = () => {
-    if (!parsedPayload || currentStepIndex >= parsedPayload.steps.length - 1)
+  const handleStepOut = useCallback(() => {
+    if (
+      !parsedPayload ||
+      currentStepIndex < 0 ||
+      currentStepIndex >= parsedPayload.steps.length - 1
+    )
       return;
 
-    let nextBreakpointIndex = -1;
-    for (let i = currentStepIndex + 1; i < parsedPayload.steps.length; i++) {
-      if (breakpoints.has(parsedPayload.steps[i].line_number)) {
-        nextBreakpointIndex = i;
-        break;
-      }
+    const currentStep = parsedPayload.steps[currentStepIndex];
+    const initialDepth = currentStep.stack_depth;
+
+    // If we are already at the top level, stepping out is the same as continuing to the end.
+    if (initialDepth === 0) {
+      setCurrentStepIndex(parsedPayload.steps.length - 1);
+      return;
     }
 
-    setCurrentStepIndex(
-      nextBreakpointIndex !== -1
-        ? nextBreakpointIndex
-        : parsedPayload.steps.length - 1
-    );
+    // Find the next step that is at a shallower stack depth (i.e., the current function has returned).
+    let nextIndex = currentStepIndex + 1;
+    while (nextIndex < parsedPayload.steps.length - 1) {
+      if (parsedPayload.steps[nextIndex].stack_depth < initialDepth) {
+        setCurrentStepIndex(nextIndex);
+        return;
+      }
+      nextIndex++;
+    }
+
+    // If no such step is found, it means the program finished, so go to the last step.
+    setCurrentStepIndex(parsedPayload.steps.length - 1);
+  }, [parsedPayload, currentStepIndex]);
+
+  const handleRestart = () => {
+    if (parsedPayload) {
+      setCurrentStepIndex(0);
+    }
   };
 
   const toggleBreakpoint = (lineNumber: number) => {
@@ -401,6 +432,18 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
               title="Step Into"
             >
               Step Into
+            </button>
+            <button
+              onClick={handleStepOut}
+              disabled={
+                !currentStep ||
+                currentStepIndex >= (parsedPayload?.steps.length ?? 0) - 1 ||
+                currentStep.stack_depth === 0
+              }
+              className={styles.stepOutButton}
+              title="Step Out"
+            >
+              Step Out
             </button>
             <button
               onClick={handleRestart}
