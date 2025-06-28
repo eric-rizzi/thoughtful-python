@@ -2,13 +2,13 @@
 .debuggerSection {
   margin-bottom: 2.5rem;
   padding: 1.5rem;
-  border: 1px solid #e0e0e0; /* A distinct border */
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background-color: #f9f9f9; /* Light background */
+  background-color: #f9f9f9;
 }
 
 .title {
-  color: #306998; /* Dark blue for titles */
+  color: #306998;
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1.8rem;
@@ -18,7 +18,7 @@
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  overflow: hidden; /* Ensures CodeMirror border-radius is applied */
+  overflow: hidden;
 }
 
 .controls {
@@ -29,7 +29,7 @@
 }
 
 .runButton {
-  background-color: #28a745; /* Green */
+  background-color: #28a745;
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -54,70 +54,37 @@
   color: #555;
 }
 
-.traceOutputContainer {
-  margin-top: 1.5rem;
-  border-top: 1px solid #ddd;
-  padding-top: 1rem;
-}
-
-.traceOutputContainer h4 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.traceOutput {
-  background-color: #2e3440; /* Dark background for trace */
-  color: #d8dee9; /* Light text */
-  padding: 1rem;
-  border-radius: 4px;
-  font-family: "Menlo", "Consolas", "Courier New", monospace;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  max-height: 500px; /* Limit height */
-  overflow: auto; /* Allow scrolling */
-  white-space: pre-wrap; /* Wrap long lines but preserve formatting */
-  word-break: break-all;
-}
-
-.errorMessager {
-  color: red;
-  font-weight: bold;
-  white-space: pre-wrap;
-}
-
 .simulationArea {
   margin-top: 1.5rem;
   border-top: 1px solid #ddd;
   padding-top: 1rem;
   display: grid;
-  grid-template-columns: 1fr; /* Default to single column */
+  grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
-/* On wider screens, make it two columns */
 @media (min-width: 768px) {
   .simulationArea {
-    grid-template-columns: auto 1fr; /* Variables on left, code/output on right */
+    grid-template-columns: auto 1fr;
   }
 }
 
 .simulationControls {
   margin-bottom: 1rem;
   display: flex;
-  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-  gap: 0.75rem; /* Consistent gap */
+  flex-wrap: wrap;
+  gap: 0.75rem;
   align-items: center;
 }
 
 .stepButton {
-  background-color: #007bff; /* Blue for step controls */
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 0.5rem 1rem; /* Slightly smaller padding */
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: 500; /* Normal weight */
+  font-weight: 500;
   transition: background-color 0.3s;
   font-size: 0.9rem;
 }
@@ -127,13 +94,13 @@
 }
 
 .stepButton:disabled {
-  background-color: #6c757d; /* Grey when disabled */
+  background-color: #6c757d;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
 .stopButton {
-  background-color: #dc3545; /* Red for stop/reset */
+  background-color: #dc3545;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -149,7 +116,7 @@
 }
 
 .stopButton:disabled {
-  background-color: #e77580; /* Lighter red when disabled */
+  background-color: #e77580;
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -162,15 +129,16 @@
   border-radius: 4px;
   color: #333;
   white-space: nowrap;
+  margin-bottom: 1rem;
 }
 
 .variablesDisplay {
   padding: 1rem;
-  background-color: #f0f4f8; /* Light blueish background */
+  background-color: #f0f4f8;
   border-radius: 4px;
   border: 1px solid #d1dce5;
   min-height: 100px;
-  max-height: 400px; /* Or adjust as needed */
+  max-height: 400px;
   overflow-y: auto;
 }
 
@@ -187,17 +155,21 @@
   white-space: pre-wrap;
   word-break: break-all;
   margin: 0;
-  color: #111; /* Darker text for variables */
+  color: #111;
 }
 
-.variablesDisplay .noVariables {
+.noVariables {
   color: #666;
   font-style: italic;
 }
 
-/* Read-only editor style */
-.readOnlyEditor {
-  opacity: 0.8; /* Visually indicate it's not active for editing */
+.variableChanged {
+  background-color: #d4edda; /* Light green highlight */
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 3px;
+  display: inline-block;
+  transition: background-color 0.5s ease;
 }
 
 .simulationCodeDisplay {
@@ -208,9 +180,8 @@
   font-family: "Menlo", "Consolas", "Courier New", monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  /* For auto-scrolling, this element needs to be the scroll container */
-  max-height: 400px; /* Or your desired fixed height */
-  overflow-y: auto; /* Enable vertical scroll */
+  max-height: 400px;
+  overflow-y: auto;
   white-space: pre;
 }
 
@@ -219,35 +190,16 @@
   margin-bottom: 0.5rem;
   color: #306998;
   padding-left: 0.5rem;
-  position: sticky; /* Make header sticky within its scrollable container */
+  position: sticky;
   top: 0;
-  background-color: #fff; /* Match container background */
-  z-index: 1; /* Ensure it's above scrolled content */
+  background-color: #fff;
+  z-index: 1;
 }
 
-/* Enhanced Error Message Styling */
 .errorMessage {
-  /* This style should already exist, ensure it's clear */
-  color: #721c24; /* Dark red text */
-  background-color: #f8d7da; /* Light red background */
-  border: 1px solid #f5c6cb; /* Reddish border */
-  padding: 0.75rem 1.25rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 4px;
-  white-space: pre-wrap; /* Allow error messages to wrap */
-}
-
-.errorMessage strong {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-/* Warning Message Styling (for MAX_TRACE_EVENTS) */
-.warningMessage {
-  color: #856404; /* Dark yellow text */
-  background-color: #fff3cd; /* Light yellow background */
-  border: 1px solid #ffeeba; /* Yellowish border */
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
   padding: 0.75rem 1.25rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -255,53 +207,41 @@
   white-space: pre-wrap;
 }
 
+.errorMessage strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
 .codeLine {
   display: flex;
-  align-items: flex-start; /* Align items at the start of the flex line */
-  min-height: 1.5em; /* Match line-height for consistent spacing */
+  align-items: flex-start;
+  min-height: 1.5em;
 }
 
 .lineNumberGutter {
-  width: 40px; /* Width for line numbers and breakpoint dot */
+  width: 40px;
   text-align: right;
   padding-right: 10px;
   color: #888;
-  cursor: pointer;
-  user-select: none; /* Prevent text selection on line numbers */
-  display: flex; /* For aligning breakpoint dot and number */
+  user-select: none;
+  display: flex;
   align-items: center;
-  justify-content: flex-end; /* Push content (dot, number) to the right */
-}
-
-.breakpointIndicator {
-  width: 8px;
-  height: 8px;
-  background-color: red;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px; /* Space between dot and number */
-  visibility: hidden; /* Hidden by default */
-}
-
-.breakpointIndicator.active {
-  visibility: visible;
+  justify-content: flex-end;
 }
 
 .codeContent {
   flex-grow: 1;
-  white-space: pre; /* Crucial to preserve leading spaces and formatting */
+  white-space: pre;
   padding-left: 5px;
 }
 
-/* This is the class that applies the highlight */
-.highlightedLine {
-  background-color: #fffbdd; /* Light yellow highlight */
-  /* If applied to .codeContent, it doesn't need display:block */
-  border-radius: 2px; /* Optional nice touch */
+.highlightedLine .codeContent {
+  background-color: #fffbdd;
+  border-radius: 2px;
 }
+
 .programOutputDisplay {
-  margin-top: 1rem; /* Space above the output box */
-  /* Similar styling to variablesDisplay or traceOutput */
+  margin-top: 1.5rem;
 }
 
 .programOutputDisplay h4 {
@@ -312,8 +252,8 @@
 }
 
 .programOutputDisplay pre {
-  background-color: #f8f9fa; /* Lighter background for program output */
-  color: #212529; /* Standard dark text */
+  background-color: #f8f9fa;
+  color: #212529;
   padding: 0.75rem 1rem;
   border-radius: 4px;
   border: 1px solid #dee2e6;
@@ -324,5 +264,5 @@
   max-height: 300px;
   overflow-y: auto;
   white-space: pre-wrap;
-  word-break: break-word; /* Or break-all if preferred */
+  word-break: break-word;
 }
