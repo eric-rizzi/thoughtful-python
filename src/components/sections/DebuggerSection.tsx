@@ -304,8 +304,8 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
             {isPyodideLoading
               ? "Python Loading..."
               : isTracing
-              ? "Tracing..."
-              : "Run & Trace"}
+              ? "Entering Debug Mode..."
+              : "Enter Debug Mode"}
           </button>
         ) : (
           <>
@@ -350,28 +350,24 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
             </div>
             <div className={styles.variablesDisplay}>
               <h4>Variables</h4>
-              {Object.keys(currentStep.variables).length > 0 ? (
-                <pre>
-                  {Object.entries(currentStep.variables).map(([key, val]) => (
-                    <span
-                      key={key}
-                      className={
-                        currentStep.changed_variables.includes(key)
-                          ? styles.variableChanged
-                          : ""
-                      }
-                    >
-                      {`${key}: ${val}\n`}
-                    </span>
-                  ))}
-                </pre>
-              ) : (
-                <p className={styles.noVariables}>No variables in scope.</p>
-              )}
+              <pre>
+                {Object.entries(currentStep.variables).map(([key, val]) => (
+                  <span
+                    key={key}
+                    className={
+                      currentStep.changed_variables.includes(key)
+                        ? styles.variableChanged
+                        : ""
+                    }
+                  >
+                    {`${key}: ${val}\n`}
+                  </span>
+                ))}
+              </pre>
             </div>
             <div className={styles.programOutputDisplay}>
               <h4>Program Output</h4>
-              <pre>{currentStep.stdout || "(No output yet)"}</pre>
+              <pre>{currentStep.stdout || ""}</pre>
             </div>
           </div>
           <div className={styles.simulationCodeDisplay} ref={codeDisplayRef}>

@@ -133,13 +133,7 @@
 }
 
 .variablesDisplay {
-  padding: 1rem;
-  background-color: #f0f4f8;
-  border-radius: 4px;
-  border: 1px solid #d1dce5;
-  min-height: 100px;
-  max-height: 400px;
-  overflow-y: auto;
+  margin-top: 1.5rem;
 }
 
 .variablesDisplay h4 {
@@ -150,12 +144,19 @@
 }
 
 .variablesDisplay pre {
+  background-color: #f8f9fa;
+  color: #212529;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
   font-family: "Menlo", "Consolas", "Courier New", monospace;
   font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 60px;
+  max-height: 300px;
+  overflow-y: auto;
   white-space: pre-wrap;
-  word-break: break-all;
-  margin: 0;
-  color: #111;
+  word-break: break-word;
 }
 
 .noVariables {
