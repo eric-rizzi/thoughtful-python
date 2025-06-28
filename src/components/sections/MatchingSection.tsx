@@ -23,13 +23,10 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
 }) => {
   const storageKey = `matchingState_${unitId}_${lessonId}_${section.id}`;
 
-  // This function determines if the section is "complete"
   const checkCompletion = (state: SavedMatchingState): boolean => {
-    // Check if the number of matches equals the number of prompts
     if (Object.keys(state.userMatches).length !== section.prompts.length) {
       return false;
     }
-    // Check if every user match is correct according to the solution
     return section.prompts.every(
       (prompt) => state.userMatches[prompt.id] === section.solution[prompt.id]
     );
@@ -41,7 +38,7 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
       lessonId,
       section.id,
       storageKey,
-      { userMatches: {} }, // Initial state
+      { userMatches: {} },
       checkCompletion
     );
 
@@ -67,7 +64,7 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault(); // This is necessary to allow dropping
+    e.preventDefault();
     e.currentTarget.classList.add(styles.dropZoneHover);
   };
 
@@ -75,21 +72,45 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
     e.currentTarget.classList.remove(styles.dropZoneHover);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, promptId: string) => {
+  const handleDrop = (
+    e: React.DragEvent<HTMLDivElement>,
+    targetPromptId: string
+  ) => {
     e.preventDefault();
     e.currentTarget.classList.remove(styles.dropZoneHover);
     const droppedOptionId = e.dataTransfer.getData("text/plain");
 
+    if (!droppedOptionId) return;
+
     setSavedState((prevState) => {
       const newUserMatches = { ...prevState.userMatches };
-      // If the dropped option was already matched elsewhere, un-match it
+
+      // Find the prompt where the dropped option was originally, if any.
+      let sourcePromptId: string | null = null;
       for (const pId in newUserMatches) {
         if (newUserMatches[pId] === droppedOptionId) {
-          newUserMatches[pId] = null;
+          sourcePromptId = pId;
+          break;
         }
       }
-      // Place the new match
-      newUserMatches[promptId] = droppedOptionId;
+
+      // If the dropped option was already matched, clear its original spot.
+      if (sourcePromptId) {
+        newUserMatches[sourcePromptId] = null;
+      }
+
+      // Place the new match. This will automatically "boot out" any
+      // existing item in the target slot by overwriting it.
+      newUserMatches[targetPromptId] = droppedOptionId;
+
+      return { userMatches: newUserMatches };
+    });
+  };
+
+  const unmatchPrompt = (promptId: string) => {
+    setSavedState((prevState) => {
+      const newUserMatches = { ...prevState.userMatches };
+      newUserMatches[promptId] = null;
       return { userMatches: newUserMatches };
     });
   };
@@ -122,7 +143,12 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
                   onDrop={(e) => handleDrop(e, prompt.id)}
                 >
                   {matchedOption ? (
-                    <div className={styles.matchedOption}>
+                    <div
+                      className={styles.matchedOption}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, matchedOption.id)}
+                      onDragEnd={handleDragEnd}
+                    >
                       {matchedOption.text}
                     </div>
                   ) : (
