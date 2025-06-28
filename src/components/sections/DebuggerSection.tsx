@@ -88,7 +88,7 @@ class SimpleTracer:
 
     def generate_trace(self, user_code: str) -> dict:
         self.steps = []
-        self.source_lines = user_code.split("\\n")
+        self.source_lines = user_code.split('\\n')
         self.previous_variables = {}
         
         old_stdout = sys.stdout
@@ -99,6 +99,7 @@ class SimpleTracer:
             compiled_code = compile(user_code, self.user_filename, "exec")
             sys.settrace(self.trace_function)
             exec(compiled_code, {})
+            sys.settrace(None)
         except Exception as e:
             final_stdout = captured_output.getvalue()
             error_step = ExecutionStep(
@@ -115,7 +116,18 @@ class SimpleTracer:
             sys.settrace(None)
             sys.stdout = old_stdout
             
-        return {"success": True, "steps": self.steps, "output": captured_output.getvalue()}
+        final_stdout = captured_output.getvalue()
+        final_step = ExecutionStep(
+            step_number=len(self.steps) + 1,
+            line_number=-1,
+            source_line="Execution finished.",
+            variables=self.previous_variables,
+            changed_variables=[],
+            stdout=final_stdout
+        )
+        self.steps.append(final_step)
+
+        return {"success": True, "steps": self.steps, "output": final_stdout}
 
 class ExecutionStep(typing.TypedDict):
     step_number: int
@@ -126,9 +138,7 @@ class ExecutionStep(typing.TypedDict):
     stdout: str
 
 # --- Script Execution ---
-user_code_to_execute = """
-{user_code}
-"""
+user_code_to_execute = """{user_code}"""
 tracer = SimpleTracer()
 result = tracer.generate_trace(user_code_to_execute)
 print("---DEBUGGER_TRACE_START---")
@@ -257,7 +267,12 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
   const currentStep = parsedPayload?.steps?.[currentStepIndex];
 
   useEffect(() => {
-    if (simulationActive && currentStep && codeDisplayRef.current) {
+    if (
+      simulationActive &&
+      currentStep &&
+      codeDisplayRef.current &&
+      currentStep.line_number > 0
+    ) {
       const lineElement = codeDisplayRef.current.querySelector(
         `#code-line-${currentStep.line_number}`
       );
@@ -330,7 +345,8 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
           <div>
             <div className={styles.currentStepInfo}>
               Step: {currentStep.step_number} / {parsedPayload?.steps.length} |
-              Line: {currentStep.line_number}
+              Line:{" "}
+              {currentStep.line_number > 0 ? currentStep.line_number : "N/A"}
             </div>
             <div className={styles.variablesDisplay}>
               <h4>Variables</h4>
@@ -360,7 +376,7 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
           </div>
           <div className={styles.simulationCodeDisplay} ref={codeDisplayRef}>
             <h4>Code Execution</h4>
-            {userCode.split("\\n").map((line, index) => (
+            {userCode.split("\n").map((line, index) => (
               <div
                 key={index}
                 id={`code-line-${index + 1}`}
@@ -371,7 +387,7 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
                 }`}
               >
                 <div className={styles.lineNumberGutter}>{index + 1}</div>
-                <div className={styles.codeContent}>{line || "\\u00A0"}</div>
+                <div className={styles.codeContent}>{line || "\u00A0"}</div>
               </div>
             ))}
           </div>
