@@ -7,12 +7,11 @@ import type {
   UnitId,
   ObservationSectionData,
 } from "../../types/data";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import styles from "./Section.module.css";
 import { useProgressActions } from "../../stores/progressStore";
 import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface ObservationSectionProps {
   unitId: UnitId;
@@ -68,9 +67,7 @@ const ObservationSection: React.FC<ObservationSectionProps> = ({
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       {currentSingleExample ? (

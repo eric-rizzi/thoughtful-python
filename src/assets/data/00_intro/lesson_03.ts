@@ -22,15 +22,25 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "variables-intro",
       title: "Why Variables Matter",
-      content:
-        "So far, you've learned how to work with strings and integers directly in your code. But what if you want to use the same value multiple times? Or, what if you want to change a value that's used in many different locations? That's where **variables** come in. Variables allow you to store data and give it a name so you can use it later in your program.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "So far, you've learned how to work with strings and integers directly in your code. But what if you want to use the same value multiple times? Or, what if you want to change a value that's used in many different locations? That's where **variables** come in. Variables allow you to store data and give it a name so you can use it later in your program.",
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "Observation",
       id: "basic-variables" as SectionId,
       title: "Creating Variables",
-      content:
-        "Creating a variable in Python is simple: you write the variable name, then an equals sign (`=`), then the value you want to store. For example `age = 13` creates a variable named `age` and then stores the integer 13 in it.\n\nRun the code below and pay attention to how the variable `name` gets created and then used in the two different print statements.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Creating a variable in Python is simple: you write the variable name, then an equals sign (`=`), then the value you want to store. For example `age = 13` creates a variable named `age` and then stores the integer 13 in it.\n\nRun the code below and pay attention to how the variable `name` gets created and then used in the two different print statements.",
+        },
+      ],
       example: {
         id: "basic-variable-example",
         title: "Your First Variable",
@@ -41,8 +51,13 @@ const lessonData: Lesson = {
       kind: "MultipleSelection",
       id: "variable-parts",
       title: "Parts of a Variable",
-      content:
-        'Looking at the line `name = "Alice"` from the example above, which of the following statements are true?',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Looking at the line `name = "Alice"` from the example above, which of the following statements are true?',
+        },
+      ],
       options: [
         'The variable name is `"Alice"`',
         "The variable name is `name`",
@@ -61,8 +76,13 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "integer-variables" as SectionId,
       title: "Variables with Numbers",
-      content:
-        "Variables can store more than just strings - they can also store integers. Below is a program that creates a variable with an integer value and then uses it in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Variables can store more than just strings - they can also store integers. Below is a program that creates a variable with an integer value and then uses it in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
+        },
+      ],
       examples: [
         {
           id: "integer-variable-primm",
@@ -78,16 +98,30 @@ const lessonData: Lesson = {
       kind: "Debugger",
       id: "variable-debugging" as SectionId,
       title: "Watching Variables Change",
-      content:
-        "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line by line and observe how the value of `score` changes in the variables panel.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line by line and observe how the value of `score` changes in the variables panel.",
+        },
+      ],
       code: "score = 10\nprint(score)\nscore = 20\nprint(score)\nscore = score + 5\nprint(score)",
     } as DebuggerSectionData,
     {
       kind: "MultipleChoice",
       id: "variable-reassignment",
       title: "Variable Values",
-      content:
-        "Based on what you observed in the debugging section, what will be the final value of `points` after running this code?\n\n```\npoints = 100\npoints = 50\npoints = points + 25\n```",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Based on what you observed in the debugging section, what will be the final value of `points` after running this code?",
+        },
+        {
+          kind: "code",
+          value: "points = 100\npoints = 50\npoints = points + 25",
+        },
+      ],
       options: ["100", "50", "75", "175"],
       correctAnswer: 2,
       feedback: {
@@ -99,8 +133,13 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "string-variables-primm" as SectionId,
       title: "Changing String Variables",
-      content:
-        "Variables work the same way with strings as they do with integers. You can reassign them and even use them to build new strings.\n\nPredict what you think this program will output, then run it to check your prediction.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Variables work the same way with strings as they do with integers. You can reassign them and even use them to build new strings.\n\nPredict what you think this program will output, then run it to check your prediction.",
+        },
+      ],
       examples: [
         {
           id: "string-variable-change",
@@ -116,8 +155,13 @@ const lessonData: Lesson = {
       kind: "Observation",
       id: "multiple-variables" as SectionId,
       title: "Using Multiple Variables",
-      content:
-        "Programs often use many variables at once. Each variable has its own name and stores its own value independently.\n\nRun the code below and observe how each variable maintains its own separate value, even when they're used together.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Programs often use many variables at once. Each variable has its own name and stores its own value independently.\n\nRun the code below and observe how each variable maintains its own separate value, even when they're used together.",
+        },
+      ],
       example: {
         id: "multiple-vars-example",
         title: "Multiple Variables",
@@ -128,8 +172,13 @@ const lessonData: Lesson = {
       kind: "Testing",
       id: "variable-practice" as SectionId,
       title: "Challenge: Personal Information",
-      content:
-        'Now it\'s your turn to work with variables! Create a program that:\n\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Now it\'s your turn to work with variables! Create a program that:\n\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
+        },
+      ],
       example: {
         id: "variable-challenge",
         title: "Implement Your Solution",
@@ -148,8 +197,13 @@ const lessonData: Lesson = {
       kind: "Reflection",
       id: "variables-reflection" as SectionId,
       title: "Variables Reflection",
-      content:
-        'Variables are fundamental to programming because they allow programs to store, change, and reuse data. Without variables, every value would have to be written directly into the code, making programs inflexible and hard to maintain.\n\nCreate a simple 3-4 line code example that demonstrates how variables can make a program more useful, and write 3-4 sentences explaining how your program works. Remember to use the phrase "as seen in the example above".',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Variables are fundamental to programming because they allow programs to store, change, and reuse data. Without variables, every value would have to be written directly into the code, making programs inflexible and hard to maintain.\n\nCreate a simple 3-4 line code example that demonstrates how variables can make a program more useful, and write 3-4 sentences explaining how your program works. Remember to use the phrase "as seen in the example above".',
+        },
+      ],
       topic: "Why Variables Matter",
       isTopicPredefined: true,
       code: "Create an example showing why variables are useful",
@@ -161,8 +215,13 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "variables-conclusion",
       title: "Conclusion",
-      content:
-        "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. You've learned some of the most important concepts in programming. The will come up over and over again. In the next lesson, we'll basically pause and reflect on everything so far.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. You've learned some of the most important concepts in programming. The will come up over and over again. In the next lesson, we'll basically pause and reflect on everything so far.",
+        },
+      ],
     } as InformationSectionData,
   ],
 };

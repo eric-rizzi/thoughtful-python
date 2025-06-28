@@ -1,6 +1,4 @@
 import React, { useState, useCallback } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type {
   LessonId,
   TestingSectionData,
@@ -15,6 +13,7 @@ import { generateTestCode, parseTestResults } from "../../lib/pyodideUtils";
 import { useProgressActions } from "../../stores/progressStore";
 import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface TestingSectionProps {
   section: TestingSectionData;
@@ -247,9 +246,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
       {section.example && (
         <TestableExample

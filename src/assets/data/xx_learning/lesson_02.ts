@@ -17,14 +17,25 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "reflection-intro",
       title: "The Importance of Reflection",
-      content:
-        'There is a quote by a famous educational philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This section showcases another powerful learning tool that this website has in its tool belt: reflection.',
+      content: [
+        {
+          kind: "text",
+          value:
+            'There is a quote by a famous educational philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This section showcases another powerful learning tool that this website has in its tool belt: reflection.',
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
       id: "reflection-quiz",
       title: "Why Reflection?",
-      content: "Why do you think reflection such a powerful tool in learning?",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Why do you think reflection such a powerful tool in learning?",
+        },
+      ],
       options: [
         "It proves to the teacher that you did the work.",
         "It forces you to retrieve information and organize it in your own words.",
@@ -41,14 +52,24 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "reflection-analysis",
       title: "The Importance of Reflection",
-      content:
-        'Reflecting on things that you struggled with and then forcing yourself to articulate **why** you struggled is an incredibly powerful learning tool. This form of "journaling" can then form a record of everything you\'ve learned in case get stuck sometime later. These types of journals are considered best practice for anyone who takes their learning seriously: think of a scientist\'s notebook or a writer\'s journal.\n\nAs with PRIMM, AI has the potential to super-charge reflection. This is because it can provide quick feedback on mistakes. In addition, it can provide a "speed bump" to make you slow down and take the reflection seriously. Below is an example reflection section. You complete it by:\n1. Choosing the topic (since it\'s the first time, we\'ve set it to `How Print Works` for you)\n2. Creating a small code example (also set)\n3. Explaining how the code works\n4. Asking the AI if there is any room for improvement\n\nThe section forces you to iterate with AI to improve your code/analysis until you demonstrate deep understanding. Basically, you aren\'t "allowed" to submit and finish the section until the AI gives you at least a "mostly understands" on a scale of poor, developing, mostly, and fully. Annoying? A bit! Effective? Definitely! Try it out below.',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Reflecting on things that you struggled with and then forcing yourself to articulate **why** you struggled is an incredibly powerful learning tool. This form of "journaling" can then form a record of everything you\'ve learned in case get stuck sometime later. These types of journals are considered best practice for anyone who takes their learning seriously: think of a scientist\'s notebook or a writer\'s journal.\n\nAs with PRIMM, AI has the potential to super-charge reflection. This is because it can provide quick feedback on mistakes. In addition, it can provide a "speed bump" to make you slow down and take the reflection seriously. Below is an example reflection section. You complete it by:\n1. Choosing the topic (since it\'s the first time, we\'ve set it to `How Print Works` for you)\n2. Creating a small code example (also set)\n3. Explaining how the code works\n4. Asking the AI if there is any room for improvement\n\nThe section forces you to iterate with AI to improve your code/analysis until you demonstrate deep understanding. Basically, you aren\'t "allowed" to submit and finish the section until the AI gives you at least a "mostly understands" on a scale of poor, developing, mostly, and fully. Annoying? A bit! Effective? Definitely! Try it out below.',
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "Reflection",
       id: "print-reflection",
       title: "Using Reflection for Learning",
-      content: "Explain in your own words how print statements work.",
+      content: [
+        {
+          kind: "text",
+          value: "Explain in your own words how print statements work.",
+        },
+      ],
       topic: "How Print Works",
       isTopicPredefined: true,
       code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
@@ -60,15 +81,25 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "understanding-ai-feedback",
       title: "Understanding the AI Feedback",
-      content:
-        'The AI is here as a guide and a "speed bump". What is basically happening is the website sends your entire journal entry to a ChatBot and asks it to assess it using a rubric designed for new coders. The AI is also prompted to provide constructive feedback if there is some sort of misunderstanding.\n\nThe best way to approach reflection sections is to pretend you are writing for some future version of you who doesn\'t quite remember a topic. Keep the entries short and to the point. Using the magic phrase **as seen in the example above** will really help because it will keep your analysis rooted to your code - plus the AI has been prompted to give you extra points for using that exact phrase.',
+      content: [
+        {
+          kind: "text",
+          value:
+            'The AI is here as a guide and a "speed bump". What is basically happening is the website sends your entire journal entry to a ChatBot and asks it to assess it using a rubric designed for new coders. The AI is also prompted to provide constructive feedback if there is some sort of misunderstanding.\n\nThe best way to approach reflection sections is to pretend you are writing for some future version of you who doesn\'t quite remember a topic. Keep the entries short and to the point. Using the magic phrase **as seen in the example above** will really help because it will keep your analysis rooted to your code - plus the AI has been prompted to give you extra points for using that exact phrase.',
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "MultipleSelection",
       id: "learning-through-reflection-quiz",
       title: "Getting the Most Out of Reflection",
-      content:
-        "Which of the following will allow you to get the most out of the Reflection + AI combo:",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Which of the following will allow you to get the most out of the Reflection + AI combo:",
+        },
+      ],
       options: [
         "Being hasty so you can get to the next lesson quickly",
         "Being honest in identifying things you don't understand",
@@ -86,8 +117,13 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "reflection-wrap-up",
       title: "Wrapping Up Reflection",
-      content:
-        "There's only one last thing to know about reflections. All of your submitted entries are stored in a special section of this website. If you click on the `Learning Entries` tab at the top of the page, you will see the first of your finalized entries. Think of this as a special section you can flip to if you ever have that nagging feeling you've already solved a problem.\n\nThat's it! Hopefully you can appreciate why this website pushes you towards reflection so strongly. Deep learning isn't easy, and the website is designed to help nudge you towards expanding your own understanding. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "There's only one last thing to know about reflections. All of your submitted entries are stored in a special section of this website. If you click on the `Learning Entries` tab at the top of the page, you will see the first of your finalized entries. Think of this as a special section you can flip to if you ever have that nagging feeling you've already solved a problem.\n\nThat's it! Hopefully you can appreciate why this website pushes you towards reflection so strongly. Deep learning isn't easy, and the website is designed to help nudge you towards expanding your own understanding. If you predict specifically, interpret critically, and reflect honestly, you'll be well on your way to becoming a great programmer.",
+        },
+      ],
     } as InformationSectionData,
   ],
 };

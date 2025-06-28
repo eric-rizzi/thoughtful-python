@@ -18,15 +18,25 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "review-intro",
       title: "Practicing with Interleaving",
-      content:
-        "You've learned a lot in the first three lessons: how to work with strings and integers, how they behave differently, and how to store values in variables. This lesson uses a learning technique called **interleaving** to help solidify your understanding.\n\nInstead of practicing just one topic at a time, you'll encounter questions that mix strings, integers, and variables together. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts. Take your time and think carefully about each problem!",
+      content: [
+        {
+          kind: "text",
+          value:
+            "You've learned a lot in the first three lessons: how to work with strings and integers, how they behave differently, and how to store values in variables. This lesson uses a learning technique called **interleaving** to help solidify your understanding.\n\nInstead of practicing just one topic at a time, you'll encounter questions that mix strings, integers, and variables together. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts. Take your time and think carefully about each problem!",
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
       id: "string-identification",
       title: "Identifying Strings",
-      content:
-        "Which of the following is a valid string that could be printed without causing an error?",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Which of the following is a valid string that could be printed without causing an error?",
+        },
+      ],
       options: [
         "'It's a beautiful day'",
         '"She said "hello" to me"',
@@ -43,7 +53,12 @@ const lessonData: Lesson = {
       kind: "MultipleSelection",
       id: "data-types",
       title: "Data Types",
-      content: "Select all of the following that are integers (not strings):",
+      content: [
+        {
+          kind: "text",
+          value: "Select all of the following that are integers (not strings):",
+        },
+      ],
       options: ["42", '"42"', "0", '"hello"', "999", "'999'", "-5", '"-5"'],
       correctAnswers: [0, 2, 4, 6],
       feedback: {
@@ -55,8 +70,13 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "string-operations",
       title: "String Concatenation",
-      content:
-        'What will be the output of the following code?\n\n```\nprint("cat" + "dog")\n```',
+      content: [
+        {
+          kind: "text",
+          value: "What will be the output of the following code?",
+        },
+        { kind: "code", value: 'print("cat" + "dog")' },
+      ],
       options: ["catdog", "cat dog", "cat + dog", "An error"],
       correctAnswer: 0,
       feedback: {
@@ -68,8 +88,13 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "integer-operations",
       title: "Integer Math",
-      content:
-        "What will be the output of the following code?\n\n```\nprint(15 - 3)\n```",
+      content: [
+        {
+          kind: "text",
+          value: "What will be the output of the following code?",
+        },
+        { kind: "code", value: "print(15 - 3)" },
+      ],
       options: ["18", "12", "153", "15-3"],
       correctAnswer: 1,
       feedback: {
@@ -81,7 +106,13 @@ const lessonData: Lesson = {
       kind: "MultipleSelection",
       id: "type-errors",
       title: "Type Errors",
-      content: "Which of the following lines of code would cause a TypeError?",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Which of the following lines of code would cause a TypeError?",
+        },
+      ],
       options: [
         'print("5" + "3")',
         "print(5 + 3)",
@@ -100,8 +131,13 @@ const lessonData: Lesson = {
       kind: "Testing",
       id: "string-practice" as SectionId,
       title: "Challenge: Quote Master",
-      content:
-        'Write a program that prints out the following three lines exactly as shown:\n\n1. `The teacher said, "Good job!"`\n2. `It\'s going to be a great day.`\n3. `"Why?" she asked.`\n\nRemember to think carefully about which type of quotes to use for each line!',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Write a program that prints out the following three lines exactly as shown:\n\n1. `The teacher said, "Good job!"`\n2. `It\'s going to be a great day.`\n3. `"Why?" she asked.`\n\nRemember to think carefully about which type of quotes to use for each line!',
+        },
+      ],
       example: {
         id: "quote-challenge",
         title: "Print the Quotes",
@@ -121,8 +157,14 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "variable-assignment",
       title: "Variable Assignment",
-      content:
-        "After running the following code, what will be the value of the variable `x`?\n\n```\nx = 10\nx = 5\nx = x + 3\n```",
+      content: [
+        {
+          kind: "text",
+          value:
+            "After running the following code, what will be the value of the variable `x`?",
+        },
+        { kind: "code", value: "x = 10\nx = 5\nx = x + 3\n" },
+      ],
       options: ["10", "5", "8", "18"],
       correctAnswer: 2,
       feedback: {
@@ -134,7 +176,12 @@ const lessonData: Lesson = {
       kind: "MultipleSelection",
       id: "variable-behavior",
       title: "How Variables Work",
-      content: "Which of the following statements about variables are true?",
+      content: [
+        {
+          kind: "text",
+          value: "Which of the following statements about variables are true?",
+        },
+      ],
       options: [
         "Variables can store both strings and integers",
         "Once you assign a value to a variable, it can never be changed",
@@ -153,8 +200,13 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "variable-naming",
       title: "Variable Names",
-      content:
-        'Looking at this code, what is the name of the variable?\n\n```\nfavorite_food = "pizza"\n```',
+      content: [
+        {
+          kind: "text",
+          value: "Looking at this code, what is the name of the variable?",
+        },
+        { kind: "code", value: 'favorite_food = "pizza"' },
+      ],
       options: ["favorite_food", '"pizza"', "pizza", "="],
       correctAnswer: 0,
       feedback: {
@@ -166,8 +218,17 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "tricky-prediction",
       title: "Tricky Prediction",
-      content:
-        'What will be printed by the last line of this code?\n\n```\nmessage = "Hello"\nmessage = message + " World"\nprint(message)\n```',
+      content: [
+        {
+          kind: "text",
+          value: "What will be printed by the last line of this code?",
+        },
+        {
+          kind: "code",
+          value:
+            'message = "Hello"\nmessage = message + " World"\nprint(message)',
+        },
+      ],
       options: ["Hello", "World", "Hello World", "message + World"],
       correctAnswer: 2,
       feedback: {
@@ -179,8 +240,13 @@ const lessonData: Lesson = {
       kind: "Testing",
       id: "variable-practice" as SectionId,
       title: "Challenge: Dog Years",
-      content:
-        "Now it's your turn to work with variables! Create a program that:\n\n1. Creates a variable called `dog_age` and stores the number `3` in it\n2. Prints out the dog's age\n3. Prints out the dog's age in human years (multiply by 7)",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Now it's your turn to work with variables! Create a program that:\n\n1. Creates a variable called `dog_age` and stores the number `3` in it\n2. Prints out the dog's age\n3. Prints out the dog's age in human years (multiply by 7)",
+        },
+      ],
       example: {
         id: "variable-challenge",
         title: "Implement Your Solution",
@@ -199,8 +265,13 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "review-conclusion",
       title: "The Power of Interleaving",
-      content:
-        "Excellent job working through these interleaved practice problems! By mixing questions about strings, integers, and variables together, your brain had to actively recall and apply different concepts rather than just following a single pattern. This type of practice - where you switch between related topics - has been proven to create stronger, more durable learning.\n\nYou've demonstrated your understanding of all the foundational concepts and you're ready to move on to more advanced topics!",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Excellent job working through these interleaved practice problems! By mixing questions about strings, integers, and variables together, your brain had to actively recall and apply different concepts rather than just following a single pattern. This type of practice - where you switch between related topics - has been proven to create stronger, more durable learning.\n\nYou've demonstrated your understanding of all the foundational concepts and you're ready to move on to more advanced topics!",
+        },
+      ],
     } as InformationSectionData,
   ],
 };

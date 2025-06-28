@@ -29,11 +29,30 @@ export interface TestingExample extends LessonExample {
   functionToTest: string;
 }
 
+export interface TextBlock {
+  kind: "text";
+  value: string;
+}
+
+export interface CodeBlock {
+  kind: "code";
+  language: string;
+  value: string;
+}
+
+export interface ImageBlock {
+  kind: "image";
+  src: string;
+  alt: string; // Alt text for accessibility
+}
+
+export type ContentBlock = TextBlock | CodeBlock | ImageBlock;
+
 export interface LessonSection {
   kind: SectionKind;
   id: SectionId;
   title: string;
-  content: string;
+  content: ContentBlock[];
 }
 
 // --- Specific Section Kind Interfaces (Extending LessonSection) ---

@@ -24,12 +24,7 @@ import { useAuthStore } from "../../stores/authStore";
 import * as apiService from "../../lib/apiService";
 import { ApiError } from "../../lib/apiService";
 import { API_GATEWAY_BASE_URL } from "../../config";
-
-const CONFIDENCE_OPTIONS: { value: number; label: string }[] = [
-  { value: 1, label: "Not Confident" },
-  { value: 2, label: "Somewhat Confident" },
-  { value: 3, label: "Very Confident" },
-];
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface PRIMMSectionProps {
   section: PRIMMSectionData;
@@ -278,9 +273,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
     >
       <h2 className={styles.title}>{section.title}</h2>
       <div className={`${styles.content} ${primmStyles.introduction}`}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       <div className={primmStyles.exampleBlock} key={currentExample.id}>

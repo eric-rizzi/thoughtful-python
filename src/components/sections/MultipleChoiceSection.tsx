@@ -1,14 +1,13 @@
 // src/components/sections/MultipleChoiceSection.tsx
 import React, { useCallback } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type {
-  LessonId,
   MultipleChoiceSectionData,
   UnitId,
+  LessonId,
 } from "../../types/data";
 import styles from "./Section.module.css";
 import { useQuizLogic } from "../../hooks/useQuizLogic";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface MultipleChoiceSectionProps {
   section: MultipleChoiceSectionData;
@@ -68,9 +67,7 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       {isLocallyDisabled && !isCorrect && (

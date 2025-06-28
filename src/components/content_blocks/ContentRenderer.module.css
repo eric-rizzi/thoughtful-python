@@ -1,0 +1,26 @@
+.contentBlock {
+  margin-bottom: 1.5rem; /* Default spacing between content blocks */
+}
+
+.contentBlock:last-child {
+  margin-bottom: 0;
+}
+
+.imageContainer {
+  margin: 1rem 0;
+  text-align: center; /* Center the image by default */
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.imageCaption {
+  margin-top: 0.5rem;
+  font-size: 0.9em;
+  color: #6c757d;
+  font-style: italic;
+}

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import type { MatchingSectionData, UnitId, LessonId } from "../../types/data";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import styles from "./MatchingSection.module.css";
 import sectionStyles from "./Section.module.css";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface MatchingSectionProps {
   section: MatchingSectionData;
@@ -107,18 +108,12 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
     });
   };
 
-  const unmatchPrompt = (promptId: string) => {
-    setSavedState((prevState) => {
-      const newUserMatches = { ...prevState.userMatches };
-      newUserMatches[promptId] = null;
-      return { userMatches: newUserMatches };
-    });
-  };
-
   return (
     <section id={section.id} className={sectionStyles.section}>
       <h2 className={sectionStyles.title}>{section.title}</h2>
-      <div className={sectionStyles.content}>{section.content}</div>
+      <div className={sectionStyles.content}>
+        <ContentRenderer content={section.content} />
+      </div>
 
       <div className={styles.matchingContainer}>
         <div className={styles.promptsContainer}>

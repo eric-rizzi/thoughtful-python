@@ -4,6 +4,7 @@ import { usePyodide } from "../../contexts/PyodideContext";
 import styles from "./DebuggerSection.module.css";
 import sectionStyles from "./Section.module.css";
 import type { DebuggerSectionData } from "../../types/data";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 const PYTHON_TRACE_SCRIPT_TEMPLATE = `
 import io
@@ -377,6 +378,9 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
       className={`${sectionStyles.section} ${styles.debuggerSection}`}
     >
       <h2 className={styles.title}>{section.title}</h2>
+      <div className={styles.content}>
+        <ContentRenderer content={section.content} />
+      </div>
       <div className={styles.editorContainer}>
         <CodeEditor
           value={userCode}

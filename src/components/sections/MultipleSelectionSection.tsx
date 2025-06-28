@@ -9,6 +9,7 @@ import type {
 } from "../../types/data";
 import styles from "./Section.module.css";
 import { useQuizLogic } from "../../hooks/useQuizLogic";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface MultipleSelectionSectionProps {
   section: MultipleSelectionSectionData;
@@ -67,9 +68,7 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       {isLocallyDisabled && !isCorrect && (

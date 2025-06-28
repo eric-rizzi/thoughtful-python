@@ -20,17 +20,27 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "functions-intro",
       title: "Welcome to Functions!",
-      content: `So far, you've been writing programs that run from top to bottom, line by line. That's great, but what if you need to do the same thing multiple times? What if you want to organize your code in a better way?\n\nThat's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let us **reuse code** without copying and pasting, **organize** our programs into logical chunks, and **avoid mistakes** by writing tricky code just once. Let's dive in and see how functions can make our lives easier!`,
+      content: [
+        {
+          kind: "text",
+          value: `So far, you've been writing programs that run from top to bottom, line by line. That's great, but what if you need to do the same thing multiple times? What if you want to organize your code in a better way?\n\nThat's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let us **reuse code** without copying and pasting, **organize** our programs into logical chunks, and **avoid mistakes** by writing tricky code just once. Let's dive in and see how functions can make our lives easier!`,
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "Observation",
       id: "observe-first-function1" as SectionId,
       title: "Your First Function",
-      content: `This program has two parts:
+      content: [
+        {
+          kind: "text",
+          value: `This program has two parts:
 1. **Defining** the function (teaching the skill)
 2. **Calling** the function (using the skill)
 
 Run this code and see what happens!`,
+        },
+      ],
       example: {
         id: "first-function-code",
         title: "First function",
@@ -41,8 +51,13 @@ Run this code and see what happens!`,
       kind: "MultipleChoice",
       id: "function-parts",
       title: "Function Parts",
-      content:
-        'As you can see, a function is basically a small chunk of code that\'s waiting to be called. The function is "defined" with the line `def greet():` and then everything that\'s **indented** under the function is the code to be run once the function is called. Once the function has been defined, it can then be called. Which of the following lines of code "calls" the function?',
+      content: [
+        {
+          kind: "text",
+          value:
+            'As you can see, a function is basically a small chunk of code that\'s waiting to be called. The function is "defined" with the line `def greet():` and then everything that\'s **indented** under the function is the code to be run once the function is called. Once the function has been defined, it can then be called. Which of the following lines of code "calls" the function?',
+        },
+      ],
       options: [
         "`def greet():`",
         '`print("Hello there!")`',
@@ -59,8 +74,13 @@ Run this code and see what happens!`,
       kind: "PRIMM",
       id: "primm-greet-function" as SectionId,
       title: "Multiple Function Calls",
-      content:
-        "Below is some Python code that **defines** and **calls** the `greet()` function. Predict what you think the code will output, then run it to check your prediction.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Below is some Python code that **defines** and **calls** the `greet()` function. Predict what you think the code will output, then run it to check your prediction.",
+        },
+      ],
       examples: [
         {
           id: "primm-greet-function",
@@ -75,14 +95,24 @@ Run this code and see what happens!`,
       kind: "Information",
       id: "function-summary",
       title: "Function Summary",
-      content:
-        "There are seemingly a lot of parts to a function, but really it's just four main pieces:\n1. `def` starts defining the function\n2. `greet` is the name of the function\n3. The indented code below the `def greet():` is the code the function will run\n4. The unindented `greet()` **calls** the function\n\nFor more information about functions, watch [this video](https://youtu.be/u-OmVr_fT4s?si=ZLunXpE8Bhk23lsD&t=12) up until 02:24 ",
+      content: [
+        {
+          kind: "text",
+          value:
+            "There are seemingly a lot of parts to a function, but really it's just four main pieces:\n1. `def` starts defining the function\n2. `greet` is the name of the function\n3. The indented code below the `def greet():` is the code the function will run\n4. The unindented `greet()` **calls** the function\n\nFor more information about functions, watch [this video](https://youtu.be/u-OmVr_fT4s?si=ZLunXpE8Bhk23lsD&t=12) up until 02:24 ",
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "MultipleSelection",
       id: "functions-intro-quiz",
       title: "Understand Parts of Functions",
-      content: "Which of the following statements are true about functions:",
+      content: [
+        {
+          kind: "text",
+          value: "Which of the following statements are true about functions:",
+        },
+      ],
       options: [
         "You start defining a function with the word `def`",
         "Indented code **above** `def` will be run when the function is called",
@@ -101,8 +131,13 @@ Run this code and see what happens!`,
       kind: "Testing",
       id: "birthday-practice" as SectionId,
       title: "Challenge: Happy Birthday Song",
-      content:
-        'Now it\'s your turn to work with functions! Create a program that:\n\n1. Calls the existing `verse()` and `chorus()` functions to "sing" happy birthday to Alex.',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Now it\'s your turn to work with functions! Create a program that:\n\n1. Calls the existing `verse()` and `chorus()` functions to "sing" happy birthday to Alex.',
+        },
+      ],
       example: {
         id: "birthday-challenge",
         title: "Implement Your Solution",

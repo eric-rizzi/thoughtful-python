@@ -20,15 +20,25 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "introduction",
       title: "New Data Types",
-      content:
-        "In the previous lesson, you learned about strings and how to print them. In this lesson, we'll introduce a new **data type** and explain why it's so important to distinguish between different data types.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "In the previous lesson, you learned about strings and how to print them. In this lesson, we'll introduce a new **data type** and explain why it's so important to distinguish between different data types.",
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "Observation",
       id: "print-numbers" as SectionId,
       title: "Integers",
-      content:
-        "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice in particular, the lack of quotation marks. Run the code code. Pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice in particular, the lack of quotation marks. Run the code code. Pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
+        },
+      ],
       example: {
         id: "function-basic",
         title: "Integer Operations",
@@ -39,8 +49,13 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-strings-and-integers" as SectionId,
       title: "Operating on Integers and Strings",
-      content:
-        'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer **operates on them differently**. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer **operates on them differently**. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
+        },
+      ],
       examples: [
         {
           id: "primm-quote-issue",
@@ -56,8 +71,13 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "integers-added" as SectionId,
       title: "Operating Integers",
-      content:
-        "Ok, now it's time to test your intuition: Which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Ok, now it's time to test your intuition: Which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
+        },
+      ],
       options: ["7", "34", "333", "An error"],
       correctAnswer: 0,
       feedback: {
@@ -69,8 +89,13 @@ const lessonData: Lesson = {
       kind: "MultipleChoice",
       id: "strings-added" as SectionId,
       title: "Operating on Strings",
-      content:
-        'Which of the following is the result of running `print("3" + "4")`. Notice that **both are strings**!',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Which of the following is the result of running `print("3" + "4")`. Notice that **both are strings**!',
+        },
+      ],
       options: ["7", "34", "333", "An error"],
       correctAnswer: 1,
       feedback: {
@@ -82,8 +107,13 @@ const lessonData: Lesson = {
       kind: "PRIMM",
       id: "primm-type-error" as SectionId,
       title: "Data Type Mixup",
-      content:
-        'Now the question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
+      content: [
+        {
+          kind: "text",
+          value:
+            'Now the question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
+        },
+      ],
       examples: [
         {
           id: "primm-type-issue",
@@ -99,15 +129,25 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "understanding-type-errors" as SectionId,
       title: "Understanding TypeErrors",
-      content:
-        "Getting errors while you're writing a program is very common. This is likely the first error you've encountered but it definitely won't be the last. Learning how to interpret them now will save you **a ton of time** later.\n\nLook carefully at the last line of the error. The line is communicating that are trying to do an operation (`+`) that can't handle two different data types. This makes sense since the original, offending like was `print(3 + 4)`",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Getting errors while you're writing a program is very common. This is likely the first error you've encountered but it definitely won't be the last. Learning how to interpret them now will save you **a ton of time** later.\n\nLook carefully at the last line of the error. The line is communicating that are trying to do an operation (`+`) that can't handle two different data types. This makes sense since the original, offending like was `print(3 + 4)`",
+        },
+      ],
     } as InformationSectionData,
     {
       kind: "Observation",
       id: "operations-test" as SectionId,
       title: "Various Operations",
-      content:
-        'There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types. In particular, be sure to experiment with the following bits of code:\n- `5 + 3` vs. `"5" + "3"`\n- `5 * 3` vs. `"5" * 3`\n- `5 - 3` vs. `"5" - "3"`',
+      content: [
+        {
+          kind: "text",
+          value:
+            'There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types. In particular, be sure to experiment with the following bits of code:\n- `5 + 3` vs. `"5" + "3"`\n- `5 * 3` vs. `"5" * 3`\n- `5 - 3` vs. `"5" - "3"`',
+        },
+      ],
       example: {
         id: "temp-conversion",
         title: "Testing Operations",
@@ -118,8 +158,13 @@ const lessonData: Lesson = {
       kind: "Matching",
       id: "python-ops-match" as SectionId,
       title: "Matching Operations",
-      content:
-        "Having experimented with different data types and different operations in the previous section, match each of the following bits of code with their output:",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Having experimented with different data types and different operations in the previous section, match each of the following bits of code with their output:",
+        },
+      ],
       prompts: [
         { id: "p1", text: "5 + 3" },
         { id: "p2", text: '"5" + "3"' },
@@ -146,8 +191,13 @@ const lessonData: Lesson = {
       kind: "Reflection",
       id: "data-type-reflection" as SectionId,
       title: "Data Type Reflection",
-      content:
-        "Identifying the **data type** that is being operated on is crucial in understanding how Python works. It's the single greatest source of frustration for new people who are learning to code.\n\nCreate a simple 2-3 line code example that demonstrates the different between strings and integers, and write 3-4 sentences explaining how the example works.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Identifying the **data type** that is being operated on is crucial in understanding how Python works. It's the single greatest source of frustration for new people who are learning to code.\n\nCreate a simple 2-3 line code example that demonstrates the different between strings and integers, and write 3-4 sentences explaining how the example works.",
+        },
+      ],
       topic: "Strings vs. Integers",
       isTopicPredefined: true,
       code: "Create a simple example that demonstrates this topic",
@@ -159,8 +209,13 @@ const lessonData: Lesson = {
       kind: "Information",
       id: "reflection-conclusion",
       title: "Conclusion",
-      content:
-        "Congratulations on completing the strings vs. integers lesson. As stated above, it is a major source of confusion and frustration. If you ever seen a `TypeError`, take you time and think about what _type_ of things the program is operating on.",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Congratulations on completing the strings vs. integers lesson. As stated above, it is a major source of confusion and frustration. If you ever seen a `TypeError`, take you time and think about what _type_ of things the program is operating on.",
+        },
+      ],
     } as InformationSectionData,
   ],
 };

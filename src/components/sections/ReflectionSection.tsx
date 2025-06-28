@@ -23,6 +23,7 @@ import {
 } from "../../types/apiServiceTypes";
 import { API_GATEWAY_BASE_URL } from "../../config";
 import LoadingSpinner from "../LoadingSpinner";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 const QUALIFYING_ASSESSMENTS_FOR_FINAL: AssessmentLevel[] = [
   "achieves",
@@ -40,7 +41,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   unitId,
   lessonId,
 }) => {
-  const { id: sectionId, title, content } = section;
+  const { id: sectionId, title } = section;
   const { isTopicPredefined, isCodePredefined, isExplanationPredefined } =
     section;
 
@@ -308,7 +309,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     <section id={sectionId} className={styles.section}>
       <h2 className={styles.title}>{title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       <div className={styles.reflectionContainer}>
