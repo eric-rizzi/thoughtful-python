@@ -77,7 +77,11 @@
   align-items: center;
 }
 
-.stepButton {
+.stepButton,
+.restartButton,
+.stepIntoButton,
+.stepOverButton,
+.continueButton {
   background-color: #007bff;
   color: white;
   border: none;
@@ -89,14 +93,29 @@
   font-size: 0.9rem;
 }
 
-.stepButton:hover:not(:disabled) {
+.stepButton:hover:not(:disabled),
+.restartButton:hover:not(:disabled),
+.stepIntoButton:hover:not(:disabled),
+.stepOverButton:hover:not(:disabled),
+.continueButton:hover:not(:disabled) {
   background-color: #0056b3;
 }
 
-.stepButton:disabled {
+.stepButton:disabled,
+.restartButton:disabled,
+.stepIntoButton:disabled,
+.stepOverButton:disabled,
+.continueButton:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.restartButton {
+  background-color: #28a745; /* Green as in VSCode */
+}
+.restartButton:hover:not(:disabled) {
+  background-color: #218838;
 }
 
 .stopButton {
@@ -156,7 +175,9 @@
   max-height: 300px;
   overflow-y: auto;
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: break-all;
+  margin: 0;
+  color: #111;
 }
 
 .noVariables {

@@ -69,6 +69,7 @@ export interface TestingSectionData extends LessonSection {
 export interface DebuggerSectionData extends LessonSection {
   kind: "Debugger";
   code: string;
+  advancedControls?: boolean;
 }
 
 export interface PredictionTableRow {

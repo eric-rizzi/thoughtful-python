@@ -12,13 +12,14 @@ import types
 import typing
 import json
 
-class SimpleTracer:
-    def __init__(self, max_steps: int = 200) -> None:
+class AdvancedTracer:
+    def __init__(self, max_steps: int = 500) -> None:
         self.steps: list[ExecutionStep] = []
         self.max_steps = max_steps
         self.user_filename = "<student_code>"
         self.source_lines: list[str] = []
         self.previous_variables: dict[str, str] = {}
+        self.stack_depth = 0
 
     def safe_repr(self, value: typing.Any, max_len: int = 50) -> str:
         try:
@@ -60,7 +61,15 @@ class SimpleTracer:
     def trace_function(self, frame: types.FrameType, event: str, arg) -> typing.Optional[typing.Callable]:
         if len(self.steps) >= self.max_steps:
             return None
-        if event != "line" or frame.f_code.co_filename != self.user_filename:
+        
+        is_user_code = frame.f_code.co_filename == self.user_filename
+
+        if event == 'call' and is_user_code:
+            self.stack_depth += 1
+        elif event == 'return' and is_user_code:
+            self.stack_depth -= 1
+
+        if event != "line" or not is_user_code:
             return self.trace_function
         
         line_no = frame.f_lineno
@@ -75,7 +84,7 @@ class SimpleTracer:
         step = ExecutionStep(
             step_number=len(self.steps) + 1,
             line_number=line_no,
-            source_line=stripped_source_line,
+            stack_depth=self.stack_depth,
             variables=current_variables,
             changed_variables=changed_variables,
             stdout=sys.stdout.getvalue() if isinstance(sys.stdout, io.StringIO) else ""
@@ -90,6 +99,7 @@ class SimpleTracer:
         self.steps = []
         self.source_lines = user_code.split('\\n')
         self.previous_variables = {}
+        self.stack_depth = 0
         
         old_stdout = sys.stdout
         captured_output = io.StringIO()
@@ -99,7 +109,6 @@ class SimpleTracer:
             compiled_code = compile(user_code, self.user_filename, "exec")
             sys.settrace(self.trace_function)
             exec(compiled_code, {})
-            sys.settrace(None)
         except Exception as e:
             final_stdout = captured_output.getvalue()
             error_step = ExecutionStep(
@@ -108,7 +117,8 @@ class SimpleTracer:
                 source_line=f"ERROR: {e}",
                 variables={},
                 changed_variables=[],
-                stdout=final_stdout
+                stdout=final_stdout,
+                stack_depth=self.stack_depth
             )
             self.steps.append(error_step)
             return {"success": False, "error": str(e), "error_type": type(e).__name__, "steps": self.steps, "output": final_stdout}
@@ -120,7 +130,7 @@ class SimpleTracer:
         final_step = ExecutionStep(
             step_number=len(self.steps) + 1,
             line_number=-1,
-            source_line="Execution finished.",
+            stack_depth=0,
             variables=self.previous_variables,
             changed_variables=[],
             stdout=final_stdout
@@ -132,14 +142,13 @@ class SimpleTracer:
 class ExecutionStep(typing.TypedDict):
     step_number: int
     line_number: int
-    source_line: str
+    stack_depth: int
     variables: dict[str, str]
     changed_variables: list[str]
     stdout: str
 
-# --- Script Execution ---
 user_code_to_execute = """{user_code}"""
-tracer = SimpleTracer()
+tracer = AdvancedTracer()
 result = tracer.generate_trace(user_code_to_execute)
 print("---DEBUGGER_TRACE_START---")
 print(json.dumps(result))
@@ -149,7 +158,7 @@ print("---DEBUGGER_TRACE_END---")
 interface ExecutionStep {
   step_number: number;
   line_number: number;
-  source_line: string;
+  stack_depth: number;
   variables: Record<string, string>;
   changed_variables: string[];
   stdout: string;
@@ -175,6 +184,7 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
   const [isTracing, setIsTracing] = useState<boolean>(false);
   const [pyodideError, setPyodideError] = useState<string | null>(null);
   const [simulationActive, setSimulationActive] = useState<boolean>(false);
+  const [breakpoints, setBreakpoints] = useState<Set<number>>(new Set());
 
   const codeDisplayRef = useRef<HTMLDivElement>(null);
   const {
@@ -188,6 +198,7 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
     setParsedPayload(null);
     setCurrentStepIndex(-1);
     setSimulationActive(false);
+    setBreakpoints(new Set());
     setPyodideError(null);
   }, [section.code, section.id]);
 
@@ -248,20 +259,69 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
     setIsTracing(false);
   }, [userCode, runPythonCode, isPyodideLoading, pyodideHookError]);
 
-  const handleStep = (direction: "next" | "prev") => {
-    if (!parsedPayload) return;
-    setCurrentStepIndex((prev) => {
-      const newIndex = direction === "next" ? prev + 1 : prev - 1;
-      if (newIndex >= 0 && newIndex < parsedPayload.steps.length) {
-        return newIndex;
-      }
-      return prev;
-    });
+  const handleRestart = () => {
+    if (parsedPayload) {
+      setCurrentStepIndex(0);
+    }
   };
 
-  const handleStop = () => {
-    setSimulationActive(false);
-    setCurrentStepIndex(-1);
+  const handleStepInto = () => {
+    if (!parsedPayload || currentStepIndex >= parsedPayload.steps.length - 1)
+      return;
+    setCurrentStepIndex((prev) => prev + 1);
+  };
+
+  const handleStepOver = useCallback(() => {
+    if (
+      !parsedPayload ||
+      currentStepIndex < 0 ||
+      currentStepIndex >= parsedPayload.steps.length - 1
+    )
+      return;
+
+    const currentStep = parsedPayload.steps[currentStepIndex];
+    const currentDepth = currentStep.stack_depth;
+
+    let nextIndex = currentStepIndex + 1;
+    while (nextIndex < parsedPayload.steps.length - 1) {
+      if (parsedPayload.steps[nextIndex].stack_depth <= currentDepth) {
+        setCurrentStepIndex(nextIndex);
+        return;
+      }
+      nextIndex++;
+    }
+    setCurrentStepIndex(parsedPayload.steps.length - 1);
+  }, [parsedPayload, currentStepIndex]);
+
+  const handleContinue = () => {
+    if (!parsedPayload || currentStepIndex >= parsedPayload.steps.length - 1)
+      return;
+
+    let nextBreakpointIndex = -1;
+    for (let i = currentStepIndex + 1; i < parsedPayload.steps.length; i++) {
+      if (breakpoints.has(parsedPayload.steps[i].line_number)) {
+        nextBreakpointIndex = i;
+        break;
+      }
+    }
+
+    setCurrentStepIndex(
+      nextBreakpointIndex !== -1
+        ? nextBreakpointIndex
+        : parsedPayload.steps.length - 1
+    );
+  };
+
+  const toggleBreakpoint = (lineNumber: number) => {
+    setBreakpoints((prev) => {
+      const newBreakpoints = new Set(prev);
+      if (newBreakpoints.has(lineNumber)) {
+        newBreakpoints.delete(lineNumber);
+      } else {
+        newBreakpoints.add(lineNumber);
+      }
+      return newBreakpoints;
+    });
   };
 
   const currentStep = parsedPayload?.steps?.[currentStepIndex];
@@ -307,17 +367,60 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
               ? "Entering Debug Mode..."
               : "Enter Debug Mode"}
           </button>
+        ) : section.advancedControls ? (
+          <>
+            <button
+              onClick={handleContinue}
+              disabled={
+                !currentStep ||
+                currentStepIndex >= (parsedPayload?.steps.length ?? 0) - 1
+              }
+              className={styles.continueButton}
+              title="Continue to next breakpoint"
+            >
+              Continue
+            </button>
+            <button
+              onClick={handleStepOver}
+              disabled={
+                !currentStep ||
+                currentStepIndex >= (parsedPayload?.steps.length ?? 0) - 1
+              }
+              className={styles.stepOverButton}
+              title="Step Over"
+            >
+              Step Over
+            </button>
+            <button
+              onClick={handleStepInto}
+              disabled={
+                !currentStep ||
+                currentStepIndex >= (parsedPayload?.steps.length ?? 0) - 1
+              }
+              className={styles.stepIntoButton}
+              title="Step Into"
+            >
+              Step Into
+            </button>
+            <button
+              onClick={handleRestart}
+              className={styles.restartButton}
+              title="Restart Simulation"
+            >
+              Restart
+            </button>
+          </>
         ) : (
           <>
             <button
-              onClick={() => handleStep("prev")}
+              onClick={() => setCurrentStepIndex((prev) => prev - 1)}
               disabled={currentStepIndex <= 0}
               className={styles.stepButton}
             >
               &larr; Prev Step
             </button>
             <button
-              onClick={() => handleStep("next")}
+              onClick={() => setCurrentStepIndex((prev) => prev + 1)}
               disabled={
                 !currentStep ||
                 currentStepIndex >= (parsedPayload?.steps.length ?? 0) - 1
@@ -325,9 +428,6 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
               className={styles.stepButton}
             >
               Next Step &rarr;
-            </button>
-            <button onClick={handleStop} className={styles.stopButton}>
-              Stop
             </button>
           </>
         )}
@@ -344,7 +444,6 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
         <div className={styles.simulationArea}>
           <div>
             <div className={styles.currentStepInfo}>
-              Step: {currentStep.step_number} / {parsedPayload?.steps.length} |
               Line:{" "}
               {currentStep.line_number > 0 ? currentStep.line_number : "N/A"}
             </div>
@@ -382,7 +481,16 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
                     : ""
                 }`}
               >
-                <div className={styles.lineNumberGutter}>{index + 1}</div>
+                <div
+                  className={styles.lineNumberGutter}
+                  onClick={() => toggleBreakpoint(index + 1)}
+                  title={`Toggle breakpoint on line ${index + 1}`}
+                >
+                  {breakpoints.has(index + 1) && (
+                    <span className={styles.breakpointIndicator}></span>
+                  )}
+                  {index + 1}
+                </div>
                 <div className={styles.codeContent}>{line || "\u00A0"}</div>
               </div>
             ))}
