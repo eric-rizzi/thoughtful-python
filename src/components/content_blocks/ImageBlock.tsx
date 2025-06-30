@@ -9,7 +9,12 @@ interface ImageBlockProps {
 
 const ImageBlock: React.FC<ImageBlockProps> = ({ block }) => {
   // Construct the full path to the image
-  const imageUrl = `${BASE_PATH}images/${block.src}`;
+  let imageUrl: string;
+  if (block.src.startsWith("https")) {
+    imageUrl = block.src;
+  } else {
+    imageUrl = `${BASE_PATH}images/${block.src}`;
+  }
 
   return (
     <div className={`${styles.contentBlock} ${styles.imageContainer}`}>

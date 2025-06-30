@@ -1,5 +1,6 @@
 import type {
   DebuggerSectionData,
+  InformationSectionData,
   Lesson,
   LessonId,
   SectionId,
@@ -11,6 +12,22 @@ const lessonData: Lesson = {
   description:
     "Dive deeper into functions and make them more flexible with inputs",
   sections: [
+    {
+      kind: "Information",
+      id: "variable-debugging-info",
+      title: "Test Move",
+      content: [
+        {
+          kind: "text",
+          value: "This is a test",
+        },
+        {
+          kind: "video",
+          src: "https://www.youtube.com/watch?v=u-OmVr_fT4s&t=145s",
+          caption: "Video about functions",
+        },
+      ],
+    } as InformationSectionData,
     {
       kind: "Debugger",
       id: "variable-debugging" as SectionId,

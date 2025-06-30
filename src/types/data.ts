@@ -46,7 +46,13 @@ export interface ImageBlock {
   alt: string; // Alt text for accessibility
 }
 
-export type ContentBlock = TextBlock | CodeBlock | ImageBlock;
+export interface VideoBlock {
+  kind: "video";
+  src: string;
+  caption?: string;
+}
+
+export type ContentBlock = TextBlock | CodeBlock | ImageBlock | VideoBlock;
 
 export interface LessonSection {
   kind: SectionKind;
