@@ -23,7 +23,16 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Python was first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose. Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this section, you\'ll learn about how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
+            "Python was first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose.",
+        },
+        {
+          kind: "image",
+          src: "00_intro/simple_program.png",
+        },
+        {
+          kind: "text",
+          value:
+            'Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this section, you\'ll learn about how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
         },
       ],
     } as InformationSectionData,
