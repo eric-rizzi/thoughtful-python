@@ -111,11 +111,15 @@ components:
       description: "Payload for a student submitting a reflection draft or final entry."
       required:
         - userTopic
+        - isUserTopicPredefined
         - userCode
+        - isUserCodePredefined
         - userExplanation
       properties:
         userTopic: { type: string }
+        isUserTopicPredefined: { type: boolean }
         userCode: { type: string }
+        isUserCodePredefined: { type: boolean }
         userExplanation: { type: string }
         isFinal: { type: boolean, default: false }
         # lessonId and sectionId are path parameters for this endpoint

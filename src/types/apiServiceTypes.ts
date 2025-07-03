@@ -44,7 +44,9 @@ export interface ErrorResponse {
  */
 export interface ReflectionInteractionInput {
   userTopic: string;
+  isUserTopicPredefined: boolean;
   userCode: string;
+  isUserCodePredefined: boolean;
   userExplanation: string; // As per your Swagger's ReflectionInteractionInput
   isFinal?: boolean; // Defaults to false on the server if not provided
   sourceVersionId?: string | null; // Optional from client if isFinal=true; server might look up latest draft

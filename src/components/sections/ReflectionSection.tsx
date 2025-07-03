@@ -161,7 +161,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
     setSubmitError(null);
     const submissionData: ReflectionInteractionInput = {
       userTopic: finalTopic,
+      isUserTopicPredefined: isTopicPredefined,
       userCode: finalCode,
+      isUserCodePredefined: isCodePredefined,
       userExplanation: finalExplanation,
       isFinal: false,
     };
