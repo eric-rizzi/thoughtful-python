@@ -136,17 +136,9 @@ export interface MultipleSelectionSectionData extends LessonSection {
 
 export interface MatchingSectionData extends LessonSection {
   kind: "Matching";
-  prompts: Array<{
-    id: string; // e.g., 'prompt-1'
-    text: string; // e.g., '5 * 3'
-  }>;
-  options: Array<{
-    id: string; // e.g., 'option-a'
-    text: string; // e.g., '15'
-  }>;
-  solution: {
-    [promptId: string]: string; // Maps prompt ID to the correct option ID
-  };
+  prompts: Array<{ [key: string]: string }>;
+  // An optional array of indices to determine the initial shuffled order of answers.
+  initialOrder?: number[];
 }
 
 // Define the structured command types for JavaScript turtle

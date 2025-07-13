@@ -29,6 +29,27 @@ const lessonData: Lesson = {
       ],
     } as InformationSectionData,
     {
+      kind: "Matching",
+      id: "ordering-function-pieces" as SectionId,
+      title: "Function Pieces",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Let's revisit the parts of a function from the previous lesson. Match up each part of the function with the order they come in when you're defining and calling a function.",
+        },
+      ],
+      prompts: [
+        { First: "`def`" },
+        { Second: "Function name" },
+        { Third: "`()`" },
+        { Fourth: "`:`" },
+        { Fifth: "Indentation" },
+        { Sixth: "Function Code" },
+        { Seventh: "Function Call" },
+      ],
+    } as MatchingSectionData,
+    {
       kind: "Debugger",
       id: "variable-debugging" as SectionId,
       title: "Watching Variables Change",
@@ -102,20 +123,10 @@ const lessonData: Lesson = {
         },
       ],
       prompts: [
-        { id: "p1", text: "Function name" },
-        { id: "p2", text: 'Function input"' },
-        { id: "p3", text: "Function call" },
+        { "Function name": "favorite" },
+        { 'Function input"': "animal" },
+        { "Function call": '"cat"' },
       ],
-      options: [
-        { id: "A", text: "favorite" },
-        { id: "B", text: "animal" },
-        { id: "C", text: '"cat"' },
-      ],
-      solution: {
-        p1: "A",
-        p2: "B",
-        p3: "C",
-      },
     } as MatchingSectionData,
 
     {

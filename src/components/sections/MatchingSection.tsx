@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import type { MatchingSectionData, UnitId, LessonId } from "../../types/data";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import styles from "./MatchingSection.module.css";
 import sectionStyles from "./Section.module.css";
-import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface MatchingSectionProps {
   section: MatchingSectionData;
@@ -11,10 +10,9 @@ interface MatchingSectionProps {
   lessonId: LessonId;
 }
 
-// The state we'll save for this section
+// The state now maps the prompt text to the matched answer text
 interface SavedMatchingState {
-  // Stores the user's current matches, mapping promptId to optionId
-  userMatches: { [promptId: string]: string | null };
+  userMatches: { [promptText: string]: string | null };
 }
 
 const MatchingSection: React.FC<MatchingSectionProps> = ({
@@ -24,12 +22,32 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
 }) => {
   const storageKey = `matchingState_${unitId}_${lessonId}_${section.id}`;
 
-  const checkCompletion = (state: SavedMatchingState): boolean => {
-    if (Object.keys(state.userMatches).length !== section.prompts.length) {
-      return false;
+  // --- Data Derivation ---
+  // Derive prompts, answers, and the solution from the new data structure
+  const { prompts, answers, solution } = useMemo(() => {
+    const prompts = section.prompts.map((p) => Object.keys(p)[0]);
+    const answers = section.prompts.map((p) => Object.values(p)[0]);
+    const solution = Object.fromEntries(
+      section.prompts.flatMap((p) => Object.entries(p))
+    );
+    return { prompts, answers, solution };
+  }, [section.prompts]);
+
+  const initialShuffledAnswers = useMemo(() => {
+    if (
+      section.initialOrder &&
+      section.initialOrder.length === answers.length
+    ) {
+      return section.initialOrder.map((index) => answers[index]);
     }
-    return section.prompts.every(
-      (prompt) => state.userMatches[prompt.id] === section.solution[prompt.id]
+    // Fallback to a simple shuffle if no order is provided
+    return [...answers].sort(() => Math.random() - 0.5);
+  }, [answers, section.initialOrder]);
+
+  // --- State and Completion Logic ---
+  const checkCompletion = (state: SavedMatchingState): boolean => {
+    return prompts.every(
+      (prompt) => state.userMatches[prompt] === solution[prompt]
     );
   };
 
@@ -43,25 +61,17 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
       checkCompletion
     );
 
-  const [draggedOptionId, setDraggedOptionId] = useState<string | null>(null);
-
-  const unmatchedOptions = useMemo(() => {
-    const matchedOptionIds = new Set(Object.values(savedState.userMatches));
-    return section.options.filter((option) => !matchedOptionIds.has(option.id));
-  }, [savedState.userMatches, section.options]);
-
+  // --- Drag and Drop Handlers ---
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
-    optionId: string
+    answerText: string
   ) => {
-    setDraggedOptionId(optionId);
-    e.dataTransfer.setData("text/plain", optionId);
+    e.dataTransfer.setData("text/plain", answerText);
     e.currentTarget.classList.add(styles.dragging);
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     e.currentTarget.classList.remove(styles.dragging);
-    setDraggedOptionId(null);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -75,76 +85,79 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
 
   const handleDrop = (
     e: React.DragEvent<HTMLDivElement>,
-    targetPromptId: string
+    targetPromptText: string
   ) => {
     e.preventDefault();
     e.currentTarget.classList.remove(styles.dropZoneHover);
-    const droppedOptionId = e.dataTransfer.getData("text/plain");
+    const droppedAnswerText = e.dataTransfer.getData("text/plain");
 
-    if (!droppedOptionId) return;
+    if (!droppedAnswerText) return;
 
     setSavedState((prevState) => {
       const newUserMatches = { ...prevState.userMatches };
 
-      // Find the prompt where the dropped option was originally, if any.
-      let sourcePromptId: string | null = null;
-      for (const pId in newUserMatches) {
-        if (newUserMatches[pId] === droppedOptionId) {
-          sourcePromptId = pId;
+      // Find where the dropped answer was previously and clear that slot
+      let sourcePromptText: string | null = null;
+      for (const pText in newUserMatches) {
+        if (newUserMatches[pText] === droppedAnswerText) {
+          sourcePromptText = pText;
           break;
         }
       }
-
-      // If the dropped option was already matched, clear its original spot.
-      if (sourcePromptId) {
-        newUserMatches[sourcePromptId] = null;
+      if (sourcePromptText) {
+        newUserMatches[sourcePromptText] = null;
       }
 
-      // Place the new match. This will automatically "boot out" any
-      // existing item in the target slot by overwriting it.
-      newUserMatches[targetPromptId] = droppedOptionId;
+      // Place the new match
+      newUserMatches[targetPromptText] = droppedAnswerText;
 
       return { userMatches: newUserMatches };
     });
   };
 
+  // --- Rendering Logic ---
+  const unmatchedOptions = useMemo(() => {
+    const matchedAnswers = new Set(Object.values(savedState.userMatches));
+    return initialShuffledAnswers.filter(
+      (answer) => !matchedAnswers.has(answer)
+    );
+  }, [savedState.userMatches, initialShuffledAnswers]);
+
   return (
     <section id={section.id} className={sectionStyles.section}>
       <h2 className={sectionStyles.title}>{section.title}</h2>
       <div className={sectionStyles.content}>
-        <ContentRenderer content={section.content} />
+        {/* Note: The new structure doesn't have a single 'content' field.
+            This assumes the introductory text is now part of the section's main content array. */}
       </div>
 
       <div className={styles.matchingContainer}>
         <div className={styles.promptsContainer}>
-          {section.prompts.map((prompt) => {
-            const matchedOptionId = savedState.userMatches[prompt.id];
-            const matchedOption = matchedOptionId
-              ? section.options.find((o) => o.id === matchedOptionId)
-              : null;
+          {prompts.map((promptText) => {
+            const matchedAnswerText = savedState.userMatches[promptText];
             const isCorrect = isSectionComplete
-              ? section.solution[prompt.id] === matchedOptionId
+              ? solution[promptText] === matchedAnswerText
               : undefined;
 
             return (
-              <div key={prompt.id} className={styles.matchRow}>
-                <div className={styles.promptItem}>{prompt.text}</div>
+              <div key={promptText} className={styles.matchRow}>
+                <div className={styles.promptItem}>{promptText}</div>
                 <div
                   className={`${styles.dropZone} ${
                     isCorrect === true ? styles.correct : ""
                   } ${isCorrect === false ? styles.incorrect : ""}`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, prompt.id)}
+                  onDrop={(e) => handleDrop(e, promptText)}
                 >
-                  {matchedOption ? (
+                  {matchedAnswerText ? (
                     <div
                       className={styles.matchedOption}
                       draggable
-                      onDragStart={(e) => handleDragStart(e, matchedOption.id)}
+                      onDragStart={(e) => handleDragStart(e, matchedAnswerText)}
                       onDragEnd={handleDragEnd}
                     >
-                      {matchedOption.text}
+                      {matchedAnswerText}
                     </div>
                   ) : (
                     <span className={styles.dropZonePlaceholder}>
@@ -159,15 +172,15 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
 
         <div className={styles.optionsPool}>
           <h4>Drag an option from here...</h4>
-          {unmatchedOptions.map((option) => (
+          {unmatchedOptions.map((answerText) => (
             <div
-              key={option.id}
+              key={answerText}
               className={styles.draggableOption}
               draggable
-              onDragStart={(e) => handleDragStart(e, option.id)}
+              onDragStart={(e) => handleDragStart(e, answerText)}
               onDragEnd={handleDragEnd}
             >
-              {option.text}
+              {answerText}
             </div>
           ))}
         </div>
