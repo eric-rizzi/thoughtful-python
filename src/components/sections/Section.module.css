@@ -54,11 +54,14 @@
 .content ol {
   margin: 0em;
   margin-top: -1.5em;
-  margin-left: 1.5em; /* Indent lists */
+  margin-bottom: -1.5em;
+  margin-left: 0.5em; /* Indent lists */
+  padding-top: 0em;
 }
 
 .content li {
   margin: 0em; /* Spacing between list items */
+  padding: 0em;
 }
 
 .content code {

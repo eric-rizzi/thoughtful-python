@@ -24,10 +24,24 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Functions are very useful for making a program easier to understand. You create the function once and then use it over and over again. In this lesson, we'll investigate how to make functions a bit more general by allowing them to accept and use different **inputs**.",
+            "Functions are very useful for making a program easier to understand. You create the function once and then use it over and over again. In this lesson, we'll investigate how a computer executes functions and how to make functions a bit more general by allowing them to accept and use different **inputs**.",
         },
       ],
     } as InformationSectionData,
+    {
+      kind: "Debugger",
+      id: "variable-debugging" as SectionId,
+      title: "Watching Variables Change",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Let's dive into how a function call actually works. Below is a small program where we greet Bill with different phrases. Step through each line of the program. The most important part to notice is every time a function is called, the value of the call gets stored into the functions input. You go in and out of the function three times, each time with a different input value.",
+        },
+      ],
+      code: 'def greet_bill():\n  print(phrase + " Bill!")\n\ngreet_bill("Yo")\ngreet_bill("What up")\ngreet_bill("Hi")\nprint("All done")',
+      advancedControls: false,
+    } as DebuggerSectionData,
     {
       kind: "PRIMM",
       id: "primm-greet-person-function" as SectionId,
@@ -118,7 +132,6 @@ const lessonData: Lesson = {
       code: 'def greet_bill(phrase):\n  print(phrase + " Bill!")\n\ngreet_bill("Yo")\ngreet_bill("What up")\ngreet_bill("Hi")\nprint("All done")',
       advancedControls: false,
     } as DebuggerSectionData,
-
     {
       kind: "Reflection",
       id: "variables-reflection" as SectionId,
@@ -130,9 +143,9 @@ const lessonData: Lesson = {
             'Variables are fundamental to programming because they allow programs to store, change, and reuse data. Without variables, every value would have to be written directly into the code, making programs inflexible and hard to maintain.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how variables can make a program more useful, and write 3-4 sentences explaining how your program works. Remember to use the phrase "as seen in the example above".',
         },
       ],
-      topic: "Why Variables Matter",
+      topic: "Why Functions Matter",
       isTopicPredefined: true,
-      code: "Create an example showing why variables are useful",
+      code: "Create an example showing a simple function definition and call",
       isCodePredefined: false,
       explanation: "Explain how the code in example works (3-4 sentences)",
       isExplanationPredefined: false,
@@ -145,7 +158,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. Over the previous three lessons, you've learned some of the most important concepts in programming. They will come up over and over again. In the next lesson, we'll pause and test ourselves on everything we've learned so far.",
+            "Congratulations on learning about functions! You now understand how to define and call your own functions. Identifying places where you can create and use functions is one of the core parts of being a programmer.\n\nYou should feel proud. Over the previous two lessons, you've learned some of the most important concepts in programming. They will come up over and over again. In the next lesson, we'll pause and test ourselves on everything we've learned so far.",
         },
       ],
     } as InformationSectionData,

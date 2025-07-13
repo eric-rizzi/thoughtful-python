@@ -6,6 +6,7 @@ import type {
   MultipleSelectionSectionData,
   ObservationSectionData,
   PRIMMSectionData,
+  ReflectionSectionData,
   SectionId,
   TestingSectionData,
 } from "../../../types/data";
@@ -23,7 +24,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `So far, you've been writing programs that run line by line from top to bottom. That's great, but as your code gets more complex, you'll need to break it up into understandable chunks\nThat's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you **reuse code** without copying and pasting, **organize** your programs into logical chunks, and **avoid mistakes** by writing tricky code just once.`,
+          value: `So far, you've been writing programs that run line by line from top to bottom. That's great, but as your code gets more complex, you'll need to break it up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you **reuse code** without copying and pasting, **organize** your programs into logical chunks, and **avoid mistakes** by writing tricky code just once.`,
         },
       ],
     } as InformationSectionData,
@@ -111,7 +112,7 @@ Run this code and see what happens!`,
     {
       kind: "MultipleSelection",
       id: "functions-intro-quiz",
-      title: "Understand Parts of Functions",
+      title: "Understanding Parts of Functions",
       content: [
         {
           kind: "text",
@@ -132,6 +133,48 @@ Run this code and see what happens!`,
           "Correct! Functions follow a specific pattern, but are incredibly useful.",
       },
     } as MultipleSelectionSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "def-function-question",
+      title: "How to Define a Function",
+      content: [
+        {
+          kind: "text",
+          value:
+            'What is the proper way to "define" a function that will say goodbye?',
+        },
+      ],
+      options: [
+        "`goodbye:`",
+        "`def goodbye:`",
+        "`def goodbye()`",
+        "`goodbye():`",
+        "`def goodbye():`",
+      ],
+      correctAnswer: 4,
+      feedback: {
+        correct:
+          'Correct! Fully defining a function requires `def`, the name of the function, parentheses, and a colon (plus code "inside" the function)',
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "function-call-quiz",
+      title: "How to Call a Function",
+      content: [
+        {
+          kind: "text",
+          value:
+            'What is the proper way to "call" a function that will say goodbye?',
+        },
+      ],
+      options: ["`goodbye`", "`   goodbye`", "`goodbye()`", "`goodbye():`"],
+      correctAnswer: 2,
+      feedback: {
+        correct:
+          "Correct! Calling a function requires a line that is the function name followed by parentheses",
+      },
+    } as MultipleChoiceSectionData,
     {
       kind: "Testing",
       id: "birthday-practice" as SectionId,
@@ -158,6 +201,36 @@ Run this code and see what happens!`,
         functionToTest: "__main__",
       },
     } as TestingSectionData,
+    {
+      kind: "Reflection",
+      id: "function-reflection" as SectionId,
+      title: "Functions Reflection",
+      content: [
+        {
+          kind: "text",
+          value:
+            'Functions are fundamental to programming because they allow us to organize our programs. Without functions, every program would be one large blob of code. Functions allow us to "fold" and "" our code to make it smaller easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
+        },
+      ],
+      topic: "Why Variables Matter",
+      isTopicPredefined: true,
+      code: "Create an example showing why variables are useful",
+      isCodePredefined: false,
+      explanation: "Explain how the code in example works (3-4 sentences)",
+      isExplanationPredefined: false,
+    } as ReflectionSectionData,
+    {
+      kind: "Information",
+      id: "variables-conclusion",
+      title: "Conclusion",
+      content: [
+        {
+          kind: "text",
+          value: `Congratulations on making your way through the introduction about functions! In the next lesson, we'll examine how a computer actually runs functions and see how to make them a bit more general by using 
+            "inputs" to the function.`,
+        },
+      ],
+    } as InformationSectionData,
   ],
 };
 
