@@ -51,16 +51,16 @@ const lessonData: Lesson = {
     } as MatchingSectionData,
     {
       kind: "Debugger",
-      id: "variable-debugging" as SectionId,
-      title: "Watching Variables Change",
+      id: "function-debugging" as SectionId,
+      title: "Watching Functions Be Called",
       content: [
         {
           kind: "text",
           value:
-            "Let's dive into how a function call actually works. Below is a small program where we greet Bill with different phrases. Step through each line of the program. The most important part to notice is every time a function is called, the value of the call gets stored into the functions input. You go in and out of the function three times, each time with a different input value.",
+            'Let\'s dive into how a function call actually works. Below is a small program where we greet two different people named Bill. Step through each line of the program. The most important part to notice is every time a function is called, the "main" part of the program basically pauses as it waits for the code inside the function to run and complete.',
         },
       ],
-      code: 'def greet_bill():\n  print(phrase + " Bill!")\n\ngreet_bill("Yo")\ngreet_bill("What up")\ngreet_bill("Hi")\nprint("All done")',
+      code: 'def greet_bill():\n    print("Hello Bill!")\n    print("Great to see you.")\n    print("How are things?")\n\ngreet_bill()\nprint("Turn to other Bill")\ngreet_bill()\nprint("All done!")',
       advancedControls: false,
     } as DebuggerSectionData,
     {
