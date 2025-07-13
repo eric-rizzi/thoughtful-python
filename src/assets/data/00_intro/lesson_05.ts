@@ -23,7 +23,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `So far, you've been writing programs that run from top to bottom, line by line. That's great, but what if you need to do the same thing multiple times? What if you want to organize your code in a better way?\n\nThat's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let us **reuse code** without copying and pasting, **organize** our programs into logical chunks, and **avoid mistakes** by writing tricky code just once. Let's dive in and see how functions can make our lives easier!`,
+          value: `So far, you've been writing programs that run line by line from top to bottom. That's great, but as your code gets more complex, you'll need to break it up into understandable chunks\nThat's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you **reuse code** without copying and pasting, **organize** your programs into logical chunks, and **avoid mistakes** by writing tricky code just once.`,
         },
       ],
     } as InformationSectionData,
@@ -34,7 +34,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `This program has two parts:
+          value: `Again, think of functions as teaching someone a new skill. From this view, the program below has two parts:
 1. **Defining** the function (teaching the skill)
 2. **Calling** the function (using the skill)
 
@@ -55,7 +55,7 @@ Run this code and see what happens!`,
         {
           kind: "text",
           value:
-            'As you can see, a function is basically a small chunk of code that\'s waiting to be called. The function is "defined" with the line `def greet():` and then everything that\'s **indented** under the function is the code to be run once the function is called. Once the function has been defined, it can then be called. Which of the following lines of code "calls" the function?',
+            'As you can see, a function is basically a small chunk of code that\'s waiting to be used. The function is "defined" with the line `def greet():` and then everything that\'s **indented under the function** is the code to be run once the function is "called". Once the function has been defined, it can be called.\n\nWhich of the following lines of code "calls" the function?',
         },
       ],
       options: [
@@ -67,7 +67,7 @@ Run this code and see what happens!`,
       correctAnswer: 3,
       feedback: {
         correct:
-          'Correct! The code "inside" the function is called by `greet()`',
+          'Correct! The code indented under the function is "called" by `greet()`.',
       },
     } as MultipleChoiceSectionData,
     {
@@ -89,7 +89,7 @@ Run this code and see what happens!`,
         },
       ],
       conclusion:
-        "The ability to call a function multiple times is what makes them so useful.",
+        "The ability to call a function multiple times is part of what makes them so useful.",
     } as PRIMMSectionData,
     {
       kind: "Information",
@@ -99,7 +99,12 @@ Run this code and see what happens!`,
         {
           kind: "text",
           value:
-            "There are seemingly a lot of parts to a function, but really it's just four main pieces:\n1. `def` starts defining the function\n2. `greet` is the name of the function\n3. The indented code below the `def greet():` is the code the function will run\n4. The unindented `greet()` **calls** the function\n\nFor more information about functions, watch [this video](https://youtu.be/u-OmVr_fT4s?si=ZLunXpE8Bhk23lsD&t=12) up until 02:24 ",
+            'There are seemingly a lot of parts to a function, but it\'s really just four main pieces:\n1. `def` starts "defining" the function\n2. `greet` is the name of the function\n3. The indented code below the `def greet():` is the code the function will run\n4. The unindented `greet()` "calls" the function\n\nFor another perspective about functions, watch the video below up until about 02:24. Ignore the talk about pep-8, we\'ll talk about that later.',
+        },
+        {
+          kind: "video",
+          src: "https://youtu.be/u-OmVr_fT4s?si=ZLunXpE8Bhk23lsD&t=12",
+          caption: "Video about functions",
         },
       ],
     } as InformationSectionData,
@@ -114,12 +119,12 @@ Run this code and see what happens!`,
         },
       ],
       options: [
-        "You start defining a function with the word `def`",
+        "You start **defining** a function with the word `def`",
         "Indented code **above** `def` will be run when the function is called",
         "Indented code **below** `def` will be run when the function is called",
         "A function **call** must be indented",
         "Functions can only have two lines of code inside them",
-        "You can call a function as many times as you'd like",
+        "You can **call** a function as many times as you'd like",
       ],
       correctAnswers: [0, 2, 5],
       feedback: {

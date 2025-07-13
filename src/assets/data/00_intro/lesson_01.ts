@@ -28,24 +28,24 @@ const lessonData: Lesson = {
         {
           kind: "image",
           src: "00_intro/simple_program.png",
-          alt: "Screenshot of simple Python program in VSCode",
+          alt: "Screenshot of a simple Python program in VSCode",
         },
         {
           kind: "text",
           value:
-            'Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this section, you\'ll learn about how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
+            'Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this lesson, you\'ll learn about how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
         },
       ],
     } as InformationSectionData,
     {
       kind: "Observation",
       id: "print-function" as SectionId,
-      title: "The Print Function",
+      title: "Printing Stuff",
       content: [
         {
           kind: "text",
           value:
-            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` function displays output to the console. It's one of the most basic and frequently used functions in Python.\n\nLet's start with the classic \"Hello, World!\" example. Run the code by clicking the `Run Code` button. You will see how the code produces two outputs: the two values inside the print statements.",
+            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the classic [\"Hello, World!\" example](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program). Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: the two values inside the print statements.",
         },
       ],
       example: {
@@ -62,7 +62,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'The first thing to appreciate about all programming languages is that they\'re primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** to know is **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example above, there are two strings. Which are they?',
+            'The first thing to appreciate about all programming languages is that they\'re primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** we\'re going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example above, there are two strings. What are they?',
         },
       ],
       options: [
@@ -75,8 +75,7 @@ const lessonData: Lesson = {
       ],
       correctAnswers: [2, 4],
       feedback: {
-        correct:
-          "Correct! To denote a string you have to surround it with some sort of quotation mark.",
+        correct: "Correct! A string is surrounded with quotation marks.",
       },
     } as MultipleSelectionSectionData,
     {
@@ -87,7 +86,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Below is Python code that attempts to print a quotation. Unfortunately, there's a problem.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, use the feedback from AI to refine/correct your mental model.",
+            "Below is a Python program that attempts to print a famous quote. Unfortunately, there's a problem.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, use the feedback from AI to correct/refine your mental model.",
         },
       ],
       examples: [
@@ -99,7 +98,7 @@ const lessonData: Lesson = {
         },
       ],
       conclusion:
-        "When you use double quotes to define a string, you can't use double quotes **inside the string**",
+        "When you use double quotes to denote a string, you can't use double quotes **inside the string**",
     } as PRIMMSectionData,
     {
       kind: "Observation",
@@ -151,7 +150,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now it's your turn to write some code of your own! Write a program that outputs the following two sentences, one after the other:\n\n1. `Who's candy is that?`\n2. `I heard Eric call \"dibs\".`",
+            "Now it's your turn to write some code of your own! Write a program that outputs the following two sentences, one after the other:\n\n1. `Who's out there?`\n2. `I heard Eric say \"me\".`",
         },
       ],
       example: {
@@ -161,7 +160,7 @@ const lessonData: Lesson = {
         testCases: [
           {
             input: null,
-            expected: 'Who\'s candy is that?\nI heard Eric call "dibs".',
+            expected: 'Who\'s out there??\nI heard Eric say "me".',
             description: "Test that program produces expected output",
           },
         ],

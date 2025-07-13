@@ -80,7 +80,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Variables can store more than just strings - they can also store integers. Below is a program that creates a variable with an integer value and then uses it in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
+            "Variables can store more than just strings; they can also store integers. Below is a program that stores an integer in a variable and then uses the variable in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
         },
       ],
       examples: [
@@ -102,7 +102,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line by line and observe how the value of `score` changes in the variables panel.",
+            "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line by line and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
         },
       ],
       code: "score = 10\nprint(score)\nscore = 20\nprint(score)\nscore = score + 5\nprint(score)",
@@ -115,7 +115,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Based on what you observed in the debugging section, what will be the final value of `points` after running this code?",
+            "Based on what you observed in the previous section, what will be the final value of `points` after running this code?",
         },
         {
           kind: "code",
@@ -126,7 +126,7 @@ const lessonData: Lesson = {
       correctAnswer: 2,
       feedback: {
         correct:
-          "Correct! The variable starts at 100, gets changed to 50, then gets changed to 50 + 25 = 75.",
+          "Correct! The variable starts at 100, gets sets to 50, then gets changed to 50 + 25 = 75.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -149,7 +149,7 @@ const lessonData: Lesson = {
         },
       ],
       conclusion:
-        "Just like with integers, you can reassign string variables and even use the variable in its own (re)assignment!",
+        "Just like with integers, you can reassign string variables and even use the variables in their own (re)assignment!",
     } as PRIMMSectionData,
     {
       kind: "Observation",
@@ -176,7 +176,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Now it\'s your turn to work with variables! Create a program that:\n\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
+            'Now it\'s your turn! Write a program that:\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
         },
       ],
       example: {
@@ -201,7 +201,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Variables are fundamental to programming because they allow programs to store, change, and reuse data. Without variables, every value would have to be written directly into the code, making programs inflexible and hard to maintain.\n\nCreate a simple 3-4 line code example that demonstrates how variables can make a program more useful, and write 3-4 sentences explaining how your program works. Remember to use the phrase "as seen in the example above".',
+            'Variables are fundamental to programming because they allow programs to store, change, and reuse data. Without variables, every value would have to be written directly into the code, making programs inflexible and hard to maintain.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how variables can make a program more useful, and write 3-4 sentences explaining how your program works. Remember to use the phrase "as seen in the example above".',
         },
       ],
       topic: "Why Variables Matter",
@@ -219,7 +219,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. You've learned some of the most important concepts in programming. The will come up over and over again. In the next lesson, we'll basically pause and reflect on everything so far.",
+            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. Over the previous three lessons, you've learned some of the most important concepts in programming. They will come up over and over again. In the next lesson, we'll pause and test ourselves on everything we've learned so far.",
         },
       ],
     } as InformationSectionData,

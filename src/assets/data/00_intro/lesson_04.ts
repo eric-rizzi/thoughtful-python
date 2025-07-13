@@ -22,7 +22,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned a lot in the first three lessons: how to work with strings and integers, how they behave differently, and how to store values in variables. This lesson uses a learning technique called **interleaving** to help solidify your understanding.\n\nInstead of practicing just one topic at a time, you'll encounter questions that mix strings, integers, and variables together. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts. Take your time and think carefully about each problem!",
+            "You've learned a lot in the first three lessons: how to work with strings and integers, how different data-types behave differently, and how to store values in variables. This lesson uses a learning technique called **interleaving** to help solidify your understanding.\n\nInstead of practicing just one topic at a time, you'll encounter questions that all the topics you've learned so far. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts. Be sure to take your time and think carefully about each problem!",
         },
       ],
     } as InformationSectionData,
@@ -81,7 +81,7 @@ const lessonData: Lesson = {
       correctAnswer: 0,
       feedback: {
         correct:
-          "Correct! When you use + with strings, it concatenates (joins) them together with no space in between.",
+          "Correct! When you use `+` with strings, it concatenates (joins) them together with no space in between.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -99,7 +99,7 @@ const lessonData: Lesson = {
       correctAnswer: 1,
       feedback: {
         correct:
-          "Correct! When you use - with integers, it performs subtraction: 15 - 3 = 12.",
+          "Correct! When you use `-` with integers, it performs subtraction: 15 - 3 = 12.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -124,7 +124,7 @@ const lessonData: Lesson = {
       correctAnswers: [2, 3, 5],
       feedback: {
         correct:
-          "Correct! You get TypeErrors when you try to mix strings and integers with +, or when you try to use - with strings.",
+          "Correct! One of the ways to get TypeErrors is when you try to mix strings and integers with `+`, or when you try to use `-` with strings.",
       },
     } as MultipleSelectionSectionData,
     {
@@ -135,7 +135,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Write a program that prints out the following three lines exactly as shown:\n\n1. `The teacher said, "Good job!"`\n2. `It\'s going to be a great day.`\n3. `"Why?" she asked.`\n\nRemember to think carefully about which type of quotes to use for each line!',
+            'Write a program that prints out the following three lines exactly as shown:\n1. `The teacher said, "Good job!"`\n2. `It\'s going to be a great day.`\n3. `"Why?" she asked.`\n\nRemember to think carefully about which type of quotes to use for each line!',
         },
       ],
       example: {
