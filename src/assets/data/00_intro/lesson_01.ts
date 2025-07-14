@@ -145,7 +145,7 @@ const lessonData: Lesson = {
     {
       kind: "Testing",
       id: "problem1-task-grammatical-greeting" as SectionId,
-      title: "Challenge: Perfecting the Greeting",
+      title: "Challenge: Who Goes There?",
       content: [
         {
           kind: "text",
@@ -160,7 +160,7 @@ const lessonData: Lesson = {
         testCases: [
           {
             input: null,
-            expected: 'Who\'s out there??\nI heard Eric say "me".',
+            expected: 'Who\'s out there?\nI heard Eric say "me".',
             description: "Test that program produces expected output",
           },
         ],
