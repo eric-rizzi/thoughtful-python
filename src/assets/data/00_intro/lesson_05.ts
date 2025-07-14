@@ -209,7 +209,7 @@ Run this code and see what happens!`,
         {
           kind: "text",
           value:
-            'Functions are fundamental to programming because they allow us to organize our programs. Without functions, every program would be one large blob of code. Functions allow us to "fold" and "" our code to make it smaller easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
+            'Functions are fundamental to programming because they allow us to organize our programs. Without functions, every program would be one large blob of code. Functions allow us to "fold" our code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
         },
       ],
       topic: "Why Variables Matter",
@@ -226,8 +226,7 @@ Run this code and see what happens!`,
       content: [
         {
           kind: "text",
-          value: `Congratulations on making your way through the introduction about functions! In the next lesson, we'll examine how a computer actually runs functions and see how to make them a bit more general by using 
-            "inputs" to the function.`,
+          value: `Congratulations on making your way through the introduction about functions! In the next lesson we'll examine how a computer actually runs functions and see how to use them to reduce the amount of code you have to write.`,
         },
       ],
     } as InformationSectionData,
