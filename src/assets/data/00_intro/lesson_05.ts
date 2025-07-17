@@ -24,7 +24,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `So far, you've been writing programs that run line by line from top to bottom. That's great, but as your code gets more complex, you'll need to break it up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you:\n - **Reuse code** without copying and pasting\n- **Organize** your programs into logical chunks\n- **avoid mistakes** by writing tricky code just once`,
+          value: `So far, you've been writing programs that run line-by-line from top to bottom. That's great, but as your programs get larger, you'll need to break them up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you:\n - **Reuse code** without copying and pasting\n- **Organize** your programs into logical chunks\n- **Avoid mistakes** by writing tricky code just once`,
         },
       ],
     } as InformationSectionData,
@@ -56,7 +56,7 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'As you can see, a function is basically a small chunk of code that\'s waiting to be used. The function is "defined" with the line `def greet():` and then everything that\'s **indented under the function** is the code to be run once the function is "called". Once the function has been defined, it can be called.\n\nWhich of the following lines of code "calls" the function?',
+            'As you can see, a function is basically a small chunk of code that\'s waiting to be used. The function is "defined" with the line `def greet():` and then everything that\'s **indented under the function** is the code to be run once the function is "called". Once the function has been defined, it can be called over and over again.\n\nWhich of the following lines of code "calls" the function?',
         },
       ],
       options: [
@@ -100,7 +100,7 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'There are seemingly a lot of parts to a function, but it\'s really just four main pieces:\n- `def` starts "defining" the function\n- `greet` is the name of the function\n- The indented code below the `def greet():` is the code the function will run\n- The unindented `greet()` "calls" the function\n\nFor another perspective about functions. Ignore the talk about pep-8, we\'ll talk about that later.',
+            'There are seemingly a lot of parts to creating/using a function, but it\'s really just four main pieces:\n- `def` starts "defining" the function\n- `greet` is the name of the function\n- The indented code below the `def greet():` is the code the function will run\n- The unindented `greet()` "calls" the function\n\nFor another perspective about functions. Ignore the talk about pep-8, we\'ll talk about that later.',
         },
         {
           kind: "video",
@@ -211,24 +211,24 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'Functions are fundamental to programming because they allow you to organize your programs. Without functions, every program would be one large blob of code. Functions allow you to "fold" our code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
+            'Functions are fundamental to programming because they allow you to organize your programs. Without functions, every program would be one large blob of code. Functions allow you to "fold" your code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
         },
       ],
-      topic: "Why Variables Matter",
+      topic: "How Functions Work",
       isTopicPredefined: true,
-      code: "Create an example showing why variables are useful",
+      code: "Create an example showing how functions work.",
       isCodePredefined: false,
       explanation: "Explain how the code in example works (3-4 sentences)",
       isExplanationPredefined: false,
     } as ReflectionSectionData,
     {
       kind: "Information",
-      id: "variables-conclusion",
+      id: "functions-conclusion",
       title: "Conclusion",
       content: [
         {
           kind: "text",
-          value: `Congratulations on making your way through the introduction about functions! In the next lesson we'll examine how computers execute functions and see how to use them to reduce the amount of code you have to write.`,
+          value: `Congratulations on making your way through the first lesson on functions! In the next lesson we'll examine how computers execute functions and see how to use functions to reduce the amount of code you have to write.`,
         },
       ],
     } as InformationSectionData,

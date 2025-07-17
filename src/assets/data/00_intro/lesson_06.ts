@@ -22,7 +22,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Functions are very useful for making a program easier to understand. You create the function once and then use it over and over again. In this lesson, we'll investigate how a computer executes functions and how to know when functions are needed.",
+            "Functions are very useful for making programs easier to understand. You create a function once and then can use it over and over again. In this lesson, we'll investigate how a computer executes functions and how to know when functions are needed.",
         },
       ],
     } as InformationSectionData,
@@ -66,7 +66,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now that you've finished watching, just pause and reflect for a moment. The video did a nice job showing how you could \"fold\" your program to reduce it's length. This is where the art of programming comes in. It's about identifying patterns that allow you to make your programs smaller and easier to understand.",
+            "Now that you've finished watching, pause and reflect for a moment. The video did a nice job showing how you can \"fold\" your programs to reduce their length. This is where the art of programming comes in. It's about identifying patterns in your code that allows you to make a program smaller and easier to understand.",
         },
       ],
     } as InformationSectionData,
@@ -78,7 +78,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'When a computer runs a program, it goes line by line. When it encounters a function, it goes inside the function and runs every line inside the function. Once the computer finishes the function, it returns back to the line that called the function and continues.\n\nThe program below allows you to slowly "step" through the program from the video and see how it is equivalent to the original, 12 line program. Use the debugger to step through each line of the program. The most important part to notice is every time a function is called:\n1. The computer remembers where the function call is\n2. The computer runs all the code inside the function\n3. The computer returns to right after the remembered function call\nThis process of calling, running, and returning to the call location is how seven lines of code can become the equivalent of 12.',
+            'When a computer runs a program, it goes line-by-line. When it encounters a function, it goes inside the function and runs every line inside the function. Once the computer finishes the function, it returns back to the line that called the function and continues.\n\nThe program below allows you to slowly "step" through the program from the video and see how it is equivalent to the original, 12 line program from the video. Use the debugger to step through each line of the program. The most important part to notice is every time a function is called:\n1. The computer remembers where the function call is\n2. The computer runs all the code inside the function\n3. The computer returns to right after the remembered function call\n\nThis process of calling, running, and returning to the call location is how seven lines of code can become the equivalent of 12.',
         },
       ],
       code: 'def happy_birthday():\n    print("Happy birthday to you!")\n    print("You are old!")\n    print("Happy birthday to you!")\n\nhappy_birthday()\nhappy_birthday()\nhappy_birthday()',
@@ -97,10 +97,10 @@ const lessonData: Lesson = {
         {
           kind: "code",
           value:
-            'def joke():\n    print("Why do you never want to argue with a 90-degree angle?")\n    print("Because they\'re always right")\n\njoke()\njoke()\njoke()',
+            'def joke():\n    print("Why do you never want to argue with a 90-degree angle?")\n    print("Because they\'re always right")\n\njoke()\njoke()\njoke()\njoke()',
         },
       ],
-      options: ["2", "4", "6", "8"],
+      options: ["4", "6", "8", "10"],
       correctAnswer: 2,
       feedback: {
         correct:
@@ -126,7 +126,7 @@ const lessonData: Lesson = {
         "Def should be capitalized",
         "Missing parentheses after the function name",
         "Improper indentation in the code in the function",
-        "The function calls shouldn't have parentheses",
+        "The function call shouldn't have parentheses",
       ],
       correctAnswer: 1,
       feedback: {
@@ -166,7 +166,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `Congratulations on learning how computers execute functions! In the next lesson, we'll see how to make them a bit more general by using "inputs" to the function.`,
+          value: `Congratulations on learning how computers execute functions! In the next lesson, we'll see how to make them a bit more general by providing "inputs" to the function.`,
         },
       ],
     } as InformationSectionData,

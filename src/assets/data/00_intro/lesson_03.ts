@@ -102,7 +102,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line by line and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
+            "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line-by-line and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
         },
       ],
       code: "score = 10\nprint(score)\nscore = 20\nprint(score)\nscore = score + 5\nprint(score)",

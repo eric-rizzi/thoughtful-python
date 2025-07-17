@@ -3,6 +3,7 @@ import type { MatchingSectionData, UnitId, LessonId } from "../../types/data";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import styles from "./MatchingSection.module.css";
 import sectionStyles from "./Section.module.css";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface MatchingSectionProps {
   section: MatchingSectionData;
@@ -126,9 +127,8 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
   return (
     <section id={section.id} className={sectionStyles.section}>
       <h2 className={sectionStyles.title}>{section.title}</h2>
-      <div className={sectionStyles.content}>
-        {/* Note: The new structure doesn't have a single 'content' field.
-            This assumes the introductory text is now part of the section's main content array. */}
+      <div className={styles.content}>
+        <ContentRenderer content={section.content} />
       </div>
 
       <div className={styles.matchingContainer}>
