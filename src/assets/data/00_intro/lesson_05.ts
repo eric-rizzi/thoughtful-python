@@ -24,7 +24,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `So far, you've been writing programs that run line by line from top to bottom. That's great, but as your code gets more complex, you'll need to break it up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you **reuse code** without copying and pasting, **organize** your programs into logical chunks, and **avoid mistakes** by writing tricky code just once.`,
+          value: `So far, you've been writing programs that run line by line from top to bottom. That's great, but as your code gets more complex, you'll need to break it up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you:\n - **Reuse code** without copying and pasting\n- **Organize** your programs into logical chunks\n- **avoid mistakes** by writing tricky code just once`,
         },
       ],
     } as InformationSectionData,
@@ -36,10 +36,10 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value: `Again, think of functions as teaching someone a new skill. From this view, the program below has two parts:
-1. **Defining** the function (teaching the skill)
-2. **Calling** the function (using the skill)
+- **Defining** the function (teaching the skill)
+- **Calling** the function (using the skill)
 
-Run this code and see what happens!`,
+Run the code and see what happens!`,
         },
       ],
       example: {
@@ -90,7 +90,7 @@ Run this code and see what happens!`,
         },
       ],
       conclusion:
-        "The ability to call a function multiple times is part of what makes them so useful.",
+        "Correct! The ability to call a function multiple times is part of what makes them so useful.",
     } as PRIMMSectionData,
     {
       kind: "Information",
@@ -100,12 +100,14 @@ Run this code and see what happens!`,
         {
           kind: "text",
           value:
-            'There are seemingly a lot of parts to a function, but it\'s really just four main pieces:\n1. `def` starts "defining" the function\n2. `greet` is the name of the function\n3. The indented code below the `def greet():` is the code the function will run\n4. The unindented `greet()` "calls" the function\n\nFor another perspective about functions, watch the video below up until about 02:24. Ignore the talk about pep-8, we\'ll talk about that later.',
+            'There are seemingly a lot of parts to a function, but it\'s really just four main pieces:\n- `def` starts "defining" the function\n- `greet` is the name of the function\n- The indented code below the `def greet():` is the code the function will run\n- The unindented `greet()` "calls" the function\n\nFor another perspective about functions. Ignore the talk about pep-8, we\'ll talk about that later.',
         },
         {
           kind: "video",
-          src: "https://youtu.be/u-OmVr_fT4s?si=ZLunXpE8Bhk23lsD&t=12",
+          src: "https://youtu.be/u-OmVr_fT4s?si=ZLunXpE8Bhk23lsD",
           caption: "Video about functions",
+          start: 12,
+          end: 144,
         },
       ],
     } as InformationSectionData,
@@ -116,7 +118,7 @@ Run this code and see what happens!`,
       content: [
         {
           kind: "text",
-          value: "Which of the following statements are true about functions:",
+          value: "Which of the following statements about functions are True:",
         },
       ],
       options: [
@@ -141,7 +143,7 @@ Run this code and see what happens!`,
         {
           kind: "text",
           value:
-            'What is the proper way to "define" a function that will say goodbye?',
+            'What is the proper way to start "defining" a function that will say goodbye?',
         },
       ],
       options: [
@@ -154,7 +156,7 @@ Run this code and see what happens!`,
       correctAnswer: 4,
       feedback: {
         correct:
-          'Correct! Fully defining a function requires `def`, the name of the function, parentheses, and a colon (plus code "inside" the function)',
+          'Correct! Defining a function requires `def`, the name of the function, parentheses, and a colon (plus code "inside" the function)',
       },
     } as MultipleChoiceSectionData,
     {
@@ -209,7 +211,7 @@ Run this code and see what happens!`,
         {
           kind: "text",
           value:
-            'Functions are fundamental to programming because they allow us to organize our programs. Without functions, every program would be one large blob of code. Functions allow us to "fold" our code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
+            'Functions are fundamental to programming because they allow you to organize your programs. Without functions, every program would be one large blob of code. Functions allow you to "fold" our code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
         },
       ],
       topic: "Why Variables Matter",
@@ -226,7 +228,7 @@ Run this code and see what happens!`,
       content: [
         {
           kind: "text",
-          value: `Congratulations on making your way through the introduction about functions! In the next lesson we'll examine how a computer actually runs functions and see how to use them to reduce the amount of code you have to write.`,
+          value: `Congratulations on making your way through the introduction about functions! In the next lesson we'll examine how computers execute functions and see how to use them to reduce the amount of code you have to write.`,
         },
       ],
     } as InformationSectionData,

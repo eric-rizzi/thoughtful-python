@@ -49,6 +49,8 @@ export interface ImageBlock {
 export interface VideoBlock {
   kind: "video";
   src: string;
+  start?: number;
+  end?: number;
   caption?: string;
 }
 

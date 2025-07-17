@@ -12,30 +12,34 @@ const VideoBlock: React.FC<VideoBlockProps> = ({ block }) => {
       const urlObject = new URL(url);
 
       // Handle YouTube URLs
-      if (
-        urlObject.hostname.includes("youtube.com") ||
-        urlObject.hostname.includes("youtu.be")
-      ) {
-        let videoId = urlObject.searchParams.get("v");
-        if (!videoId) {
-          // Handles youtu.be short links
-          const pathParts = urlObject.pathname.split("/");
-          videoId = pathParts[pathParts.length - 1];
-        }
+      if (urlObject.hostname.includes("youtube.com")) {
+        const videoId = urlObject.searchParams.get("v");
+        // Check for timestamp 't' parameter (e.g., &t=120s)
+        let embedUrl = `https://www.youtube.com/embed/${videoId}?`;
 
-        if (videoId) {
-          // Check for timestamp 't' parameter (e.g., &t=120s)
-          const timestamp = urlObject.searchParams.get("t");
-          let embedUrl = `https://www.youtube.com/embed/${videoId}`;
-          if (timestamp) {
-            // YouTube embed API uses 'start' parameter with seconds
-            const seconds = parseInt(timestamp.replace("s", ""));
-            if (!isNaN(seconds)) {
-              embedUrl += `?start=${seconds}`;
-            }
-          }
-          return embedUrl;
+        if (block.start) {
+          embedUrl += `start=${block.start}&`;
         }
+        if (block.end) {
+          embedUrl += `end=${block.end}`;
+        }
+        return embedUrl;
+      }
+
+      // Handles youtu.be short links
+      if (urlObject.hostname.includes("youtu.be")) {
+        // Handles youtu.be short links
+        const pathParts = urlObject.pathname.split("/");
+        const videoId = pathParts[pathParts.length - 1];
+        let embedUrl = `https://www.youtube.com/embed/${videoId}?`;
+
+        if (block.start) {
+          embedUrl += `start=${block.start}&`;
+        }
+        if (block.end) {
+          embedUrl += `end=${block.end}`;
+        }
+        return embedUrl;
       }
 
       // Handle Vimeo URLs
