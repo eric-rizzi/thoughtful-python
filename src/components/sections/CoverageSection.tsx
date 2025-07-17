@@ -14,6 +14,7 @@ import styles from "./Section.module.css";
 import { usePyodide } from "../../contexts/PyodideContext";
 import CodeEditor from "../CodeEditor";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface CoverageSectionProps {
   section: CoverageSectionData;
@@ -228,9 +229,7 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       <div className={styles.coverageCodeDisplayContainer}>
