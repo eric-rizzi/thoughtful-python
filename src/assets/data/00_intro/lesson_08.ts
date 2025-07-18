@@ -3,75 +3,157 @@ import type {
   InformationSectionData,
   Lesson,
   LessonId,
+  MatchingSectionData,
+  MultipleChoiceSectionData,
+  SectionId,
+  TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Code Coverage and Execution Paths",
+  title: "Review and Practice 2",
   guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98" as LessonId,
   description:
-    "Learn to understand how code executes by exploring different execution paths through a program.",
+    "Practice what you've learned so far in terms of data types, variables, and functions via interleaving.",
   sections: [
     {
-      kind: "Information",
-      id: "coverage-intro",
-      title: "Understanding Code Coverage",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Code coverage is a measure of how much of your code is executed during testing. In this lesson, you'll explore different execution paths through a program by providing inputs that trigger specific code paths.\n\nThis exercise will help you understand how conditionals work and how different inputs affect which lines of code are executed.",
-        },
-      ],
-    } as InformationSectionData,
-    {
       kind: "Coverage",
-      id: "simple-coverage",
-      title: "Simple Branching Exercise",
+      id: "simple-coverag-singlee",
+      title: "Different Inputs",
       content: [
         {
           kind: "text",
-          value:
-            "Let's start with a simple example. The following function analyzes a number and prints different messages based on its value. Try to find inputs that will reach each part of the code.",
+          value: "Provide inputs that will produce the desired output.",
         },
       ],
-      code: 'def analyze_number(x):\n    if x < 0:\n        print("Line 1")\n        if x < -10:\n            print("Line 2")\n    elif x == 0:\n        print("Line 3")\n    else:  # x > 0\n        print("Line 4")\n        if x > 10:\n            print("Line 5")\n        if x % 2 == 0:\n            print("Line 6")\n        if x % 3 == 0:\n            print("Line 7")\n\n# Call the function with the input value\nanalyze_number(input_var_1_here)',
+      code: "def do_math(x):\n    y = x + x\n    z = y + y\n    print(z)\n\n# Call the function with the input value\ndo_math(input_val)",
       coverageChallenges: [
         {
           id: "challenge-1",
-          expectedOutput: "Line 1",
-          hint: "Try a negative number that's greater than -10.",
+          expectedOutput: "12",
+          hint: "12 = ? + ? + ? + ?",
         },
         {
           id: "challenge-2",
-          expectedOutput: "Line 3",
-          hint: "What number equals zero?",
+          expectedOutput: "4",
+          hint: "4 = ? + ? + ? + ?",
         },
         {
           id: "challenge-3",
-          expectedOutput: "Line 4",
-          hint: "Try a positive even number that's not greater than 10.",
+          expectedOutput: "28",
+          hint: "28 = ? + ? + ? + ?",
         },
       ],
       inputParams: [
         {
-          name: "input_var_1_here",
+          name: "input_val",
           type: "number",
           placeholder: "Enter a number",
         },
       ],
     } as CoverageSectionData,
     {
-      kind: "Information",
-      id: "coverage-conclusion",
-      title: "Understanding Code Paths",
+      kind: "MultipleChoice",
+      id: "function-naming-1",
+      title: "Function Naming",
       content: [
         {
           kind: "text",
           value:
-            'Great job exploring different execution paths through code! Understanding how inputs affect which parts of code execute is a critical skill for programming.\n\nKey takeaways:\n\n1. Each condition in your code creates a branch point where execution can go in different directions.\n2. When you have nested conditions, you must satisfy all parent conditions to reach the inner code blocks.\n3. The same output can sometimes be produced by different inputs, but the execution paths may differ.\n4. Testing edge cases (like zero, negative numbers, boundary values) is important to ensure all code paths work correctly.\n\nIn real-world programming, tools called "code coverage analyzers" help developers measure which parts of their code are being executed by tests. Aiming for high code coverage helps ensure that your program has been thoroughly tested under different conditions.',
+            "Naming functions is a really important part of programming because it helps you understand what a functions _does_. What would be a better name for the function in the program above?",
         },
       ],
-    } as InformationSectionData,
+      options: ["`double()`", "`quadruple()`", "`square()`", "`cube()`"],
+      correctAnswer: 1,
+      feedback: {
+        correct: "Correct! The input is made four times bigger.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "function-naming-2",
+      title: "Function Naming Again",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Now knowing that proper naming of functions is important, what would be a better name for the `do_math()` function below?",
+        },
+        {
+          kind: "code",
+          value:
+            "def do_math(num):\n    y = num * num\n    z = y * num\n    print(z)",
+        },
+      ],
+      options: ["`double()`", "`quadruple()`", "`square()`", "`cube()`"],
+      correctAnswer: 3,
+      feedback: {
+        correct:
+          "Correct! The input is cubed because it is multiple by itself three times.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "Matching",
+      id: "ordering-function-pieces" as SectionId,
+      title: "Function Pieces",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Let's revisit the parts of a function from the previous lesson. Match up each part of the function with the order they come in when you're defining and calling a function.",
+        },
+        {
+          kind: "image",
+          src: "",
+        },
+      ],
+      prompts: [
+        { A: "Starts defining a function" },
+        { B: "Function name" },
+        { C: "Inputs to function" },
+        { D: 'Code "inside" function' },
+        { E: "Function call" },
+      ],
+    } as MatchingSectionData,
+    {
+      kind: "Testing",
+      id: "multi-input-testing" as SectionId,
+      title: "Challenge: Create a Two Input Function",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Create a function that takes two inputs that matches the following input/output patterns:\n- 2 and 2 outputs 5\n- 4 and 2 outputs 9\n- 4 and 1 outputs 5\n- 6 and 1 outputs 7",
+        },
+      ],
+      example: {
+        id: "input-challenge",
+        title: "Implement Your Solution",
+        code: "def do_math(num_1, num_2):\n    # Your code here\n\ndo_math(2, 2)\ndo_math(4, 2)\ndo_math(4, 1)\ndo_math(6, 1)",
+        testCases: [
+          {
+            input: [2, 2],
+            expected: "5",
+            description: "Test 2, 2 -> 5",
+          },
+          {
+            input: [4, 2],
+            expected: "9",
+            description: "Test 4, 2 -> 9",
+          },
+          {
+            input: [4, 1],
+            expected: "5",
+            description: "Test 4, 1 -> 5",
+          },
+          {
+            input: [6, 1],
+            expected: "7",
+            description: "Test 6, 1 -> 7",
+          },
+        ],
+        functionToTest: "do_math",
+      },
+    } as TestingSectionData,
   ],
 };
 

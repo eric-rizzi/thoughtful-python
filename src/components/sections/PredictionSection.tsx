@@ -6,6 +6,7 @@ import type { LessonId, PredictionSectionData, UnitId } from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
 import CodeEditor from "../CodeEditor";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface PredictionSectionProps {
   section: PredictionSectionData;
@@ -147,9 +148,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
       {section.functionDisplay && (
