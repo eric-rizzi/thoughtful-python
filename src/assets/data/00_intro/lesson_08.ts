@@ -16,8 +16,42 @@ const lessonData: Lesson = {
     "Practice what you've learned so far in terms of data types, variables, and functions via interleaving.",
   sections: [
     {
+      kind: "Information",
+      id: "review-intro",
+      title: "Practicing with Interleaving",
+      content: [
+        {
+          kind: "text",
+          value:
+            "You've learned a lot in the previous three lessons: how to create functions, how to call functions, and how to provide inputs to functions to get different outputs. As with the previous review section, this lesson uses a learning technique called **interleaving** to help solidify your understanding. By pulling everything you've learned so far and asking questions about it in a mixed up order, your brain will be able to make stronger connections between the concepts. Be sure to take your time and think carefully about each problem!",
+        },
+      ],
+    } as InformationSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "string-identification",
+      title: "Identifying Strings",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Which of the following is **not** a valid string and would cause an error?",
+        },
+      ],
+      options: [
+        '"It\'s a beautiful day"',
+        '"She said "hello" to me"',
+        "'Hello, World'",
+        '\'""""\'',
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct: "Correct!",
+      },
+    } as MultipleChoiceSectionData,
+    {
       kind: "Coverage",
-      id: "simple-coverag-singlee",
+      id: "simple-coverage-single",
       title: "Different Inputs",
       content: [
         {
@@ -70,6 +104,24 @@ const lessonData: Lesson = {
     } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
+      id: "string-operations",
+      title: "String Concatenation",
+      content: [
+        {
+          kind: "text",
+          value: "What will be the output of the following code?",
+        },
+        { kind: "code", value: 'print("cat" + "dog")' },
+      ],
+      options: ["catdog", "cat dog", "cat + dog", "An error"],
+      correctAnswer: 0,
+      feedback: {
+        correct:
+          "Correct! When you use `+` with strings, it concatenates (joins) them together with no space in between.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
       id: "function-naming-2",
       title: "Function Naming Again",
       content: [
@@ -91,6 +143,25 @@ const lessonData: Lesson = {
           "Correct! The input is cubed because it is multiple by itself three times.",
       },
     } as MultipleChoiceSectionData,
+    {
+      kind: "Matching",
+      id: "python-ops-match" as SectionId,
+      title: "Matching Operations",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Having experimented with different data types and different operations in the previous section, match each of the following bits of code with their output:",
+        },
+      ],
+      prompts: [
+        { "4 + 7": "11" },
+        { '"4" + "7"': '"47"' },
+        { '4 + "7"': "TypeError: unsupported operand type(s) for +" },
+        { "4 - 7": "-2" },
+        { '4 - "7"': "TypeError: unsupported operand type(s) for -" },
+      ],
+    } as MatchingSectionData,
     {
       kind: "Matching",
       id: "ordering-function-pieces" as SectionId,
