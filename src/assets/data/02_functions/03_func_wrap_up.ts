@@ -29,6 +29,28 @@ const lessonData: Lesson = {
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
+      id: "type-error-identification",
+      title: "Interpreting Type Errors",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Which line does the `TypeError` below identify as a problem?:```````",
+        },
+      ],
+      options: [
+        '"It\'s a beautiful day"',
+        '"She said "hello" to me"',
+        "'Hello, World'",
+        '\'""""\'',
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct: "Correct!",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
       id: "string-identification",
       title: "Identifying Strings",
       content: [
