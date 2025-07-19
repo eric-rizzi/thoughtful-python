@@ -25,7 +25,7 @@ const unitData: Unit[] = [
   {
     id: "intro_python" as UnitId,
     title: "Introduction to Python",
-    image: "unit_xx_learning.svg",
+    image: "unit_00_intro.svg",
     description:
       "Learn the fundamentals of Python programming through interactive lessons that run directly in your browser.",
     lessons: [
@@ -46,7 +46,7 @@ const unitData: Unit[] = [
   {
     id: "variables_debugging" as UnitId,
     title: "Variables and Debugging",
-    image: "unit_xx_learning.svg",
+    image: "unit_01_variables.svg",
     description:
       "Learn how to store data and reuse it to make you programs more versatile.",
     lessons: [
@@ -67,7 +67,7 @@ const unitData: Unit[] = [
   {
     id: "intro_functions" as UnitId,
     title: "Functions",
-    image: "unit_00_intro.svg",
+    image: "unit_02_functions.svg",
     description:
       "Learn how to use functions to help reduce the size of your code and make it more readable.",
     lessons: [
@@ -92,7 +92,7 @@ const unitData: Unit[] = [
   {
     id: "python_strings",
     title: "Python Strings Deep Dive",
-    image: "unit_01_strings.svg",
+    image: "unit_04_strings.svg",
     description:
       "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
     lessons: [
@@ -117,7 +117,7 @@ const unitData: Unit[] = [
   {
     id: "python_conditionals",
     title: "Python Conditionals (If/Else)",
-    image: "unit_02_conditionals.svg",
+    image: "unit_05_conditionals.svg",
     description:
       "Learn how to control the flow of your programs using `if`, `else`, and `elif` statements.",
     lessons: [
@@ -146,7 +146,7 @@ const unitData: Unit[] = [
   {
     id: "python_lists_intro",
     title: "Python Lists (Intro)",
-    image: "unit_03_lists_intro.svg",
+    image: "unit_06_lists_intro.svg",
     description:
       "This worksheet is intended to show you how lists work in Python and how they compare with strings.",
     lessons: [
@@ -171,7 +171,7 @@ const unitData: Unit[] = [
   {
     id: "python_lists_advanced",
     title: "Python Lists (Advanced)",
-    image: "unit_04_lists_advanced.svg",
+    image: "unit_07_lists_advanced.svg",
     description: "Stretch your understand of lists with an ethical puzzle.",
     lessons: [
       {
