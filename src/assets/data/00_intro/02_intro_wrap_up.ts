@@ -7,7 +7,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Unit Challenge: Social Media Post Generator",
+  title: "Unit Challenge",
   guid: "a2f4b8c3-9d1e-4f3a-b7c9-2e8f5a6d9c4e" as LessonId,
   description:
     "Put together everything you've learned about strings, integers, and print statements to create social media posts.",

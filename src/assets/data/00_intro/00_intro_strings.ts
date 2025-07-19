@@ -23,12 +23,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Python was first released in 1991. It has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose.",
+            "Python was first released in 1991. Since then, it has become a very popular language because of its clean syntax and the way that well-written Python programs almost read like English prose.",
         },
         {
           kind: "image",
           src: "00_intro/simple_program.png",
           alt: "Screenshot of a simple Python program in VSCode",
+          maxWidthPercentage: 70,
         },
         {
           kind: "text",
@@ -62,7 +63,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'The first thing to appreciate about all programming languages is that they\'re primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** we\'re going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example above, there are two strings. What are they?',
+            'The first thing to appreciate about all programming languages is that they\'re primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** we\'re going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example below, there are two strings. What are they?',
         },
       ],
       options: [

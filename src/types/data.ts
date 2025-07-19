@@ -43,7 +43,8 @@ export interface CodeBlock {
 export interface ImageBlock {
   kind: "image";
   src: string;
-  alt: string; // Alt text for accessibility
+  alt: string;
+  maxWidthPercentage?: number;
 }
 
 export interface VideoBlock {

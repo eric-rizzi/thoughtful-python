@@ -39,7 +39,7 @@ const unitData: Unit[] = [
       },
       {
         path: "00_intro/02_intro_wrap_up",
-        guid: "a2f4b8c3-9d1e-4f3a-b7c9-2e8f5a6d9c4",
+        guid: "a2f4b8c3-9d1e-4f3a-b7c9-2e8f5a6d9c4e",
       },
     ],
   } as Unit,

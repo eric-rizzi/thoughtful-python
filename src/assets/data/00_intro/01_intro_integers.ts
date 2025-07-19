@@ -36,7 +36,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Computers do more than just print words. In fact, computers are most powerful when operating on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice the lack of quotation marks. Run the code and pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
+            "Computers do more than just print words. In fact, computers were first invented to operate on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice the lack of quotation marks. Run the code and pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
         },
       ],
       example: {

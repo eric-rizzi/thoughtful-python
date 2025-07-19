@@ -16,9 +16,19 @@ const ImageBlock: React.FC<ImageBlockProps> = ({ block }) => {
     imageUrl = `${BASE_PATH}images/${block.src}`;
   }
 
+  const imageStyles: React.CSSProperties = {};
+  if (block.maxWidthPercentage) {
+    imageStyles.maxWidth = `${block.maxWidthPercentage}%`;
+  }
+
   return (
     <div className={`${styles.contentBlock} ${styles.imageContainer}`}>
-      <img src={imageUrl} alt={block.alt} className={styles.image} />
+      <img
+        src={imageUrl}
+        alt={block.alt}
+        className={styles.image}
+        style={imageStyles}
+      />
       {block.alt && <p className={styles.imageCaption}>{block.alt}</p>}
     </div>
   );
