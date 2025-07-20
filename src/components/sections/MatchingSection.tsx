@@ -191,7 +191,7 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
           className={sectionStyles.completionMessage}
           style={{ marginTop: "1.5rem" }}
         >
-          🎉 Well done! All items are correctly matched.
+          {section.feedback ? section.feedback.correct : "Correct!"}
         </div>
       )}
     </section>

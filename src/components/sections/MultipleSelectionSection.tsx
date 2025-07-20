@@ -138,7 +138,11 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
             isCorrect ? styles.correctFeedback : styles.incorrectFeedback
           }
         >
-          {isCorrect ? section.feedback.correct : "Incorrect!"}
+          {isCorrect
+            ? section.feedback
+              ? section.feedback.correct
+              : "Correct!"
+            : "Incorrect!"}
         </div>
       )}
 

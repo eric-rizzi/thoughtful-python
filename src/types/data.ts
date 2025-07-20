@@ -123,7 +123,7 @@ export interface MultipleChoiceSectionData extends LessonSection {
   kind: "MultipleChoice";
   options: string[];
   correctAnswer: number;
-  feedback: {
+  feedback?: {
     correct: string;
   };
 }
@@ -132,7 +132,7 @@ export interface MultipleSelectionSectionData extends LessonSection {
   kind: "MultipleSelection";
   options: string[];
   correctAnswers: number[];
-  feedback: {
+  feedback?: {
     correct: string;
   };
 }
@@ -142,6 +142,9 @@ export interface MatchingSectionData extends LessonSection {
   prompts: Array<{ [key: string]: string }>;
   // An optional array of indices to determine the initial shuffled order of answers.
   initialOrder?: number[];
+  feedback?: {
+    correct: string;
+  };
 }
 
 // Define the structured command types for JavaScript turtle

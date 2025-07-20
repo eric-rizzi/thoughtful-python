@@ -124,13 +124,17 @@ const MultipleChoiceSection: React.FC<MultipleChoiceSectionProps> = ({
         )}
       </form>
 
-      {isSubmitted && section.feedback && (
+      {isSubmitted && (
         <div
           className={
             isCorrect ? styles.correctFeedback : styles.incorrectFeedback
           }
         >
-          {isCorrect ? section.feedback.correct : "Incorrect!"}
+          {isCorrect
+            ? section.feedback
+              ? section.feedback.correct
+              : "Correct!"
+            : "Incorrect!"}
         </div>
       )}
 

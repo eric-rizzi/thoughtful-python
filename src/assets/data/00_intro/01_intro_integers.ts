@@ -46,6 +46,29 @@ const lessonData: Lesson = {
       },
     } as ObservationSectionData,
     {
+      kind: "Matching",
+      id: "matching-function-pieces" as SectionId,
+      title: "Function Parts",
+      content: [
+        {
+          kind: "text",
+          value:
+            "The various operators that you learned in math class are all present in Python: addition, subtraction, multiplication, division, and even exponents.\n\nSee if you can match the left side (integers and operators) with the right side (resulting integer).",
+        },
+      ],
+      prompts: [
+        { "8 * 2": "16" },
+        { "8 - 2": "6" },
+        { "8 / 2": "4" },
+        { "8 + 2": "10" },
+        { "8 ** 2": "64" },
+      ],
+      feedback: {
+        correct:
+          'Correct! The two tricky ones are `*` is multiplication and `**` is "raised to the power."',
+      },
+    } as MatchingSectionData,
+    {
       kind: "PRIMM",
       id: "primm-strings-and-integers" as SectionId,
       title: "Operating on Integers and Strings",
@@ -75,7 +98,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Ok, now it's time to test your intuition: Which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
+            "It's time to test your intuition: Which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
         },
       ],
       options: ["7", "34", "333", "An error"],
@@ -111,7 +134,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Now the question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
+            'The question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
         },
       ],
       examples: [
