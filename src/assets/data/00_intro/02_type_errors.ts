@@ -147,7 +147,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         {
           kind: "text",
           value:
-            "Identifying the **data types** that are being operated on is crucial in understanding how Python works. Accidentally mixing up data types (and getting an error because of it) is the single biggest source frustration for new people who are learning to code.\n\nNow it's time to reflect to formalize your knowledge. Create a simple 2-3 line code example that demonstrates the difference between strings and integers, and write 3-4 sentences explaining how the example works.",
+            "Identifying the **data types** that are being operated on is crucial in understanding how Python works. Accidentally mixing up data types (and getting an error because of it) is the single biggest source frustration for people who are learning to code.\n\nNow it's time to reflect to formalize your knowledge. Create a simple 2-3 line code example that demonstrates the difference between strings and integers, and write 3-4 sentences explaining how the example works.",
         },
       ],
       topic: "Strings vs. Integers",

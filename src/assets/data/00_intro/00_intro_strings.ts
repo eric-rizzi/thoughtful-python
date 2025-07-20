@@ -126,7 +126,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Being able to identify a valid string is crucial. Select the **three** options below that are valid strings.",
+            "Being able to identify valid strings is crucial. Select the **three** options below that are valid strings.",
         },
       ],
       options: [

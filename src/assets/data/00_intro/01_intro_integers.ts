@@ -133,7 +133,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Being able to identify the type of data is a very important. Match up each piece of data below with its data type.",
+            "Being able to identify the type of data is a very important skill. Match up each piece of data below with its data type.",
         },
       ],
       prompts: [
