@@ -38,7 +38,11 @@ const unitData: Unit[] = [
         guid: "65ddff46-b4af-4443-ac0a-5b6a714e405e",
       },
       {
-        path: "00_intro/02_intro_wrap_up",
+        path: "00_intro/02_type_errors",
+        guid: "933ff0c7-8c35-4786-86eb-649c02be6a3c",
+      },
+      {
+        path: "00_intro/03_intro_wrap_up",
         guid: "a2f4b8c3-9d1e-4f3a-b7c9-2e8f5a6d9c4e",
       },
     ],

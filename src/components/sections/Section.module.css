@@ -57,16 +57,18 @@
   margin-bottom: -1.5em;
   margin-left: 0.5em; /* Indent lists */
   padding-top: 0em;
+  padding-bottom: 0em;
 }
 
 .content li {
-  margin: 0em; /* Spacing between list items */
+  margin-top: -0.5em;
+  margin-bottom: -0.75em;
   padding: 0em;
 }
 
 .content code {
   /* Inline code snippets */
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-family: "Menlo", "Consolas", "Courier New", monospace;

@@ -7,7 +7,6 @@ import type {
   PRIMMSectionData,
   MultipleChoiceSectionData,
   MatchingSectionData,
-  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -47,8 +46,8 @@ const lessonData: Lesson = {
     } as ObservationSectionData,
     {
       kind: "Matching",
-      id: "matching-function-pieces" as SectionId,
-      title: "Function Parts",
+      id: "matching-integer-op-output" as SectionId,
+      title: "Integer Operations",
       content: [
         {
           kind: "text",
@@ -127,102 +126,36 @@ const lessonData: Lesson = {
       },
     } as MultipleChoiceSectionData,
     {
-      kind: "PRIMM",
-      id: "primm-type-error" as SectionId,
-      title: "Data Type Mixup",
-      content: [
-        {
-          kind: "text",
-          value:
-            'The question is what happens when you accidentally operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
-        },
-      ],
-      examples: [
-        {
-          id: "primm-type-issue",
-          code: 'print(3 + "4")',
-          predictPrompt:
-            "We are trying to do use the `+` operator on a string and an integer. What do you think will happen when you run the code?",
-        },
-      ],
-      conclusion:
-        "Error messages can be overwhelming! Read the next section carefully for how to approach them.",
-    } as PRIMMSectionData,
-    {
-      kind: "Information",
-      id: "understanding-type-errors" as SectionId,
-      title: "Understanding TypeErrors",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Getting errors while you're writing a program is very common. This is likely the first error you've encountered but it definitely won't be the last. Learning how to interpret errors will save you **a ton of time** later.\n\nLook carefully at the last line of the error. The line is saying that you are trying to do an operation (`+`) that can't handle two different data types. This makes sense since the original, offending line was `print(3 + 4)`",
-        },
-      ],
-    } as InformationSectionData,
-    {
-      kind: "Observation",
-      id: "operations-test" as SectionId,
-      title: "Various Operations",
-      content: [
-        {
-          kind: "text",
-          value:
-            'There are a bunch of other operations that you can use on integers and strings. In the space below, experiment with the `+`, `-`, and `*` operations to see what they do to different data types. In particular, be sure to experiment with the following:\n- `5 + 3` vs. `"5" + "3"`\n- `5 * 3` vs. `"5" * 3`\n- `5 - 3` vs. `"5" - "3"`',
-        },
-      ],
-      example: {
-        id: "temp-conversion",
-        title: "Testing Operations",
-        code: "print(5 + 3)",
-      },
-    } as ObservationSectionData,
-    {
       kind: "Matching",
-      id: "python-ops-match" as SectionId,
-      title: "Matching Operations",
+      id: "data-types-match" as SectionId,
+      title: "Identify Data Types",
       content: [
         {
           kind: "text",
           value:
-            "Having experimented with different data types and different operations in the previous section, match each of the following bits of code with their output:",
+            "Being able to identify the type of data is a very important. Match up each piece of data below with its data type.",
         },
       ],
       prompts: [
-        { "5 + 3": "8" },
-        { '"5" + "3"': '"53"' },
-        { '5 + "3"': "TypeError: unsupported operand type(s) for +" },
-        { "5 - 3": "2" },
-        { '5 - "3"': "TypeError: unsupported operand type(s) for -" },
+        { "'8'": "string" },
+        { "16": "integer" },
+        { '"hello"': "string" },
+        { "-1": "integer" },
+        { "'-1.188221 ** 3'": "string" },
       ],
+      feedback: {
+        correct: "Correct!",
+      },
     } as MatchingSectionData,
     {
-      kind: "Reflection",
-      id: "data-type-reflection" as SectionId,
-      title: "Data Type Reflection",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Identifying the **data types** that are being operated on is crucial in understanding how Python works. It's the single greatest source of frustration for new people who are learning to code.\n\nNow it's time to reflect to formalize your knowledge. Create a simple 2-3 line code example that demonstrates the difference between strings and integers, and write 3-4 sentences explaining how the example works.",
-        },
-      ],
-      topic: "Strings vs. Integers",
-      isTopicPredefined: true,
-      code: "Create a simple example that demonstrates this topic",
-      isCodePredefined: false,
-      explanation: "Explain how your example works (3-4 sentences)",
-      isExplanationPredefined: false,
-    } as ReflectionSectionData,
-    {
       kind: "Information",
-      id: "reflection-conclusion",
+      id: "integers-conclusion",
       title: "Conclusion",
       content: [
         {
           kind: "text",
           value:
-            "Congratulations on completing the strings vs. integers lesson. As stated above, it is a major source of confusion and frustration. If you ever see a `TypeError`, take you time and think about what _type_ of things the program is operating on.",
+            "Great job! You have learned about the two main types of data that beginner programmers need. In the next section you'll start to write your own programs that use these data types and learn to interpret error messages if/when something goes wrong.",
         },
       ],
     } as InformationSectionData,
