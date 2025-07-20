@@ -1,7 +1,6 @@
 import type {
   InformationSectionData,
   Lesson,
-  ObservationSectionData,
   LessonId,
   SectionId,
   PRIMMSectionData,
@@ -65,7 +64,7 @@ const lessonData: Lesson = {
     {
       kind: "MultipleChoice",
       id: "variable-reassignment",
-      title: "Input Values",
+      title: "Type Error Interpretation",
       content: [
         {
           kind: "text",
@@ -90,11 +89,11 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
     {
       kind: "MultipleChoice",
       id: "variable-reassignment",
-      title: "Input Values",
+      title: "Syntax Error Interpretation",
       content: [
         {
           kind: "text",
-          value: `All errors follow the same basic format. For example, what is the following error trying to communicate?\n\`\`\`\nExecution Error: Traceback (most recent call last):
+          value: `All errors follow the same basic format. For example, another common type of error is called a \`SyntaxError\`. These occur when your program is typed incorrectly. What is the following \`SyntaxError\` trying to communicate?\n\`\`\`\nExecution Error: Traceback (most recent call last):
   File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async
     await CodeRunner(
           ^^^^^^^^^^^
@@ -117,7 +116,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
       correctAnswer: 2,
       feedback: {
         correct:
-          "Correct! The second to last line of the error message gives you the line",
+          "Correct! The program should be `print('hi')` instead of `print('hi)`",
       },
     } as MultipleChoiceSectionData,
     {
@@ -128,7 +127,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         {
           kind: "text",
           value:
-            "Having experimented with different data types and different operations in the previous sections, match each of the following bits of code with their output:",
+            "Having experimented with different data types, different operations, and the different errors that can pop up if you make a mistake, match each of the following bits of code with their output:",
         },
       ],
       prompts: [
@@ -137,6 +136,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         { '5 + "3"': "TypeError: unsupported operand type(s) for +" },
         { "5 - 3": "2" },
         { '5 - "3"': "TypeError: unsupported operand type(s) for -" },
+        { '"5" + "3': "SyntaxError: unterminated string" },
       ],
     } as MatchingSectionData,
     {
@@ -147,7 +147,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         {
           kind: "text",
           value:
-            "Identifying the **data types** that are being operated on is crucial in understanding how Python works. It's the single greatest source of frustration for new people who are learning to code.\n\nNow it's time to reflect to formalize your knowledge. Create a simple 2-3 line code example that demonstrates the difference between strings and integers, and write 3-4 sentences explaining how the example works.",
+            "Identifying the **data types** that are being operated on is crucial in understanding how Python works. Accidentally mixing up data types (and getting an error because of it) is the single biggest source frustration for new people who are learning to code.\n\nNow it's time to reflect to formalize your knowledge. Create a simple 2-3 line code example that demonstrates the difference between strings and integers, and write 3-4 sentences explaining how the example works.",
         },
       ],
       topic: "Strings vs. Integers",
@@ -165,7 +165,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         {
           kind: "text",
           value:
-            "Congratulations on completing the strings vs. integers lesson. As stated above, it is a major source of confusion and frustration. If you ever see a `TypeError`, take you time and think about what _type_ of things the program is operating on.",
+            "Congratulations on completing the strings vs. integers lesson. As stated above, it is a major source of confusion and frustration. If you ever see a `TypeError`, take your time and think about what _type_ of things the program is operating on.",
         },
       ],
     } as InformationSectionData,

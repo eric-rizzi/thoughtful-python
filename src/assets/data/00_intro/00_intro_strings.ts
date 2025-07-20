@@ -46,7 +46,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the classic [\"Hello, World!\" example](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program). Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: the two values inside the print statements.",
+            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the [classic \"Hello, World!\" example](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program). Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: the two values inside the print statements.",
         },
       ],
       example: {
@@ -125,7 +125,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "Select the **three** options below that are valid strings.",
+          value:
+            "Being able to identify a valid string is crucial. Select the **three** options below that are valid strings.",
         },
       ],
       options: [
@@ -168,6 +169,18 @@ const lessonData: Lesson = {
         functionToTest: "__main__",
       },
     } as TestingSectionData,
+    {
+      kind: "Information",
+      id: "strings-conclusion",
+      title: "Conclusion",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Congratulations on completing your first lesson. In the process you should have learned how to create and use strings to output information to the user. In the next section we will learn about a new type of data and how to distinguish between them.",
+        },
+      ],
+    } as InformationSectionData,
   ],
 };
 
