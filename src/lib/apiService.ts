@@ -129,7 +129,11 @@ async function fetchWithAuth(
       response = await fetch(url, options);
     } catch (refreshError) {
       processQueue(refreshError, null);
-      logout();
+
+      // Show SessionExpiredModal
+      const { setSessionExpired } = useAuthStore.getState().actions;
+      setSessionExpired(true);
+
       return Promise.reject(
         new ApiError("Session expired. Please log in again.", 401)
       );

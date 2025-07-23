@@ -29,9 +29,11 @@ interface AuthState {
   accessToken: AccessTokenId | null;
   refreshToken: RefreshTokenId | null;
   isSyncingProgress: boolean;
+  sessionHasExpired: boolean;
   actions: {
     login: (googleIdToken: string) => Promise<void>;
     logout: () => Promise<void>;
+    setSessionExpired: (hasExpired: boolean) => void;
     setTokens: (tokens: {
       accessToken: AccessTokenId;
       refreshToken: RefreshTokenId;
@@ -47,6 +49,7 @@ const initialAuthState = {
   accessToken: null,
   refreshToken: null,
   isSyncingProgress: false,
+  sessionHasExpired: false,
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -109,6 +112,7 @@ export const useAuthStore = create<AuthState>()(
             refreshToken,
             user: userProfile,
             isSyncingProgress: true,
+            sessionHasExpired: false,
           });
 
           try {
@@ -160,6 +164,8 @@ export const useAuthStore = create<AuthState>()(
           // A reload is still the cleanest way to ensure all components re-render with anonymous data.
           window.location.reload();
         },
+        setSessionExpired: (hasExpired) =>
+          set({ sessionHasExpired: hasExpired }),
         setTokens: ({ accessToken, refreshToken }) => {
           set({ accessToken, refreshToken });
         },

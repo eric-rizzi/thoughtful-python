@@ -15,10 +15,12 @@ import { useProgressStore, useProgressActions } from "./stores/progressStore";
 import { useAuthStore } from "./stores/authStore";
 import StudentLayout from "./components/StudentLayout";
 import SyncingOverlay from "./components/SyncingOverlay";
+import SessionExpiredModal from "./components/SessionExpiredModal";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
   const isSyncingProgress = useAuthStore((state) => state.isSyncingProgress);
+  const sessionHasExpired = useAuthStore((state) => state.sessionHasExpired);
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
   const { clearPenalty } = useProgressActions();
 
@@ -51,6 +53,7 @@ function App() {
   return (
     <>
       {isSyncingProgress && <SyncingOverlay />}
+      {sessionHasExpired && <SessionExpiredModal />}
       <Routes>
         {/* Routes that use the standard student-facing layout */}
         <Route element={<StudentLayout />}>
