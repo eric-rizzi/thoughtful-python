@@ -28,6 +28,7 @@ interface AuthState {
   user: UserProfile | null;
   accessToken: AccessTokenId | null;
   refreshToken: RefreshTokenId | null;
+  isSyncingProgress: boolean;
   actions: {
     login: (googleIdToken: string) => Promise<void>;
     logout: () => Promise<void>;
@@ -45,6 +46,7 @@ const initialAuthState = {
   user: null,
   accessToken: null,
   refreshToken: null,
+  isSyncingProgress: false,
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -106,24 +108,35 @@ export const useAuthStore = create<AuthState>()(
             accessToken,
             refreshToken,
             user: userProfile,
+            isSyncingProgress: true,
           });
 
-          // Step 4: Fetch/Sync user progress
-          let finalProgress;
-          if (anonymousCompletions.length > 0) {
-            console.log(
-              `Migrating ${anonymousCompletions.length} anonymous completions.`
-            );
-            finalProgress = await apiService.updateUserProgress(apiGatewayUrl, {
-              completions: anonymousCompletions,
-            });
-            clearAllAnonymousData();
-          } else {
-            finalProgress = await apiService.getUserProgress(apiGatewayUrl);
-          }
+          try {
+            let finalProgress;
+            if (anonymousCompletions.length > 0) {
+              console.log(
+                `Migrating ${anonymousCompletions.length} anonymous completions.`
+              );
+              finalProgress = await apiService.updateUserProgress(
+                apiGatewayUrl,
+                {
+                  completions: anonymousCompletions,
+                }
+              );
+              clearAllAnonymousData();
+            } else {
+              finalProgress = await apiService.getUserProgress(apiGatewayUrl);
+            }
 
-          // Step 5: Update the progress store with the latest data
-          useProgressStore.getState().actions.setServerProgress(finalProgress);
+            // Step 5: Update the progress store with the latest data
+            useProgressStore
+              .getState()
+              .actions.setServerProgress(finalProgress);
+          } catch (error) {
+            console.error("Failed to sync progress after login:", error);
+          } finally {
+            set({ isSyncingProgress: false });
+          }
 
           // The page does not need to reload.
         },

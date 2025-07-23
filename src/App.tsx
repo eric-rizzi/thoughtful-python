@@ -12,10 +12,13 @@ import Layout from "./components/Layout";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import { useThemeStore } from "./stores/themeStore";
 import { useProgressStore, useProgressActions } from "./stores/progressStore";
+import { useAuthStore } from "./stores/authStore";
 import StudentLayout from "./components/StudentLayout";
+import SyncingOverlay from "./components/SyncingOverlay";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
+  const isSyncingProgress = useAuthStore((state) => state.isSyncingProgress);
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
   const { clearPenalty } = useProgressActions();
 
@@ -46,40 +49,43 @@ function App() {
   }, [penaltyEndTime, clearPenalty]);
 
   return (
-    <Routes>
-      {/* Routes that use the standard student-facing layout */}
-      <Route element={<StudentLayout />}>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="unit/:unitId" element={<UnitPage />} />
-          <Route path="lesson/*" element={<LessonPage />} />
-          <Route path="editor" element={<CodeEditorPage />} />
-          <Route path="learning-entries" element={<LearningEntriesPage />} />
-          <Route path="configure" element={<ConfigurationPage />} />
-          <Route
-            path="progress"
-            element={
-              <AuthenticatedRoute>
-                <ProgressPage />
-              </AuthenticatedRoute>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <div>
-                <h2>404 - Page Not Found</h2>
-              </div>
-            }
-          />
+    <>
+      {isSyncingProgress && <SyncingOverlay />}
+      <Routes>
+        {/* Routes that use the standard student-facing layout */}
+        <Route element={<StudentLayout />}>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="unit/:unitId" element={<UnitPage />} />
+            <Route path="lesson/*" element={<LessonPage />} />
+            <Route path="editor" element={<CodeEditorPage />} />
+            <Route path="learning-entries" element={<LearningEntriesPage />} />
+            <Route path="configure" element={<ConfigurationPage />} />
+            <Route
+              path="progress"
+              element={
+                <AuthenticatedRoute>
+                  <ProgressPage />
+                </AuthenticatedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <div>
+                  <h2>404 - Page Not Found</h2>
+                </div>
+              }
+            />
+          </Route>
         </Route>
-      </Route>
 
-      <Route
-        path="instructor-dashboard/*"
-        element={<InstructorDashboardPage />}
-      />
-    </Routes>
+        <Route
+          path="instructor-dashboard/*"
+          element={<InstructorDashboardPage />}
+        />
+      </Routes>
+    </>
   );
 }
 
