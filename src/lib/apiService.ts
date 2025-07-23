@@ -43,7 +43,7 @@ export const USE_MOCKED_API = false;
 // Custom Error class to hold status and parsed response
 export class ApiError extends Error {
   status: number;
-  data: ErrorResponse | { message: string }; // Can hold the parsed JSON error or a simpler message
+  data: ErrorResponse | { message: string };
 
   constructor(
     message: string,
@@ -54,9 +54,11 @@ export class ApiError extends Error {
     this.name = "ApiError";
     this.status = status;
     this.data = data || { message };
-    Object.setPrototypeOf(this, ApiError.prototype); // For correct instanceof checks
+    Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
+
+// --- AUTOMATIC TOKEN REFRESH LOGIC ---
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -83,7 +85,10 @@ async function fetchWithAuth(
     useAuthStore.getState().actions;
   const token = getAccessToken();
 
-  // Set the Authorization header
+  if (!token) {
+    return Promise.reject(new ApiError("No access token available.", 401));
+  }
+
   options.headers = {
     ...options.headers,
     "Content-Type": "application/json",
@@ -92,7 +97,7 @@ async function fetchWithAuth(
 
   let response = await fetch(url, options);
 
-  if (response.status === 401) {
+  if (response.status === 401 || response.status === 403) {
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
@@ -119,8 +124,9 @@ async function fetchWithAuth(
       );
       setTokens(newTokens);
       processQueue(null, newTokens.accessToken);
+
       options.headers!["Authorization"] = `Bearer ${newTokens.accessToken}`;
-      response = await fetch(url, options); // Retry the original request
+      response = await fetch(url, options);
     } catch (refreshError) {
       processQueue(refreshError, null);
       logout();
