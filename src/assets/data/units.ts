@@ -59,11 +59,15 @@ const unitData: Unit[] = [
         guid: "5c3c6f3b-722f-4b19-b3ed-d532b7961f92",
       },
       {
-        path: "01_variables/01_var_errors",
+        path: "01_variables/01_var_multi",
+        guid: "aa145d0e-68cb-44b2-a484-8d7ab19e2810",
+      },
+      {
+        path: "01_variables/02_var_errors",
         guid: "14f3ba03-2020-44e6-b68d-ae8dde46da7e",
       },
       {
-        path: "01_variables/02_var_wrap_up",
+        path: "01_variables/03_var_wrap_up",
         guid: "14f3ba03-2020-44e6-b68d-ae8dde46da7e",
       },
     ],

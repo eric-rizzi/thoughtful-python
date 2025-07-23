@@ -8,15 +8,13 @@ import type {
   PRIMMSectionData,
   DebuggerSectionData,
   MultipleChoiceSectionData,
-  TestingSectionData,
-  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Variables: Storing Data",
   guid: "5c3c6f3b-722f-4b19-b3ed-d532b7961f92" as LessonId,
   description:
-    "Learn how to store and reuse data in your programs using variables. Variables are essential for creating programs that can work with different values.",
+    "Learn how to store and reuse data in your programs using variables to create more flexible, responsive programs.",
   sections: [
     {
       kind: "Information",
@@ -44,7 +42,7 @@ const lessonData: Lesson = {
       example: {
         id: "basic-variable-example",
         title: "Your First Variable",
-        code: 'name = "Alice"\nprint(name)\nprint("Hello, " + name + "!")',
+        code: 'name = "Alice"\nprint(name)\nprint("Hello, " + name)\n',
       },
     } as ObservationSectionData,
     {
@@ -86,7 +84,7 @@ const lessonData: Lesson = {
       examples: [
         {
           id: "integer-variable-primm",
-          code: "age = 15\nprint(age)\nprint(age + 5)\nprint(age)",
+          code: "age = 15\nprint(age)\nprint(age + 5)\nprint(age)\n",
           predictPrompt:
             "The variable `age` is set to 15. What do you think each print statement will output?",
         },
@@ -152,66 +150,6 @@ const lessonData: Lesson = {
         "Just like with integers, you can reassign string variables and even use the variables in their own (re)assignment!",
     } as PRIMMSectionData,
     {
-      kind: "Observation",
-      id: "multiple-variables" as SectionId,
-      title: "Using Multiple Variables",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Programs often use many variables at once. Each variable has its own name and stores its own value independently.\n\nRun the code below and observe how each variable maintains its own separate value, even when they're used together.",
-        },
-      ],
-      example: {
-        id: "multiple-vars-example",
-        title: "Multiple Variables",
-        code: 'first_name = "John"\nlast_name = "Smith"\nage = 25\nprint(first_name)\nprint(last_name)\nprint(age)\nprint(first_name + " " + last_name)',
-      },
-    } as ObservationSectionData,
-    {
-      kind: "Testing",
-      id: "variable-practice" as SectionId,
-      title: "Challenge: Personal Information",
-      content: [
-        {
-          kind: "text",
-          value:
-            'Now it\'s your turn! Write a program that:\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
-        },
-      ],
-      example: {
-        id: "variable-challenge",
-        title: "Implement Your Solution",
-        code: "favorite_color = \nlucky_number =\n",
-        testCases: [
-          {
-            input: null,
-            expected: "green\n7\n17",
-            description: "Test with favorite_color='green' and lucky_number=7",
-          },
-        ],
-        functionToTest: "__main__",
-      },
-    } as TestingSectionData,
-    {
-      kind: "Reflection",
-      id: "variables-reflection" as SectionId,
-      title: "Variables Reflection",
-      content: [
-        {
-          kind: "text",
-          value:
-            'Variables are fundamental to programming because they allow programs to store, change, and reuse data. Without variables, every value would have to be written directly into the code, making programs inflexible and hard to maintain.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how variables can make a program more useful, and write 3-4 sentences explaining how your program works. Remember to use the phrase "as seen in the example above".',
-        },
-      ],
-      topic: "Why Variables Matter",
-      isTopicPredefined: true,
-      code: "Create an example showing why variables are useful",
-      isCodePredefined: false,
-      explanation: "Explain how the code in example works (3-4 sentences)",
-      isExplanationPredefined: false,
-    } as ReflectionSectionData,
-    {
       kind: "Information",
       id: "variables-conclusion",
       title: "Conclusion",
@@ -219,7 +157,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nYou should feel proud. Over the previous three lessons, you've learned some of the most important concepts in programming. They will come up over and over again. In the next lesson, we'll pause and test ourselves on everything we've learned so far.",
+            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nIn the next lesson you'll learn how to create multiple variables and create your own program that uses variables to solve a real-world problem.",
         },
       ],
     } as InformationSectionData,

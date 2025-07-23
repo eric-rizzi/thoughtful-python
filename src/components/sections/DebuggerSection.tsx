@@ -386,7 +386,6 @@ const DebuggerSection: React.FC<DebuggerSectionProps> = ({ section }) => {
           value={userCode}
           onChange={setUserCode}
           readOnly={isTracing || simulationActive}
-          height="250px"
         />
       </div>
       <div className={styles.controls}>
