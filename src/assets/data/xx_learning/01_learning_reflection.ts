@@ -21,7 +21,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'There is a quote by a famous educational philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This section showcases another powerful learning tool that this website has in its tool belt: reflection.',
+            'There is a quote by a famous philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This section showcases another powerful learning tool that this website has in its tool belt: reflection.',
         },
       ],
     } as InformationSectionData,
@@ -56,7 +56,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Reflecting on things that you struggled with and then forcing yourself to articulate **why** you struggled is an incredibly powerful learning tool. This form of "journaling" can then form a record of everything you\'ve learned in case get stuck sometime later. These types of journals are considered best practice for anyone who takes their learning seriously: think of a scientist\'s notebook or a writer\'s journal.\n\nAs with PRIMM, AI has the potential to super-charge reflection. This is because it can provide quick feedback on mistakes. In addition, it can provide a "speed bump" to make you slow down and take the reflection seriously. Below is an example reflection section. You complete it by:\n1. Choosing the topic (since it\'s the first time, we\'ve set it to `How Print Works` for you)\n2. Creating a small code example (also set)\n3. Explaining how the code works\n4. Asking the AI if there is any room for improvement\n\nThe section forces you to iterate with AI to improve your code/analysis until you demonstrate deep understanding. Basically, you aren\'t "allowed" to submit and finish the section until the AI gives you at least a "mostly understands" on a scale of poor, developing, mostly, and fully. Annoying? A bit! Effective? Definitely! Try it out below.',
+            'Reflecting on things that you struggled with and then forcing yourself to articulate **why** you struggled is an incredibly powerful learning tool. This form of "journaling" can then form a record of everything you\'ve learned in case you get stuck sometime later. These types of journals are considered best practice for anyone who takes their learning seriously: think of a scientist\'s notebook or a writer\'s journal.\n\nAs with PRIMM, AI has the potential to super-charge reflection. This is because it can provide quick feedback on mistakes. In addition, it can provide a "speed bump" to make you slow down and take the reflection seriously. Below is an example reflection section. You complete it by:\n1. Choosing the topic (since it\'s the first time, we\'ve set it to `How Print Works` for you)\n2. Creating a small code example (also set)\n3. Explaining how the code works\n4. Asking the AI if there is any room for improvement\n\nThe section forces you to iterate with AI to improve your code/analysis until you demonstrate deep understanding. Basically, you aren\'t "allowed" to submit and finish the section until the AI gives you at least a "mostly understands" on a scale of poor, developing, mostly, and fully. Annoying? A bit! Effective? Definitely! Try it out below.',
         },
       ],
     } as InformationSectionData,
@@ -85,7 +85,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'The AI is here as a guide and a "speed bump". What is basically happening is the website sends your entire journal entry to a ChatBot and asks it to assess it using a rubric designed for new coders. The AI is also prompted to provide constructive feedback if there is some sort of misunderstanding.\n\nThe best way to approach reflection sections is to pretend you are writing for some future version of you who doesn\'t quite remember a topic. Keep the entries short and to the point. Using the magic phrase **as seen in the example above** will really help because it will keep your analysis rooted to your code - plus the AI has been prompted to give you extra points for using that exact phrase.',
+            'The AI is here as a guide and a "speed bump". What is basically happening is the website sends your entire journal entry to a ChatBot and asks it to assess it using a rubric designed for new coders. The AI is also prompted to provide constructive feedback if there is some sort of misunderstanding.\n\nThe best way to approach reflection sections is to pretend you are writing for some future version of yourself who doesn\'t quite remember a topic. Keep the entries short and to the point. Using the magic phrase **as seen in the example above** will really help because it will keep your analysis rooted to your code - plus the AI has been prompted to give you extra points for using that exact phrase.',
         },
       ],
     } as InformationSectionData,

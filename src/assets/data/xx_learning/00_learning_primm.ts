@@ -35,7 +35,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "This website is designed to allow you to quickly write, run, and debug programs. Below is your first program. Run it by clicking the `Run Code` button and compare the program with the resulting output to try and understand what is happening.",
+            "This website is designed to allow you to quickly write, run, and, debug programs. Below is your first program. Run it by clicking the `Run Code` button and compare the program with the resulting output to try and understand what is happening.",
         },
       ],
       example: {
@@ -68,7 +68,9 @@ const lessonData: Lesson = {
       ],
       prompts: [
         { PREDICT: "Force yourself to try and understand a program" },
-        { RUN: "Compare your prediction with the actual results" },
+        {
+          RUN: "Generate results to compare them with your expectations",
+        },
         { INVESTIGATE: "Understand any mistakes in your mental model" },
         { MODIFY: "Challenge yourself to expand on the existing ideas" },
         { MAKE: "Challenge yourself to implement your own ideas" },
@@ -121,11 +123,10 @@ const lessonData: Lesson = {
       options: [
         "Be specific in your prediction",
         "Be verbose to let the AI know you're smart",
-        "Be honest in your assessment of your certainty",
         "Be critical in your interpretation",
         "Be careful when reading the AI's feedback",
       ],
-      correctAnswers: [0, 2, 3, 4],
+      correctAnswers: [0, 2, 3],
       feedback: {
         correct:
           "Correct! The more you open yourself up to feedback, the more opportunity there is to learn.",

@@ -20,7 +20,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've just experienced the core learning strategies of this website: PRIMM and Reflection. These aren't random activities; they build on well-researched best practices for learning complex skills. Understanding these practices will not only help you get the most out of this site, but will help you learn pretty much anything more effectively. The core techniques for learning are: _spaced-practice_, _interleaving_, _retrieval-practice_, _elaboration_, _concrete examples_, and _dual coding_.\n\nEach of these techniques are a way of exercising your brain and creating complex webs of connections that improve your understanding. For more information about exactly how each of these techniques help you learn, [click here](https://www.example.com).",
+            "You've just experienced the core learning strategies of this website: PRIMM and Reflection. These aren't random activities; they're built on well-researched best practices for learning complex skills. Understanding these practices will not only help you get the most out of this site, but will help you learn pretty much anything more effectively. The core techniques for learning are: _spaced-practice_, _interleaving_, _retrieval-practice_, _elaboration_, _concrete examples_, and _dual coding_.\n\nEach of these techniques are a way of exercising your brain and creating complex webs of connections that improve your understanding. For more information about how each of these techniques help you learn, [click here](https://www.example.com).",
         },
       ],
     } as InformationSectionData,
@@ -55,7 +55,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "I'm going to bet that a fair number had to go back and reread the `Learning Best Practices` section once you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. This is the reason why there are so many PRIMM, reflection, and quiz sections. This approach maximizes active learning and deepens your understanding.",
+            "I'm going to bet that a fair number of you had to go back and reread the `Learning Best Practices` section once you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. This is the reason why there are so many PRIMM, reflection, and quiz sections. This approach maximizes active learning and deepens your understanding.",
         },
       ],
     } as InformationSectionData,
