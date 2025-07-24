@@ -1,4 +1,23 @@
+import type {
+  InformationSectionData,
+  Lesson,
+  ObservationSectionData,
+  LessonId,
+  SectionId,
+  MultipleSelectionSectionData,
+  PRIMMSectionData,
+  DebuggerSectionData,
+  MultipleChoiceSectionData,
+  TestingSectionData,
+  ReflectionSectionData,
+} from "../../../types/data";
 
+const lessonData: Lesson = {
+  title: "Variables: Storing Data",
+  guid: "aa145d0e-68cb-44b2-a484-8d7ab19e2810" as LessonId,
+  description:
+    "Learn how to handle and utilize multiple variables to create complex interactions.",
+  sections: [
     {
       kind: "Information",
       id: "variables-conclusion",
@@ -11,3 +30,7 @@
         },
       ],
     } as InformationSectionData,
+  ],
+};
+
+export default lessonData;
