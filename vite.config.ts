@@ -5,7 +5,12 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
   base: "/thoughtful-python/",
-
+  server: {
+    appType: "spa",
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+    },
+  },
   plugins: [
     react(),
     viteStaticCopy({
@@ -20,6 +25,10 @@ export default defineConfig({
         },
         {
           src: "src/assets/python", // Your source python folder
+          dest: ".",
+        },
+        {
+          src: "public/404.html",
           dest: ".",
         },
         // Add more targets if needed
