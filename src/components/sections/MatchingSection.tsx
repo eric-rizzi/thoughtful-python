@@ -91,6 +91,14 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
       checkCompletion
     );
 
+  // Determine if all drop zones are filled
+  const isFullyMatched = useMemo(() => {
+    return (
+      prompts.length > 0 &&
+      prompts.every((p) => savedState.userMatches[p] != null)
+    );
+  }, [prompts, savedState.userMatches]);
+
   // --- Drag and Drop Handlers ---
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -169,19 +177,15 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
               ? allOptions.find((opt) => opt.id === matchedOptionId)
               : null;
 
-            // The isCorrect check now compares the TEXT of the answer
-            const isCorrect =
-              isSectionComplete && matchedOption
-                ? solution[promptText] === matchedOption.text
-                : undefined;
-
             return (
               <div key={promptText} className={styles.matchRow}>
                 <div className={styles.promptItem}>{promptText}</div>
                 <div
                   className={`${styles.dropZone} ${
-                    isCorrect === true ? styles.correct : ""
-                  } ${isCorrect === false ? styles.incorrect : ""}`}
+                    isSectionComplete ? styles.correct : ""
+                  } ${
+                    isFullyMatched && !isSectionComplete ? styles.incorrect : ""
+                  }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, promptText)}
@@ -227,11 +231,16 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
         </div>
       </div>
 
+      {/* Incorrect feedback message */}
+      {isFullyMatched && !isSectionComplete && (
+        <div className={styles.incorrectMessage}>
+          Not quite right. You can drag the answers to rearrange them.
+        </div>
+      )}
+
+      {/* Correct feedback message */}
       {isSectionComplete && (
-        <div
-          className={sectionStyles.completionMessage}
-          style={{ marginTop: "1.5rem" }}
-        >
+        <div className={sectionStyles.completionMessage}>
           {section.feedback ? section.feedback.correct : "Correct!"}
         </div>
       )}
