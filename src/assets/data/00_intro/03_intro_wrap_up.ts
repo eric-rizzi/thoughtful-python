@@ -133,7 +133,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If you made it through all four parts, congratulations. You just built something real using only print statements, strings, and integers. If you struggled with quotation marks, got TypeError messages, or had to count characters on your fingers - that's completely normal. Every programmer has been there. The difference between those who succeed and those who don't isn't talent - it's persistence.",
+            "If you made it through all four parts, congratulations. You learned to write programs using print statements, strings, and integers. If you struggled with quotation marks, got `TypeError` messages, or had to count characters on your fingers - that's completely normal. Every programmer has been there. The difference between those who succeed and those who don't isn't talent - it's persistence.",
         },
       ],
     } as InformationSectionData,

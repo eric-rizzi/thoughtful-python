@@ -46,7 +46,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the [classic \"Hello, World!\" example](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program). Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: the two values inside the print statements.",
+            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the [classic](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) \"Hello, World!\" example. Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: the two values inside the print statements.",
         },
       ],
       example: {

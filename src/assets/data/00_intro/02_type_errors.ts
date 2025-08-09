@@ -104,7 +104,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
     mod = compile(source, filename, mode, flags | ast.PyCF_ONLY_AST)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "<exec>", line 2
-    SyntaxError: unterminated string literal print('hi)\`\`\``,
+    SyntaxError: unterminated string literal print('hi)`,
         },
       ],
       options: [

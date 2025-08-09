@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "So far, you've learned how to work with strings and integers directly in your code. But what if you want to use the same value multiple times? Or, what if you want to change a value that's used in many different locations? That's where **variables** come in. Variables allow you to store data and give it a name so you can use it later in your program.",
+            "So far, you've learned how to work with strings and integers directly in your code. But, what if you want to use the same value multiple times? Or, what if you want to easily change a value that's used in many different locations? That's where **variables** come in. Variables allow you to give a name to pieces of data so you can use it later in your program.",
         },
       ],
     } as InformationSectionData,
@@ -36,7 +36,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Creating a variable in Python is simple: you write the variable name, then an equals sign (`=`), then the value you want to store. For example `age = 13` creates a variable named `age` and then stores the integer 13 in it.\n\nRun the code below and pay attention to how the variable `name` gets created and then used in the two different print statements.",
+            "You can create a variable in Python in a single line: you write the variable name, then an equals sign (`=`), then the value you want to store. For example `age = 13` creates a variable named `age` and then stores the integer 13 in it.\n\nRun the code below and pay attention to how the variable `name` gets created and then used in the two different `print()` statements.",
         },
       ],
       example: {
@@ -100,7 +100,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "One of the most powerful features of variables is that you can change their values. When you assign a new value to an existing variable, it replaces the old value. Use the debugging tool below to watch how the variable `score` changes as the program runs.\n\nStep through the code line-by-line and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
+            "One of the most powerful features of variables is that you can change the value they're storing. When you assign a new value to an existing variable, it replaces the old value.\n\nUse the debugging tool to step line-by-line through the code and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
         },
       ],
       code: "score = 10\nprint(score)\nscore = 20\nprint(score)\nscore = score + 5\nprint(score)",
@@ -135,7 +135,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Variables work the same way with strings as they do with integers. You can reassign them and even use them to build new strings.\n\nPredict what you think this program will output, then run it to check your prediction.",
+            "Just as with integers, you can store new string values into variables that were already holding a string. You can even use the old value to build the new string that is being stored.\n\nPredict what you think this program will output, then run it to check your prediction.",
         },
       ],
       examples: [
@@ -143,7 +143,7 @@ const lessonData: Lesson = {
           id: "string-variable-change",
           code: 'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)',
           predictPrompt:
-            "The variable `greeting` starts as 'Hello' but gets changed twice. What do you think each print statement will output?",
+            'The variable `greeting` starts as "Hello" but gets changed twice. What do you think each print statement will output?',
         },
       ],
       conclusion:
