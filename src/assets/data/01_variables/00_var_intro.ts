@@ -11,7 +11,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Variables: Storing Data",
+  title: "Storing Data",
   guid: "5c3c6f3b-722f-4b19-b3ed-d532b7961f92" as LessonId,
   description:
     "Learn how to store and reuse data in your programs using variables to create more flexible, responsive programs.",
@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "So far, you've learned how to work with strings and integers directly in your code. But, what if you want to use the same value multiple times? Or, what if you want to easily change a value that's used in many different locations? That's where **variables** come in. Variables allow you to give a name to pieces of data so you can use it later in your program.",
+            "So far, you've learned how to work with strings and integers directly in your code. But, what if you want to use the same value multiple times? Or, what if you want to easily change a value that's used in many different locations? That's where **variables** come in. Variables allow you to give a name to a piece of data so you can use it later in your program.",
         },
       ],
     } as InformationSectionData,
@@ -135,7 +135,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Just as with integers, you can store new string values into variables that were already holding a string. You can even use the old value to build the new string that is being stored.\n\nPredict what you think this program will output, then run it to check your prediction.",
+            "Just like with integers, you can change (e.g., update, overwrite, reassign) the value that a variable is holding. And, just like with integers, you can use the old value when calculating what new value to store in the variable.\n\nPredict what you think this program will output, then run it to check your prediction.",
         },
       ],
       examples: [

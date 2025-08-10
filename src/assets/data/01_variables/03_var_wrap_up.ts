@@ -6,10 +6,11 @@ import type {
   MultipleChoiceSectionData,
   MultipleSelectionSectionData,
   TestingSectionData,
+  MatchingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Review and Practice",
+  title: "Variable Unit Challenge",
   guid: "14f3ba03-2020-44e6-b68d-ae8dde46da7e" as LessonId,
   description:
     "Test your understanding of strings, integers, and variables with a variety of practice problems and challenges.",
@@ -22,10 +23,33 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned a lot in the first three lessons: how to work with strings and integers, how different data-types behave differently, and how to store values in variables. This lesson uses a learning technique called **interleaving** to help solidify your understanding.\n\nInstead of practicing just one topic at a time, you'll encounter questions that all the topics you've learned so far. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts. Be sure to take your time and think carefully about each problem!",
+            "You've learned a lot in the previous lessons: how to work with strings and integers, how operations affect data-types differently, and how to store values in variables. This review lesson uses the learning technique called **interleaving** to help solidify your understanding. Interleaving is effective because it forces you to utilize prior knowledge while you are reviewing what you just learned.\n\nTherefore, instead of practicing just one topic at a time, in this lesson you'll encounter questions that touch on all the topics you've learned so far. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts.",
         },
       ],
     } as InformationSectionData,
+    {
+      kind: "Matching",
+      id: "order-vars" as SectionId,
+      title: "Order Matters",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Order the following lines of a program so the number 8 is printed out and then the number 5 is printed out.",
+        },
+      ],
+      prompts: [
+        { "Line 1": "x = 7" },
+        { "Line 2": "print(x + 1)" },
+        { "Line 3": "x = 3" },
+        { "Line 4": "x = x + 2" },
+        { "Line 5": "print(x)" },
+      ],
+      feedback: {
+        correct:
+          "Correct! You can reset the value of a variable to an entirely new value.",
+      },
+    } as MatchingSectionData,
     {
       kind: "MultipleChoice",
       id: "string-identification",
@@ -40,13 +64,36 @@ const lessonData: Lesson = {
       options: [
         "'It's a beautiful day'",
         '"She said "hello" to me"',
-        '"Hello World"',
+        `'I heard "yo" earlier'`,
         "'The cat's meow'",
       ],
       correctAnswer: 2,
       feedback: {
         correct:
           "Correct! This string uses double quotes consistently without any conflicting quotes inside.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "var-errors",
+      title: "Name That Error",
+      content: [
+        {
+          kind: "code",
+          value:
+            'Which of the following lines of code would result in this error:\n```\nError:\n\nExecution Error: Traceback (most recent call last):\n  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async\n    await CodeRunner(\n  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async\n    coroutine = eval(self.code, globals, locals)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<exec>", line 2, in <module>\nNameError: name \'num\' is not defined\n```\n',
+        },
+      ],
+      options: [
+        "`num = 10` followed by `print(number)`",
+        "`number = 10` followed by `print(num)`",
+        'num = 3 + "3"',
+        'number = 3 * "3"',
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct! The variable `number` was created but the program tries to use `num`.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -59,7 +106,7 @@ const lessonData: Lesson = {
           value: "Select all of the following that are integers (not strings):",
         },
       ],
-      options: ["42", '"42"', "0", '"hello"', "999", "'999'", "-5", '"-5"'],
+      options: ["42", '"forty two"', "0", '"hello"', "999", "'999'", "-5"],
       correctAnswers: [0, 2, 4, 6],
       feedback: {
         correct:
@@ -67,41 +114,29 @@ const lessonData: Lesson = {
       },
     } as MultipleSelectionSectionData,
     {
-      kind: "MultipleChoice",
-      id: "string-operations",
-      title: "String Concatenation",
+      kind: "MultipleSelection",
+      id: "variable-behavior",
+      title: "How Variables Work",
       content: [
         {
           kind: "text",
-          value: "What will be the output of the following code?",
+          value: "Which of the following statements about variables are true?",
         },
-        { kind: "code", value: 'print("cat" + "dog")' },
       ],
-      options: ["catdog", "cat dog", "cat + dog", "An error"],
-      correctAnswer: 0,
+      options: [
+        "Variables can store both strings and integers",
+        "Once you assign a value to a variable, it can never be changed",
+        "Variable names must always be surrounded by quotes",
+        "You can use a variable in its own reassignment (like x = x + 1)",
+        "Variables remember their values throughout the program",
+        "The = sign checks if two values are equal",
+      ],
+      correctAnswers: [0, 3, 4],
       feedback: {
         correct:
-          "Correct! When you use `+` with strings, it concatenates (joins) them together with no space in between.",
+          "Correct! Variables are flexible containers that can be reassigned and used in calculations.",
       },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleChoice",
-      id: "integer-operations",
-      title: "Integer Math",
-      content: [
-        {
-          kind: "text",
-          value: "What will be the output of the following code?",
-        },
-        { kind: "code", value: "print(15 - 3)" },
-      ],
-      options: ["18", "12", "153", "15-3"],
-      correctAnswer: 1,
-      feedback: {
-        correct:
-          "Correct! When you use `-` with integers, it performs subtraction: 15 - 3 = 12.",
-      },
-    } as MultipleChoiceSectionData,
+    } as MultipleSelectionSectionData,
     {
       kind: "MultipleSelection",
       id: "type-errors",
@@ -128,32 +163,6 @@ const lessonData: Lesson = {
       },
     } as MultipleSelectionSectionData,
     {
-      kind: "Testing",
-      id: "string-practice" as SectionId,
-      title: "Challenge: Quote Master",
-      content: [
-        {
-          kind: "text",
-          value:
-            'Write a program that prints out the following three lines exactly as shown:\n1. `The teacher said, "Good job!"`\n2. `It\'s going to be a great day.`\n3. `"Why?" she asked.`\n\nRemember to think carefully about which type of quotes to use for each line!',
-        },
-      ],
-      example: {
-        id: "quote-challenge",
-        title: "Print the Quotes",
-        code: "# Write your three print statements here",
-        testCases: [
-          {
-            input: null,
-            expected:
-              'The teacher said, "Good job!"\nIt\'s going to be a great day.\n"Why?" she asked.',
-            description: "Test that all three quotes are printed correctly",
-          },
-        ],
-        functionToTest: "__main__",
-      },
-    } as TestingSectionData,
-    {
       kind: "MultipleChoice",
       id: "variable-assignment",
       title: "Variable Assignment",
@@ -172,30 +181,6 @@ const lessonData: Lesson = {
           "Correct! x starts at 10, then gets changed to 5, then gets changed to 5 + 3 = 8.",
       },
     } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleSelection",
-      id: "variable-behavior",
-      title: "How Variables Work",
-      content: [
-        {
-          kind: "text",
-          value: "Which of the following statements about variables are true?",
-        },
-      ],
-      options: [
-        "Variables can store both strings and integers",
-        "Once you assign a value to a variable, it can never be changed",
-        "Variable names must always be surrounded by quotes",
-        "You can use a variable in its own reassignment (like x = x + 1)",
-        "Variables remember their values throughout the program",
-        "The = sign checks if two values are equal",
-      ],
-      correctAnswers: [0, 3, 4],
-      feedback: {
-        correct:
-          "Correct! Variables are flexible containers that can be reassigned and used in calculations.",
-      },
-    } as MultipleSelectionSectionData,
     {
       kind: "MultipleChoice",
       id: "variable-naming",

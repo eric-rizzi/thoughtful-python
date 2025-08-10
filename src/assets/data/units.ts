@@ -64,7 +64,7 @@ const unitData: Unit[] = [
       },
       {
         path: "01_variables/02_var_errors",
-        guid: "14f3ba03-2020-44e6-b68d-ae8dde46da7e",
+        guid: "5d47da97-ba3d-4ef4-8dab-4f725190a69b",
       },
       {
         path: "01_variables/03_var_wrap_up",

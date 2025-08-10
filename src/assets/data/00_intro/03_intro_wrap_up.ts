@@ -3,13 +3,14 @@ import type {
   Lesson,
   LessonId,
   MatchingSectionData,
+  MultipleChoiceSectionData,
   MultipleSelectionSectionData,
   SectionId,
   TestingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Unit Challenge",
+  title: "Intro Unit Challenge",
   guid: "a2f4b8c3-9d1e-4f3a-b7c9-2e8f5a6d9c4e" as LessonId,
   description:
     "Put together everything you've learned about strings, integers, and print statements to create social media posts.",
@@ -27,9 +28,27 @@ const lessonData: Lesson = {
       ],
     } as InformationSectionData,
     {
+      kind: "MultipleChoice",
+      id: "integer-operations",
+      title: "Integer Math",
+      content: [
+        {
+          kind: "text",
+          value: "What will be the output of the following code?",
+        },
+        { kind: "code", value: "print(15 - 3)" },
+      ],
+      options: ["18", "12", "153", "15 - 3"],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct! When you use `-` with integers, it performs subtraction: 15 - 3 = 12.",
+      },
+    } as MultipleChoiceSectionData,
+    {
       kind: "Testing",
       id: "instagram-likes" as SectionId,
-      title: "Challenge 1: Instagram Post",
+      title: "Instagram Post",
       content: [
         {
           kind: "text",
@@ -78,7 +97,7 @@ const lessonData: Lesson = {
     {
       kind: "Testing",
       id: "twitter-retwits" as SectionId,
-      title: "Challenge 2: Twit Stats",
+      title: "Twit Stats",
       content: [
         {
           kind: "text",

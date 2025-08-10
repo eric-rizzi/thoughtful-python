@@ -126,24 +126,6 @@ const lessonData: Lesson = {
     } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
-      id: "string-operations",
-      title: "String Concatenation",
-      content: [
-        {
-          kind: "text",
-          value: "What will be the output of the following code?",
-        },
-        { kind: "code", value: 'print("cat" + "dog")' },
-      ],
-      options: ["catdog", "cat dog", "cat + dog", "An error"],
-      correctAnswer: 0,
-      feedback: {
-        correct:
-          "Correct! When you use `+` with strings, it concatenates (joins) them together with no space in between.",
-      },
-    } as MultipleChoiceSectionData,
-    {
-      kind: "MultipleChoice",
       id: "function-naming-2",
       title: "Function Naming Again",
       content: [
