@@ -79,16 +79,14 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            "Below is some Python code that **defines** and **calls** the `greet()` function. Predict what you think the code will output, then run it to check your prediction.",
+            "Below is some Python code that **defines** and **calls** the `greet()` function. Predict what the code below will output, then run it to check your prediction.",
         },
       ],
-      examples: [
-        {
-          id: "primm-greet-function",
-          code: 'def greet():\n  print("Hello there!")\n  print("Welcome to Python!")\n\ngreet()\ngreet()\ngreet()',
-          predictPrompt: "What do you think will happen when you run the code?",
-        },
-      ],
+      example: {
+        id: "primm-greet-function",
+        code: 'def greet():\n  print("Hello there!")\n  print("Welcome to Python!")\n\ngreet()\ngreet()\ngreet()',
+        predictPrompt: "What do you think will happen when you run the code?",
+      },
       conclusion:
         "Correct! The ability to call a function multiple times is part of what makes them so useful.",
     } as PRIMMSectionData,

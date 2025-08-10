@@ -1,13 +1,8 @@
 import type {
   InformationSectionData,
   Lesson,
-  ObservationSectionData,
   LessonId,
   SectionId,
-  MultipleSelectionSectionData,
-  PRIMMSectionData,
-  DebuggerSectionData,
-  MultipleChoiceSectionData,
   TestingSectionData,
   ReflectionSectionData,
 } from "../../../types/data";
@@ -18,6 +13,18 @@ const lessonData: Lesson = {
   description:
     "Learn how to handle and utilize multiple variables to create complex interactions.",
   sections: [
+    {
+      kind: "Information",
+      id: "name-errors-intro",
+      title: "Introduction",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Using variables is necessary for pretty much all programs. Therefore, it's necessary to understand how to handle any errors that pop up while you're using them. As stated in the previous lesson on TypeErrors, errors are one of the most common reasons new programmers feel overwhelmed. Learning to understand this new type of error will make you a more confident, able programmer.",
+        },
+      ],
+    } as InformationSectionData,
     {
       kind: "Information",
       id: "name-errors" as SectionId,
@@ -37,9 +44,9 @@ const lessonData: Lesson = {
       ],
     } as InformationSectionData,
     {
-      kind: "Observation",
+      kind: "Testing",
       id: "name-errors" as SectionId,
-      title: "Variable Name Errors",
+      title: "Misspelled Variables",
       content: [
         {
           kind: "text",
@@ -50,9 +57,18 @@ const lessonData: Lesson = {
       example: {
         id: "misspelled-var-name-error",
         title: "Something's Wrong",
-        code: "var_a = 10\nvar_b = 11\nvar_c = var_b + van_c\nvar_z = var_a + var_b + var_c",
+        code: "var_a = 10\nvar_b = 11\nvar_c = var_b + van_a\nvar_z = var_a + var_b + var_c\nprint(var_z)",
+        testCases: [
+          {
+            input: null,
+            expected: "42",
+            description: "Test don't get NameError",
+          },
+        ],
+        functionToTest: "__main__",
       },
-    } as ObservationSectionData,
+    } as TestingSectionData,
+    {},
     {
       kind: "Testing",
       id: "variable-practice" as SectionId,

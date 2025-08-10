@@ -87,13 +87,11 @@ const lessonData: Lesson = {
             "Now, let's try things the PRIMM way so you can see the difference. Below is a PRIMM-ified version of the code you ran above. To complete the section, you must:\n1. Predict what will happen\n2. Run the program\n3. Investigate the output and explain what (if anything) was wrong with your prediction\n\n\nThe key is to be as **specific as possible** in your prediction and interpretation.",
         },
       ],
-      examples: [
-        {
-          id: "primm-quote-issue",
-          code: 'print("Hello, World!")\nprint("Now can I call myself a programmer?")',
-          predictPrompt: "What do you think the program will print out?",
-        },
-      ],
+      example: {
+        id: "primm-quote-issue",
+        code: 'print("Hello, World!")\nprint("Now can I call myself a programmer?")',
+        predictPrompt: "What do you think the program will print out?",
+      },
       conclusion:
         "PRIMM increases learning by making you read code carefully and then confront anything you got wrong",
     } as PRIMMSectionData,

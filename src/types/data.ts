@@ -272,7 +272,7 @@ export interface PRIMMCodeExample {
 
 export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
-  examples: PRIMMCodeExample[]; // Array of PRIMM blocks for this section
+  example: PRIMMCodeExample;
   conclusion?: string;
 }
 

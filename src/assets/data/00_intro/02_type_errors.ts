@@ -38,14 +38,12 @@ const lessonData: Lesson = {
             'What happens when you operate on a string and an integer? Below is a simple Python program that has this issue: the `3` is an integer but the `"4"` is a string. First, predict what you think the code will do and then investigate whether your prediction is correct. Be sure to read the AI response afterwards very carefully if your prediction was incorrect.',
         },
       ],
-      examples: [
-        {
-          id: "primm-type-issue",
-          code: 'print(3 + "4")',
-          predictPrompt:
-            "We are trying to do use the `+` operator on a string and an integer. What do you think will happen when you run the code?",
-        },
-      ],
+      example: {
+        id: "primm-type-issue",
+        code: 'print(3 + "4")',
+        predictPrompt:
+          "We are trying to do use the `+` operator on a string and an integer. What do you think will happen when you run the code?",
+      },
       conclusion:
         "Error messages can be overwhelming! Read the next section carefully for how to approach them.",
     } as PRIMMSectionData,

@@ -78,17 +78,15 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Variables can store more than just strings; they can also store integers. Below is a program that stores an integer in a variable and then uses the variable in some calculations.\n\nPredict what you think the code will output, then run it to check your prediction.",
+            "Variables can store more than just strings; they can also store integers. Below is a program that stores an integer in a variable and then uses the variable in some calculations.\n\nPredict what the code below will output, then run it to check your prediction.",
         },
       ],
-      examples: [
-        {
-          id: "integer-variable-primm",
-          code: "age = 15\nprint(age)\nprint(age + 5)\nprint(age)\n",
-          predictPrompt:
-            "The variable `age` is set to 15. What do you think each print statement will output?",
-        },
-      ],
+      example: {
+        id: "integer-variable-primm",
+        code: "age = 15\nprint(age)\nprint(age + 5)\nprint(age)\n",
+        predictPrompt:
+          "The variable `age` is set to 15. What do you think each print statement will output?",
+      },
       conclusion:
         "Variables remember their values! The variable `age` stayed 15 throughout the program, even after being used in the calculation `age + 5`",
     } as PRIMMSectionData,
@@ -135,17 +133,15 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Just like with integers, you can change (e.g., update, overwrite, reassign) the value that a variable is holding. And, just like with integers, you can use the old value when calculating what new value to store in the variable.\n\nPredict what you think this program will output, then run it to check your prediction.",
+            "Just like with integers, you can change (e.g., update, overwrite, reassign) the value that a variable is holding. And, just like with integers, you can use the old value when calculating what new value to store in the variable.\n\nPredict what the program below will output, then run it to check your prediction.",
         },
       ],
-      examples: [
-        {
-          id: "string-variable-change",
-          code: 'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)',
-          predictPrompt:
-            'The variable `greeting` starts as "Hello" but gets changed twice. What do you think each print statement will output?',
-        },
-      ],
+      example: {
+        id: "string-variable-change",
+        code: 'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)',
+        predictPrompt:
+          'The variable `greeting` starts as "Hello" but gets changed twice. What do you think each print statement will output?',
+      },
       conclusion:
         "Just like with integers, you can reassign string variables and even use the variables in their own (re)assignment!",
     } as PRIMMSectionData,

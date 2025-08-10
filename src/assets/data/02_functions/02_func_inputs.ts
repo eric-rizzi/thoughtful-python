@@ -23,16 +23,14 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Ok, now it\'s time to learn how to make functions a little more "general". Below is some Python code that **defines** and **calls** the `greet_person()` function. Notice that there is now a variable *between the parentheses*. Predict what you think the code will output, then run it to check your prediction.',
+            'Ok, now it\'s time to learn how to make functions a little more "general". Below is some Python code that **defines** and **calls** the `greet_person()` function. Notice that there is now a variable *between the parentheses*. Predict what the code below will output, then run it to check your prediction.',
         },
       ],
-      examples: [
-        {
-          id: "primm-greet-person-function",
-          code: 'def greet_person(name):\n  print("Hello there " + name + "!")\n\ngreet_person("Ben")\ngreet_person("Meg")',
-          predictPrompt: "What do you think will happen when you run the code?",
-        },
-      ],
+      example: {
+        id: "primm-greet-person-function",
+        code: 'def greet_person(name):\n  print("Hello there " + name + "!")\n\ngreet_person("Ben")\ngreet_person("Meg")',
+        predictPrompt: "What do you think will happen when you run the code?",
+      },
       conclusion: `Calling a function with different "inputs" allows them to mold to the situation.`,
     } as PRIMMSectionData,
     {

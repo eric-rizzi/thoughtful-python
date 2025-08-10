@@ -90,14 +90,12 @@ const lessonData: Lesson = {
             "Below is a Python program that attempts to print a famous quote. Unfortunately, there's a problem.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, use the feedback from AI to correct/refine your mental model.",
         },
       ],
-      examples: [
-        {
-          id: "primm-quote-issue",
-          code: 'print("John Dewey said: "We learn from reflecting on experience.")',
-          predictPrompt:
-            "There's something wrong with the code above. What is the problem and what do you think will happen when you run the code?",
-        },
-      ],
+      example: {
+        id: "primm-quote-issue",
+        code: 'print("John Dewey said: "We learn from reflecting on experience.")',
+        predictPrompt:
+          "There's something wrong with the code above. What is the problem and what do you think will happen when you run the code?",
+      },
       conclusion:
         "When you use double quotes to denote a string, you can't use double quotes **inside the string**",
     } as PRIMMSectionData,

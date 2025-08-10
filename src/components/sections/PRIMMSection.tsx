@@ -45,7 +45,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
   const { isAuthenticated } = useAuthStore();
   const apiGatewayUrl = API_GATEWAY_BASE_URL;
 
-  const currentExample: PRIMMCodeExample | undefined = section.examples[0];
+  const currentExample: PRIMMCodeExample | undefined = section.example;
   const storageKey = `primmProgressiveFill_${unitId}_${lessonId}_${
     section.id
   }_${currentExample?.id || "default"}`;

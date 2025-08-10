@@ -1,13 +1,12 @@
 import type {
   InformationSectionData,
   Lesson,
-  ObservationSectionData,
   LessonId,
   SectionId,
   DebuggerSectionData,
   MultipleChoiceSectionData,
-  TestingSectionData,
-  ReflectionSectionData,
+  PRIMMSectionData,
+  MultipleSelectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -64,7 +63,55 @@ const lessonData: Lesson = {
       ],
       code: 'first_name = "Eric"\nlast_name = "Smith"\nage = 25\nfirst_name = first_name + "a"\nage = age + 10\nprint(first_name + " " + last_name)\nage = age + 3\nprint(age)',
     } as DebuggerSectionData,
-
+    {
+      kind: "Information",
+      id: "variables-single",
+      title: "Short Term Memory",
+      content: [
+        {
+          kind: "text",
+          value:
+            'An important thing to understand is that variables can only remember one thing. As soon as their value is set, they have no way to "remember" what their previous value was.\n\nConsider the line of code `x = x + 1`. The computer handles this line in two distinct parts. First, it calculates what the stuff to the **right** of the equal size (the value) should be. Then, it saves this value into the variable on the **left** side of the equal sign.',
+        },
+      ],
+    } as InformationSectionData,
+    {
+      kind: "PRIMM",
+      id: "switch-values-primm" as SectionId,
+      title: "Switching Values",
+      content: [
+        {
+          kind: "text",
+          value:
+            "A common problem in programming is to switch the values stored in variable. For example, if you have the variables `x` and `y`, you might want to put the value in `x` into `y` and the value in `y` into `x`. Unfortunately, the fact that variables can only store one value at a time can make this tricky.\n\nPredict what this program will output, then run it to check your prediction.",
+        },
+      ],
+      example: {
+        id: "string-variable-change",
+        code: 'x = "Hello"\ny = "Goodbye"\nx = y\ny = x\nprint(x)\nprint(y)',
+        predictPrompt:
+          "The program is attempting to swap the values stored in `x` and `y`. What do you think the program will output?",
+      },
+      conclusion:
+        'Since variables can only remember a single value, `"Hello"` gets lost when the value of `y` is stored into `x`!',
+    } as PRIMMSectionData,
+    {
+      kind: "MultipleSelection",
+      id: "data-types",
+      title: "Data Types",
+      content: [
+        {
+          kind: "text",
+          value: "Select all of the following that are integers (not strings):",
+        },
+      ],
+      options: ["42", '"forty two"', "0", '"hello"', "999", "'999'", "-5"],
+      correctAnswers: [0, 2, 4, 6],
+      feedback: {
+        correct:
+          "Correct! Integers are whole numbers without quotation marks around them.",
+      },
+    } as MultipleSelectionSectionData,
     {
       kind: "Information",
       id: "variables-conclusion",
