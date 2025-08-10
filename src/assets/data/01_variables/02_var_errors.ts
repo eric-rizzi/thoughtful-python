@@ -5,13 +5,14 @@ import type {
   SectionId,
   TestingSectionData,
   ReflectionSectionData,
+  MatchingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
   title: "Variable Errors",
   guid: "5d47da97-ba3d-4ef4-8dab-4f725190a69b" as LessonId,
   description:
-    "Learn how to handle and utilize multiple variables to create complex interactions.",
+    "Learn how to interpret errors that come up when using variables.",
   sections: [
     {
       kind: "Information",
@@ -33,13 +34,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "When you misspell a word in a string, you get a typo. When you misspell a variable name, however, you get an error. The error message follows the same format as the previous errors that we've encountered where the key information is in the last two lines. For example, assume you tried to run the code below.",
+            "When you misspell a word in a string, you get a typo. When you misspell a variable name, you get an error. The error message follows the same format as the previous errors that we've encountered where the key information is in the last two lines. For example, assume you tried to run the code below.",
         },
         { kind: "code", value: "number = 10\nprint(numbr)\n" },
         {
           kind: "text",
           value:
-            'This would result in the following error:\n```\nError:\n\nExecution Error: Traceback (most recent call last):\n  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async\n    await CodeRunner(\n  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async\n    coroutine = eval(self.code, globals, locals)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<exec>", line 2, in <module>\nNameError: name \'numbr\' is not defined\n```\nWhat the error is basically saying is that there is no variable named `numbr`. This makes sense because the program misspelled the variable `number` that was created on the previous line.',
+            'This would result in the following error:\n```\nError:\n\nExecution Error: Traceback (most recent call last):\n  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async\n    await CodeRunner(\n  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async\n    coroutine = eval(self.code, globals, locals)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<exec>", line 2, in <module>\nNameError: name \'numbr\' is not defined\n```\nWhat the error is saying is that there is no variable named `numbr`. This makes sense because the program misspelled the variable `number` that was created on the previous line.',
         },
       ],
     } as InformationSectionData,
@@ -68,7 +69,42 @@ const lessonData: Lesson = {
         functionToTest: "__main__",
       },
     } as TestingSectionData,
-    {},
+    {
+      kind: "Matching",
+      id: "partial-program" as SectionId,
+      title: "Different Error Types",
+      content: [
+        {
+          kind: "text",
+          value:
+            'Python will execute programs up until it hits an error. This means that you can end up with a program that partially works, and then breaks in the middle.\n\nOrder the following lines of a program so that the program would print out `8`, `15` and then "raise" a `NameError`',
+        },
+      ],
+      prompts: [
+        { "Line 1": "x = 6" },
+        { "Line 2": "x = x + 2" },
+        { "Line 3": "print(x)" },
+        { "Line 4": "x = x + 6" },
+        { "Line 5": "print(x + 1)" },
+        { "Line 6": "x = x + y" },
+      ],
+      feedback: {
+        correct:
+          "Correct! The computer runs lines 1 - 5 and then raises an error on line 6.",
+      },
+    } as MatchingSectionData,
+    {
+      kind: "Information",
+      id: "all-variable-pieces",
+      title: "All the Pieces",
+      content: [
+        {
+          kind: "text",
+          value:
+            'Hopefully now you can appreciate how a computer executes a program. A computer basically goes line by line through the program. Every time the computer sees a line with a `=`, it calculates the value of the stuff on the right of the `=` and stores it into the variable on the left of the `=`. Every time a variable is read, the computer looks up in its memory for the value stored inside it. If a variable by that name hasn\'t been created before, then it "raises" a `NameError`. If the operation between the data isn\'t possible, then it "raises" a `TypeError`.\n\nThis is basically how your computer is working right now. It\'s executing billions of lines of code a second, reading values in memory and using those values to calculate new things. The overall effect is a thing that responds to your clicks and keystrokes seamlessly.',
+        },
+      ],
+    } as InformationSectionData,
     {
       kind: "Testing",
       id: "variable-practice" as SectionId,

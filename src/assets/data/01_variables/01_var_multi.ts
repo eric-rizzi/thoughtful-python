@@ -6,7 +6,7 @@ import type {
   DebuggerSectionData,
   MultipleChoiceSectionData,
   PRIMMSectionData,
-  MultipleSelectionSectionData,
+  MatchingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -44,7 +44,7 @@ const lessonData: Lesson = {
             "If you were to insert the line `students_count = students_count + 16` between the first and second line of the example from the video, what would be printed out?",
         },
       ],
-      options: ["16", "1000", "1016", "Error"],
+      options: ["16", "428", "1016", "Error"],
       correctAnswer: 2,
       feedback: {
         correct: "Correct!",
@@ -71,7 +71,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'An important thing to understand is that variables can only remember one thing. As soon as their value is set, they have no way to "remember" what their previous value was.\n\nConsider the line of code `x = x + 1`. The computer handles this line in two distinct parts. First, it calculates what the stuff to the **right** of the equal size (the value) should be. Then, it saves this value into the variable on the **left** side of the equal sign.',
+            'An important thing to understand is that variables can only remember one thing at a time. As soon as their value is set, they have no way to "remember" what their previous value was.\n\nConsider the line of code `x = x + 1`. The computer handles this line in two distinct parts. First, it calculates what the stuff to the **right** of the equal sign (the value) should be. Then, it saves this value into the variable on the **left** side of the equal sign.',
         },
       ],
     } as InformationSectionData,
@@ -83,7 +83,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "A common problem in programming is to switch the values stored in variable. For example, if you have the variables `x` and `y`, you might want to put the value in `x` into `y` and the value in `y` into `x`. Unfortunately, the fact that variables can only store one value at a time can make this tricky.\n\nPredict what this program will output, then run it to check your prediction.",
+            "A common problem in programming is to switch the values stored in two variables. For example, if you have the variables `x` and `y`, you might want to store the value in `x` into `y` and the value in `y` into `x`. Unfortunately, the fact that variables can only store one value at a time can make this tricky.\n\nPredict what this program will output, then run it to check your prediction.",
         },
       ],
       example: {
@@ -96,22 +96,26 @@ const lessonData: Lesson = {
         'Since variables can only remember a single value, `"Hello"` gets lost when the value of `y` is stored into `x`!',
     } as PRIMMSectionData,
     {
-      kind: "MultipleSelection",
-      id: "data-types",
-      title: "Data Types",
+      kind: "Matching",
+      id: "switch-values-question" as SectionId,
+      title: "Properly Switch Values",
       content: [
         {
           kind: "text",
-          value: "Select all of the following that are integers (not strings):",
+          value:
+            'To properly switch values, you need something called a "holder variable". This is a third variable to store the value of one of the variables so it doesn\'t get overwritten during the switch.\n\nOrder the following lines of a program so that `x` gets the value of `y` and `y` gets the value of `x`.',
         },
       ],
-      options: ["42", '"forty two"', "0", '"hello"', "999", "'999'", "-5"],
-      correctAnswers: [0, 2, 4, 6],
+      prompts: [
+        { "Line 1": "holder = x" },
+        { "Line 2": "x = y" },
+        { "Line 3": "y = holder" },
+      ],
       feedback: {
         correct:
-          "Correct! Integers are whole numbers without quotation marks around them.",
+          "Correct! You fist need to save the value of `x` so it doesn't later get lost.",
       },
-    } as MultipleSelectionSectionData,
+    } as MatchingSectionData,
     {
       kind: "Information",
       id: "variables-conclusion",
