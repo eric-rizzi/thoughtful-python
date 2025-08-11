@@ -106,6 +106,11 @@ export interface PredictionTableRow {
   description: string;
 }
 
+export interface FeedbackText {
+  correct: string;
+  incorrect?: string;
+}
+
 export interface PredictionSectionData extends LessonSection {
   kind: "Prediction";
   functionDisplay: {
@@ -116,25 +121,21 @@ export interface PredictionSectionData extends LessonSection {
     columns: string[];
     rows: PredictionTableRow[];
   };
-  completionMessage?: string;
+  feedback?: FeedbackText;
 }
 
 export interface MultipleChoiceSectionData extends LessonSection {
   kind: "MultipleChoice";
   options: string[];
   correctAnswer: number;
-  feedback?: {
-    correct: string;
-  };
+  feedback?: FeedbackText;
 }
 
 export interface MultipleSelectionSectionData extends LessonSection {
   kind: "MultipleSelection";
   options: string[];
   correctAnswers: number[];
-  feedback?: {
-    correct: string;
-  };
+  feedback?: FeedbackText;
 }
 
 export interface MatchingSectionData extends LessonSection {
@@ -142,9 +143,7 @@ export interface MatchingSectionData extends LessonSection {
   prompts: Array<{ [key: string]: string }>;
   // An optional array of indices to determine the initial shuffled order of answers.
   initialOrder?: number[];
-  feedback?: {
-    correct: string;
-  };
+  feedback?: FeedbackText;
 }
 
 // Define the structured command types for JavaScript turtle
@@ -160,7 +159,6 @@ export type JsTurtleCommand =
 
 export interface TurtleSectionData extends LessonSection {
   kind: "Turtle";
-  instructions: string;
   initialCode: string;
   validationCriteria: {
     type: string;
@@ -175,10 +173,7 @@ export interface TurtleSectionData extends LessonSection {
     name: string;
     description: string;
   }>;
-  feedback: {
-    correct: string;
-    incorrect: string;
-  };
+  feedback?: FeedbackText;
 }
 
 export interface ReflectionSubmission {

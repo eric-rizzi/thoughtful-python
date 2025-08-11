@@ -179,9 +179,9 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         </table>
       </div>
 
-      {isSectionComplete && section.completionMessage && (
+      {isSectionComplete && section.feedback && (
         <div className={styles.completionMessage}>
-          {section.completionMessage}
+          {section.feedback.correct}
         </div>
       )}
     </section>

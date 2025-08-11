@@ -12,6 +12,7 @@ import styles from "./Section.module.css";
 import CodeEditor from "../CodeEditor";
 import { usePyodide } from "../../contexts/PyodideContext";
 import { useProgressActions } from "../../stores/progressStore";
+import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface RealTurtleInstance {
   execute: (commands: JsTurtleCommand[]) => Promise<void>;
@@ -73,10 +74,10 @@ const setupJsTurtle = (canvas: HTMLCanvasElement): RealTurtleInstance => {
         }
         break;
       case "left":
-        heading = (heading + command.angle) % 360;
+        heading = (heading - command.angle) % 360;
         break;
       case "right":
-        heading = (heading - command.angle) % 360;
+        heading = (heading + command.angle) % 360;
         break;
       case "penup":
         penDown = false;
@@ -165,17 +166,17 @@ class CaptureTurtle:
             raise TypeError("Distance must be a number")
         self.forward(-distance)
 
-    def left(self, angle):
-        if not isinstance(angle, (int, float)):
-            raise TypeError("Angle must be a number")
-        self._heading = (self._heading + angle) % 360
-        self._add_command({'type': 'left', 'angle': float(angle)})
-
     def right(self, angle):
         if not isinstance(angle, (int, float)):
             raise TypeError("Angle must be a number")
-        self._heading = (self._heading - angle) % 360
+        self._heading = (self._heading + angle) % 360
         self._add_command({'type': 'right', 'angle': float(angle)})
+
+    def left(self, angle):
+        if not isinstance(angle, (int, float)):
+            raise TypeError("Angle must be a number")
+        self._heading = (self._heading - angle) % 360
+        self._add_command({'type': 'left', 'angle': float(angle)})
 
     def penup(self):
         self._pen_down = False
@@ -298,10 +299,10 @@ const TurtleSection: React.FC<{
 ${pythonCaptureModuleCode}
 # --- User Code ---
 try:
-    ${codeToRun
-      .split("\n")
-      .map((line) => `    ${line}`) // Basic indentation
-      .join("\n")}
+${codeToRun
+  .split("\n")
+  .map((line) => `    ${line}`) // Basic indentation
+  .join("\n")}
 except Exception as e:
     import traceback
     # Print a specific marker for Python execution errors
@@ -316,6 +317,7 @@ json.dumps(_js_turtle_commands_)
 `;
 
       try {
+        console.log(fullPythonScript);
         const resultProxy = await pyodide.runPythonAsync(fullPythonScript);
 
         // Check if the output contains our error marker
@@ -419,10 +421,19 @@ json.dumps(_js_turtle_commands_)
       userCommands,
       expectedCommands
     );
+    let outputMessage: string;
+    if (message) {
+      outputMessage = message;
+    } else if (isCorrect) {
+      outputMessage = section.feedback ? section.feedback.correct : "Correct!";
+    } else {
+      outputMessage =
+        section.feedback && section.feedback.incorrect
+          ? section.feedback.incorrect
+          : "Incorrect";
+    }
     setFeedback({
-      message:
-        message ||
-        (isCorrect ? section.feedback.correct : section.feedback.incorrect),
+      message: outputMessage,
       type: isCorrect ? "correct" : "incorrect",
     });
     if (isCorrect) {
@@ -562,7 +573,10 @@ json.dumps(_js_turtle_commands_)
           };
       }
     }
-    return { isCorrect: true, message: section.feedback.correct };
+    return {
+      isCorrect: true,
+      message: section.feedback ? section.feedback.correct : "Correct!",
+    };
   };
 
   const canvasWidth = 400;
@@ -572,15 +586,9 @@ json.dumps(_js_turtle_commands_)
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {section.content}
-        </ReactMarkdown>
+        <ContentRenderer content={section.content} />
       </div>
 
-      <div className={styles.turtleInstructions}>
-        <h4>Instructions:</h4>
-        <p>{section.instructions}</p>
-      </div>
       <div className={styles.turtleCommandsReference}>
         <h4>Available Turtle Commands (Python):</h4>
         <ul>
