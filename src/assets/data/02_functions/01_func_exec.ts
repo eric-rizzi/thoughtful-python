@@ -66,7 +66,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now that you've finished watching, pause and reflect for a moment. The video did a nice job showing how you can \"fold\" your programs to reduce their length. This is where the art of programming comes in. It's about identifying patterns in your code that allows you to make a program smaller and easier to understand.",
+            'Now that you\'ve finished watching, pause and reflect for a moment. The video did a nice job showing how you can "fold" your programs to reduce their length. This is where the art of programming comes in. Good programmers can identify patterns in their code that allows them to make a program smaller and easier to understand.',
         },
       ],
     } as InformationSectionData,

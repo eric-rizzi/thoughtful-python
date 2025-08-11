@@ -52,7 +52,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The various operators that you learned in math class are all present in Python: addition, subtraction, multiplication, division, and even exponents.\n\nSee if you can match the left side (integers and operators) with the right side (resulting integer).",
+            "All the various operators that you learned in math class are all present in Python: addition, subtraction, multiplication, division, and even exponents.\n\nSee if you can match the left side (integers and operators) with the right side (resulting integer).",
         },
       ],
       prompts: [
@@ -95,7 +95,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "It's time to test your intuition: Which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
+            "It's time to test your intuition: which of the following is the result of running `print(3 + 4)`. Notice that **both are integers**!",
         },
       ],
       options: ["7", "34", "333", "An error"],
@@ -153,7 +153,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Great job! You have learned about the two main types of data that beginner programmers need. In the next section you'll start to write your own programs that use these data types and learn to interpret error messages if/when something goes wrong.",
+            "Great job! You have learned about the two main **data types** that beginner programmers need. In the next section you'll start to write your own programs that use these data types and learn to interpret error messages if/when something goes wrong.",
         },
       ],
     } as InformationSectionData,

@@ -52,7 +52,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "There is a misspelling in the simple program below. Use the `NameError` that is output when you run the program so that you can quickly find and fix the bug.",
+            'There is a misspelling in the simple program below. Use the `NameError` that is "raised" when you run the program so that you can quickly find and fix the bug.',
         },
       ],
       example: {
@@ -77,7 +77,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Python will execute programs up until it hits an error. This means that you can end up with a program that partially works, and then breaks in the middle.\n\nOrder the following lines of a program so that the program would print out `8`, `15` and then "raise" a `NameError`',
+            'Computes will execute Python programs up until they hit an error. This means that you can end up with a program that partially works, and then breaks in the middle.\n\nOrder the following lines of a program so that the program would print out `8`, `15` and then "raise" a `NameError`',
         },
       ],
       prompts: [
@@ -101,7 +101,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Hopefully now you can appreciate how a computer executes a program. A computer basically goes line by line through the program. Every time the computer sees a line with a `=`, it calculates the value of the stuff on the right of the `=` and stores it into the variable on the left of the `=`. Every time a variable is read, the computer looks up in its memory for the value stored inside it. If a variable by that name hasn\'t been created before, then it "raises" a `NameError`. If the operation between the data isn\'t possible, then it "raises" a `TypeError`.\n\nThis is basically how your computer is working right now. It\'s executing billions of lines of code a second, reading values in memory and using those values to calculate new things. The overall effect is a thing that responds to your clicks and keystrokes seamlessly.',
+            'Hopefully, now you can appreciate how a computer executes a program. A computer goes line by line through the program. Every time it sees a line with a `=`, it calculates the value of the stuff on the right and stores it into the variable on the left. Every time a variable is read, the computer accesses its memory for the value stored inside it. If a variable by that name hasn\'t been created before, then the computer "raises" a `NameError`. If the operation between the data isn\'t possible, then it "raises" a `TypeError`. Finally, if there\'s something like a missing parentheses or quotation mark, it "raises" a `SyntaxError`.\n\nThis is basically how your computer is working right now. It\'s executing billions of lines of code a second, reading values in memory and using those values to calculate new things. The overall effect is a machine that responds to your clicks and keystrokes seamlessly.',
         },
       ],
     } as InformationSectionData,
@@ -113,7 +113,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Now it\'s your turn! Write a program that:\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
+            'Now it\'s your turn to pull all the pieces together! Write a program that:\n1. Creates a variable called `favorite_color` and stores the color `"green"` in it\n2. Creates a variable called `lucky_number` that stores the number `7` in it\n3. Prints out the color\n4. Prints out the lucky number\n5. Prints out the lucky number plus 10',
         },
       ],
       example: {

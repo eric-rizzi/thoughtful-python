@@ -127,7 +127,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "Select all of the statements that are True:",
+          value:
+            "Which of the following statements are true? Select all that apply.",
         },
       ],
       options: [

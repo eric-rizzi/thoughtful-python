@@ -55,7 +55,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Getting errors while you're writing a program is very common. This is likely the first error you've encountered but it definitely won't be the last. Learning how to interpret errors will save you **a ton of time** later.\n\nThe error above is trying to tell you two things: where and what the issue is.\n- Where\n    - To find the line that has a problem, look at the second to last line\n    - The error above says \"line 1\", which makes sense since our program is only one line\n- What\n    - To find what the problem is, look at the last line\n    - The error above says the problem is that we're doing an operation (`+`) that can't handle two different data types, which makes sense since the original, offending line was `print(3 + \"4\")`",
+            "Getting errors while you're writing a program is very common. You got a `SyntaxError` in the first lesson and here you're getting a `TypeError`. Learning how to interpret errors will save you **a ton of time** later.\n\nThe error above is trying to tell you two things: where and what the issue is.\n- Where\n    - To find the line that has a problem, look at the second to last line\n    - The error above says \"line 1\", which makes sense since our program is only one line\n- What\n    - To find what the problem is, look at the last line\n    - The error above says the problem is that we're doing an operation (`+`) that can't handle two different data types, which makes sense since the original, offending line was `print(3 + \"4\")`",
         },
       ],
     } as InformationSectionData,

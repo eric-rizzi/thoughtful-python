@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned a lot in the previous lessons: how to work with strings and integers, how operations affect data-types differently, and how to store values in variables. This review lesson uses the learning technique called **interleaving** to help solidify your understanding. Interleaving is effective because it forces you to utilize prior knowledge while you are reviewing what you just learned.\n\nTherefore, instead of practicing just one topic at a time, in this lesson you'll encounter questions that touch on all the topics you've learned so far. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts.",
+            "You've learned a lot in the previous lessons: how to work with strings and integers, how operations affect data-types differently, and how to store values in variables. This review uses a learning technique called **interleaving** to help solidify your understanding. Interleaving is effective because it forces you to utilize prior knowledge while you are reviewing what you just learned.\n\nTherefore, instead of practicing just one topic at a time, in this lesson you'll encounter questions that touch on all the topics you've learned so far. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts.",
         },
       ],
     } as InformationSectionData,
@@ -58,7 +58,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Which of the following is a valid string that could be printed without causing an error?",
+            "Which of the following is a valid string that could be printed without causing a `SyntaxError`?",
         },
       ],
       options: [
@@ -79,7 +79,7 @@ const lessonData: Lesson = {
       title: "Name That Error",
       content: [
         {
-          kind: "code",
+          kind: "text",
           value:
             'Which of the following lines of code would result in this error:\n```\nError:\n\nExecution Error: Traceback (most recent call last):\n  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async\n    await CodeRunner(\n  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async\n    coroutine = eval(self.code, globals, locals)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<exec>", line 2, in <module>\nNameError: name \'num\' is not defined\n```\n',
         },
@@ -120,7 +120,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "Which of the following statements about variables are true?",
+          value:
+            "Which of the following statements about variables are true? Select all that apply.",
         },
       ],
       options: [
@@ -145,7 +146,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Which of the following lines of code would cause a TypeError?",
+            "Which of the following lines of code would cause a `TypeError`? Select all that apply.",
         },
       ],
       options: [
@@ -235,7 +236,7 @@ const lessonData: Lesson = {
       example: {
         id: "variable-challenge",
         title: "Implement Your Solution",
-        code: "# Create your variable here\n\n# Print the required outputs here",
+        code: "# Your code here",
         testCases: [
           {
             input: null,

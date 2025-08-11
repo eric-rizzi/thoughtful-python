@@ -56,7 +56,7 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'As you can see, a function is basically a small chunk of code that\'s waiting to be used. The function is "defined" with the line `def greet():` and then everything that\'s **indented under the function** is the code to be run once the function is "called". Once the function has been defined, it can be called over and over again.\n\nWhich of the following lines of code "calls" the function?',
+            'As you can see, a function is basically a small chunk of code that\'s sitting there, waiting to be used. The function is "defined" with the line `def greet():` and then everything that\'s **indented under the function** is the code to be run once the function is "called". Once a function has been defined, it can be called over and over again.\n\nWhich of the following lines of code "calls" the function?',
         },
       ],
       options: [
@@ -98,7 +98,7 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'There are seemingly a lot of parts to creating/using a function, but it\'s really just four main pieces:\n- `def` starts "defining" the function\n- `greet` is the name of the function\n- The indented code below the `def greet():` is the code the function will run\n- The unindented `greet()` "calls" the function\n\nFor another perspective about functions. Ignore the talk about pep-8, we\'ll talk about that later.',
+            'There are seemingly a lot of parts to creating/using a function, but it\'s really just four main pieces:\n- `def` starts "defining" the function\n- `greet` is the name of the function\n- The indented code below the `def greet():` is the code the function will run\n- The unindented `greet()` "calls" the function\n\nFor another perspective about functions, watch the video below (ignore the talk about pep-8, we\'ll talk about that later).',
         },
         {
           kind: "video",
@@ -116,7 +116,8 @@ Run the code and see what happens!`,
       content: [
         {
           kind: "text",
-          value: "Which of the following statements about functions are True:",
+          value:
+            "Which of the following statements about functions are true? Select all that apply.",
         },
       ],
       options: [
@@ -209,7 +210,7 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'Functions are fundamental to programming because they allow you to organize your programs. Without functions, every program would be one large blob of code. Functions allow you to "fold" your code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
+            'Functions are fundamental to programming because they allow you to break your program up into understandable chunks. Without functions, every program would be one large blob of code. Functions allow you to "fold" your code to make it smaller and easier to understand.\n\nNow it\'s time to reflect to formalize your knowledge. Create a simple 3-4 line code example that demonstrates how functions work. Then, write 3-4 sentences explaining how your program works, pointing out key parts such as the function definition and function call. Remember to use the phrase "as seen in the example above".',
         },
       ],
       topic: "How Functions Work",

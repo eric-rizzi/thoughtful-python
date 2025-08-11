@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Relying on only one type of information (e.g., reading) limits your potential. For optimal results, it's best to use a technique called dual encoding, which means mixing up the ways you learn. The more ways you can see, hear, touch, or smell what you're learning, the more likely you are to remember it.\n\nFor this reason, where applicable, we've included images and videos to augment the lessons. In this case, the video below talks about variables and explains how they hold different data types in \"slots\" of memory in the computer. You can almost view variables as labels for the memory holding the data you want to store.",
+            "The more ways you can see, hear, touch, or smell what you're learning, the more likely you are to remember it. Using multiple ways to interact with new information is a technique called **dual encoding** and it's one of the best ways to form strong connections in your brain.\n\nFor this reason, where applicable, we've included images and videos to augment the lessons. In this case, the video below talks about variables and explains how they hold different data types in \"slots\" of memory in the computer. You can almost view variables as labels for the memory holding the data you want to store.",
         },
         {
           kind: "video",
@@ -124,7 +124,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Great job learning about some of the complexities of variables! The more practice you have, the easier to will be to understand when and how to use variables and how to debug any issues that pop up while you're using them.",
+            "Great job learning about some of the complexities of variables! The more practice you have, the easier it will be to understand when and how to use variables and how to debug any issues that pop up while you're using them.",
         },
       ],
     } as InformationSectionData,

@@ -53,7 +53,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Looking at the line `name = "Alice"` from the example above, which of the following statements are true?',
+            'Looking at the line `name = "Alice"` from the example above, which of the following statements are true? Select all that apply.',
         },
       ],
       options: [
@@ -153,7 +153,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nIn the next lesson you'll learn how to create multiple variables and create your own program that uses variables to solve a real-world problem.",
+            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nIn the next lesson you'll learn how to create multiple variables in a program.",
         },
       ],
     } as InformationSectionData,

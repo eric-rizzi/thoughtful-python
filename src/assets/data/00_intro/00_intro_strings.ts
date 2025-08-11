@@ -34,7 +34,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this lesson, you\'ll learn about how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
+            'Learning Python is great for formalizing your understanding of difficult topics and sharing your ideas with others. In this lesson, you\'ll learn how to print out "strings of characters" to the screen: a necessary part of building useful programs.',
         },
       ],
     } as InformationSectionData,
@@ -46,7 +46,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the [classic](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) \"Hello, World!\" example. Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: the two values inside the print statements.",
+            "Computers wouldn't be of any use if they couldn't communicate with their users. The `print()` statement is used to display output to the user. It's one of the most basic and frequently used bits of code in Python.\n\nLet's start with the [classic](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) \"Hello, World!\" example. Run the code below by clicking the `Run Code` button. You will see how the program produces two outputs: one line for each value inside a print statement.",
         },
       ],
       example: {
@@ -87,7 +87,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Below is a Python program that attempts to print a famous quote. Unfortunately, there's a problem.\n\nFirst, predict what you think the code will do when run and then see if your prediction is correct. Finally, use the feedback from AI to correct/refine your mental model.",
+            "Below is a Python program that attempts to print a famous quote. Unfortunately, there's a problem.\n\nFirst, predict what you think the code will do when you run it and then see if your prediction is correct. Finally, use the feedback from AI to correct/refine your mental model.",
         },
       ],
       example: {
