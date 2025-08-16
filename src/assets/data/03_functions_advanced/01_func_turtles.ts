@@ -56,7 +56,6 @@ const lessonData: Lesson = {
           "import turtle\nt = turtle.Turtle()\n\ndef make_T():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.left(180)\n  t.forward(200)\n\nmake_T()",
       },
     } as ObservationSectionData,
-
     {
       kind: "MultipleChoice",
       id: "turtle-angle",
@@ -91,9 +90,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        visualization: "console",
+        visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n\nmake_shape()",
+          "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n\nmake_shape()",
       },
       predictPrompt:
         "Look at the pattern of forward and right commands. What shape do you think this will draw?",
@@ -112,9 +111,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        visualization: "console",
+        visualization: "turtle",
         initialCode:
-          'import turtle\n\n# Set pen color to red\nturtle.color("red")\nturtle.forward(100)\n\n# Change to blue\nturtle.color("blue")\nturtle.right(90)\nturtle.forward(100)\n\n# Change to green\nturtle.color("green")\nturtle.right(90)\nturtle.forward(100)\n\nturtle.done()',
+          'import turtle\nt = turtle.Turtle()\n\n# Set pen color to red\nt.color("red")\nt.forward(100)\n\n# Change to blue\nt.color("blue")\nt.right(90)\nt.forward(100)\n\n# Change to green\nt.color("green")\nt.right(90)\nt.forward(100)',
       },
     } as ObservationSectionData,
     {
@@ -129,9 +128,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        visualization: "console",
+        visualization: "turtle",
         initialCode:
-          "import turtle\n\n# Draw first line\nturtle.forward(50)\n\n# Lift pen up\nturtle.penup()\nturtle.forward(50)  # No line drawn!\n\n# Put pen down\nturtle.pendown()\nturtle.forward(50)  # Drawing again\n\nturtle.done()",
+          "import turtle\n\nt = turtle.Turtle()\n# Draw first line\nturtle.forward(50)\n\n# Lift pen up\nt.penup()\nt.forward(50)  # No line drawn!\n\n# Put pen down\nt.pendown()\nt.forward(50)",
       },
     } as DebuggerSectionData,
     {
@@ -146,7 +145,7 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        visualization: "console",
+        visualization: "turtle",
         initialCode:
           "import turtle\n\n# Draw your triangle here\n# Each side should be 100 pixels\n\nturtle.done()",
       },

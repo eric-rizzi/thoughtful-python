@@ -76,7 +76,6 @@ const ConsoleDisplay: React.FC<CodeExecutorProps> = ({
   sectionId,
 }) => {
   // 1. The code state is now managed here ("lifting state up").
-  console.log(example.initialCode);
   const [code, setCode] = useState(example.initialCode);
 
   const { runCode, isLoading, output, error } = useInteractiveExample({

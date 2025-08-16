@@ -1,0 +1,146 @@
+.coverageCodeDisplayContainer {
+  composes: functionDisplayContainer from global; /* Or copy styles */
+  margin-bottom: 1.5rem;
+}
+.coverageCodeDisplayTitle {
+  composes: functionDisplayTitle from global; /* Or copy styles */
+}
+.coverageCodeDisplayCode {
+  composes: functionDisplayCode from global; /* Or copy styles */
+}
+
+.coverageInstruction {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.coverageTableContainer {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.coverageTable {
+  width: 100%;
+  min-width: 700px; /* Ensure enough space for columns */
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+.coverageTable th,
+.coverageTable td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left; /* Align text left, center numbers if needed */
+  vertical-align: middle;
+}
+
+.coverageTable th {
+  background-color: #eef6ff;
+  font-weight: 600;
+  white-space: nowrap; /* Prevent headers wrapping */
+}
+
+.coverageTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Highlight rows based on correctness */
+.correctRow {
+  background-color: rgba(212, 237, 218, 0.3) !important;
+}
+.incorrectRow {
+  background-color: rgba(248, 215, 218, 0.2) !important;
+}
+
+.coverageInput {
+  width: 100%;
+  min-width: 80px; /* Ensure reasonable input width */
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.expectedOutputCell,
+.actualOutputCell {
+  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap; /* Allow wrapping */
+  vertical-align: top; /* Align output top */
+}
+.expectedOutputCell pre,
+.actualOutputCell pre {
+  margin: 0;
+  padding: 0.25rem; /* Add slight padding */
+}
+
+.actualOutputCell.correct pre {
+  background-color: #d4edda; /* Green background for correct output */
+  color: #155724;
+}
+
+.actualOutputCell.incorrect pre {
+  background-color: #f8d7da; /* Red background for incorrect output */
+  color: #721c24;
+}
+.actualOutputCell.error pre {
+  background-color: #f8d7da; /* From .incorrect style */
+  color: #721c24; /* From .incorrect style */
+  font-weight: bold; /* Specific style for error */
+  /* Add any other styles needed for error output display */
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 0.25rem;
+}
+
+.actionCell {
+  text-align: center;
+  min-width: 80px;
+}
+
+.coverageRunButton {
+  composes: runButton from global; /* Reuse run button style */
+  padding: 0.5rem 1rem; /* Adjust padding if needed */
+  font-size: 0.85rem;
+}
+
+.coverageRunButton:disabled {
+  /* Instead of composes: runButton:disabled ... */
+  background-color: #a8c7e0; /* Copied from .runButton:disabled style */
+  cursor: not-allowed; /* Copied from .runButton:disabled style */
+}
+
+.hintButton {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 18px; /* Adjust line height */
+  text-align: center;
+  background-color: #ffd43b;
+  color: #333;
+  border: 1px solid #ffc107;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  vertical-align: middle;
+}
+.hintButton:hover {
+  background-color: #ffca2c;
+}
+
+.coverageProgress {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}

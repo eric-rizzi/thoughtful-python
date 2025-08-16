@@ -1,19 +1,14 @@
-// src/components/sections/CoverageSection.tsx
-import React, { useCallback, useMemo } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import React, { useMemo } from "react";
 import type {
   CoverageSectionData,
-  SavedCoverageState,
   InputParam,
-  CoverageChallenge,
   LessonId,
   UnitId,
 } from "../../types/data";
 import styles from "./Section.module.css";
-import { usePyodide } from "../../contexts/PyodideContext";
+import coverageStyles from "./CoverageSection.module.css";
+import { useCoverageLogic } from "../../hooks/useCoverageLogic";
 import CodeEditor from "../CodeEditor";
-import { useSectionProgress } from "../../hooks/useSectionProgress";
 import ContentRenderer from "../content_blocks/ContentRenderer";
 
 interface CoverageSectionProps {
@@ -28,202 +23,28 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
   lessonId,
 }) => {
   const {
-    runPythonCode,
-    isLoading: isPyodideLoading,
-    error: pyodideError,
-  } = usePyodide();
-
-  const storageKey = `coverageState_${unitId}_${lessonId}_${section.id}`;
-
-  // Initialize the state for the hook. Each challenge will have an entry.
-  const initialHookState = useMemo((): SavedCoverageState => {
-    const initialChallengeStates: SavedCoverageState["challengeStates"] = {};
-    section.coverageChallenges.forEach((challenge) => {
-      const initialInputs: { [paramName: string]: string } = {};
-      section.inputParams.forEach((param) => {
-        initialInputs[param.name] = ""; // Default to empty string
-      });
-      initialChallengeStates[challenge.id] = {
-        inputs: initialInputs,
-        actualOutput: null,
-        isCorrect: null,
-        // 'isRunning' is not part of PersistedChallengeState / SavedCoverageState
-      };
-    });
-    return { challengeStates: initialChallengeStates };
-  }, [section.coverageChallenges, section.inputParams]);
-
-  const checkCoverageCompletion = useCallback(
-    (currentHookState: SavedCoverageState): boolean => {
-      if (section.coverageChallenges.length === 0) {
-        return false; // Or true if empty sections are considered complete by default
-      }
-      return section.coverageChallenges.every(
-        (challenge) =>
-          currentHookState.challengeStates[challenge.id]?.isCorrect === true
-      );
-    },
-    [section.coverageChallenges]
-  );
-
-  const [
-    coverageHookState, // This is SavedCoverageState { challengeStates: { ... } }
-    setCoverageHookState,
-    isSectionComplete, // Boolean from the hook
-  ] = useSectionProgress<SavedCoverageState>(
+    challengeStates,
+    isSectionComplete,
+    runningStates,
+    isLoading,
+    pyodideError,
+    handleInputChange,
+    runChallenge,
+  } = useCoverageLogic({
     unitId,
     lessonId,
-    section.id,
-    storageKey,
-    initialHookState,
-    checkCoverageCompletion
-  );
-
-  // Component-level state for 'isRunning' status of each challenge, not persisted.
-  const [runningStates, setRunningStates] = React.useState<{
-    [challengeId: string]: boolean;
-  }>({});
+    sectionId: section.id,
+    codeToRun: section.example.initialCode,
+    inputParams: section.inputParams,
+    coverageChallenges: section.coverageChallenges,
+  });
 
   const completedCount = useMemo(() => {
-    return Object.values(coverageHookState.challengeStates).filter(
-      (state) => state.isCorrect === true
-    ).length;
-  }, [coverageHookState.challengeStates]);
-
+    return Object.values(challengeStates).filter((s) => s.isCorrect).length;
+  }, [challengeStates]);
   const totalChallenges = section.coverageChallenges.length;
   const progressPercent =
     totalChallenges > 0 ? (completedCount / totalChallenges) * 100 : 0;
-
-  const handleInputChange = useCallback(
-    (challengeId: string, paramName: string, value: string) => {
-      setCoverageHookState((prevState) => {
-        const currentChallengeState = prevState.challengeStates[
-          challengeId
-        ] || {
-          inputs: {},
-          actualOutput: null,
-          isCorrect: null,
-        };
-        return {
-          ...prevState,
-          challengeStates: {
-            ...prevState.challengeStates,
-            [challengeId]: {
-              ...currentChallengeState,
-              inputs: { ...currentChallengeState.inputs, [paramName]: value },
-              actualOutput: null, // Reset output and correctness on input change
-              isCorrect: null,
-            },
-          },
-        };
-      });
-    },
-    [setCoverageHookState]
-  );
-
-  const handleRunChallenge = useCallback(
-    async (challenge: CoverageChallenge) => {
-      if (
-        isPyodideLoading ||
-        pyodideError ||
-        !coverageHookState.challengeStates[challenge.id]
-      ) {
-        // Update persisted state with an error message if Pyodide isn't ready
-        setCoverageHookState((prev) => ({
-          ...prev,
-          challengeStates: {
-            ...prev.challengeStates,
-            [challenge.id]: {
-              ...prev.challengeStates[challenge.id],
-              actualOutput: `Error: Python environment not ready.`,
-              isCorrect: false,
-            },
-          },
-        }));
-        return;
-      }
-
-      setRunningStates((prev) => ({ ...prev, [challenge.id]: true }));
-      // Update persisted state to show "Running..."
-      setCoverageHookState((prev) => ({
-        ...prev,
-        challengeStates: {
-          ...prev.challengeStates,
-          [challenge.id]: {
-            ...prev.challengeStates[challenge.id],
-            actualOutput: "Running...",
-            isCorrect: null,
-          },
-        },
-      }));
-
-      const currentChallengeInputs =
-        coverageHookState.challengeStates[challenge.id].inputs;
-      let runError: string | null = null;
-      let actualOutputText: string | null = null; // Renamed to avoid conflict with actualOutput in state
-      let isCorrectFlag = false;
-
-      try {
-        const assignments = section.inputParams
-          .map((param) => {
-            const rawValue = currentChallengeInputs[param.name] || "";
-            let pyValue: string;
-            if (param.type === "number") {
-              const num = parseFloat(rawValue);
-              pyValue = isNaN(num) ? "None" : String(num);
-            } else if (param.type === "boolean") {
-              const lowerVal = rawValue.toLowerCase().trim();
-              if (lowerVal === "true") pyValue = "True";
-              else if (lowerVal === "false") pyValue = "False";
-              else pyValue = `"${String(rawValue).replace(/"/g, '\\"')}"`;
-            } else {
-              const escapedValue = rawValue
-                .replace(/\\/g, "\\\\")
-                .replace(/"/g, '\\"');
-              pyValue = `"${escapedValue}"`;
-            }
-            if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(param.name)) {
-              throw new Error(`Invalid input parameter name: ${param.name}`);
-            }
-            return `${param.name} = ${pyValue}`;
-          })
-          .join("\n");
-
-        const pythonCode = `${assignments}\n\n${section.code}`;
-        const result = await runPythonCode(pythonCode);
-        runError = result.error;
-        actualOutputText = result.output?.trim() ?? "";
-        isCorrectFlag =
-          !runError && actualOutputText === challenge.expectedOutput.trim();
-      } catch (err) {
-        console.error(`Error running coverage challenge ${challenge.id}:`, err);
-        runError = err instanceof Error ? err.message : String(err);
-        isCorrectFlag = false;
-      } finally {
-        setCoverageHookState((prev) => ({
-          ...prev,
-          challengeStates: {
-            ...prev.challengeStates,
-            [challenge.id]: {
-              ...prev.challengeStates[challenge.id],
-              actualOutput: runError ? `Error: ${runError}` : actualOutputText,
-              isCorrect: runError ? false : isCorrectFlag,
-            },
-          },
-        }));
-        setRunningStates((prev) => ({ ...prev, [challenge.id]: false }));
-      }
-    },
-    [
-      coverageHookState.challengeStates, // Depends on the inputs within this state
-      section.inputParams,
-      section.code,
-      runPythonCode,
-      isPyodideLoading,
-      pyodideError,
-      setCoverageHookState,
-    ]
-  );
 
   return (
     <section id={section.id} className={styles.section}>
@@ -232,26 +53,27 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
         <ContentRenderer content={section.content} />
       </div>
 
-      <div className={styles.coverageCodeDisplayContainer}>
-        <h4 className={styles.coverageCodeDisplayTitle}>Code to Analyze:</h4>
+      <div className={styles.exampleContainer}>
+        <h4 className={coverageStyles.coverageCodeDisplayTitle}>
+          Code to Analyze:
+        </h4>
         <CodeEditor
-          value={section.code}
+          value={section.example.initialCode}
           onChange={() => {}}
           readOnly={true}
-          height="auto"
           minHeight="50px"
         />
       </div>
 
-      <div className={styles.coverageInstruction}>
+      <div className={coverageStyles.coverageInstruction}>
         <p>
           For each "Expected Output" below, fill in the input fields and click
           "Run" to see if the code produces that exact output.
         </p>
       </div>
 
-      <div className={styles.coverageTableContainer}>
-        <table className={styles.coverageTable}>
+      <div className={coverageStyles.coverageTableContainer}>
+        <table className={coverageStyles.coverageTable}>
           <thead>
             <tr>
               {section.inputParams.map((param) => (
@@ -264,25 +86,13 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
           </thead>
           <tbody>
             {section.coverageChallenges.map((challenge) => {
-              // Get the persisted state from the hook
-              const persistedState =
-                coverageHookState.challengeStates[challenge.id] ||
-                initialHookState.challengeStates[challenge.id];
-              const isChallengeRunning = runningStates[challenge.id] || false;
-
+              const state = challengeStates[challenge.id];
+              const isRunning = runningStates[challenge.id] || false;
               const rowClass =
-                persistedState.isCorrect === true
-                  ? styles.correctRow
-                  : persistedState.isCorrect === false
-                  ? styles.incorrectRow
-                  : "";
-              const outputCellClass =
-                persistedState.isCorrect === true
-                  ? styles.correct
-                  : persistedState.isCorrect === false
-                  ? styles.incorrect
-                  : persistedState.actualOutput?.startsWith("Error:")
-                  ? styles.error
+                state.isCorrect === true
+                  ? coverageStyles.correctRow
+                  : state.isCorrect === false
+                  ? coverageStyles.incorrectRow
                   : "";
 
               return (
@@ -291,9 +101,9 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                     <td key={param.name}>
                       <input
                         type={param.type === "number" ? "number" : "text"}
-                        className={styles.coverageInput}
+                        className={coverageStyles.coverageInput}
                         placeholder={param.placeholder}
-                        value={persistedState.inputs[param.name] ?? ""}
+                        value={state.inputs[param.name] ?? ""}
                         onChange={(e) =>
                           handleInputChange(
                             challenge.id,
@@ -301,39 +111,27 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                             e.target.value
                           )
                         }
-                        disabled={isChallengeRunning || isPyodideLoading}
-                        aria-label={`Input for ${param.name} for challenge ${challenge.id}`}
+                        disabled={isRunning || isLoading}
                       />
                     </td>
                   ))}
-                  <td className={styles.expectedOutputCell}>
+                  <td className={coverageStyles.expectedOutputCell}>
                     <pre>{challenge.expectedOutput}</pre>
-                    {challenge.hint && (
-                      <button
-                        className={styles.hintButton}
-                        title={challenge.hint}
-                        onClick={() => alert(`Hint: ${challenge.hint}`)}
-                        aria-label={`Hint for challenge ${challenge.id}`}
-                      >
-                        ?
-                      </button>
-                    )}
                   </td>
                   <td
-                    className={`${styles.actualOutputCell} ${outputCellClass}`}
+                    className={`${coverageStyles.actualOutputCell} ${
+                      state.isCorrect === false ? styles.incorrect : ""
+                    }`}
                   >
-                    <pre>{persistedState.actualOutput ?? ""}</pre>,
+                    <pre>{state.actualOutput ?? ""}</pre>
                   </td>
-                  <td className={styles.actionCell}>
+                  <td className={coverageStyles.actionCell}>
                     <button
-                      onClick={() => handleRunChallenge(challenge)}
-                      disabled={
-                        isChallengeRunning || isPyodideLoading || !!pyodideError
-                      }
-                      className={styles.coverageRunButton}
-                      aria-label={`Run challenge ${challenge.id}`}
+                      onClick={() => runChallenge(challenge)}
+                      disabled={isRunning || isLoading || !!pyodideError}
+                      className={coverageStyles.coverageRunButton}
                     >
-                      {isChallengeRunning ? "Running..." : "Run"}
+                      {isRunning ? "Running..." : "Run"}
                     </button>
                   </td>
                 </tr>
@@ -343,7 +141,7 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
         </table>
       </div>
 
-      <div className={styles.coverageProgress}>
+      <div className={coverageStyles.coverageProgress}>
         <div className={styles.progressBar}>
           <div
             className={
