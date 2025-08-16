@@ -180,38 +180,39 @@ export interface DebuggerSectionData extends LessonSection {
   advancedControls?: boolean;
 }
 
+export interface InputParam {
+  variableName: string; // Name of the variable used in the Python code
+  variableType: "text" | "number" | "boolean"; // Input type hint
+}
+
 export interface PredictionTableRow {
   inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
-  description: string;
+  hint?: string; // Optional hint for the user
 }
 
 export interface PredictionSectionData extends LessonSection {
   kind: "Prediction";
   example: ExecutableCode;
   predictionTable: {
-    columns: string[];
+    functionToTest: string;
+    columns: InputParam[];
     rows: PredictionTableRow[];
   };
-  feedback?: FeedbackText;
 }
 
-export interface CoverageChallenge {
-  id: string; // Unique ID for the challenge row
+export interface CoverageTableRow {
   expectedOutput: string; // The exact stdout expected
   hint?: string; // Optional hint for the user
-}
-
-export interface InputParam {
-  name: string; // Name of the variable used in the Python code
-  type: "text" | "number" | "boolean"; // Input type hint
-  placeholder: string; // Placeholder text for the input field
 }
 
 export interface CoverageSectionData extends LessonSection {
   kind: "Coverage";
   example: ExecutableCode;
-  inputParams: InputParam[]; // Definitions of the inputs needed
-  coverageChallenges: CoverageChallenge[]; // The list of challenges
+  coverageTable: {
+    functionToTest: string;
+    columns: InputParam[];
+    rows: CoverageTableRow[];
+  };
 }
 
 // Type for the state of a single challenge row
@@ -220,6 +221,16 @@ export interface ChallengeState {
   actualOutput: string | null;
   isCorrect: boolean | null;
   isRunning: boolean;
+}
+
+export interface SavedPredictionState {
+  predictions: {
+    [rowIndex: number]: {
+      userAnswer: string;
+      isCorrect: boolean | null;
+      actualOutput: string | null;
+    };
+  };
 }
 
 // Type for the overall state saved in localStorage

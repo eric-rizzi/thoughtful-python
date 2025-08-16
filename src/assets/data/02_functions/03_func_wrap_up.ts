@@ -1,6 +1,8 @@
 import type {
   CoverageSectionData,
+  CoverageTableRow,
   InformationSectionData,
+  InputParam,
   Lesson,
   LessonId,
   MatchingSectionData,
@@ -74,7 +76,7 @@ const lessonData: Lesson = {
     } as MultipleChoiceSectionData,
     {
       kind: "Coverage",
-      id: "simple-coverage-single",
+      id: "simple-coverage-single1",
       title: "Different Inputs",
       content: [
         {
@@ -85,32 +87,31 @@ const lessonData: Lesson = {
       example: {
         visualization: "console",
         initialCode:
-          "def do_math(x):\n    y = x + x\n    z = y + y\n    print(z)\n\n# Call the function with the input value\ndo_math(input_val)",
+          "def do_math(x):\n    y = x + x\n    z = y + y\n    print(z)\n\n",
       },
-      coverageChallenges: [
-        {
-          id: "challenge-1",
-          expectedOutput: "12",
-          hint: "12 = ? + ? + ? + ?",
-        },
-        {
-          id: "challenge-2",
-          expectedOutput: "4",
-          hint: "4 = ? + ? + ? + ?",
-        },
-        {
-          id: "challenge-3",
-          expectedOutput: "28",
-          hint: "28 = ? + ? + ? + ?",
-        },
-      ],
-      inputParams: [
-        {
-          name: "input_val",
-          type: "number",
-          placeholder: "Enter a number",
-        },
-      ],
+      coverageTable: {
+        functionToTest: "do_math",
+        columns: [
+          {
+            variableName: "x",
+            variableType: "number",
+          } as InputParam,
+        ],
+        rows: [
+          {
+            expectedOutput: "12",
+            hint: "12 = ? + ? + ? + ?",
+          } as CoverageTableRow,
+          {
+            expectedOutput: "4",
+            hint: "4 = ? + ? + ? + ?",
+          } as CoverageTableRow,
+          {
+            expectedOutput: "28",
+            hint: "28 = ? + ? + ? + ?",
+          },
+        ],
+      },
     } as CoverageSectionData,
     {
       kind: "MultipleChoice",
@@ -209,7 +210,8 @@ const lessonData: Lesson = {
         initialCode: "def fn(x):\n  print(x)",
       },
       predictionTable: {
-        columns: ["Inputs", "Expected Output"],
+        functionToTest: "fn",
+        columns: [{ variableName: "x", variableType: "number" }],
         rows: [{ inputs: [2] }, { inputs: [4] }, { inputs: [6] }],
       },
     } as PredictionSectionData,
