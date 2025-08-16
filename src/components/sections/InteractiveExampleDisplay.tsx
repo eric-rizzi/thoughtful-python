@@ -41,15 +41,18 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
         </button>
       </div>
       {(output || error) && (
-        <div className={styles.outputArea}>
-          <pre
-            className={`${styles.outputPre} ${
-              // Apply the error style if it's a Pyodide loading error OR a Python execution error.
-              error || isPythonError ? styles.errorOutput : ""
-            }`}
-          >
-            {error ? error.message : output}
-          </pre>
+        <div>
+          <h4>Output:</h4>
+          <div className={styles.outputArea}>
+            <pre
+              className={`${styles.outputPre} ${
+                // Apply the error style if it's a Pyodide loading error OR a Python execution error.
+                error || isPythonError ? styles.errorOutput : ""
+              }`}
+            >
+              {error ? error.message : output}
+            </pre>
+          </div>
         </div>
       )}
     </div>

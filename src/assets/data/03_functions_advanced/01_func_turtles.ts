@@ -8,7 +8,6 @@ import type {
   PRIMMSectionData,
   TestingSectionData,
   DebuggerSectionData,
-  TurtleSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -40,9 +39,8 @@ const lessonData: Lesson = {
         },
       ],
     } as InformationSectionData,
-
     {
-      kind: "Turtle",
+      kind: "Observation",
       id: "first-turtle" as SectionId,
       title: "Your First Turtle Program",
       content: [
@@ -52,9 +50,12 @@ const lessonData: Lesson = {
             "Let's start with the basics. Run this program and watch what the turtle does. Pay attention to how each command affects the turtle's movement.",
         },
       ],
-      initialCode:
-        "import turtle\nt = turtle.Turtle()\n\ndef make_T():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.left(180)\n  t.forward(200)\n\nmake_T()",
-    } as TurtleSectionData,
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef make_T():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.left(180)\n  t.forward(200)\n\nmake_T()",
+      },
+    } as ObservationSectionData,
 
     {
       kind: "MultipleChoice",

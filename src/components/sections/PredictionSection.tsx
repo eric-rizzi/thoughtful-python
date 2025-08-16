@@ -1,7 +1,5 @@
 // src/components/sections/PredictionSection.tsx
 import React, { useCallback, useMemo } from "react"; // Added useMemo
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type { LessonId, PredictionSectionData, UnitId } from "../../types/data";
 import styles from "./Section.module.css";
 import { useSectionProgress } from "../../hooks/useSectionProgress";

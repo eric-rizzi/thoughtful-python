@@ -56,11 +56,13 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
           <pre>{error}</pre>
         </div>
       )}
-      <h4>Turtle Output:</h4>
-      <div className={styles.turtleCanvasContainer}>
-        <canvas ref={canvasRef} width={400} height={300}>
-          Your browser does not support the canvas element.
-        </canvas>
+      <div>
+        <h4>Turtle Output:</h4>
+        <div className={styles.turtleCanvasContainer}>
+          <canvas ref={canvasRef} width={400} height={300}>
+            Your browser does not support the canvas element.
+          </canvas>
+        </div>
       </div>
     </div>
   );
