@@ -95,6 +95,31 @@ const unitData: Unit[] = [
         path: "02_functions/03_func_wrap_up",
         guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98",
       },
+    ],
+  } as Unit,
+  {
+    id: "advanced_functions" as UnitId,
+    title: "Advanced Functions",
+    image: "unit_03_functions.svg",
+    description:
+      "Learn how you can use functions other people wrote to create more complex and visually interesting outputs.",
+    lessons: [
+      {
+        path: "03_functions/00_func_turtles",
+        guid: "3ad2a551-618e-4398-918a-02342f824ab1",
+      },
+      {
+        path: "02_functions/01_func_exec",
+        guid: "bfa974e1-7042-48a4-a568-19a1816ea474",
+      },
+      {
+        path: "02_functions/02_func_inputs",
+        guid: "ab5bed79-7662-423e-90ef-952539f59099",
+      },
+      {
+        path: "02_functions/03_func_wrap_up",
+        guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98",
+      },
       {
         path: "02_functions/04_func_turtles",
         guid: "973a0fb8-67fa-463d-a12d-0df9f55eb547",
