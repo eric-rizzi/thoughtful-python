@@ -105,24 +105,20 @@ const unitData: Unit[] = [
       "Learn how you can use functions other people wrote to create more complex and visually interesting outputs.",
     lessons: [
       {
-        path: "03_functions/00_func_turtles",
-        guid: "3ad2a551-618e-4398-918a-02342f824ab1",
+        path: "03_functions_advanced/00_func_libraries",
+        guid: "ab95ab6a-a2ff-46af-b63c-1066b16fce49",
       },
       {
-        path: "02_functions/01_func_exec",
-        guid: "bfa974e1-7042-48a4-a568-19a1816ea474",
+        path: "03_functions_advanced/01_func_turtles",
+        guid: "973a0fb8-67fa-463d-a12d-0df9f55eb547",
       },
       {
-        path: "02_functions/02_func_inputs",
+        path: "03_functions_advanced/02_func_inputs",
         guid: "ab5bed79-7662-423e-90ef-952539f59099",
       },
       {
-        path: "02_functions/03_func_wrap_up",
+        path: "03_functions_advanced/03_func_wrap_up",
         guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98",
-      },
-      {
-        path: "02_functions/04_func_turtles",
-        guid: "973a0fb8-67fa-463d-a12d-0df9f55eb547",
       },
     ],
   } as Unit,
