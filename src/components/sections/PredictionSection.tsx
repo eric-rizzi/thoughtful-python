@@ -1,8 +1,8 @@
-// src/components/sections/PredictionSection.tsx
-import React, { useCallback, useMemo } from "react"; // Added useMemo
-import type { LessonId, PredictionSectionData, UnitId } from "../../types/data";
+import React, { useMemo } from "react";
+import type { PredictionSectionData, UnitId, LessonId } from "../../types/data";
 import styles from "./Section.module.css";
-import { useSectionProgress } from "../../hooks/useSectionProgress";
+import predictionStyles from "./CoverageSection.module.css";
+import { usePredictionLogic } from "../../hooks/usePredictionLogic";
 import CodeEditor from "../CodeEditor";
 import ContentRenderer from "../content_blocks/ContentRenderer";
 
@@ -12,135 +12,33 @@ interface PredictionSectionProps {
   lessonId: LessonId;
 }
 
-interface PredictionsMap {
-  [rowIndex: number]: {
-    userAnswer: string;
-    isCorrect: boolean | null;
-  };
-}
-
-// Define initial state outside the component or use useMemo for stable reference
-const STABLE_INITIAL_PREDICTIONS_MAP: PredictionsMap = {};
-
 const PredictionSection: React.FC<PredictionSectionProps> = ({
   section,
   unitId,
   lessonId,
 }) => {
-  const storageKey = `predictState_${lessonId}_${section.id}`;
-  // Use the stable reference for initialState
-  // const initialState = useMemo((): PredictionsMap => ({}), []); // Alternative if it needed to be dynamic but stable
+  const {
+    predictions,
+    isSectionComplete,
+    runningStates,
+    isLoading,
+    pyodideError,
+    handlePredictionChange,
+    runPrediction,
+  } = usePredictionLogic({
+    unitId,
+    lessonId,
+    sectionId: section.id,
+    functionCode: section.example.initialCode,
+    predictionRows: section.predictionTable.rows,
+  });
 
-  const checkPredictionCompletion = useCallback(
-    (currentPredictions: PredictionsMap): boolean => {
-      // ... (rest of the function is fine)
-      const allRows = section.predictionTable.rows;
-      if (allRows.length === 0) {
-        return false;
-      }
-      return allRows.every(
-        (row, index) => currentPredictions[index]?.isCorrect === true
-      );
-    },
-    [section.predictionTable.rows]
-  );
-
-  const [predictions, setPredictions, isSectionComplete] =
-    useSectionProgress<PredictionsMap>(
-      unitId,
-      lessonId,
-      section.id,
-      storageKey,
-      STABLE_INITIAL_PREDICTIONS_MAP, // Pass the stable initial state
-      checkPredictionCompletion
-    );
-
-  // ... rest of your PredictionSection component is likely fine
-  const handlePredictionChange = useCallback(
-    (rowIndex: number, newValue: string) => {
-      const expectedValue = section.predictionTable.rows[rowIndex].expected;
-      let isNowCorrect: boolean | null = null;
-      const trimmedValue = newValue.trim();
-
-      if (trimmedValue === "") {
-        isNowCorrect = null;
-      } else {
-        try {
-          const expectedStr = String(expectedValue).trim();
-          let userValueToCompare = trimmedValue;
-
-          if (typeof expectedValue === "number") {
-            const userNum = parseFloat(trimmedValue);
-            if (!isNaN(userNum)) {
-              isNowCorrect = Math.abs(userNum - expectedValue) < 1e-9;
-            } else {
-              isNowCorrect = false;
-            }
-          } else if (typeof expectedValue === "boolean") {
-            userValueToCompare = trimmedValue.toLowerCase();
-            isNowCorrect =
-              userValueToCompare === String(expectedValue).toLowerCase();
-          } else {
-            isNowCorrect = userValueToCompare === expectedStr;
-          }
-        } catch {
-          isNowCorrect = false;
-        }
-      }
-
-      setPredictions((prevPredictions) => ({
-        ...prevPredictions,
-        [rowIndex]: {
-          userAnswer: newValue,
-          isCorrect: isNowCorrect,
-        },
-      }));
-    },
-    [section.predictionTable.rows, setPredictions]
-  );
-
-  const tableBody = useMemo(() => {
-    return section.predictionTable.rows.map((row, rowIndex) => {
-      const rowState = predictions[rowIndex];
-      const rowClass =
-        rowState?.isCorrect === true
-          ? styles.correctRow
-          : rowState?.isCorrect === false
-          ? styles.incorrectRow
-          : "";
-      const inputClass =
-        rowState?.isCorrect === true
-          ? styles.predictionInputCorrect
-          : rowState?.isCorrect === false
-          ? styles.predictionInputIncorrect
-          : styles.predictionInput;
-      return (
-        <tr key={rowIndex} className={rowClass}>
-          {row.inputs.map((inputVal, inputIndex) => (
-            <td key={`input-${inputIndex}`}>{String(inputVal)}</td>
-          ))}
-          <td>
-            <input
-              type="text"
-              className={inputClass}
-              value={rowState?.userAnswer ?? ""}
-              onChange={(e) => handlePredictionChange(rowIndex, e.target.value)}
-              placeholder="Your prediction"
-              aria-label={`Prediction for inputs ${row.inputs.join(", ")}`}
-            />
-          </td>
-          <td className={styles.statusCell}>
-            {rowState?.isCorrect === true && (
-              <span className={styles.statusIndicatorCorrect}></span>
-            )}
-            {rowState?.isCorrect === false && (
-              <span className={styles.statusIndicatorIncorrect}></span>
-            )}
-          </td>
-        </tr>
-      );
-    });
-  }, [section.predictionTable.rows, predictions, handlePredictionChange]);
+  const completedCount = useMemo(() => {
+    return Object.values(predictions).filter((p) => p.isCorrect).length;
+  }, [predictions]);
+  const totalChallenges = section.predictionTable.rows.length;
+  const progressPercent =
+    totalChallenges > 0 ? (completedCount / totalChallenges) * 100 : 0;
 
   return (
     <section id={section.id} className={styles.section}>
@@ -149,39 +47,95 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
         <ContentRenderer content={section.content} />
       </div>
 
-      {section.functionDisplay && (
-        <div className={styles.functionDisplayContainer}>
-          <h4 className={styles.functionDisplayTitle}>
-            {section.functionDisplay.title}
-          </h4>
-          <CodeEditor
-            value={section.functionDisplay.code}
-            onChange={() => {}}
-            readOnly={true}
-            height="auto"
-            minHeight="50px"
-          />
-        </div>
-      )}
+      <div className={styles.exampleContainer}>
+        <h4 className={predictionStyles.coverageCodeDisplayTitle}>
+          Code to Analyze:
+        </h4>
+        <CodeEditor
+          value={section.example.initialCode}
+          onChange={() => {}}
+          readOnly={true}
+          minHeight="50px"
+        />
+      </div>
 
-      <div className={styles.predictionTableContainer}>
-        <table className={styles.predictionTable}>
+      <div className={predictionStyles.coverageTableContainer}>
+        <table className={predictionStyles.coverageTable}>
           <thead>
             <tr>
               {section.predictionTable.columns.map((col, index) => (
                 <th key={index}>{col}</th>
               ))}
+              <th>Actual Output</th>
+              <th>Action</th>
             </tr>
           </thead>
-          <tbody>{tableBody}</tbody>
+          <tbody>
+            {section.predictionTable.rows.map((row, rowIndex) => {
+              const rowState = predictions[rowIndex];
+              const isRunning = runningStates[rowIndex];
+              const rowClass =
+                rowState?.isCorrect === true
+                  ? predictionStyles.correctRow
+                  : rowState?.isCorrect === false
+                  ? predictionStyles.incorrectRow
+                  : "";
+
+              return (
+                <tr key={rowIndex} className={rowClass}>
+                  {row.inputs.map((inputVal, inputIndex) => (
+                    <td key={`input-${inputIndex}`}>{String(inputVal)}</td>
+                  ))}
+                  <td>
+                    <input
+                      type="text"
+                      className={predictionStyles.coverageInput}
+                      value={rowState?.userAnswer ?? ""}
+                      onChange={(e) =>
+                        handlePredictionChange(rowIndex, e.target.value)
+                      }
+                      placeholder="Your prediction"
+                      disabled={isRunning || isLoading}
+                    />
+                  </td>
+                  <td
+                    className={`${predictionStyles.actualOutputCell} ${
+                      rowState?.isCorrect === false ? styles.incorrect : ""
+                    }`}
+                  >
+                    <pre>{rowState?.actualOutput ?? " "}</pre>
+                  </td>
+                  <td className={predictionStyles.actionCell}>
+                    <button
+                      onClick={() => runPrediction(rowIndex)}
+                      disabled={isRunning || isLoading || !!pyodideError}
+                      className={predictionStyles.coverageRunButton}
+                    >
+                      {isRunning ? "Running..." : "Run"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
 
-      {isSectionComplete && section.feedback && (
-        <div className={styles.completionMessage}>
-          {section.feedback.correct}
+      <div className={predictionStyles.coverageProgress}>
+        <div className={styles.progressBar}>
+          <div
+            className={
+              isSectionComplete
+                ? styles.progressFillComplete
+                : styles.progressFill
+            }
+            style={{ width: `${progressPercent}%` }}
+          ></div>
         </div>
-      )}
+        <span className={styles.progressText}>
+          {completedCount} / {totalChallenges} predictions correct
+        </span>
+      </div>
     </section>
   );
 };

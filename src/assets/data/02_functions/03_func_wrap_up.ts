@@ -5,6 +5,7 @@ import type {
   LessonId,
   MatchingSectionData,
   MultipleChoiceSectionData,
+  PredictionSectionData,
   SectionId,
   TestingSectionData,
 } from "../../../types/data";
@@ -193,6 +194,25 @@ const lessonData: Lesson = {
         { E: "Function call" },
       ],
     } as MatchingSectionData,
+    {
+      kind: "Prediction",
+      id: "multi-output-testing" as SectionId,
+      title: "Predict the Outputs",
+      content: [
+        {
+          kind: "text",
+          value: "Guess what the outputs will be",
+        },
+      ],
+      example: {
+        visualization: "console",
+        initialCode: "def fn(x):\n  print(x)",
+      },
+      predictionTable: {
+        columns: ["Inputs", "Expected Output"],
+        rows: [{ inputs: [2] }, { inputs: [4] }, { inputs: [6] }],
+      },
+    } as PredictionSectionData,
     {
       kind: "Testing",
       id: "multi-input-testing" as SectionId,

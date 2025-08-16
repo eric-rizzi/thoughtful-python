@@ -182,7 +182,6 @@ export interface DebuggerSectionData extends LessonSection {
 
 export interface PredictionTableRow {
   inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
-  expected: number | string | boolean; // Allow different expected types
   description: string;
 }
 
