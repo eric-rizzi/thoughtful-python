@@ -317,7 +317,6 @@ json.dumps(_js_turtle_commands_)
 `;
 
       try {
-        console.log(fullPythonScript);
         const resultProxy = await pyodide.runPythonAsync(fullPythonScript);
 
         // Check if the output contains our error marker
@@ -587,42 +586,6 @@ json.dumps(_js_turtle_commands_)
       <h2 className={styles.title}>{section.title}</h2>
       <div className={styles.content}>
         <ContentRenderer content={section.content} />
-      </div>
-
-      <div className={styles.turtleCommandsReference}>
-        <h4>Available Turtle Commands (Python):</h4>
-        <ul>
-          <li>
-            <code>t = turtle.Turtle()</code>
-          </li>
-          <li>
-            <code>t.forward(distance)</code> or <code>t.fd(distance)</code>
-          </li>
-          <li>
-            <code>t.backward(distance)</code> or <code>t.bk(distance)</code>
-          </li>
-          <li>
-            <code>t.left(angle)</code> or <code>t.lt(angle)</code>
-          </li>
-          <li>
-            <code>t.right(angle)</code> or <code>t.rt(angle)</code>
-          </li>
-          <li>
-            <code>t.penup()</code> or <code>t.pu()</code>
-          </li>
-          <li>
-            <code>t.pendown()</code> or <code>t.pd()</code>
-          </li>
-          <li>
-            <code>t.goto(x, y)</code>
-          </li>
-          <li>
-            <code>t.set_pen_color("color_name")</code> (e.g., "red", "blue")
-          </li>
-          <li>
-            <code>t.clear()</code>
-          </li>
-        </ul>
       </div>
 
       <div className={styles.turtleEditorContainer}>

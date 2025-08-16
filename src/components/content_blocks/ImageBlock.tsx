@@ -29,7 +29,6 @@ const ImageBlock: React.FC<ImageBlockProps> = ({ block }) => {
         className={styles.image}
         style={imageStyles}
       />
-      {block.alt && <p className={styles.imageCaption}>{block.alt}</p>}
     </div>
   );
 };
