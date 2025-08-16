@@ -57,19 +57,18 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "instagram-challenge",
-        title: "Create the Instagram Notification",
-        code: "# Print the three lines exactly as shown\n",
-        testCases: [
-          {
-            input: null,
-            expected:
-              'Taylor liked your photo\n"Great shot!"\n42 others also liked it',
-            description: "Test Instagram notification format",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode: "# Print the three lines exactly as shown\n",
       },
+      testCases: [
+        {
+          input: [null],
+          expected:
+            'Taylor liked your photo\n"Great shot!"\n42 others also liked it',
+          description: "Test Instagram notification format",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Matching",
@@ -106,19 +105,19 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "twitter-challenge",
-        title: "Create Twit Statistics",
-        code: "# Create the twit statistics display\n# Remember to calculate the math!\n",
-        testCases: [
-          {
-            input: null,
-            expected:
-              "Your twit got 15 retwits\nYour friend's twit got 45 retwits\nTotal retwits...\n60",
-            description: "Test twit statistics with calculations",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode:
+          "# Create the twit statistics display\n# Remember to calculate the math!\n",
       },
+      testCases: [
+        {
+          input: [null],
+          expected:
+            "Your twit got 15 retwits\nYour friend's twit got 45 retwits\nTotal retwits...\n60",
+          description: "Test twit statistics with calculations",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "MultipleSelection",

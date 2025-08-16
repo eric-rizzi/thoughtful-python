@@ -50,9 +50,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "hello-world1",
-        title: "Hello, World",
-        code: 'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
+        visualization: "console",
+        initialCode:
+          'print("Hello, World!")\nprint("Can I call myself a programmer now?")',
       },
     } as ObservationSectionData,
     {
@@ -63,7 +63,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'The first thing to appreciate about all programming languages is that they\'re primarily used to operate on data. Therefore, understanding the _type of data_ you\'re operating on is very important. The first **data type** we\'re going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters. Strings are most often denoted with a start `"` and an end `"`.\n\nIn the "Hello, World" example below, there are two strings. What are they?',
+            "The first thing to appreciate about all programming languages is that they're primarily used to operate on data. Therefore, understanding the _type of data_ you're operating on is very important. The first **data type** we're going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters. Strings are most often denoted with a start `\"` and an end `\"`.\n\nBased on this definition, select the **two** options below that are valid strings.",
         },
       ],
       options: [
@@ -91,11 +91,12 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "primm-quote-issue",
-        code: 'print("John Dewey said: "We learn from reflecting on experience.")',
-        predictPrompt:
-          "There's something wrong with the code above. What is the problem and what do you think will happen when you run the code?",
+        visualization: "console",
+        initialCode:
+          'print("John Dewey said: "We learn from reflecting on experience.")',
       },
+      predictPrompt:
+        "There's something wrong with the code above. What is the problem and what do you think will happen when you run the code?",
       conclusion:
         "When you use double quotes to denote a string, you can't use double quotes **inside the string**",
     } as PRIMMSectionData,
@@ -111,9 +112,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "double-quote-strings",
-        title: "Someone Once Said",
-        code: "print('John Dewey said: \"We learn from reflecting on experience.\"')",
+        visualization: "console",
+        initialCode:
+          "print('John Dewey said: \"We learn from reflecting on experience.\"')",
       },
     } as ObservationSectionData,
     {
@@ -154,18 +155,17 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "strings-challenge-code",
-        title: "Implement Your Solution",
-        code: "print()\nprint()",
-        testCases: [
-          {
-            input: null,
-            expected: 'Who\'s out there?\nI heard Eric say "me".',
-            description: "Test that program produces expected output",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode: "print()\nprint()",
       },
+      testCases: [
+        {
+          input: [null],
+          expected: 'Who\'s out there?\nI heard Eric say "me".',
+          description: "Test that program produces expected output",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Information",

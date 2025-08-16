@@ -1,88 +1,57 @@
-// src/components/sections/InteractiveExampleDisplay.tsx
 import React from "react";
 import CodeEditor from "../CodeEditor";
 import styles from "./Section.module.css";
-import type { LessonExample } from "../../types/data";
 
 interface InteractiveExampleDisplayProps {
-  example: LessonExample;
-  code: string;
-  output: string;
-  isRunning: boolean;
-  hasBeenRun: boolean;
-  isPyodideLoading: boolean;
-  pyodideError: Error | null;
-  onCodeChange: (newCode: string) => void;
+  value: string;
+  onChange: (newCode: string) => void;
   onRunCode: () => Promise<{ output: string; error: string | null }>;
-  renderExtraControls?: () => React.ReactNode;
-  renderExtraOutput?: () => React.ReactNode;
-  preventPasteInEditor?: boolean;
-  showOutputBox?: boolean;
+  isLoading: boolean;
+  output: string;
+  error: Error | null;
+  isReadOnly: boolean;
 }
 
 const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
-  example,
-  code,
-  output,
-  isRunning,
-  hasBeenRun,
-  isPyodideLoading,
-  pyodideError,
-  onCodeChange,
+  value,
+  onChange,
   onRunCode,
-  renderExtraControls,
-  renderExtraOutput,
-  preventPasteInEditor = false,
-  showOutputBox = true,
+  isLoading,
+  output,
+  error,
+  isReadOnly,
 }) => {
-  const canRun = !isPyodideLoading && !pyodideError && !isRunning;
+  const isPythonError = output.includes("Traceback (most recent call last):");
 
   return (
-    <div className={styles.exampleContainer}>
-      <h3 className={styles.exampleTitle}>{example.title}</h3>
-      <p className={styles.exampleDescription}>{example.description}</p>
+    <div className={styles.interactiveExampleContainer}>
       <CodeEditor
-        value={code}
-        onChange={onCodeChange}
-        readOnly={isRunning}
-        preventPaste={preventPasteInEditor} // Pass down the prop
+        value={value}
+        onChange={onChange}
+        readOnly={isReadOnly || isLoading}
+        minHeight="150px"
       />
       <div className={styles.editorControls}>
-        <div>
-          <button
-            onClick={onRunCode}
-            disabled={!canRun}
-            className={styles.runButton}
-          >
-            {isRunning ? "Running..." : "Run Code"}
-          </button>
-          {renderExtraControls && renderExtraControls()}
-        </div>
-        <div>
-          {isPyodideLoading && (
-            <span className={styles.pyodideStatus}>Initializing Python...</span>
-          )}
-          {pyodideError && (
-            <span className={styles.pyodideError}>Pyodide Error!</span>
-          )}
-        </div>
+        <button
+          onClick={onRunCode}
+          disabled={isLoading}
+          className={styles.runButton}
+        >
+          {isLoading ? "Executing..." : "Run Code"}
+        </button>
       </div>
-
-      {showOutputBox && (isRunning || hasBeenRun || output) && (
+      {(output || error) && (
         <div className={styles.outputArea}>
-          <pre>
-            {output ||
-              (isRunning ? (
-                ""
-              ) : (
-                <span className={styles.outputEmpty}>
-                  Code executed (no output).
-                </span>
-              ))}
+          <pre
+            className={`${styles.outputPre} ${
+              // Apply the error style if it's a Pyodide loading error OR a Python execution error.
+              error || isPythonError ? styles.errorOutput : ""
+            }`}
+          >
+            {error ? error.message : output}
           </pre>
         </div>
       )}
-      {renderExtraOutput && renderExtraOutput()}
     </div>
   );
 };

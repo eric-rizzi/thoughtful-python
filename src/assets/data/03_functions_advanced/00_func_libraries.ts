@@ -87,9 +87,8 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "random-example",
-        title: "Totally Random",
-        code: "import random\n\nx = random.randint(1, 10)\nprint(x)",
+        visualization: "console",
+        initialCode: "import random\n\nx = random.randint(1, 10)\nprint(x)",
       },
     } as ObservationSectionData,
     {
@@ -166,10 +165,11 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "random-choice-example",
-        code: 'import random\n\ncolors = "roygbiv"\nchosen = random.choice(colors)\nprint(chosen)',
-        predictPrompt: "What do you think this program does?",
+        visualization: "console",
+        initialCode:
+          'import random\n\ncolors = "roygbiv"\nchosen = random.choice(colors)\nprint(chosen)',
       },
+      predictPrompt: "What do you think this program does?",
       conclusion:
         "The `random.choice()` function picks a random character from a string!",
     } as PRIMMSectionData,
@@ -185,9 +185,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "math-example",
-        title: "Math Functions",
-        code: "import math\n\nprint(math.sqrt(16))\nprint(math.pow(2, 3))\nprint(math.floor(4.7))\nprint(math.ceil(4.2))",
+        visualization: "console",
+        initialCode:
+          "import math\n\nprint(math.sqrt(16))\nprint(math.pow(2, 3))\nprint(math.floor(4.7))\nprint(math.ceil(4.2))",
       },
     } as ObservationSectionData,
     {
@@ -202,19 +202,18 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "dice-challenge",
-        title: "Roll the Dice",
-        code: "# Import the random library\n\n# Generate two random dice values\n\n# Print the results\n",
-        testCases: [
-          {
-            input: null,
-            expected:
-              "REGEX:Die 1: [1-6]\\nDie 2: [1-6]\\nTotal: ([2-9]|1[0-2])",
-            description: "Test dice output format and valid totals",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode:
+          "# Import the random library\n\n# Generate two random dice values\n\n# Print the results\n",
       },
+      testCases: [
+        {
+          input: [null],
+          expected: "REGEX:Die 1: [1-6]\\nDie 2: [1-6]\\nTotal: ([2-9]|1[0-2])",
+          description: "Test dice output format and valid totals",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

@@ -1,131 +1,55 @@
-// src/hooks/useInteractiveExample.ts
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { usePyodide } from "../contexts/PyodideContext";
-import {
-  loadProgress,
-  saveProgress,
-  ANONYMOUS_USER_ID_PLACEHOLDER,
-} from "../lib/localStorageUtils";
-import { useAuthStore } from "../stores/authStore";
-import { LessonId, SectionId } from "../types/data";
+import type { UnitId, LessonId, SectionId } from "../types/data";
+import { useProgressStore, useProgressActions } from "../stores/progressStore";
 
+// Define the props the hook will accept
 interface UseInteractiveExampleProps {
-  exampleId: string;
-  initialCode: string;
+  unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
-  persistCode?: boolean;
-  storageKeyPrefix?: string;
 }
 
 export const useInteractiveExample = ({
-  exampleId,
-  initialCode,
+  unitId,
   lessonId,
   sectionId,
-  persistCode = false,
-  storageKeyPrefix = "exampleCode",
 }: UseInteractiveExampleProps) => {
   const {
     runPythonCode,
     isLoading: isPyodideLoading,
     error: pyodideError,
   } = usePyodide();
+  const [output, setOutput] = useState<string>(""); // Changed from string | null
+  const { completeSection } = useProgressActions();
 
-  const authUser = useAuthStore((state) => state.user); // Get auth state
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated); // Get auth state
+  const runCode = useCallback(
+    async (code: string) => {
+      setOutput(""); // Reset to empty string instead of null
+      const result = await runPythonCode(code);
+      const resultOutput = result.output || result.error || "";
+      setOutput(resultOutput);
 
-  const currentStorageUserId = useMemo(() => {
-    // Memoize to prevent unnecessary re-runs if called in deps
-    return isAuthenticated && authUser
-      ? authUser.userId
-      : ANONYMOUS_USER_ID_PLACEHOLDER;
-  }, [isAuthenticated, authUser]);
-
-  const fullStorageKey = persistCode
-    ? `${storageKeyPrefix}_${lessonId}_${sectionId}_${exampleId}`
-    : null;
-
-  const [code, setCode] = useState<string>(() => {
-    // Initialize code state
-    if (persistCode && fullStorageKey) {
-      const savedState = loadProgress<{ code: string }>(
-        currentStorageUserId,
-        fullStorageKey
-      );
-      if (savedState?.code !== undefined) {
-        return savedState.code;
+      // On a successful run (even with a Python error), mark the section as complete.
+      if (result) {
+        completeSection(unitId, lessonId, sectionId);
       }
-    }
-    return initialCode;
-  });
 
-  const [output, setOutput] = useState<string>("");
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [hasBeenRun, setHasBeenRun] = useState<boolean>(false);
-
-  // Effect for re-loading persisted code if auth state or key parts change
-  useEffect(() => {
-    if (persistCode && fullStorageKey) {
-      const savedState = loadProgress<{ code: string }>(
-        currentStorageUserId,
-        fullStorageKey
-      );
-      if (savedState?.code !== undefined) {
-        setCode(savedState.code);
-      } else {
-        setCode(initialCode); // Fallback to initial if nothing saved for this specific example
-      }
-    } else if (!persistCode) {
-      // If persistence is turned off, ensure it uses initial code
-      setCode(initialCode);
-    }
-    // This effect should also reset hasBeenRun and output if code source changes significantly
-    setHasBeenRun(false);
-    setOutput("");
-  }, [initialCode, persistCode, fullStorageKey, currentStorageUserId]); // Add currentStorageUserId
-
-  const onCodeChange = useCallback(
-    (newCode: string) => {
-      setCode(newCode);
-      if (persistCode && fullStorageKey) {
-        saveProgress(currentStorageUserId, fullStorageKey, { code: newCode });
-      }
+      // Return the result to satisfy the component's prop type
+      return { output: resultOutput, error: result.error };
     },
-    [persistCode, fullStorageKey, currentStorageUserId] // Add currentStorageUserId
+    [runPythonCode, completeSection, unitId, lessonId, sectionId]
   );
 
-  const onRunCode = useCallback(async () => {
-    // ... (rest of onRunCode remains the same)
-    if (isPyodideLoading || pyodideError) {
-      setOutput("Python environment is not ready.");
-      return { output: "", error: "Python environment is not ready." };
-    }
-    setIsRunning(true);
-    setHasBeenRun(true);
-    setOutput("Running...");
-
-    const result = await runPythonCode(code);
-    setOutput(
-      result.error
-        ? `Error:\n${result.error}${
-            result.output ? `\nOutput before error:\n${result.output}` : ""
-          }`
-        : result.output || "Code executed (no output)."
-    );
-    setIsRunning(false);
-    return result;
-  }, [code, isPyodideLoading, pyodideError, runPythonCode]);
+  const isSectionComplete = useProgressStore(
+    (state) => state.completion[unitId]?.[lessonId]?.[sectionId] || false
+  );
 
   return {
-    code,
+    runCode,
+    isLoading: isPyodideLoading,
     output,
-    isRunning,
-    hasBeenRun,
-    isPyodideLoading,
-    pyodideError,
-    onCodeChange,
-    onRunCode,
-    setOutput,
+    error: pyodideError,
+    isSectionComplete,
   };
 };

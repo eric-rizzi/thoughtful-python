@@ -39,9 +39,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "hello-world1",
-        title: "Hello, World",
-        code: 'print("Hello, World!")\nprint("Can I call myself a programmer?")',
+        visualization: "console",
+        initialCode:
+          'print("Hello, World!")\nprint("Can I call myself a programmer?")',
       },
     } as ObservationSectionData,
     {
@@ -88,10 +88,11 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "primm-quote-issue",
-        code: 'print("Hello, World!")\nprint("Now can I call myself a programmer?")',
-        predictPrompt: "What do you think the program will print out?",
+        visualization: "console",
+        initialCode:
+          'print("Hello, World!")\nprint("Now can I call myself a programmer?")',
       },
+      predictPrompt: "What do you think the program will print out?",
       conclusion:
         "PRIMM increases learning by making you read code carefully and then confront anything you got wrong",
     } as PRIMMSectionData,

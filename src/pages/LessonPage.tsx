@@ -24,7 +24,6 @@ import TestingSection from "../components/sections/TestingSection";
 import PredictionSection from "../components/sections/PredictionSection";
 import MultipleChoiceSection from "../components/sections/MultipleChoiceSection";
 import MultipleSelectionSection from "../components/sections/MultipleSelectionSection";
-import TurtleSection from "../components/sections/TurtleSection";
 import ReflectionSection from "../components/sections/ReflectionSection";
 import CoverageSection from "../components/sections/CoverageSection";
 import PRIMMSection from "../components/sections/PRIMMSection";
@@ -224,15 +223,6 @@ const LessonPage: React.FC = () => {
       case "Matching":
         return (
           <MatchingSection
-            key={sectionData.id}
-            unitId={currentUnitGuid}
-            lessonId={currentLessonGuid}
-            section={sectionData}
-          />
-        );
-      case "Turtle":
-        return (
-          <TurtleSection
             key={sectionData.id}
             unitId={currentUnitGuid}
             lessonId={currentLessonGuid}

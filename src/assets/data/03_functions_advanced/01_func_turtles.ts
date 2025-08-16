@@ -53,19 +53,7 @@ const lessonData: Lesson = {
         },
       ],
       initialCode:
-        "import turtle\nt = turtle.Turtle()\n\ndef make_square():\n  for i in range(4):\n    t.forward(100)\n    t.right(90)\n\ndef make_triangle():\n  for i in range(3):\n    t.forward(100)\n    t.left(120)",
-      validationCriteria: {
-        type: "turtle",
-        shape: "square",
-        width: 100,
-        height: 100,
-        expectedJsCommands: [
-          {
-            name: "left",
-            args: [90],
-          },
-        ],
-      },
+        "import turtle\nt = turtle.Turtle()\n\ndef make_T():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.left(180)\n  t.forward(200)\n\nmake_T()",
     } as TurtleSectionData,
 
     {
@@ -102,11 +90,12 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "mystery-shape",
-        code: "import turtle\n\nturtle.forward(100)\nturtle.right(90)\nturtle.forward(100)\nturtle.right(90)\nturtle.forward(100)\nturtle.right(90)\nturtle.forward(100)\n\nturtle.done()",
-        predictPrompt:
-          "Look at the pattern of forward and right commands. What shape do you think this will draw?",
+        visualization: "console",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n\nmake_shape()",
       },
+      predictPrompt:
+        "Look at the pattern of forward and right commands. What shape do you think this will draw?",
       conclusion:
         "It draws a square! Each `right(90)` makes a 90-degree turn, and four 90-degree turns bring you back to where you started.",
     } as PRIMMSectionData,
@@ -122,9 +111,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "colorful-turtle",
-        title: "Colorful Drawing",
-        code: 'import turtle\n\n# Set pen color to red\nturtle.color("red")\nturtle.forward(100)\n\n# Change to blue\nturtle.color("blue")\nturtle.right(90)\nturtle.forward(100)\n\n# Change to green\nturtle.color("green")\nturtle.right(90)\nturtle.forward(100)\n\nturtle.done()',
+        visualization: "console",
+        initialCode:
+          'import turtle\n\n# Set pen color to red\nturtle.color("red")\nturtle.forward(100)\n\n# Change to blue\nturtle.color("blue")\nturtle.right(90)\nturtle.forward(100)\n\n# Change to green\nturtle.color("green")\nturtle.right(90)\nturtle.forward(100)\n\nturtle.done()',
       },
     } as ObservationSectionData,
     {
@@ -138,7 +127,11 @@ const lessonData: Lesson = {
             "Sometimes you want to move the turtle without drawing. The `penup()` and `pendown()` commands control whether the turtle draws as it moves.\n\nStep through this code and watch when lines are drawn vs. when the turtle just moves:",
         },
       ],
-      code: "import turtle\n\n# Draw first line\nturtle.forward(50)\n\n# Lift pen up\nturtle.penup()\nturtle.forward(50)  # No line drawn!\n\n# Put pen down\nturtle.pendown()\nturtle.forward(50)  # Drawing again\n\nturtle.done()",
+      example: {
+        visualization: "console",
+        initialCode:
+          "import turtle\n\n# Draw first line\nturtle.forward(50)\n\n# Lift pen up\nturtle.penup()\nturtle.forward(50)  # No line drawn!\n\n# Put pen down\nturtle.pendown()\nturtle.forward(50)  # Drawing again\n\nturtle.done()",
+      },
     } as DebuggerSectionData,
     {
       kind: "Testing",
@@ -152,18 +145,18 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "triangle-challenge",
-        title: "Draw a Triangle",
-        code: "import turtle\n\n# Draw your triangle here\n# Each side should be 100 pixels\n\nturtle.done()",
-        testCases: [
-          {
-            input: null,
-            expected: "SHAPE:triangle",
-            description: "Test that a triangle is drawn",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode:
+          "import turtle\n\n# Draw your triangle here\n# Each side should be 100 pixels\n\nturtle.done()",
       },
+      testCases: [
+        {
+          input: [null],
+          expected: "SHAPE:triangle",
+          description: "Test that a triangle is drawn",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -177,11 +170,12 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "turtle-function",
-        code: "import turtle\n\ndef draw_square():\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n\ndraw_square()\nturtle.penup()\nturtle.forward(100)\nturtle.pendown()\ndraw_square()\n\nturtle.done()",
-        predictPrompt:
-          "We defined a function to draw a square. What will the complete program draw?",
+        visualization: "console",
+        initialCode:
+          "import turtle\n\ndef draw_square():\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n\ndraw_square()\nturtle.penup()\nturtle.forward(100)\nturtle.pendown()\ndraw_square()\n\nturtle.done()",
       },
+      predictPrompt:
+        "We defined a function to draw a square. What will the complete program draw?",
       conclusion:
         "It draws two squares with a gap between them! Functions let us reuse drawing code.",
     } as PRIMMSectionData,

@@ -10,24 +10,6 @@
   font-size: 1.05em;
 }
 
-.exampleBlock {
-  /* Main container for a single PRIMM activity */
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-top: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-
-.exampleBlock h4 {
-  /* For "Code to Analyze" heading */
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  color: #306998;
-  font-size: 1.15em;
-}
-
 .activityArea {
   margin-top: 1rem;
 }

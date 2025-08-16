@@ -40,9 +40,8 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "basic-variable-example",
-        title: "Your First Variable",
-        code: 'name = "Alice"\nprint(name)\nprint("Hello, " + name)\n',
+        visualization: "console",
+        initialCode: 'name = "Alice"\nprint(name)\nprint("Hello, " + name)\n',
       },
     } as ObservationSectionData,
     {
@@ -81,11 +80,11 @@ const lessonData: Lesson = {
             "Variables can store more than just strings; they can also store integers. Below is a program that stores an integer in a variable and then uses the variable in some calculations.\n\nPredict what the code below will output, then run it to check your prediction.",
         },
       ],
+      predictPrompt:
+        "The variable `age` is set to 15. What do you think each print statement will output?",
       example: {
-        id: "integer-variable-primm",
-        code: "age = 15\nprint(age)\nprint(age + 5)\nprint(age)\n",
-        predictPrompt:
-          "The variable `age` is set to 15. What do you think each print statement will output?",
+        visualization: "console",
+        initialCode: "age = 15\nprint(age)\nprint(age + 5)\nprint(age)\n",
       },
       conclusion:
         "Variables remember their values! The variable `age` stayed 15 throughout the program, even after being used in the calculation `age + 5`",
@@ -101,7 +100,11 @@ const lessonData: Lesson = {
             "One of the most powerful features of variables is that you can change the value they're storing. When you assign a new value to an existing variable, it replaces the old value.\n\nUse the debugging tool to step line-by-line through the code and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
         },
       ],
-      code: "score = 10\nprint(score)\nscore = 20\nprint(score)\nscore = score + 5\nprint(score)",
+      example: {
+        visualization: "console",
+        initialCode:
+          "score = 10\nprint(score)\nscore = 20\nprint(score)\nscore = score + 5\nprint(score)",
+      },
     } as DebuggerSectionData,
     {
       kind: "MultipleChoice",
@@ -137,11 +140,12 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "string-variable-change",
-        code: 'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)',
-        predictPrompt:
-          'The variable `greeting` starts as "Hello" but gets changed twice. What do you think each print statement will output?',
+        visualization: "console",
+        initialCode:
+          'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)',
       },
+      predictPrompt:
+        'The variable `greeting` starts as "Hello" but gets changed twice. What do you think each print statement will output?',
       conclusion:
         "Just like with integers, you can reassign string variables and even use the variables in their own (re)assignment!",
     } as PRIMMSectionData,

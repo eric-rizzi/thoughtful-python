@@ -64,10 +64,20 @@ const MultipleSelectionSection: React.FC<MultipleSelectionSectionProps> = ({
     [isSubmitted, isLocallyDisabled, handleOptionChange]
   );
 
+  const contentText = section.content
+    .filter((block) => block.kind === "text")
+    .map((block) => (block as any).value)
+    .join(" ")
+    .toLowerCase();
+
+  const hasRequiredPhrase = contentText.includes("select");
+
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
-      <div className={styles.content}>
+      <div
+        className={!hasRequiredPhrase ? styles.questionError : styles.content}
+      >
         <ContentRenderer content={section.content} />
       </div>
 

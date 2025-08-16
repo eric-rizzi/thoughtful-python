@@ -14,21 +14,6 @@ export type LessonId = string & { readonly __brand: "LessonId" };
 export type LessonPath = string & { readonly __brand: "LessonPath" };
 export type SectionId = string & { readonly __brand: "SectionId" };
 
-export interface LessonExample {
-  id: string;
-  title: string;
-  code: string;
-}
-
-export interface TestingExample extends LessonExample {
-  testCases?: Array<{
-    input: any;
-    expected: any;
-    description: string;
-  }>;
-  functionToTest: string;
-}
-
 export interface TextBlock {
   kind: "text";
   value: string;
@@ -68,60 +53,29 @@ export interface LessonSection {
 
 export type SectionKind =
   | "Information"
-  | "Observation"
-  | "Testing"
-  | "Prediction"
+  // Question Sections
   | "MultipleChoice"
   | "MultipleSelection"
   | "Matching"
-  | "Turtle"
+  // AI Sections
   | "Reflection"
+  // Executable Code Sections
+  | "Observation"
   | "Coverage"
+  | "Prediction"
   | "PRIMM"
+  | "Testing"
   | "Debugger";
 
 export interface InformationSectionData extends LessonSection {
   kind: "Information";
 }
 
-export interface ObservationSectionData extends LessonSection {
-  kind: "Observation";
-  example: LessonExample;
-}
-
-export interface TestingSectionData extends LessonSection {
-  kind: "Testing";
-  example: TestingExample;
-}
-
-export interface DebuggerSectionData extends LessonSection {
-  kind: "Debugger";
-  code: string;
-  advancedControls?: boolean;
-}
-
-export interface PredictionTableRow {
-  inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
-  expected: number | string | boolean; // Allow different expected types
-  description: string;
-}
+// --- Question Section ---
 
 export interface FeedbackText {
   correct: string;
   incorrect?: string;
-}
-
-export interface PredictionSectionData extends LessonSection {
-  kind: "Prediction";
-  functionDisplay: {
-    title: string;
-    code: string;
-  };
-  predictionTable: {
-    columns: string[];
-    rows: PredictionTableRow[];
-  };
-  feedback?: FeedbackText;
 }
 
 export interface MultipleChoiceSectionData extends LessonSection {
@@ -146,35 +100,7 @@ export interface MatchingSectionData extends LessonSection {
   feedback?: FeedbackText;
 }
 
-// Define the structured command types for JavaScript turtle
-export type JsTurtleCommand =
-  | { type: "goto"; x: number; y: number }
-  | { type: "forward"; distance: number; penDown: boolean; color: string }
-  | { type: "left"; angle: number }
-  | { type: "right"; angle: number }
-  | { type: "penup" }
-  | { type: "pendown" }
-  | { type: "clear" }
-  | { type: "setPenColor"; color: string };
-
-export interface TurtleSectionData extends LessonSection {
-  kind: "Turtle";
-  initialCode: string;
-  validationCriteria: {
-    type: string;
-    shape?: string;
-    width?: number;
-    height?: number;
-    sideLength?: number;
-    expectedJsCommands?: JsTurtleCommand[];
-    [key: string]: any;
-  };
-  turtleCommands?: Array<{
-    name: string;
-    description: string;
-  }>;
-  feedback?: FeedbackText;
-}
+// --- AI Sections ---
 
 export interface ReflectionSubmission {
   topic: string;
@@ -223,6 +149,53 @@ export interface SavedReflectionState {
   // draftExplanation?: string;
 }
 
+// --- Executable Sections ---
+
+export interface ExecutableCode {
+  initialCode: string;
+  visualization: "console" | "turtle";
+}
+
+export interface ObservationSectionData extends LessonSection {
+  kind: "Observation";
+  example: ExecutableCode;
+}
+
+export interface TestCase {
+  input: any[];
+  expected: any;
+  description: string;
+}
+
+export interface TestingSectionData extends LessonSection {
+  kind: "Testing";
+  example: ExecutableCode;
+  functionToTest: string;
+  testCases: TestCase[];
+}
+
+export interface DebuggerSectionData extends LessonSection {
+  kind: "Debugger";
+  example: ExecutableCode;
+  advancedControls?: boolean;
+}
+
+export interface PredictionTableRow {
+  inputs: any[]; // Use 'any[]' for flexibility or define specific input types if consistent
+  expected: number | string | boolean; // Allow different expected types
+  description: string;
+}
+
+export interface PredictionSectionData extends LessonSection {
+  kind: "Prediction";
+  example: ExecutableCode;
+  predictionTable: {
+    columns: string[];
+    rows: PredictionTableRow[];
+  };
+  feedback?: FeedbackText;
+}
+
 export interface CoverageChallenge {
   id: string; // Unique ID for the challenge row
   expectedOutput: string; // The exact stdout expected
@@ -237,7 +210,7 @@ export interface InputParam {
 
 export interface CoverageSectionData extends LessonSection {
   kind: "Coverage";
-  code: string; // The Python code snippet to analyze
+  example: ExecutableCode;
   inputParams: InputParam[]; // Definitions of the inputs needed
   coverageChallenges: CoverageChallenge[]; // The list of challenges
 }
@@ -259,15 +232,10 @@ export interface SavedCodeState {
   [exampleId: string]: string; // Map example ID to its code string
 }
 
-export interface PRIMMCodeExample {
-  id: string;
-  code: string;
-  predictPrompt: string;
-}
-
 export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
-  example: PRIMMCodeExample;
+  example: ExecutableCode;
+  predictPrompt: string;
   conclusion?: string;
 }
 
@@ -279,7 +247,7 @@ export interface EnhancedPRIMMExampleUserState {
   keyOutputSnippet: string | null;
   userExplanationText: string;
   aiEvaluationResult: PrimmEvaluationResponse | null;
-  currentUiStep: "PREDICT" | "EXPLAIN_AFTER_RUN" | "VIEW_AI_FEEDBACK";
+  currentUiStep: "PREDICT" | "RUN" | "EXPLAIN" | "VIEW_AI_FEEDBACK";
   isComplete: boolean;
 }
 
@@ -298,7 +266,6 @@ export type AnyLessonSectionData =
   | MultipleChoiceSectionData
   | MultipleSelectionSectionData
   | MatchingSectionData
-  | TurtleSectionData
   | ReflectionSectionData
   | CoverageSectionData
   | PRIMMSectionData;

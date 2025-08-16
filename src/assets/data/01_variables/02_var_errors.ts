@@ -56,18 +56,18 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "misspelled-var-name-error",
-        title: "Something's Wrong",
-        code: "var_a = 10\nvar_b = 11\nvar_c = var_b + van_a\nvar_z = var_a + var_b + var_c\nprint(var_z)",
-        testCases: [
-          {
-            input: null,
-            expected: "42",
-            description: "Test don't get NameError",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode:
+          "var_a = 10\nvar_b = 11\nvar_c = var_b + van_a\nvar_z = var_a + var_b + var_c\nprint(var_z)",
       },
+      testCases: [
+        {
+          input: [null],
+          expected: "42",
+          description: "Test don't get NameError",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Matching",
@@ -117,18 +117,17 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "variable-challenge",
-        title: "Implement Your Solution",
-        code: "favorite_color = \nlucky_number =\n",
-        testCases: [
-          {
-            input: null,
-            expected: "green\n7\n17",
-            description: "Test with favorite_color='green' and lucky_number=7",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode: "favorite_color = \nlucky_number =\n",
       },
+      testCases: [
+        {
+          input: [null],
+          expected: "green\n7\n17",
+          description: "Test with favorite_color='green' and lucky_number=7",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

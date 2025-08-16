@@ -81,7 +81,11 @@ const lessonData: Lesson = {
             'When a computer runs a program, it goes line-by-line. When it encounters a function, it goes inside the function and runs every line inside the function. Once the computer finishes the function, it returns back to the line that called the function and continues.\n\nThe program below allows you to slowly "step" through the program from the video and see how it is equivalent to the original, 12 line program from the video. Use the debugger to step through each line of the program. The most important part to notice is every time a function is called:\n1. The computer remembers where the function call is\n2. The computer runs all the code inside the function\n3. The computer returns to right after the remembered function call\n\nThis process of calling, running, and returning to the call location is how seven lines of code can become the equivalent of 12.',
         },
       ],
-      code: 'def happy_birthday():\n    print("Happy birthday to you!")\n    print("You are old!")\n    print("Happy birthday to you!")\n\nhappy_birthday()\nhappy_birthday()\nhappy_birthday()',
+      example: {
+        visualization: "console",
+        initialCode:
+          'def happy_birthday():\n    print("Happy birthday to you!")\n    print("You are old!")\n    print("Happy birthday to you!")\n\nhappy_birthday()\nhappy_birthday()\nhappy_birthday()',
+      },
       advancedControls: false,
     } as DebuggerSectionData,
     {
@@ -146,18 +150,18 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "banana-challenge",
-        title: "Implement Your Solution",
-        code: 'def fn_1():\n    print("b")\n\ndef fn_2():\n    print("a")\n\ndef fn_3():\n    print("n")\n\ndef fn_4():\n    fn_2()\n    fn_3()\n\n# Your code here\n',
-        testCases: [
-          {
-            input: null,
-            expected: "b\na\nn\na\nn\na",
-            description: "Test can print banana",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode:
+          'def fn_1():\n    print("b")\n\ndef fn_2():\n    print("a")\n\ndef fn_3():\n    print("n")\n\ndef fn_4():\n    fn_2()\n    fn_3()\n\n# Your code here\n',
       },
+      testCases: [
+        {
+          input: [null],
+          expected: "b\na\nn\na\nn\na",
+          description: "Test can print banana",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Information",

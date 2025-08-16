@@ -61,7 +61,11 @@ const lessonData: Lesson = {
             'It\'s time to increase the degree of difficulty by using _multiple_ variables. This is very common when a program needs to store and operate on different pieces of data. When this happens, each variable has its own name and stores its own, independent value.\n\nStep line-by-line through the code below and watch how each variable maintains its own, separate value. As before, pay attention to the `Variables` and `Program Output` side-panels. If you go slow, you can see how different values pop in and out of the memory slots designated by the "variable labels".',
         },
       ],
-      code: 'first_name = "Eric"\nlast_name = "Smith"\nage = 25\nfirst_name = first_name + "a"\nage = age + 10\nprint(first_name + " " + last_name)\nage = age + 3\nprint(age)',
+      example: {
+        visualization: "console",
+        initialCode:
+          'first_name = "Eric"\nlast_name = "Smith"\nage = 25\nfirst_name = first_name + "a"\nage = age + 10\nprint(first_name + " " + last_name)\nage = age + 3\nprint(age)',
+      },
     } as DebuggerSectionData,
     {
       kind: "Information",
@@ -87,11 +91,12 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "string-variable-change",
-        code: 'x = "Hello"\ny = "Goodbye"\nx = y\ny = x\nprint(x)\nprint(y)',
-        predictPrompt:
-          "The program is attempting to swap the values stored in `x` and `y`. What do you think the program will output?",
+        visualization: "console",
+        initialCode:
+          'x = "Hello"\ny = "Goodbye"\nx = y\ny = x\nprint(x)\nprint(y)',
       },
+      predictPrompt:
+        "The program is attempting to swap the values stored in `x` and `y`. What do you think the program will output?",
       conclusion:
         'Since variables can only remember a single value, `"Hello"` gets lost when the value of `y` is stored into `x`!',
     } as PRIMMSectionData,

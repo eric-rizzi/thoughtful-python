@@ -114,6 +114,14 @@
   border-radius: 6px;
 }
 
+.exampleContainer h4 {
+  /* For "Code to Analyze" heading */
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.15em;
+}
+
 /* No bottom margin for the last example in a section */
 .exampleContainer:last-child {
   margin-bottom: 0;
@@ -428,6 +436,13 @@
 .quizSubmitButton:disabled {
   background-color: #a8c7e0;
   cursor: not-allowed;
+}
+
+.questionError {
+  border: 2px solid red;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #f8d7da;
 }
 
 .penaltyMessageActive {

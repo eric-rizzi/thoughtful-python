@@ -39,9 +39,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "function-basic",
-        title: "Integer Operations",
-        code: "print(5)\nprint(5 + 3)\nprint(5 + 3 - 1)\nprint(10000 * 173671)",
+        visualization: "console",
+        initialCode:
+          "print(5)\nprint(5 + 3)\nprint(5 + 3 - 1)\nprint(10000 * 173671)",
       },
     } as ObservationSectionData,
     {
@@ -79,11 +79,11 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "primm-quote-issue",
-        code: 'print(5 + 5)\nprint("5" + "5")',
-        predictPrompt:
-          "The two print statements above will print out different things. This is because in one case the `+` is operating on **integers** and in the other case it's operating on **strings**. What do you think the will happen when you run the code?",
+        visualization: "console",
+        initialCode: 'print(5 + 5)\nprint("5" + "5")',
       },
+      predictPrompt:
+        "The two print statements above will print out different things. This is because in one case the `+` is operating on **integers** and in the other case it's operating on **strings**. What do you think the will happen when you run the code?",
       conclusion:
         "When you use `+` with two **integers**, the result is addition. When you use `+` with two **strings**, the result is combining (technically called concatenation)",
     } as PRIMMSectionData,

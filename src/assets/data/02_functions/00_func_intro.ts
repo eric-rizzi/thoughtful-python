@@ -43,9 +43,8 @@ Run the code and see what happens!`,
         },
       ],
       example: {
-        id: "first-function-code",
-        title: "First function",
-        code: `def greet():\n  print("Hello there!")\n  print("Welcome to Python!")\n\ngreet()`,
+        visualization: "console",
+        initialCode: `def greet():\n  print("Hello there!")\n  print("Welcome to Python!")\n\ngreet()`,
       },
     } as ObservationSectionData,
     {
@@ -83,10 +82,11 @@ Run the code and see what happens!`,
         },
       ],
       example: {
-        id: "primm-greet-function",
-        code: 'def greet():\n  print("Hello there!")\n  print("Welcome to Python!")\n\ngreet()\ngreet()\ngreet()',
-        predictPrompt: "What do you think will happen when you run the code?",
+        visualization: "console",
+        initialCode:
+          'def greet():\n  print("Hello there!")\n  print("Welcome to Python!")\n\ngreet()\ngreet()\ngreet()',
       },
+      predictPrompt: "What do you think will happen when you run the code?",
       conclusion:
         "Correct! The ability to call a function multiple times is part of what makes them so useful.",
     } as PRIMMSectionData,
@@ -188,19 +188,19 @@ Run the code and see what happens!`,
         },
       ],
       example: {
-        id: "birthday-challenge",
-        title: "Implement Your Solution",
-        code: 'def verse():\n  print("Happy birthday to you")\n\ndef chorus():\n  print("Happy birthday dear Alex")\n\n# Your code here\n',
-        testCases: [
-          {
-            input: null,
-            expected:
-              "Happy birthday to you\nHappy birthday to you\nHappy birthday dear Alex\nHappy birthday to you",
-            description: "Test happy birthday song to a Alex",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode:
+          'def verse():\n  print("Happy birthday to you")\n\ndef chorus():\n  print("Happy birthday dear Alex")\n\n# Your code here\n',
       },
+      testCases: [
+        {
+          input: [null],
+          expected:
+            "Happy birthday to you\nHappy birthday to you\nHappy birthday dear Alex\nHappy birthday to you",
+          description: "Test happy birthday song to a Alex",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

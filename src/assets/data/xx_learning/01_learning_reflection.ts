@@ -97,7 +97,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Which of the following will allow you to get the most out of the Reflection + AI combo:",
+            "Which of the following will allow you to get the most out of the Reflection + AI combo? Select all that apply.",
         },
       ],
       options: [

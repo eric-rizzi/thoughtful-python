@@ -81,7 +81,11 @@ const lessonData: Lesson = {
           value: "Provide inputs that will produce the desired output.",
         },
       ],
-      code: "def do_math(x):\n    y = x + x\n    z = y + y\n    print(z)\n\n# Call the function with the input value\ndo_math(input_val)",
+      example: {
+        visualization: "console",
+        initialCode:
+          "def do_math(x):\n    y = x + x\n    z = y + y\n    print(z)\n\n# Call the function with the input value\ndo_math(input_val)",
+      },
       coverageChallenges: [
         {
           id: "challenge-1",
@@ -201,33 +205,34 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "input-challenge",
-        title: "Implement Your Solution",
-        code: "def do_math(num_1, num_2):\n    # Your code here\n\ndo_math(2, 2)\ndo_math(4, 2)\ndo_math(4, 1)\ndo_math(6, 1)",
-        testCases: [
-          {
-            input: [2, 2],
-            expected: "5",
-            description: "Test 2, 2 -> 5",
-          },
-          {
-            input: [4, 2],
-            expected: "9",
-            description: "Test 4, 2 -> 9",
-          },
-          {
-            input: [4, 1],
-            expected: "5",
-            description: "Test 4, 1 -> 5",
-          },
-          {
-            input: [6, 1],
-            expected: "7",
-            description: "Test 6, 1 -> 7",
-          },
-        ],
-        functionToTest: "do_math",
+        visualization: "console",
+        initialCode:
+          "def do_math(num_1, num_2):\n    # Your code here\n\ndo_math(2, 2)\ndo_math(4, 2)\ndo_math(4, 1)\ndo_math(6, 1)",
       },
+
+      testCases: [
+        {
+          input: [2, 2],
+          expected: "5",
+          description: "Test 2, 2 -> 5",
+        },
+        {
+          input: [4, 2],
+          expected: "9",
+          description: "Test 4, 2 -> 9",
+        },
+        {
+          input: [4, 1],
+          expected: "5",
+          description: "Test 4, 1 -> 5",
+        },
+        {
+          input: [6, 1],
+          expected: "7",
+          description: "Test 6, 1 -> 7",
+        },
+      ],
+      functionToTest: "do_math",
     } as TestingSectionData,
   ],
 };

@@ -39,11 +39,11 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "primm-type-issue",
-        code: 'print(3 + "4")',
-        predictPrompt:
-          "We are trying to do use the `+` operator on a string and an integer. What do you think will happen when you run the code?",
+        visualization: "console",
+        initialCode: 'print(3 + "4")',
       },
+      predictPrompt:
+        "We are trying to do use the `+` operator on a string and an integer. What do you think will happen when you run the code?",
       conclusion:
         "Error messages can be overwhelming! Read the next section carefully for how to approach them.",
     } as PRIMMSectionData,

@@ -27,10 +27,11 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "primm-greet-person-function",
-        code: 'def greet_person(name):\n  print("Hello there " + name + "!")\n\ngreet_person("Ben")\ngreet_person("Meg")',
-        predictPrompt: "What do you think will happen when you run the code?",
+        visualization: "console",
+        initialCode:
+          'def greet_person(name):\n  print("Hello there " + name + "!")\n\ngreet_person("Ben")\ngreet_person("Meg")',
       },
+      predictPrompt: "What do you think will happen when you run the code?",
       conclusion: `Calling a function with different "inputs" allows them to mold to the situation.`,
     } as PRIMMSectionData,
     {
@@ -83,7 +84,11 @@ const lessonData: Lesson = {
             "Let's dive into how a function call **with inputs** work. Below is a small program where we greet Bill with three different phrases. Step through each line of the program. The most important thing to notice is every time a function is called, the value of the call gets stored into the function's `phrase` input variable. In total, you go in and out of the function three times, each time with a different input value.",
         },
       ],
-      code: 'def greet_bill(phrase):\n  print(phrase + " Bill!")\n\ngreet_bill("Yo")\ngreet_bill("What up")\ngreet_bill("Hi")\nprint("All done")',
+      example: {
+        visualization: "console",
+        initialCode:
+          'def greet_bill(phrase):\n  print(phrase + " Bill!")\n\ngreet_bill("Yo")\ngreet_bill("What up")\ngreet_bill("Hi")\nprint("All done")',
+      },
       advancedControls: false,
     } as DebuggerSectionData,
     {

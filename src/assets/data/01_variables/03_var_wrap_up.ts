@@ -234,18 +234,17 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        id: "variable-challenge",
-        title: "Implement Your Solution",
-        code: "# Your code here",
-        testCases: [
-          {
-            input: null,
-            expected: "3\n21",
-            description: "Test with dog_age=3, should print 3 then 21",
-          },
-        ],
-        functionToTest: "__main__",
+        visualization: "console",
+        initialCode: "# Your code here",
       },
+      testCases: [
+        {
+          input: [null],
+          expected: "3\n21",
+          description: "Test with dog_age=3, should print 3 then 21",
+        },
+      ],
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Information",
