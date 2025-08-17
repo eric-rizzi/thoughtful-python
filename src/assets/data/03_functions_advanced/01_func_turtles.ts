@@ -7,7 +7,7 @@ import type {
   MultipleChoiceSectionData,
   PRIMMSectionData,
   TestingSectionData,
-  DebuggerSectionData,
+  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'One of the oldest ways to teach programming (developed in the 1960\'s) is by graphics. The creators called it a "turtle" because the library lets you create drawings by commanding a virtual turtle. The turtle carries a pen and leaves a trail as it moves. You can tell it to move forward, turn, lift its pen up, put it down, and even change colors. By combining these simple commands, you can create complex drawings.',
+            'One of the oldest ways to teach programming is with drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by commanding a virtual turtle. The turtle carries a pen and leaves a trail as it moves. You can tell it to move forward, turn, lift its pen up, put it down, and even change colors. By combining these simple commands, you can create complex drawings.',
         },
         {
           kind: "image",
@@ -35,7 +35,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Turtles are wonderful tool for learning functions because you can see what each line of code does. With this foundation, you can build up to more and more complex shapes.",
+            "Turtles are wonderful tool for learning programming because you can see what each line of code does. With this foundation, you can build up to more and more complex shapes.",
         },
       ],
     } as InformationSectionData,
@@ -47,7 +47,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's start with the basics. Run this program and watch what the turtle does. Pay attention to how each command affects the turtle's movement.",
+            "Let's start with the basics. The program below imports the `turtle` library, and then moves the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each command affects the turtle's movement.",
         },
       ],
       example: {
@@ -63,19 +63,19 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "In the code above, what does `turtle.right(90)` do?",
+          value: "In the code above, what does `t.right(90)` function do?",
         },
       ],
       options: [
         "Moves the turtle 90 pixels to the right",
-        "Turns the turtle 90 degrees to the right",
+        "Rotates the turtle 90 degrees to the right",
         "Draws a line 90 pixels long",
-        "Makes the turtle face right",
+        "Makes the turtle face right on the screen",
       ],
       correctAnswer: 1,
       feedback: {
         correct:
-          "Correct! The turtle turns 90 degrees to the right. Think of it like making a right-angle turn.",
+          "Correct! The turtle rotates 90 degrees to the right. Think of it like making a right-angle turn.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -86,7 +86,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now let's try something more interesting. The code below attempts to draw a shape. Predict what shape it will draw, then run it to check.",
+            "Now let's try something more interesting. The code has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some thing. Finally, there's a `make_shape()` call that has the shape draw once. Given all this, predict what shape will be drawn, then run it to check you prediction.",
         },
       ],
       example: {
@@ -99,40 +99,28 @@ const lessonData: Lesson = {
       conclusion:
         "It draws a square! Each `right(90)` makes a 90-degree turn, and four 90-degree turns bring you back to where you started.",
     } as PRIMMSectionData,
+
     {
-      kind: "Observation",
-      id: "turtle-colors" as SectionId,
-      title: "Adding Color",
+      kind: "PRIMM",
+      id: "multi-square-primm" as SectionId,
+      title: "Drawing Shapes",
       content: [
         {
           kind: "text",
           value:
-            "Turtles can draw in different colors! Run this code to see how color commands work:",
+            "The code below is very similar to the program above. There's only one difference: we call the function four times. Given this change, predict what shape will be drawn, then run it to check you prediction.",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\n\n# Set pen color to red\nt.color("red")\nt.forward(100)\n\n# Change to blue\nt.color("blue")\nt.right(90)\nt.forward(100)\n\n# Change to green\nt.color("green")\nt.right(90)\nt.forward(100)',
+          "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n\nmake_shape()\nmake_shape()\nmake_shape()\nmake_shape()\n",
       },
-    } as ObservationSectionData,
-    {
-      kind: "Debugger",
-      id: "pen-control-debug" as SectionId,
-      title: "Pen Control",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Sometimes you want to move the turtle without drawing. The `penup()` and `pendown()` commands control whether the turtle draws as it moves.\n\nStep through this code and watch when lines are drawn vs. when the turtle just moves:",
-        },
-      ],
-      example: {
-        visualization: "turtle",
-        initialCode:
-          "import turtle\n\nt = turtle.Turtle()\n# Draw first line\nturtle.forward(50)\n\n# Lift pen up\nt.penup()\nt.forward(50)  # No line drawn!\n\n# Put pen down\nt.pendown()\nt.forward(50)",
-      },
-    } as DebuggerSectionData,
+      predictPrompt:
+        "Look at the pattern of forward and right commands. What shape do you think this will draw?",
+      conclusion:
+        "It draws a square! Each `right(90)` makes a 90-degree turn, and four 90-degree turns bring you back to where you started.",
+    } as PRIMMSectionData,
     {
       kind: "Testing",
       id: "draw-triangle" as SectionId,
@@ -159,26 +147,23 @@ const lessonData: Lesson = {
       functionToTest: "__main__",
     } as TestingSectionData,
     {
-      kind: "PRIMM",
-      id: "function-turtle-primm" as SectionId,
-      title: "Turtle Functions",
+      kind: "Reflection",
+      id: "library-reflection" as SectionId,
+      title: "Libraries Reflection",
       content: [
         {
           kind: "text",
           value:
-            "Here's where it gets interesting! We can combine what we know about functions with turtle graphics. Predict what this program will draw:",
+            "Libraries are collections of functions that extend Python's capabilities. Without libraries, you'd have to write every function from scratch. The `import` statement is like checking out a book from a library - it gives you access to all the functions inside.\n\nCreate a simple 3-4 line example that uses the `random`, `math`, or `turtle` library, and explain how libraries make programming more powerful. Remember to use the phrase \"as seen in the example above\".",
         },
       ],
-      example: {
-        visualization: "console",
-        initialCode:
-          "import turtle\n\ndef draw_square():\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n\ndraw_square()\nturtle.penup()\nturtle.forward(100)\nturtle.pendown()\ndraw_square()\n\nturtle.done()",
-      },
-      predictPrompt:
-        "We defined a function to draw a square. What will the complete program draw?",
-      conclusion:
-        "It draws two squares with a gap between them! Functions let us reuse drawing code.",
-    } as PRIMMSectionData,
+      topic: "Using Python Libraries",
+      isTopicPredefined: true,
+      code: "Create an example using random or math library",
+      isCodePredefined: false,
+      explanation: "Explain how libraries help programmers (3-4 sentences)",
+      isExplanationPredefined: false,
+    } as ReflectionSectionData,
     {
       kind: "Information",
       id: "turtle-conclusion",
@@ -187,7 +172,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned the basics of turtle graphics! With just a few simple commands - `forward()`, `right()`, `left()`, `penup()`, `pendown()`, and `color()` - you can create amazing drawings.\n\nIn the next lesson, we'll use functions to build more complex drawings, starting with a house and working up to an entire neighborhood!",
+            "In this lesson, you learned about a new library named `turtle`. In addition, you experimented with using that library within functions of your own to build increasingly complex shapes. In the next lesson, we'll use functions to build increasingly complex drawings. The goal is for you to appreciate how functions can package up other, smaller pieces to create something very interesting.",
         },
       ],
     } as InformationSectionData,
