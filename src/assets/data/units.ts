@@ -113,8 +113,8 @@ const unitData: Unit[] = [
         guid: "973a0fb8-67fa-463d-a12d-0df9f55eb547",
       },
       {
-        path: "03_functions_advanced/02_func_inputs",
-        guid: "ab5bed79-7662-423e-90ef-952539f59099",
+        path: "03_functions_advanced/02_func_turtle_inputs",
+        guid: "a707da7a-de11-4470-8d08-d537748c0982",
       },
       {
         path: "03_functions_advanced/03_func_wrap_up",

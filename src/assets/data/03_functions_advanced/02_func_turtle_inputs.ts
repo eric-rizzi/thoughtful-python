@@ -1,0 +1,237 @@
+import type {
+  InformationSectionData,
+  Lesson,
+  LessonId,
+  SectionId,
+  ObservationSectionData,
+  PRIMMSectionData,
+  TestingSectionData,
+  MultipleChoiceSectionData,
+  DebuggerSectionData,
+  ReflectionSectionData,
+} from "../../../types/data";
+
+const lessonData: Lesson = {
+  title: "Building with Inputs",
+  guid: "a707da7a-de11-4470-8d08-d537748c0982" as LessonId,
+  description:
+    "Learn how to make turtle functions more flexible by adding inputs - create reusable building blocks for complex drawings.",
+  sections: [
+    {
+      kind: "Information",
+      id: "inputs-intro",
+      title: "Making Functions Flexible",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Imagine if every LEGO block was exactly the same size. Building anything interesting would be nearly impossible! The same is true for functions. In the previous lesson, you drew shapes, but they were always the same size. What if you want a big square for a house and a small square for a window?\n\nThat's where function inputs come in. Just like you learned with basic functions, we can add inputs to our turtle functions to make them flexible and reusable.",
+        },
+      ],
+    } as InformationSectionData,
+    {
+      kind: "Observation",
+      id: "size-input" as SectionId,
+      title: "Adding a Size Input",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Let's improve our square-drawing function by adding a `size` input. Now we can draw squares of any size without rewriting the function! Run this code and see what happens:",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_square(size):\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n\n# Draw squares of different sizes\ndraw_square(50)\ndraw_square(100)\ndraw_square(25)",
+      },
+    } as ObservationSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "function-benefit",
+      title: "Function Benefits",
+      content: [
+        {
+          kind: "text",
+          value:
+            "What's the main benefit of adding the `size` input to our square function?",
+        },
+      ],
+      options: [
+        "It makes the function run faster",
+        "It lets us draw squares of different sizes without rewriting code",
+        "It makes the squares more colorful",
+        "It's required by Python",
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct! Inputs make functions flexible and reusable for different situations.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "PRIMM",
+      id: "triangle-size-primm" as SectionId,
+      title: "Triangle with Input",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Here's a triangle function that takes a size input. Predict what will be drawn when we call it with different sizes:",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_triangle(size):\n    t.forward(size)\n    t.left(120)\n    t.forward(size)\n    t.left(120)\n    t.forward(size)\n    t.left(120)\n\n# Draw triangles\ndraw_triangle(80)\nt.penup()\nt.forward(100)\nt.pendown()\ndraw_triangle(40)",
+      },
+      predictPrompt:
+        "Two triangles will be drawn. How will they differ? Where will they appear?",
+      conclusion:
+        "The first triangle has sides of 80 pixels, the second has sides of 40 pixels. The turtle moves between them without drawing a line because of `penup()`!",
+    } as PRIMMSectionData,
+    {
+      kind: "Observation",
+      id: "color-input" as SectionId,
+      title: "Multiple Inputs",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Functions can take more than one input! Let's create a function that draws colored squares. It takes both a size AND a color:",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          'import turtle\nt = turtle.Turtle()\n\ndef draw_colored_square(size, color):\n    t.color(color)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n\n# Draw colorful squares\ndraw_colored_square(60, "red")\nt.penup()\nt.forward(80)\nt.pendown()\ndraw_colored_square(60, "blue")\nt.penup()\nt.forward(80)\nt.pendown()\ndraw_colored_square(60, "green")',
+      },
+    } as ObservationSectionData,
+    {
+      kind: "Debugger",
+      id: "position-inputs-debug" as SectionId,
+      title: "Position Inputs",
+      content: [
+        {
+          kind: "text",
+          value:
+            "To build complex drawings, we need to control WHERE shapes are drawn. This function takes x and y coordinates as inputs.\n\nStep through this code and watch how the turtle jumps to different positions before drawing each square:",
+        },
+      ],
+      example: {
+        visualization: "console",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_square_at(x, y, size):\n    # Move to position without drawing\n    t.penup()\n    t.goto(x, y)\n    t.pendown()\n    \n    # Draw the square\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n\n# Draw squares in different positions\ndraw_square_at(-100, 50, 40)\ndraw_square_at(50, 50, 40)\ndraw_square_at(-25, -50, 40)",
+      },
+    } as DebuggerSectionData,
+    {
+      kind: "Testing",
+      id: "rectangle-function" as SectionId,
+      title: "Challenge: Rectangle Function",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Create a function called `draw_rectangle(width, height)` that draws a rectangle with the given width and height.\n\nThen use your function to draw:\n1. A rectangle that's 100 pixels wide and 50 pixels tall\n2. A rectangle that's 30 pixels wide and 80 pixels tall\n\nHint: A rectangle has two sides of one length and two sides of another length.",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n    # Your code here\n    pass\n\n# Test your function\ndraw_rectangle(100, 50)\nt.penup()\nt.forward(120)\nt.pendown()\ndraw_rectangle(30, 80)",
+      },
+      testCases: [
+        {
+          input: [100, 50],
+          expected: "SHAPE:rectangle[100,50]",
+          description: "Test rectangle with width 100 and height 50",
+        },
+        {
+          input: [30, 80],
+          expected: "SHAPE:rectangle[30,80]",
+          description: "Test rectangle with width 30 and height 80",
+        },
+      ],
+      functionToTest: "draw_rectangle",
+    } as TestingSectionData,
+    {
+      kind: "PRIMM",
+      id: "house-parts-primm" as SectionId,
+      title: "Building House Parts",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Now we're getting somewhere! This program uses functions with inputs to draw parts of a house. Predict what this will draw:",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          'import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n    t.forward(width)\n    t.right(90)\n    t.forward(height)\n    t.right(90)\n    t.forward(width)\n    t.right(90)\n    t.forward(height)\n    t.right(90)\n\ndef draw_door(width, height, color):\n    t.color(color)\n    draw_rectangle(width, height)\n    t.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nt.penup()\nt.goto(60, 0)\nt.pendown()\ndraw_rectangle(40, 40)',
+      },
+      predictPrompt:
+        "What two shapes will be drawn? What will be different about them?",
+      conclusion:
+        "The door is a brown rectangle (30x60), and the window is a black square (40x40). Notice how we reused the rectangle function!",
+    } as PRIMMSectionData,
+    {
+      kind: "Testing",
+      id: "house-base-challenge" as SectionId,
+      title: "Challenge: House Base",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Time to start building a house! Create a function called `draw_house_base(size)` that:\n1. Draws a square for the house body using the given size\n2. Draws a triangle roof on top (also using the same size)\n\nThe roof should sit directly on top of the square. Test your function by calling it with size 100.",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_house_base(size):\n    # Draw the square base\n    \n    # Draw the triangle roof\n    # Hint: The roof starts where the square ends\n    \n    pass\n\n# Test your function\ndraw_house_base(100)",
+      },
+      testCases: [
+        {
+          input: [100],
+          expected: "SHAPE:house_base",
+          description: "Test that a house with roof is drawn",
+        },
+      ],
+      functionToTest: "draw_house_base",
+    } as TestingSectionData,
+    {
+      kind: "Reflection",
+      id: "inputs-reflection" as SectionId,
+      title: "Function Inputs Reflection",
+      content: [
+        {
+          kind: "text",
+          value:
+            'Function inputs transform rigid code into flexible building blocks. By adding inputs like size, color, and position, one function can create many different outputs.\n\nCreate a simple example showing how inputs make turtle functions more powerful. Remember to use the phrase "as seen in the example above".',
+        },
+      ],
+      topic: "Making Turtle Functions Flexible",
+      isTopicPredefined: true,
+      code: "Show a turtle function that uses inputs effectively",
+      isCodePredefined: false,
+      explanation:
+        "Explain how inputs make your function reusable (3-4 sentences)",
+      isExplanationPredefined: false,
+    } as ReflectionSectionData,
+    {
+      kind: "Information",
+      id: "inputs-conclusion",
+      title: "Conclusion",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Excellent work! You've learned how to make turtle functions flexible with inputs. You can now:\n- Control the size of your shapes\n- Change colors dynamically\n- Position shapes anywhere on screen\n- Reuse functions to build complex drawings\n\nIn the final lesson, we'll combine everything you've learned to build an entire neighborhood with different houses, trees, and maybe even some clouds!",
+        },
+      ],
+    } as InformationSectionData,
+  ],
+};
+
+export default lessonData;
