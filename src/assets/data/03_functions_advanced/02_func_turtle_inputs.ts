@@ -8,7 +8,6 @@ import type {
   TestingSectionData,
   MultipleChoiceSectionData,
   DebuggerSectionData,
-  ReflectionSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -37,13 +36,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's improve our square-drawing function by adding a `size` input. Now we can draw squares of any size without rewriting the function! Run this code and see what happens:",
+            "Let's improve our square-drawing function by adding a `size` and a `color` input. Now we can draw squares of any size and any color without rewriting the function! Run this code and see what happens:",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_square(size):\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n\n# Draw squares of different sizes\ndraw_square(50)\ndraw_square(100)\ndraw_square(25)",
+          'import turtle\nt = turtle.Turtle()\n\ndef draw_square(size, color):\n  t.color(color)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n\n# Draw squares of different sizes\ndraw_square(50, "red")\ndraw_square(100, "yellow")\ndraw_square(25, "blue")',
       },
     } as ObservationSectionData,
     {
@@ -54,14 +53,14 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "What's the main benefit of adding the `size` input to our square function?",
+            "What's the main benefit of adding the `size` and `color` inputs to our square function?",
         },
       ],
       options: [
         "It makes the function run faster",
-        "It lets us draw squares of different sizes without rewriting code",
+        "It lets us draw squares of different types of squares without rewriting code",
         "It makes the squares more colorful",
-        "It's required by Python",
+        "It is required by Python",
       ],
       correctAnswer: 1,
       feedback: {
@@ -83,30 +82,13 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_triangle(size):\n    t.forward(size)\n    t.left(120)\n    t.forward(size)\n    t.left(120)\n    t.forward(size)\n    t.left(120)\n\n# Draw triangles\ndraw_triangle(80)\nt.penup()\nt.forward(100)\nt.pendown()\ndraw_triangle(40)",
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_triangle(size):\n  t.forward(size)\n  t.left(120)\n  t.forward(size)\n  t.left(120)\n  t.forward(size)\n  t.left(120)\n\n# Draw triangles\ndraw_triangle(80)\nt.penup()\nt.forward(100)\nt.pendown()\ndraw_triangle(40)",
       },
       predictPrompt:
         "Two triangles will be drawn. How will they differ? Where will they appear?",
       conclusion:
         "The first triangle has sides of 80 pixels, the second has sides of 40 pixels. The turtle moves between them without drawing a line because of `penup()`!",
     } as PRIMMSectionData,
-    {
-      kind: "Observation",
-      id: "color-input" as SectionId,
-      title: "Multiple Inputs",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Functions can take more than one input! Let's create a function that draws colored squares. It takes both a size AND a color:",
-        },
-      ],
-      example: {
-        visualization: "turtle",
-        initialCode:
-          'import turtle\nt = turtle.Turtle()\n\ndef draw_colored_square(size, color):\n    t.color(color)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n\n# Draw colorful squares\ndraw_colored_square(60, "red")\nt.penup()\nt.forward(80)\nt.pendown()\ndraw_colored_square(60, "blue")\nt.penup()\nt.forward(80)\nt.pendown()\ndraw_colored_square(60, "green")',
-      },
-    } as ObservationSectionData,
     {
       kind: "Debugger",
       id: "position-inputs-debug" as SectionId,
@@ -119,9 +101,9 @@ const lessonData: Lesson = {
         },
       ],
       example: {
-        visualization: "console",
+        visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_square_at(x, y, size):\n    # Move to position without drawing\n    t.penup()\n    t.goto(x, y)\n    t.pendown()\n    \n    # Draw the square\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n    t.forward(size)\n    t.right(90)\n\n# Draw squares in different positions\ndraw_square_at(-100, 50, 40)\ndraw_square_at(50, 50, 40)\ndraw_square_at(-25, -50, 40)",
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_square_at(x, y, size):\n  # Move to position without drawing\n  t.penup()\n  t.goto(x, y)\n  t.pendown()\n\n    # Draw the square\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n\n# Draw squares in different positions\ndraw_square_at(-100, 50, 40)\ndraw_square_at(50, 50, 40)\ndraw_square_at(-25, -50, 40)",
       },
     } as DebuggerSectionData,
     {
@@ -138,7 +120,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n    # Your code here\n    pass\n\n# Test your function\ndraw_rectangle(100, 50)\nt.penup()\nt.forward(120)\nt.pendown()\ndraw_rectangle(30, 80)",
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n  # Your code here\n  pass\n\n# Test your function\ndraw_rectangle(100, 50)\nt.penup()\nt.forward(120)\nt.pendown()\ndraw_rectangle(30, 80)",
       },
       testCases: [
         {
@@ -168,7 +150,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n    t.forward(width)\n    t.right(90)\n    t.forward(height)\n    t.right(90)\n    t.forward(width)\n    t.right(90)\n    t.forward(height)\n    t.right(90)\n\ndef draw_door(width, height, color):\n    t.color(color)\n    draw_rectangle(width, height)\n    t.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nt.penup()\nt.goto(60, 0)\nt.pendown()\ndraw_rectangle(40, 40)',
+          'import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n  t.forward(width)\n  t.right(90)\n  t.forward(height)\n  t.right(90)\n  t.forward(width)\n  t.right(90)\n  t.forward(height)\n  t.right(90)\n\ndef draw_door(width, height, color):\n  t.color(color)\n  draw_rectangle(width, height)\n  t.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nt.penup()\nt.goto(60, 0)\nt.pendown()\ndraw_rectangle(40, 40)',
       },
       predictPrompt:
         "What two shapes will be drawn? What will be different about them?",
@@ -189,7 +171,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_house_base(size):\n    # Draw the square base\n    \n    # Draw the triangle roof\n    # Hint: The roof starts where the square ends\n    \n    pass\n\n# Test your function\ndraw_house_base(100)",
+          "import turtle\nt = turtle.Turtle()\n\ndef draw_house_base(size):\n  # Draw the square base\n\n  # Draw the triangle roof\n  # Hint: The roof starts where the square ends\n\n  pass\n\n# Test your function\ndraw_house_base(100)",
       },
       testCases: [
         {
@@ -200,25 +182,6 @@ const lessonData: Lesson = {
       ],
       functionToTest: "draw_house_base",
     } as TestingSectionData,
-    {
-      kind: "Reflection",
-      id: "inputs-reflection" as SectionId,
-      title: "Function Inputs Reflection",
-      content: [
-        {
-          kind: "text",
-          value:
-            'Function inputs transform rigid code into flexible building blocks. By adding inputs like size, color, and position, one function can create many different outputs.\n\nCreate a simple example showing how inputs make turtle functions more powerful. Remember to use the phrase "as seen in the example above".',
-        },
-      ],
-      topic: "Making Turtle Functions Flexible",
-      isTopicPredefined: true,
-      code: "Show a turtle function that uses inputs effectively",
-      isCodePredefined: false,
-      explanation:
-        "Explain how inputs make your function reusable (3-4 sentences)",
-      isExplanationPredefined: false,
-    } as ReflectionSectionData,
     {
       kind: "Information",
       id: "inputs-conclusion",
