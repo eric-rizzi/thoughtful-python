@@ -49,7 +49,7 @@
   text-decoration: none;
   color: inherit;
   display: block;
-  height: 80%; /* Ensure link fills card height */
+  height: 100%; /* Ensure link fills card height */
 }
 
 .lessonCard {

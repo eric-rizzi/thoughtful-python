@@ -53,7 +53,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "What's the main benefit of adding the `size` and `color` inputs to our square function?",
+            "What's the benefit of adding the `size` and `color` inputs to our square function?",
         },
       ],
       options: [

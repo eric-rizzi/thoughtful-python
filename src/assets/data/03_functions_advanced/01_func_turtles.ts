@@ -86,7 +86,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now let's try something more interesting. The code has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some thing. Finally, there's a `make_shape()` call that has the shape draw once. Given all this, predict what shape will be drawn, then run it to check you prediction.",
+            "Now let's try something more interesting. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` call that results int the shape being drawn once. Given all this, predict what shape will be drawn, then run it to check you prediction.",
         },
       ],
       example: {
@@ -135,7 +135,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\n# Draw your triangle here\n# Each side should be 100 pixels\n\nturtle.done()",
+          "import turtle\nt = turtle.Turtle()\n\ndef make_triangle():\n  # Each side should be 100 pixels\n\nmake_triangle()",
       },
       testCases: [
         {

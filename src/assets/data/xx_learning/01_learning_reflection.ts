@@ -8,7 +8,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Deepen Your Learning: Reflection",
+  title: "Reflective Learning",
   guid: "3c201468-453b-42f3-a4f6-51a0ad3c93f8" as LessonId,
   description:
     "Without reflection there is no learning. See how this website leverages AI to help you reflect, correct, and internalize new information.",

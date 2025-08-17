@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the previous unit you learned how to create and use your own functions, but you've actually been **using functions from the very beginning**: namely `print()`. The `print()` function takes what you want to show the user as input. \"Inside\" the `print()` function there's lots of code, including calls to other, sub-functions. A single call to `print()` ends up calling layers upon layers of functions that interact with the deepest parts of the computer to change the proper pixels.",
+            "In the previous unit you learned how to create and use your own functions, but you've actually been **using functions from the very beginning**: namely `print()`. The `print()` function's job is to display any input given to it to the user. \"Inside\" the `print()` function there's lots of code, including calls to sub-functions that in turn call their own sub-sub-functions. A single call to `print()` ends up calling layers upon layers of functions that interact with the deepest parts of the computer to change the proper pixels.",
         },
       ],
     } as InformationSectionData,
@@ -58,7 +58,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'How many instructions get executed to do a simple `print("Hello, World")` call?',
+            'How many instructions are executed to do a simple `print("Hello, World")` call?',
         },
       ],
       options: [
@@ -81,7 +81,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'In addition to `print()`, Python provides hundreds of different functions for free. These functions are arranged into "libraries" of related functions and are the building blocks of many different programs.\n\nThere are two steps in using a function from a library:\n1. **Import** the library so it\'s functions are available to use\n2. **Use** one of the functions in the library.',
+            'In addition to `print()`, Python provides hundreds of different functions for free. These functions are arranged into "libraries" of related functions and are the building blocks of many different programs.\n\nThere are two steps in using a function from a library:\n1. **Import** the library so its functions are available to use\n2. **Use** one of the functions in the library.',
         },
       ],
     } as InformationSectionData,
@@ -93,7 +93,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The first library we're going to use is the `random` library. Randomness is a really common requirement in many programs, which is why Python provides a bunch of random functions for anyone to use. In this case, we're going to use the `randint()` function from the `random` library. Run the code below **a few times** and see how the output value changes.",
+            "The first library we're going to use is the `random` library. Randomness is a really common requirement in many programs, which is why Python provides a bunch of random functions for anyone to use. In this case, we're going to use the `randint()` function from the `random` library. Run the code below **a few times** and see how a new random integer is generated every time.",
         },
       ],
       example: {
@@ -148,7 +148,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The `random` library has more functions than just `randint()`. Below is a program that uses a different random function. Predict what you think the code will output, then run it several times to check your prediction.",
+            "The `random` library has more functions than just `randint()`. Below is a program that uses a different random function called `choice()`. Predict what you think the code will output, then run it several times to check your prediction.",
         },
       ],
       example: {
@@ -168,7 +168,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Python also provides a `math` library with advanced mathematical functions. Just like with `random`, you need to import it first.\n\nRun the code below and observe what different math functions do:",
+            "Python also provides a `math` library with advanced mathematical functions. Just like with `random`, you need to import it first. Once you've imported it, you can use dozens of different advanced mathematical operations.\n\nRun the code below and observe what a few of these math functions do:",
         },
       ],
       example: {
@@ -204,7 +204,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations! You've learned that functions aren't just things you create - they're everywhere in Python. From the humble `print()` to the powerful `random` and `math` libraries, functions are the building blocks that let you create amazing programs.\n\nIn the next lesson, we'll explore a fun library called `turtle` that lets you create graphics by commanding a virtual turtle to move around the screen!",
+            "Congratulations! You've learned that functions aren't just things you create - they're everywhere in Python. From the humble `print()` to the powerful `random` and `math` libraries, functions are the building blocks that let you create amazing programs.\n\nIn the next lesson, we'll explore a library called `turtle` that lets you create graphics by commanding a virtual turtle to move around the screen!",
         },
       ],
     } as InformationSectionData,
