@@ -119,16 +119,17 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "What would the following program print out?",
+          value:
+            "You aren't limited to a single input value for functions. You can actually use as many as your would like. For example, in the program below, the function requires **three** inputs. The function call then provides these three inputs: `5` -> `x`, `2` -> `y`, and `3` -> `z`.\n\nBased on this explanation, what would the following program print out?",
         },
         {
           kind: "code",
           value:
-            "def math_stuff(x, y):\n    z = x * y\n    print(z + x)\n\nmath_stuff(5, 2)",
+            "def math_stuff(x, y, z):\n    a = x * y * z\n    print(z)\n\nmath_stuff(5, 2, 3)",
         },
       ],
-      options: ["9", "10", "13", "15"],
-      correctAnswer: 3,
+      options: ["13", "15", "30", "100"],
+      correctAnswer: 2,
       feedback: {
         correct: "Correct!",
       },
@@ -159,7 +160,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations on learning about functions! You now understand how to define and call your own functions. Identifying places where you can create and use functions is one of the core parts of being a programmer.\n\nYou should feel proud. Over the previous three lessons, you've learned some of the most important concepts in programming. They will come up over and over again. In the next lesson, we'll pause and test ourselves on everything we've learned so far.",
+            "Congratulations on learning about functions! You now understand how to define and call your own functions. Identifying places where you can create and use functions is one of the core parts of being a programmer.\n\nOver the previous three lessons, you've learned some of the most important concepts in programming. They will come up over and over again. In the next lesson, we'll pause and test ourselves on everything we've learned so far.",
         },
       ],
     } as InformationSectionData,

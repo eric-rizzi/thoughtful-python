@@ -81,7 +81,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'In addition to `print()`, Python provides hundreds of different functions for free. These functions are arranged into "libraries" of related functions and are the building blocks of many different programs.\n\nThere are two steps in using a function from a library:\n1. **Import** the library so its functions are available to use\n2. **Use** one of the functions in the library.',
+            'In addition to `print()`, Python provides hundreds of different functions for free. These functions are arranged into "libraries" of related functions and are the building blocks of all programs.\n\nThere are two steps in using a function from a library:\n1. **Import** the library so its functions are available to use\n2. **Use** one of the functions in the library.',
         },
       ],
     } as InformationSectionData,
@@ -148,7 +148,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The `random` library has more functions than just `randint()`. Below is a program that uses a different random function called `choice()`. Predict what you think the code will output, then run it several times to check your prediction.",
+            "The `random` library has more functions than just `randint()` in it. Below is a program that uses a different random function called `choice()`. Predict what you think the code will output, then run it several times to check your prediction.",
         },
       ],
       example: {
@@ -168,7 +168,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Python also provides a `math` library with advanced mathematical functions. Just like with `random`, you need to import it first. Once you've imported it, you can use dozens of different advanced mathematical operations.\n\nRun the code below and observe what a few of these math functions do:",
+            "Python also provides a `math` library with advanced mathematical functions. Just like with `random`, you need to import it first. Once you've imported it, you can use dozens of different advanced mathematical operations.\n\nRun the code below and observe what a few of these `math` functions do:",
         },
       ],
       example: {

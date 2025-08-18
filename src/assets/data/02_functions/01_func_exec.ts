@@ -44,7 +44,8 @@ const lessonData: Lesson = {
         { Fourth: "`:`" },
         { Fifth: "Indentation" },
         { Sixth: "Function Code" },
-        { Seventh: "Function Call" },
+        { Seventh: "End indentation" },
+        { Eighth: "Function Call" },
       ],
     } as MatchingSectionData,
     {
@@ -55,7 +56,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The video below is another explanation of how functions work. It does a very nice job of showing how you can shrink the size of your program if you can identify patterns within your code. Pay particular attention to how 12 lines of code becomes just seven lines via functions.",
+            "The video below is another explanation of how functions work. It does a very nice job of showing how functions can help shrink the size of your program if you can identify patterns within your code. Pay particular attention to how 12 lines of code becomes just seven lines via functions.",
         },
         {
           kind: "video",
@@ -78,7 +79,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'When a computer runs a program, it goes line-by-line. When it encounters a function, it goes inside the function and runs every line inside the function. Once the computer finishes the function, it returns back to the line that called the function and continues.\n\nThe program below allows you to slowly "step" through the program from the video and see how it is equivalent to the original, 12 line program from the video. Use the debugger to step through each line of the program. The most important part to notice is every time a function is called:\n1. The computer remembers where the function call is\n2. The computer runs all the code inside the function\n3. The computer returns to right after the remembered function call\n\nThis process of calling, running, and returning to the call location is how seven lines of code can become the equivalent of 12.',
+            'When a computer runs a program, it goes line-by-line. When it encounters a function, it goes "inside" the function and runs every line inside the function. Once the computer finishes the function, it returns back to the line that called the function and continues.\n\nThe program below allows you to slowly "step" through the program from the video and see how it is equivalent to the original, 12 line program from the video. Use the debugger to step through each line of the program. The most important thing to notice is that three things happen every time a function is called:\n1. The computer remembers where the function call is\n2. The computer runs all the code inside the function\n3. The computer returns to right after the remembered function call\n\nThis process of calling, running, and returning to the call location is how seven lines of code can become the equivalent of 12.',
         },
       ],
       example: {

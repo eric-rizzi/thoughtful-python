@@ -26,7 +26,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned a lot in the previous three lessons: how to create functions, how to call functions, and how to provide inputs to functions to get different outputs. As with the previous review section, this lesson uses a learning technique called **interleaving** to help solidify your understanding. By pulling everything you've learned so far and asking questions about it in a mixed up order, your brain will be able to make stronger connections between the concepts. Be sure to take your time and think carefully about each problem!",
+            "You've learned a lot in the previous three lessons: how to create functions, how to call functions, and how to provide inputs to functions to get different outputs. As with the previous review section, this lesson  **interleaving** to help solidify your understanding. By pulling everything you've learned so far and asking questions about it in a mixed up order, your brain will be able to make stronger connections between the concepts. Be sure to take your time and think carefully about each problem!",
         },
       ],
     } as InformationSectionData,

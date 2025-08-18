@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the previous lesson you learned about different data types and how different operators do different things with them. In this lesson, you will see what happens when you accidentally mix them up.",
+            "In the previous lesson you learned about different data types and how different operators do different things with them. In this lesson, you will see what happens when you accidentally mix stuff up.",
         },
       ],
     } as InformationSectionData,
@@ -55,7 +55,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Getting errors while you're writing a program is very common. You got a `SyntaxError` in the first lesson and here you're getting a `TypeError`. Learning how to interpret errors will save you **a ton of time** later.\n\nThe error above is trying to tell you two things: where and what the issue is.\n- Where\n    - To find the line that has a problem, look at the second to last line\n    - The error above says \"line 1\", which makes sense since our program is only one line\n- What\n    - To find what the problem is, look at the last line\n    - The error above says the problem is that we're doing an operation (`+`) that can't handle two different data types, which makes sense since the original, offending line was `print(3 + \"4\")`",
+            "Getting errors while you're writing a program is very common. You got a `SyntaxError` in the first lesson and here you're getting a `TypeError`. Learning how to interpret errors will save you **a ton of time** later.\n\nThe error above is trying to tell you two things: where and what the issue is.\n- Where\n    - Look at the second to last line of the error to see what line of code has the problem\n    - The error above says \"line 1\", which makes sense since our program is only one line\n- What\n    - Look at the last line of the error to see what the problem is\n    - The error above says the problem is that we're doing an operation (`+`) that can't handle two different data types",
         },
       ],
     } as InformationSectionData,
@@ -91,7 +91,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
       content: [
         {
           kind: "text",
-          value: `All errors follow the same basic format. For example, another common type of error is called a \`SyntaxError\`. These occur when your program is typed incorrectly. What is the following \`SyntaxError\` trying to communicate?\n\`\`\`\nExecution Error: Traceback (most recent call last):
+          value: `All errors follow the same basic format. For example, look at the following \`SyntaxError\`. As you saw in the first lesson, these occur when your program is typed incorrectly. What is the following \`SyntaxError\` trying to communicate?\n\`\`\`\nExecution Error: Traceback (most recent call last):
   File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async
     await CodeRunner(
           ^^^^^^^^^^^
@@ -125,7 +125,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         {
           kind: "text",
           value:
-            "Having experimented with different data types, different operations, and the different errors that can pop up if you make a mistake, match each of the following bits of code with their output:",
+            'Having experimented with different data types, different operations, and the different errors that can be "raised" if you make a mistake, match each of the following bits of code with their output:',
         },
       ],
       prompts: [

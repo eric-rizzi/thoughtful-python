@@ -35,7 +35,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Computers do more than just print words. In fact, computers were first invented to operate on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice the lack of quotation marks. Run the code and pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
+            "Computers do more than just print words. In fact, the first computers operated solely on numbers. Therefore, we need to learn how to use numbers in our programs. We'll start with whole numbers, which Python calls **integers**.\n\nIn the example below, there's a bunch of integers being operated on. Notice the lack of quotation marks. Run the code and pay attention to what happens when you use the `+` and `*` operators on different **integers**.",
         },
       ],
       example: {
@@ -52,7 +52,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "All the various operators that you learned in math class are all present in Python: addition, subtraction, multiplication, division, and even exponents.\n\nSee if you can match the left side (integers and operators) with the right side (resulting integer).",
+            "All the various operators that you learned in math class are present in Python: addition, subtraction, multiplication, division, and even exponents.\n\nSee if you can match the left side (integers and operators) with the right side (resulting integer).",
         },
       ],
       prompts: [
@@ -64,7 +64,7 @@ const lessonData: Lesson = {
       ],
       feedback: {
         correct:
-          'Correct! The two tricky ones are `*` is multiplication and `**` is "raised to the power."',
+          'Correct! The two tough ones to remember are `*` for multiplication and `**` for "raised to the power."',
       },
     } as MatchingSectionData,
     {
@@ -75,7 +75,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer **operates on them differently**. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that will highlight this difference. First, predict what you think the code will do and then investigate whether your prediction was correct. Be sure to read the AI response very carefully if your prediction was incorrect.',
+            'Ok, now for the tricky part! It\'s important to understand the difference between strings and integers because the computer **operates on them differently**. In particular the **string** `"5"` is not the same as the **integer** `5`.\n\nBelow is a simple Python program that showcases this difference. First, predict what you think the code will do and then investigate whether your prediction was correct. Be sure to read the AI response very carefully if your prediction was incorrect.',
         },
       ],
       example: {
@@ -153,7 +153,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Great job! You have learned about the two main **data types** that beginner programmers need. In the next section you'll start to write your own programs that use these data types and learn to interpret error messages if/when something goes wrong.",
+            "Great job! You have learned about the two main **data types** that beginner programmers need. In the next lesson you'll start to write your own programs that use these data types and learn to interpret error messages if/when something goes wrong.",
         },
       ],
     } as InformationSectionData,
