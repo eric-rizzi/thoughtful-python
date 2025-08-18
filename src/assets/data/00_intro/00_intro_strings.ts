@@ -63,7 +63,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The first thing to appreciate about all programming languages is that they're primarily used to operate on data. Therefore, understanding the _type of data_ you're operating on is very important. The first **data type** we're going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters. Strings are most often denoted with a start `\"` and an end `\"`.\n\nBased on this definition, select the **two** options below that are valid strings.",
+            "The first thing to appreciate about all programming languages is that they're primarily used to operate on data. Therefore, understanding the _type of data_ you're operating on is very important. The first **data type** we're going to cover are **strings**. Strings are lists of characters that can form words, sentences, and paragraphs. They are composed of letters, spaces, punctuation, and even numerical characters.\n\nStrings are most often denoted with a start `\"` and an end `\"`. Based on this definition, select the **two** options below that are valid strings.",
         },
       ],
       options: [
@@ -108,7 +108,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Luckily, there's a way around this problem: single quotes! Single quotes (`'`) can be used whenever you have a string that has a double quote (`\"`) inside it.\n\nThe code below is almost exactly like the code in the example above, except it uses single quotes at the start and end of the string. This simple change prevents the computer from getting confused about where the string ends. Run the program to verify it works as expected.",
+            "Luckily, there's a way around the problem above: single quotes! Single quotes (`'`) can be used whenever you have a string that has a double quote (`\"`) inside it.\n\nThe code below is almost exactly like the code in the example above, except it uses single quotes at the start and end of the string. This simple change prevents the computer from getting confused about where the string ends. Run the program to verify it works as expected.",
         },
       ],
       example: {

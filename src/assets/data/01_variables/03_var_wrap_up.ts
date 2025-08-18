@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned a lot in the previous lessons: how to work with strings and integers, how operations affect data-types differently, and how to store values in variables. This review uses a learning technique called **interleaving** to help solidify your understanding. Interleaving is effective because it forces you to utilize prior knowledge while you are reviewing what you just learned.\n\nTherefore, instead of practicing just one topic at a time, in this lesson you'll encounter questions that touch on all the topics you've learned so far. This approach mirrors how real programming works and helps your brain make stronger connections between related concepts.",
+            "You've learned a lot in the previous lessons: how to work with strings and integers, how operations affect data-types differently, and how to store values in variables. What's more, these topics build on each other in varying and subtle ways. Therefore, this review uses a learning technique called **interleaving** to help solidify your understanding of all these interrelated topics.\n\nInterleaving is technique where you answer questions about everything you've encountered so far. It forces you to utilize prior knowledge while simultaneously reviewing what you just learned. This approach helps your brain make stronger connections between concepts and mirrors how real programming works.",
         },
       ],
     } as InformationSectionData,
@@ -35,7 +35,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Order the following lines of a program so the number 8 is printed out and then the number 5 is printed out.",
+            "Order the following lines of a program so the number `8` is printed out and then the number `5` is printed out.",
         },
       ],
       prompts: [
@@ -81,14 +81,14 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Which of the following lines of code would result in this error:\n```\nError:\n\nExecution Error: Traceback (most recent call last):\n  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async\n    await CodeRunner(\n  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async\n    coroutine = eval(self.code, globals, locals)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<exec>", line 2, in <module>\nNameError: name \'num\' is not defined\n```\n',
+            'Which of the following lines of code would result the following error being raised:\n```\nError:\n\nExecution Error: Traceback (most recent call last):\n  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async\n    await CodeRunner(\n  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async\n    coroutine = eval(self.code, globals, locals)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<exec>", line 2, in <module>\nNameError: name \'num\' is not defined\n```\n',
         },
       ],
       options: [
         "`num = 10` followed by `print(number)`",
         "`number = 10` followed by `print(num)`",
-        'num = 3 + "3"',
-        'number = 3 * "3"',
+        '`num = 3 + "3"`',
+        '`number = 3 * "3"`',
       ],
       correctAnswer: 1,
       feedback: {
@@ -103,7 +103,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "Select all of the following that are integers (not strings):",
+          value:
+            "Which of the following that are integers? Select all that apply.",
         },
       ],
       options: ["42", '"forty two"', "0", '"hello"', "999", "'999'", "-5"],
@@ -146,7 +147,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Which of the following lines of code would cause a `TypeError`? Select all that apply.",
+            "Which of the following lines of code would result in a `TypeError` being raised? Select all that apply.",
         },
       ],
       options: [
@@ -189,7 +190,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "Looking at this code, what is the name of the variable?",
+          value: "Looking at this code, what is the **name** of the variable?",
         },
         { kind: "code", value: 'favorite_food = "pizza"' },
       ],
@@ -254,7 +255,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Excellent job working through these interleaved practice problems! By mixing questions about strings, integers, and variables together, your brain had to actively recall and apply different concepts rather than just following a single pattern. This type of practice - where you switch between related topics - has been proven to create stronger, more durable learning.\n\nYou've demonstrated your understanding of all the foundational concepts and you're ready to move on to more advanced topics!",
+            "Excellent job working through these interleaved practice problems! By mixing questions about strings, integers, and variables together, your brain had to actively recall and apply different concepts rather than just follow a single pattern. This type of practice - where you switch between related topics - has been proven to create stronger, more durable learning.\n\nYou've demonstrated your understanding of all the foundational concepts and you're ready to move on to more advanced topics!",
         },
       ],
     } as InformationSectionData,

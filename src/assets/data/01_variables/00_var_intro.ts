@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "So far, you've learned how to work with strings and integers directly in your code. But, what if you want to use the same value multiple times? Or, what if you want to easily change a value that's used in many different locations? That's where **variables** come in. Variables allow you to give a name to a piece of data so you can use it later in your program.",
+            "So far, you've learned how to work with strings and integers directly in your code. But, what if you want to use the same value multiple times? Or, what if you want to easily change a value that's used in many different locations? That's where **variables** come in. Variables allow you to give a name to a piece of data so you can use it repeatedly in your program.",
         },
       ],
     } as InformationSectionData,
@@ -36,7 +36,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You can create a variable in Python in a single line: you write the variable name, then an equals sign (`=`), then the value you want to store. For example `age = 13` creates a variable named `age` and then stores the integer 13 in it.\n\nRun the code below and pay attention to how the variable `name` gets created and then used in the two different `print()` statements.",
+            "You can create a variable in Python with just a single line of code. For example, `age = 13` creates a variable named `age` and then stores the integer 13 in it. You can then reference the `variable` age later in the program and it will give you the value 13.\n\nRun the code below and pay attention to how the variable `name` gets created and then used in the two different `print()` statements.",
         },
       ],
       example: {
@@ -97,7 +97,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "One of the most powerful features of variables is that you can change the value they're storing. When you assign a new value to an existing variable, it replaces the old value.\n\nUse the debugging tool to step line-by-line through the code and observe how the value of `score` changes. Pay particular attention to the following:\n- When a variable is created, it shows up in the `Variables` side-panel\n- When the value of a variable changes, the variable is highlighted in the `Variables` side-panel\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
+            "One of the most powerful features of variables is that you can update the value they're storing. When you assign a new value to an existing variable, it simply overwrites the old value.\n\nUse the debugging tool to step line-by-line through the code and observe how the value of the `score` variable changes. Pay particular attention to the following:\n- When `score` is created, it shows up in the `Variables` side-panel with its given, initial value\n- When the value of `score` is updated, the variable is highlighted in the `Variables` side-panel with its new value\n- Whenever a `print()` statement is run, the output is shown in the `Program Output` side-panel",
         },
       ],
       example: {
@@ -125,7 +125,7 @@ const lessonData: Lesson = {
       correctAnswer: 2,
       feedback: {
         correct:
-          "Correct! The variable starts at 100, gets sets to 50, then gets changed to 50 + 25 = 75.",
+          "Correct! The variable starts at 100, gets sets to 50, then gets updated to 50 + 25 = 75.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -136,16 +136,16 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Just like with integers, you can change (e.g., update, overwrite, reassign) the value that a variable is holding. And, just like with integers, you can use the old value when calculating what new value to store in the variable.\n\nPredict what the program below will output, then run it to check your prediction.",
+            "Just like with integers, you can update (e.g., change, overwrite, reassign) the value that a variable is holding. And, just like with integers, you can use the old value when calculating what new value to store in the variable.\n\nPredict what the program below will output, then run it to check your prediction.",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)',
+          'greeting = "Hello"\nprint(greeting)\ngreeting = "Goodbye"\nprint(greeting)\ngreeting = greeting + "!"\nprint(greeting)\n',
       },
       predictPrompt:
-        'The variable `greeting` starts as "Hello" but gets changed twice. What do you think each print statement will output?',
+        'The variable `greeting` is initially set to "Hello" but gets updated twice. What do you think each print statement will output?',
       conclusion:
         "Just like with integers, you can reassign string variables and even use the variables in their own (re)assignment!",
     } as PRIMMSectionData,
@@ -157,7 +157,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Congratulations on learning about variables! You now understand how to store data, change it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nIn the next lesson you'll learn how to create multiple variables in a program.",
+            "Congratulations on learning about variables! You now understand how to store data, update it, and reuse it throughout your programs. Variables are the foundation for creating programs that can respond to complex problems.\n\nIn the next lesson you'll learn how to use multiple variables in a single program.",
         },
       ],
     } as InformationSectionData,

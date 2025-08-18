@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'One of the oldest ways to teach programming is with drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by commanding a virtual turtle. The turtle carries a pen and leaves a trail as it moves. You can tell it to move forward, turn, lift its pen up, put it down, and even change colors. By combining these simple commands, you can create complex drawings.',
+            'One of the oldest ways to teach programming is with drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by controlling a virtual turtle\'s movements around the screen. The turtle carries a pen and leaves a trail as it moves. You can tell it to move forward, turn, lift its pen up, put it down, and even change colors. By combining these simple commands, you can create complex drawings.',
         },
         {
           kind: "image",
@@ -47,7 +47,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's start with the basics. The program below imports the `turtle` library, and then moves the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each command affects the turtle's movement.",
+            "Let's start with the basics. The program below imports the `turtle` library, and then moves the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each individual command affects the turtle's movement.",
         },
       ],
       example: {
@@ -154,7 +154,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Libraries are collections of functions that extend Python's capabilities. Without libraries, you'd have to write every function from scratch. The `import` statement is like checking out a book from a library - it gives you access to all the functions inside.\n\nCreate a simple 3-4 line example that uses the `random`, `math`, or `turtle` library, and explain how libraries make programming more powerful. Remember to use the phrase \"as seen in the example above\".",
+            'Libraries are collections of functions that extend Python\'s capabilities. Without libraries, you\'d have to write every function from scratch. The word "library" was chosen very deliberately: the `import` statement is like checking out a book from a library - it gives you access to all the functions inside.\n\nCreate a simple 3-4 line example that uses the `random`, `math`, or `turtle` library, and explain how libraries make programming more powerful. Remember to use the phrase "as seen in the example above".',
         },
       ],
       topic: "Using Python Libraries",

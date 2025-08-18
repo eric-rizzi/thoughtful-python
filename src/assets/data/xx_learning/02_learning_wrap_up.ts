@@ -20,7 +20,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've just experienced the core learning strategies of this website: PRIMM and Reflection. These aren't random activities; they're built on well-researched best practices for learning complex skills. Understanding these practices will not only help you get the most out of this site, but will help you learn pretty much anything more effectively. The core techniques for learning are: _spaced-practice_, _interleaving_, _retrieval-practice_, _elaboration_, _concrete examples_, and _dual coding_.\n\nEach of these techniques are a way of exercising your brain and creating complex webs of connections that improve your understanding. For more information about how each of these techniques help you learn, [click here](https://www.example.com).",
+            "You've just experienced the core learning strategies of this website: PRIMM and Reflection. These aren't random activities; they're built on well-researched best practices for learning complex skills. Understanding these strategies will not only help you get the most out of this site, but will help you learn pretty much anything more effectively.\n\nAcross all fields, the core techniques for learning are: _spaced-practice_, _interleaving_, _retrieval-practice_, _elaboration_, _concrete examples_, and _dual coding_. Each of these techniques are a way of exercising your brain and creating complex webs of connections that improve your understanding. For more information about how each of these techniques help you learn, [click here](https://www.example.com).",
         },
       ],
     } as InformationSectionData,
@@ -55,7 +55,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "I'm going to bet that a fair number of you had to go back and reread the `Learning Best Practices` section once you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. This is the reason why there are so many PRIMM, reflection, and quiz sections. This approach maximizes active learning and deepens your understanding.",
+            "I'm going to bet that a fair number of you had to go back and reread the `Learning Best Practices` section once you realized that there was a quiz on it. This is because _just_ reading information and learning from it is hard. This is the reason why this website has so many PRIMM, reflection, and quiz sections. This approach maximizes active learning and deepens your understanding.",
         },
       ],
     } as InformationSectionData,
@@ -90,7 +90,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The goal of this lesson isn't to make you a philosopher of learning. It's to prove to you that the techniques utilized in this website have been proven to be effective. In fact, these techniques will help you learn more effectively no matter what you're focused on.\n\nThe important thing to keep in mind is that deep learning isn't easy. It's an active process that requires effort. This website utilizes best practice learning techniques that are proven to work. If you're willing to put forth the effort, you have the opportunity to learn more effectively and deeply. Good luck as you move onto learning Python!",
+            "The goal of this lesson isn't to make you a philosopher of learning. It's to prove to you that the techniques utilized in this website have been proven to be effective. In fact, these techniques will help you learn more effectively no matter what you're focused on.\n\nThe important thing to keep in mind is that learning isn't easy. It's an active process that requires effort. This website utilizes best practice learning techniques that are proven to work. If you're willing to put forth the effort, you have the opportunity to learn more effectively and deeply. Good luck as you move onto learning Python!",
         },
       ],
     } as InformationSectionData,

@@ -24,7 +24,7 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: `So far, you've been writing programs that run line-by-line from top to bottom. That's great, but as your programs get larger, you'll need to break them up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you:\n - **Reuse code** without copying and pasting\n- **Organize** your programs into logical chunks\n- **Avoid mistakes** by writing tricky code just once`,
+          value: `So far, you've been writing programs that run line-by-line from top to bottom. That's great, but as your programs get bigger, you'll need to break them up into understandable chunks. That's where **functions** come in! Think of functions like teaching someone a new skill. Once they learn it, you can just say "do that thing we practiced" instead of explaining it all over again.\n\nFunctions let you:\n - **Reuse code** without copying and pasting\n- **Organize** your programs into logical chunks\n- **Avoid mistakes** by writing tricky code just once`,
         },
       ],
     } as InformationSectionData,
@@ -55,7 +55,7 @@ Run the code and see what happens!`,
         {
           kind: "text",
           value:
-            'As you can see, a function is basically a small chunk of code that\'s sitting there, waiting to be used. The function is "defined" with the line `def greet():` and then everything that\'s **indented under the function** is the code to be run once the function is "called". Once a function has been defined, it can be called over and over again.\n\nWhich of the following lines of code "calls" the function?',
+            'As you can see, a function is a small chunk of code sitting there, waiting to be used. The function is "defined" with the line `def greet():` and then all the code that\'s **indented under the function** will be run once the function is "called". Once a function has been defined, it can be called over and over again.\n\nBased on this explanation, which of the following lines of code "calls" the function?',
         },
       ],
       options: [
@@ -227,7 +227,7 @@ Run the code and see what happens!`,
       content: [
         {
           kind: "text",
-          value: `Congratulations on making your way through the first lesson on functions! In the next lesson we'll examine how computers execute functions and see how to use functions to reduce the amount of code you have to write.`,
+          value: `Congratulations on making your way through the first lesson on functions! In the next lesson, we'll examine how computers execute functions and see how to use functions to reduce the amount of code you have to write.`,
         },
       ],
     } as InformationSectionData,

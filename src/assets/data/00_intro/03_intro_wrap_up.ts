@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the previous lessons you learned about strings, integers, and how they behave differently. You've discovered that quotation marks matter, that `+` does different things to different data types, and that computers are very picky about details.\n\nNow comes the real test: can you use what you've learned to solve actual problems? The following challenges aren't meant to be easy. But here's the thing - the struggle is where the learning happens.",
+            "In the previous lessons you learned about strings, integers, and how they behave differently. You've discovered that quotation marks matter, that `+` does different things to different data types, and that computers are very picky about details.\n\nNow comes the real test: can you use what you've learned to solve actual problems? The following challenges aren't meant to be easy. But, the struggle is where the learning happens.",
         },
       ],
     } as InformationSectionData,

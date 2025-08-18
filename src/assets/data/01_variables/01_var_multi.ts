@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The more ways you can see, hear, touch, or smell what you're learning, the more likely you are to remember it. Using multiple ways to interact with new information is a technique called **dual encoding** and it's one of the best ways to form strong connections in your brain.\n\nFor this reason, where applicable, we've included images and videos to augment the lessons. In this case, the video below talks about variables and explains how they hold different data types in \"slots\" of memory in the computer. You can almost view variables as labels for the memory holding the data you want to store.",
+            "The more ways you can see, hear, touch, or smell what you're learning, the more likely you are to remember it. Interacting with new information in different ways is a technique called **dual encoding** and it's one of the best ways to form strong connections in your brain.\n\nFor this reason, where applicable, we've included images and videos to augment the lessons. In this case, the video below talks about variables and explains how they hold different data types in \"slots\" of memory in the computer. You can almost view variables as labels for the memory holding the data you want to store.",
         },
         {
           kind: "video",
@@ -58,7 +58,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'It\'s time to increase the degree of difficulty by using _multiple_ variables. This is very common when a program needs to store and operate on different pieces of data. When this happens, each variable has its own name and stores its own, independent value.\n\nStep line-by-line through the code below and watch how each variable maintains its own, separate value. As before, pay attention to the `Variables` and `Program Output` side-panels. If you go slow, you can see how different values pop in and out of the memory slots designated by the "variable labels".',
+            'It\'s time to increase the degree of difficulty by using _multiple_ variables. This is very common when a program needs to operate on different pieces of data. When this happens, each variable has its own name and stores its own, independent value.\n\nStep line-by-line through the code below and watch how each variable maintains its own, separate value. As before, pay attention to the `Variables` and `Program Output` side-panels. If you go slow, you can see how different values pop in and out of the memory slots designated by the "variable labels".',
         },
       ],
       example: {
@@ -75,7 +75,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'An important thing to understand is that variables can only remember one thing at a time. As soon as their value is set, they have no way to "remember" what their previous value was.\n\nConsider the line of code `x = x + 1`. The computer handles this line in two distinct parts. First, it calculates what the stuff to the **right** of the equal sign (the value) should be. Then, it saves this value into the variable on the **left** side of the equal sign.',
+            'An important thing to understand is that variables can only remember one thing at a time. As soon as their value is updated, they have no way to "remember" what their previous value was.\n\nConsider the line of code `x = x + 1`. The computer handles this line in two distinct parts. First, it calculates what the stuff to the **right** of the equal sign (the value) should be. Then, it saves this value into the variable on the **left** side of the equal sign. In the end, there\'s no way to know what the original value of `x` was.',
         },
       ],
     } as InformationSectionData,
@@ -87,7 +87,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "A common problem in programming is to switch the values stored in two variables. For example, if you have the variables `x` and `y`, you might want to store the value in `x` into `y` and the value in `y` into `x`. Unfortunately, the fact that variables can only store one value at a time can make this tricky.\n\nPredict what this program will output, then run it to check your prediction.",
+            "A common problem in programming is to switch (swap) the values stored in two variables. For example, if you have the variables `x` and `y`, you might want to store the value of `x` into `y` and the value of `y` into `x`. Unfortunately, the fact that variables can only store one value at a time can make this tricky.\n\nPredict what this program will output, then run it to check your prediction.",
         },
       ],
       example: {
@@ -108,7 +108,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'To properly switch values, you need something called a "holder variable". This is a third variable to store the value of one of the variables so it doesn\'t get overwritten during the switch.\n\nOrder the following lines of a program so that `x` gets the value of `y` and `y` gets the value of `x`.',
+            'To properly switch values, you need something called a "holder variable". This is a third variable to store the value of one of the variables so its doesn\'t get lost during the updates.\n\nOrder the following lines of a program so that `x` gets the value of `y` and `y` gets the value of `x`.',
         },
       ],
       prompts: [
