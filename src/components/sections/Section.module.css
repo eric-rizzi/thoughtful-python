@@ -845,16 +845,16 @@
 /* Assessment-based border colors for the card */
 /* NOTE: Apply these classes in your JSX: className={`${styles.reflectionCard} ${styles[`cardAssessment${entry.response.assessment}`] || ''}`} */
 .cardAssessmentinsufficient {
-  border-left-color: #ffc107 !important;
+  border-left-color: #ff2807 !important;
 }
 .cardAssessmentdeveloping {
-  border-left-color: #ffc107 !important;
+  border-left-color: #ff8307 !important;
 }
 .cardAssessmentmostly {
-  border-left-color: #28a745 !important;
+  border-left-color: #74c609 !important;
 }
 .cardAssessmentachieves {
-  border-left-color: #4b8bbe !important;
+  border-left-color: #28a745 !important;
 }
 
 .reflectionHeader {
