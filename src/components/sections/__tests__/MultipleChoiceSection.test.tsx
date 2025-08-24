@@ -136,7 +136,13 @@ describe("MultipleChoiceSection", () => {
     });
     expect(submitButton).toBeNull();
 
-    const anOption = screen.getByLabelText("3");
-    expect(anOption).toBeDisabled();
+    const firstOption = screen.getByLabelText("3");
+    expect(firstOption).toBeDisabled();
+
+    const secondOption = screen.getByLabelText("4");
+    expect(secondOption).toBeDisabled();
+
+    const thirdOption = screen.getByLabelText("5");
+    expect(thirdOption).toBeDisabled();
   });
 });
