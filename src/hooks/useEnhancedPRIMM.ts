@@ -137,7 +137,13 @@ export const useEnhancedPRIMM = ({
         } catch (err) {
           const defaultMessage = "Failed to get AI evaluation";
           if (err instanceof ApiError) {
-            setAiFeedbackError(err.data.message || err.message);
+            if (err.status === 429) {
+              setAiFeedbackError(
+                "You've submitted feedback too frequently. Please wait a moment before trying again."
+              );
+            } else {
+              setAiFeedbackError(err.data.message || err.message);
+            }
           } else if (err instanceof Error) {
             setAiFeedbackError(`${defaultMessage}: ${err.message}`);
           } else {

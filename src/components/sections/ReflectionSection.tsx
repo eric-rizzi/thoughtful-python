@@ -124,13 +124,13 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
   const handleApiError = (err: unknown, defaultMessage: string) => {
     if (err instanceof ApiError) {
       // ApiError includes status and potentially parsed server message
-      const serverMessage =
-        typeof err.data?.message === "string" ? err.data.message : err.message;
-      setSubmitError(
-        `${serverMessage}${
-          err.status === 429 ? "" : ` (Status: ${err.status})`
-        }`
-      );
+      if (err.status === 429) {
+        setSubmitError(
+          "You've submitted feedback too frequently. Please wait a moment before trying again."
+        );
+      } else {
+        setSubmitError(err.data.message || err.message);
+      }
     } else if (err instanceof Error) {
       setSubmitError(`${defaultMessage}: ${err.message}`);
     } else {
