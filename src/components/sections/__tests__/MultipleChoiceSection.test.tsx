@@ -9,15 +9,21 @@ import type {
   MultipleChoiceSectionData,
   UnitId,
   LessonId,
+  SectionId,
 } from "../../../types/data";
 
 vi.mock("../../../hooks/useQuizLogic");
 
 const mockSectionData: MultipleChoiceSectionData = {
   kind: "MultipleChoice",
-  id: "test-mcq",
+  id: "test-mcq" as SectionId,
   title: "Test Question",
-  content: "What is 2 + 2?",
+  content: [
+    {
+      kind: "text",
+      value: "What is 2 + 2?",
+    },
+  ],
   options: ["3", "4", "5"],
   correctAnswer: 1,
   feedback: { correct: "You got it!" },
