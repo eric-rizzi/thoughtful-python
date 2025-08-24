@@ -26,7 +26,7 @@ const mockSectionData: MultipleChoiceSectionData = {
   ],
   options: ["3", "4", "5"],
   correctAnswer: 1,
-  feedback: { correct: "You got it!" },
+  feedback: { correct: "You got it!", incorrect: "Incorrect!" },
 };
 
 describe("MultipleChoiceSection", () => {
@@ -70,7 +70,6 @@ describe("MultipleChoiceSection", () => {
     expect(handleOptionChangeMock).toHaveBeenCalledWith(1);
 
     // ARRANGE 2: Now, we simulate the state update that would happen in React.
-    // We update the mock's return value to reflect that an option has been selected.
     vi.mocked(useQuizLogic).mockReturnValue({
       selectedIndices: [1], // An option is now selected
       isSubmitted: false,
@@ -104,7 +103,7 @@ describe("MultipleChoiceSection", () => {
   });
 
   it("displays feedback and disables the form when the hook reports the question is submitted and correct", () => {
-    // ARRANGE: This test remains the same, as it tests the "submitted" state.
+    // ARRANGE
     vi.mocked(useQuizLogic).mockReturnValue({
       selectedIndices: [1],
       isSubmitted: true,
@@ -128,21 +127,105 @@ describe("MultipleChoiceSection", () => {
     );
 
     // ASSERT
-    const feedbackMessage = screen.getByText("You got it!");
-    expect(feedbackMessage).toBeInTheDocument();
+    expect(screen.getByText("You got it!")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /submit answer/i })).toBeNull();
+    expect(screen.getByLabelText("3")).toBeDisabled();
+    expect(screen.getByLabelText("4")).toBeDisabled();
+    expect(screen.getByLabelText("5")).toBeDisabled();
+  });
 
-    const submitButton = screen.queryByRole("button", {
-      name: /submit answer/i,
+  it("handles the incorrect answer and 'Try Again' button flow correctly", async () => {
+    const user = userEvent.setup();
+    const handleTryAgainMock = vi.fn();
+
+    // ARRANGE 1: Mock the state for an incorrect answer with a penalty active
+    vi.mocked(useQuizLogic).mockReturnValue({
+      selectedIndices: [0],
+      isSubmitted: true,
+      isCorrect: false,
+      isLocallyDisabled: true,
+      remainingPenaltyTime: 15,
+      isSectionComplete: false,
+      handleOptionChange: vi.fn(),
+      handleSubmit: vi.fn(),
+      handleTryAgain: handleTryAgainMock,
+      canTryAgain: false, // Cannot try again yet
+      selectedOptionsSet: new Set([0]),
     });
-    expect(submitButton).toBeNull();
 
-    const firstOption = screen.getByLabelText("3");
-    expect(firstOption).toBeDisabled();
+    const { rerender } = render(
+      <MultipleChoiceSection
+        section={mockSectionData}
+        unitId={"unit-1" as UnitId}
+        lessonId={"lesson-1" as LessonId}
+      />
+    );
 
-    const secondOption = screen.getByLabelText("4");
-    expect(secondOption).toBeDisabled();
+    // ASSERT 1: Check for the initial incorrect state
+    expect(screen.getByText(/oops! time penalty active/i)).toBeInTheDocument();
+    expect(screen.getByText("Incorrect!")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /try again/i })).toBeNull();
 
-    const thirdOption = screen.getByLabelText("5");
-    expect(thirdOption).toBeDisabled();
+    // ARRANGE 2: Mock the state for after the penalty has expired
+    vi.mocked(useQuizLogic).mockReturnValue({
+      selectedIndices: [0],
+      isSubmitted: true,
+      isCorrect: false,
+      isLocallyDisabled: false, // No longer disabled
+      remainingPenaltyTime: 0,
+      isSectionComplete: false,
+      handleOptionChange: vi.fn(),
+      handleSubmit: vi.fn(),
+      handleTryAgain: handleTryAgainMock,
+      canTryAgain: true, // Can now try again
+      selectedOptionsSet: new Set([0]),
+    });
+
+    // ACT 2: Re-render to simulate the state update after the timer
+    rerender(
+      <MultipleChoiceSection
+        section={mockSectionData}
+        unitId={"unit-1" as UnitId}
+        lessonId={"lesson-1" as LessonId}
+      />
+    );
+
+    // ASSERT 2: The "Try Again" button should now be visible
+    const tryAgainButton = screen.getByRole("button", { name: /try again/i });
+    expect(tryAgainButton).toBeInTheDocument();
+
+    // ACT 3: Click the "Try Again" button
+    await user.click(tryAgainButton);
+
+    // ASSERT 3: The handleTryAgain function from the hook should have been called
+    expect(handleTryAgainMock).toHaveBeenCalledTimes(1);
+
+    // ACT: Go back to beginning
+    vi.mocked(useQuizLogic).mockReturnValue({
+      selectedIndices: [],
+      isSubmitted: false,
+      isCorrect: null,
+      isLocallyDisabled: false, // Form is now reenabled
+      remainingPenaltyTime: 0,
+      isSectionComplete: false,
+      handleOptionChange: vi.fn(),
+      handleSubmit: vi.fn(),
+      handleTryAgain: handleTryAgainMock,
+      canTryAgain: false,
+      selectedOptionsSet: new Set(),
+    });
+
+    rerender(
+      <MultipleChoiceSection
+        section={mockSectionData}
+        unitId={"unit-1" as UnitId}
+        lessonId={"lesson-1" as LessonId}
+      />
+    );
+
+    // ASSERT 4: All the labels and things are now enabled again
+    expect(screen.getByLabelText("3")).not.toBeDisabled();
+    expect(screen.getByLabelText("4")).not.toBeDisabled();
+    expect(screen.getByLabelText("5")).not.toBeDisabled();
   });
 });
