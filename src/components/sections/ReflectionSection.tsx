@@ -242,7 +242,9 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
 
     const submissionData: ReflectionInteractionInput = {
       userTopic: finalTopic,
+      isUserTopicPredefined: section.isTopicPredefined,
       userCode: finalCode,
+      isUserCodePredefined: section.isCodePredefined,
       userExplanation: finalExplanation,
       isFinal: true,
       sourceVersionId: latestDraft.versionId,
