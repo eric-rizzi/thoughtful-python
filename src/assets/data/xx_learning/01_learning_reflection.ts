@@ -21,7 +21,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'There is a quote by a philosopher named John Dewey that sums this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This lesson showcases another powerful learning tool that this website has in its tool belt: reflection.',
+            'There is a quote by a philosopher named John Dewey that sums up this website\'s approach: "We do not learn from experience. We learn from reflecting on experience." AI provides a new and unique opportunity to engage in reflective learning. This lesson showcases another powerful learning tool that this website has in its tool belt: reflection.',
         },
       ],
     } as InformationSectionData,
@@ -85,7 +85,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'The AI is here as a guide and a "speed bump". What is basically happening is the website sends your entire journal entry to a ChatBot and asks it to assess it using a rubric designed for new programmers. The AI is also prompted to provide constructive feedback when there is some sort of misunderstanding.\n\nThe best way to approach reflection sections is to pretend you are writing for some future version of yourself who doesn\'t quite remember a topic. Keep the entries short and to the point. Using the magic phrase **"as seen in the example above"** will really help because it will keep your analysis rooted to your code.',
+            'The AI is here as a guide and a "speed bump". What is basically happening is the website sends your entire journal entry to a ChatBot and asks it to assess it using a rubric designed for people learning to program. The AI is also prompted to provide constructive feedback when there is some sort of misunderstanding.\n\nThe best way to approach reflection sections is to pretend you are writing for some future version of yourself who doesn\'t quite remember a topic. Keep the entries short and to the point. Using the magic phrase **"as seen in the example above"** will really help because it will keep your analysis rooted to your code.',
         },
       ],
     } as InformationSectionData,
