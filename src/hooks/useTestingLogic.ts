@@ -8,14 +8,14 @@ export interface TestResult {
   passed: boolean;
   actual: any;
   expected: any;
-  input: any[]; // Added this property
+  input?: any[]; // Optional for output-based tests
 }
 
 interface UseTestingLogicProps {
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
-  functionToTest: string;
+  functionToTest: string; // "__main__" for program output, function name for individual function testing
   testCases: TestCase[];
 }
 
@@ -43,70 +43,214 @@ export const useTestingLogic = ({
       setTestResults(null);
       setError(null);
 
-      const testCasesJson = JSON.stringify(testCases);
+      try {
+        const results: TestResult[] = [];
 
-      const pythonTestRunnerScript = `
+        if (functionToTest === "__main__") {
+          // Test entire program output
+          for (const testCase of testCases) {
+            const testScript = `
+import sys
+from io import StringIO
 import json
-import traceback
 
-results = []
-test_cases = json.loads('''${testCasesJson}''')
+# Capture stdout
+old_stdout = sys.stdout
+captured_output = StringIO()
+sys.stdout = captured_output
 
 try:
-    # --- User's Code is Executed Here ---
-    ${userCode}
-    # ------------------------------------
-
-    if '${functionToTest}' not in globals():
-        raise NameError("Function '${functionToTest}' is not defined.")
-
-    user_func = globals()['${functionToTest}']
-
-    for test in test_cases:
-        try:
-            actual_output = user_func(*test['input'])
-            passed = actual_output == test['expected']
-            results.append({
-                "description": test['description'],
-                "passed": passed,
-                "actual": actual_output,
-                "expected": test['expected'],
-                "input": test['input']
-            })
-        except Exception as e:
-            results.append({
-                "description": test['description'],
-                "passed": False,
-                "actual": f"Error during test: {e}",
-                "expected": test['expected'],
-                "input": test['input']
-            })
-
+    # Execute user code
+    exec('''${userCode.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}''')
+    
+    # Get the output
+    output = captured_output.getvalue().strip()
+    
+    # Restore stdout
+    sys.stdout = old_stdout
+    
+    expected = '''${testCase.expected
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")}'''
+    
+    result = {
+        "success": True,
+        "actual": output,
+        "expected": expected,
+        "passed": output == expected
+    }
+    
 except Exception as e:
-    results = {
-        "error": True,
-        "message": traceback.format_exc()
+    # Restore stdout
+    sys.stdout = old_stdout
+    
+    result = {
+        "success": False,
+        "error": str(e),
+        "actual": "",
+        "expected": '''${testCase.expected
+          .replace(/\\/g, "\\\\")
+          .replace(/'/g, "\\'")}'''
     }
 
-json.dumps(results)
+print(json.dumps(result))
 `;
 
-      try {
-        const result = await runPythonCode(pythonTestRunnerScript);
+            console.log(testScript);
+            const testResult = await runPythonCode(testScript);
 
-        if (result.error) {
-          throw new Error(result.error);
+            if (testResult.error) {
+              results.push({
+                description: testCase.description,
+                passed: false,
+                actual: `Execution error: ${testResult.error}`,
+                expected: testCase.expected,
+              });
+            } else {
+              try {
+                const parsedResult = JSON.parse(testResult.output);
+
+                if (parsedResult.success) {
+                  results.push({
+                    description: testCase.description,
+                    passed: parsedResult.passed,
+                    actual: parsedResult.actual,
+                    expected: parsedResult.expected,
+                  });
+                } else {
+                  results.push({
+                    description: testCase.description,
+                    passed: false,
+                    actual: `Error: ${parsedResult.error}`,
+                    expected: parsedResult.expected,
+                  });
+                }
+              } catch (e) {
+                results.push({
+                  description: testCase.description,
+                  passed: false,
+                  actual: `Parse error: ${testResult.output}`,
+                  expected: testCase.expected,
+                });
+              }
+            }
+          }
+        } else {
+          // Test individual function
+          // First, execute the user code to define the function
+          const setupScript = `
+import sys
+from io import StringIO
+
+# Execute user code
+exec('''${userCode.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}''')
+
+# Check if function exists
+if '${functionToTest}' not in globals():
+    raise NameError("Function '${functionToTest}' is not defined.")
+
+"Setup complete"
+`;
+
+          const setupResult = await runPythonCode(setupScript);
+          if (setupResult.error) {
+            throw new Error(setupResult.error);
+          }
+
+          // Now run each test case
+          for (const testCase of testCases) {
+            const testScript = `
+import json
+import sys
+from io import StringIO
+
+# Capture stdout
+old_stdout = sys.stdout
+sys.stdout = StringIO()
+
+try:
+    user_func = globals()['${functionToTest}']
+    test_input = ${JSON.stringify(testCase.input)}
+    expected = ${JSON.stringify(testCase.expected)}
+    
+    actual = user_func(*test_input)
+    
+    # Convert to string for comparison if expected is string
+    if isinstance(expected, str) and not isinstance(actual, str):
+        actual = str(actual)
+    
+    # Restore stdout
+    sys.stdout = old_stdout
+    
+    result = {
+        "success": True,
+        "actual": actual,
+        "expected": expected,
+        "input": test_input,
+        "passed": actual == expected
+    }
+    
+except Exception as e:
+    # Restore stdout
+    sys.stdout = old_stdout
+    
+    result = {
+        "success": False,
+        "error": str(e),
+        "input": ${JSON.stringify(testCase.input)},
+        "expected": ${JSON.stringify(testCase.expected)}
+    }
+
+print(json.dumps(result))
+`;
+
+            const testResult = await runPythonCode(testScript);
+
+            if (testResult.error) {
+              results.push({
+                description: testCase.description,
+                passed: false,
+                actual: `Execution error: ${testResult.error}`,
+                expected: testCase.expected,
+                input: testCase.input,
+              });
+            } else {
+              try {
+                const parsedResult = JSON.parse(testResult.output);
+
+                if (parsedResult.success) {
+                  results.push({
+                    description: testCase.description,
+                    passed: parsedResult.passed,
+                    actual: parsedResult.actual,
+                    expected: parsedResult.expected,
+                    input: parsedResult.input,
+                  });
+                } else {
+                  results.push({
+                    description: testCase.description,
+                    passed: false,
+                    actual: `Error: ${parsedResult.error}`,
+                    expected: parsedResult.expected,
+                    input: parsedResult.input,
+                  });
+                }
+              } catch (e) {
+                results.push({
+                  description: testCase.description,
+                  passed: false,
+                  actual: `Parse error: ${testResult.output}`,
+                  expected: testCase.expected,
+                  input: testCase.input,
+                });
+              }
+            }
+          }
         }
 
-        const parsedResult = JSON.parse(result.output);
+        setTestResults(results);
 
-        if (parsedResult.error) {
-          throw new Error(parsedResult.message);
-        }
-
-        setTestResults(parsedResult);
-
-        const allPassed = parsedResult.every((res: TestResult) => res.passed);
+        const allPassed = results.every((res) => res.passed);
         if (allPassed) {
           completeSection(unitId, lessonId, sectionId);
         }
