@@ -44,21 +44,35 @@ const TestResultsDisplay: React.FC<{ results: TestResult[] }> = ({
               <table className={styles.testResultsTable}>
                 <thead>
                   <tr>
-                    <th>Input</th>
+                    {firstFailed.input && <th>Input</th>}
                     <th>Expected</th>
                     <th>Your Result</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
+                    {firstFailed.input && (
+                      <td>
+                        <code>{JSON.stringify(firstFailed.input)}</code>
+                      </td>
+                    )}
                     <td>
-                      <code>{JSON.stringify(firstFailed.input)}</code>
+                      <code>
+                        {Array.isArray(firstFailed.expected)
+                          ? firstFailed.expected.join("\n")
+                          : typeof firstFailed.expected === "string"
+                          ? firstFailed.expected
+                          : JSON.stringify(firstFailed.expected)}
+                      </code>
                     </td>
                     <td>
-                      <code>{JSON.stringify(firstFailed.expected)}</code>
-                    </td>
-                    <td>
-                      <code>{JSON.stringify(firstFailed.actual)}</code>
+                      <code>
+                        {Array.isArray(firstFailed.actual)
+                          ? firstFailed.actual.join("\n")
+                          : typeof firstFailed.actual === "string"
+                          ? firstFailed.actual
+                          : JSON.stringify(firstFailed.actual)}
+                      </code>
                     </td>
                   </tr>
                 </tbody>
@@ -79,7 +93,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
   const [code, setCode] = useState(section.example.initialCode);
   const [lastAction, setLastAction] = useState<"run" | "test" | null>(null);
 
-  // Hook for the "Run Code" functionality
+  // Hook for the "Run Code" functionality (disable auto-completion for testing sections)
   const {
     runCode,
     isLoading: isRunningCode,
@@ -89,6 +103,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
     unitId,
     lessonId,
     sectionId: section.id,
+    autoComplete: false, // Don't auto-complete on run for testing sections
   });
 
   // Hook for the "Run Tests" functionality
@@ -105,9 +120,9 @@ const TestingSection: React.FC<TestingSectionProps> = ({
     testCases: section.testCases,
   });
 
-  const isSectionComplete = useProgressStore(
-    (state) => state.completion[unitId]?.[lessonId]?.[section.id] || false
-  );
+  // Check if tests have passed (only for testing sections)
+  const testsHavePassed =
+    testResults && testResults.every((result) => result.passed);
 
   const handleRunCode = () => {
     setLastAction("run");
@@ -181,7 +196,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
             <TestResultsDisplay results={testResults} />
           )}
 
-          {isSectionComplete && lastAction !== "run" && (
+          {testsHavePassed && (
             <div
               className={styles.completionMessage}
               style={{ marginTop: "1rem" }}

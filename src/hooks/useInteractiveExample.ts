@@ -8,12 +8,14 @@ interface UseInteractiveExampleProps {
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
+  autoComplete?: boolean;
 }
 
 export const useInteractiveExample = ({
   unitId,
   lessonId,
   sectionId,
+  autoComplete = true,
 }: UseInteractiveExampleProps) => {
   const {
     runPythonCode,
@@ -31,7 +33,7 @@ export const useInteractiveExample = ({
       setOutput(resultOutput);
 
       // On a successful run (even with a Python error), mark the section as complete.
-      if (result) {
+      if (result && autoComplete) {
         completeSection(unitId, lessonId, sectionId);
       }
 

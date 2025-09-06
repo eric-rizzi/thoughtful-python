@@ -96,7 +96,6 @@ except Exception as e:
 print(json.dumps(result))
 `;
 
-            console.log(testScript);
             const testResult = await runPythonCode(testScript);
 
             if (testResult.error) {
