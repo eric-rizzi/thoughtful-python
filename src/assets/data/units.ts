@@ -100,7 +100,7 @@ const unitData: Unit[] = [
   {
     id: "advanced_functions" as UnitId,
     title: "Advanced Functions",
-    image: "unit_03_functions.svg",
+    image: "unit_03_functions_advanced.svg",
     description:
       "Learn how you can use functions other people wrote to create more complex and visually interesting outputs.",
     lessons: [
