@@ -57,19 +57,36 @@ const lessonData: Lesson = {
       },
     } as MultipleChoiceSectionData,
     {
-      kind: "Matching",
-      id: "matching-function-pieces" as SectionId,
+      kind: "Information",
+      id: "function-pieces",
       title: "Function Parts",
       content: [
         {
           kind: "text",
           value:
-            'Let\'s revisit the parts of a function from the previous lesson...mostly because we lied to you a bit. There\'s really **five** pieces:\n1. `def` starts "defining" the function\n2. `greet_person` is name of the function\n3. **The variables inside the parentheses are inputs, waiting to be set by the function call**\n4. The indented code below the `def greet_person(name):` is the code the function will run\n5. The unindented `greet_person()` "calls" the function with a particular value\n\nKnowing this, match up each piece of the function with its value in the code below.',
+            'Let\'s revisit the parts of a function from the previous lesson...mostly because we lied to you a bit. There\'s really **five** pieces:\n1. `def` starts "defining" the function\n2. `greet_person` is name of the function\n3. **The variables inside the parentheses are inputs, waiting to be set by the function call**\n4. The indented code below the `def greet_person(name):` is the code the function will run\n5. The unindented `greet_person()` "calls" the function with a particular value.',
+        },
+      ],
+    } as InformationSectionData,
+    {
+      kind: "Matching",
+      id: "matching-function-pieces" as SectionId,
+      title: "Matching Function Parts",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Knowing that there are five core parts of a function, match up the pieces of the function below with its value in the code.",
+        },
+        {
+          kind: "code",
+          value:
+            'def favorite(animal):\n  val = "My favorite animal is a " + animal + "!"\n  print(val)\n\nfavorite("cat")',
         },
       ],
       prompts: [
         { "Function name": "favorite" },
-        { 'Function input"': "animal" },
+        { "Function input": "animal" },
         { "Function call": '"cat"' },
       ],
     } as MatchingSectionData,
