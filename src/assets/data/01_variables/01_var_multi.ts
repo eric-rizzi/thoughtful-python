@@ -17,7 +17,7 @@ const lessonData: Lesson = {
   sections: [
     {
       kind: "Information",
-      id: "variables-conclusion",
+      id: "variables-perspective",
       title: "A Different Perspective on Variables",
       content: [
         {

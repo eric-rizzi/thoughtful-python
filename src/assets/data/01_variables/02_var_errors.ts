@@ -46,7 +46,7 @@ const lessonData: Lesson = {
     } as InformationSectionData,
     {
       kind: "Testing",
-      id: "name-errors" as SectionId,
+      id: "misspelling-errors" as SectionId,
       title: "Misspelled Variables",
       content: [
         {

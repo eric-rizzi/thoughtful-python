@@ -225,7 +225,7 @@ const lessonData: Lesson = {
     } as MultipleChoiceSectionData,
     {
       kind: "Testing",
-      id: "variable-practice" as SectionId,
+      id: "dog-years-challenge" as SectionId,
       title: "Challenge: Dog Years",
       content: [
         {

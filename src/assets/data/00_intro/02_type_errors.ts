@@ -61,7 +61,7 @@ const lessonData: Lesson = {
     } as InformationSectionData,
     {
       kind: "MultipleChoice",
-      id: "variable-reassignment",
+      id: "type-error-interpretation",
       title: "Type Error Interpretation",
       content: [
         {
@@ -86,7 +86,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
     } as MultipleChoiceSectionData,
     {
       kind: "MultipleChoice",
-      id: "variable-reassignment",
+      id: "syntax-error-interpretation",
       title: "Syntax Error Interpretation",
       content: [
         {
