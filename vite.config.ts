@@ -1,4 +1,4 @@
-// vite.config.ts
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -16,23 +16,34 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "src/assets/data", // Your source data folder
+          src: "src/assets/data",
           dest: ".",
         },
         {
-          src: "src/assets/images", // Your source images folder
+          src: "src/assets/images",
           dest: ".",
         },
         {
-          src: "src/assets/python", // Your source python folder
+          src: "src/assets/python",
           dest: ".",
         },
         {
           src: "public/404.html",
           dest: ".",
         },
-        // Add more targets if needed
       ],
     }),
   ],
+
+  // Merged Vitest configuration
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./test-setup.ts",
+    css: {
+      modules: {
+        classNameStrategy: "non-scoped",
+      },
+    },
+  },
 });
