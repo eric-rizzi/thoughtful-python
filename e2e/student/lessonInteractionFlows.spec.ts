@@ -58,7 +58,7 @@ test("Can get answer wrong with multiple choice", async ({ page }) => {
   await expect(page.getByText("Incorrect!")).toBeVisible();
 });
 
-test("test that can click the `Run Code` button for __main__ output tests", async ({
+test("Test that can click the `Run Code` button for __main__ output tests", async ({
   page,
 }) => {
   await page.goto("/thoughtful-python/lesson/00_intro/00_intro_strings");
@@ -80,4 +80,26 @@ test("test that can click the `Run Code` button for __main__ output tests", asyn
       .locator("#problem1-task-grammatical-greeting")
       .getByText('Who\'s out there?\nI heard Eric say "me".')
   ).toBeVisible();
+});
+
+test("Test can run the PRIMM section up to requiring AI", async ({ page }) => {
+  await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+  await page
+    .getByRole("textbox", { name: "What do you think the program" })
+    .click();
+  await page
+    .getByRole("textbox", { name: "What do you think the program" })
+    .fill("I think it will print out two lines: a greeting and a question");
+  await page
+    .locator("#print-primm")
+    .getByRole("button", { name: "Run Code" })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Your Reflection/Explanation:" })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Your Reflection/Explanation:" })
+    .fill("I was right");
+  await page.getByRole("button", { name: "Get AI Feedback" }).click();
+  await expect(page.getByText("Authentication or")).toBeVisible();
 });

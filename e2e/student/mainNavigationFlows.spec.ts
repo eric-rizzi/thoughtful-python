@@ -20,6 +20,7 @@ test("Add passing test to test suite", async ({ page }) => {
     .filter({ hasText: /^$/ })
     .fill('def test_great_other():\n  assert greet("Eric) == "Hello, Eric"');
   await page.getByRole("button", { name: "Add Test to Suite" }).click();
+  await page.waitForTimeout(2000);
   await page.getByRole("button", { name: "Run Active Tests" }).click();
   await expect(page.getByText("SyntaxError")).toBeVisible();
 });
@@ -35,6 +36,7 @@ test("Add failing test to test suite", async ({ page }) => {
     .filter({ hasText: /^$/ })
     .fill('def test_great_other():\n  assert greet("Eric") == "Eric"');
   await page.getByRole("button", { name: "Add Test to Suite" }).click();
+  await page.waitForTimeout(2000);
   await page.getByRole("button", { name: "Run Active Tests" }).click();
   await expect(page.getByText("AssertionError")).toBeVisible();
 });
