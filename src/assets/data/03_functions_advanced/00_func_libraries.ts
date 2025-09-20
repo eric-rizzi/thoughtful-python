@@ -81,7 +81,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'In addition to `print()`, Python provides hundreds of different functions for free. These functions are arranged into "libraries" of related functions and are the building blocks of all programs.\n\nThere are two steps in using a function from a library:\n1. **Import** the library so its functions are available to use\n2. **Use** one of the functions in the library.',
+            'In addition to `print()`, Python provides hundreds of different functions for free. These functions are packaged into "libraries" of related functions and are the building blocks of all Python programs.\n\nThere are two steps in using a function from a library:\n1. **Import** the library so its functions are available to use\n2. **Use** one of the functions in the library.',
         },
       ],
     } as InformationSectionData,
@@ -93,7 +93,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The first library we're going to use is the `random` library. Randomness is a really common requirement in many programs, which is why Python provides a bunch of random functions for anyone to use. In this case, we're going to use the `randint()` function from the `random` library. Run the code below **a few times** and see how a new random integer is generated every time.",
+            "The first library we're going to experiment with is the `random` library. Randomness is a really common requirement for programs, which is why Python has a several different random functions in the `random` library.\n\nThe first function from the `random` library we're going to use is the `randint()` function. Read the code below carefully and pay close attention to how the `random` library its `randint()` function are used. Then, run the code **several times** to see how a new, random integer is generated every time.",
         },
       ],
       example: {
@@ -108,7 +108,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "What does the line `import random` do?",
+          value:
+            "Based on what you saw in the program above, what does the line `import random` do?",
         },
       ],
       options: [
@@ -130,7 +131,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "How many inputs does the `random.randint()` function take?",
+          value:
+            "Based on what you saw in the program above, how many inputs does the `random.randint()` function take?",
         },
       ],
       options: ["0", "1", "2", "3"],
@@ -154,7 +156,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "console",
         initialCode:
-          'import random\n\ncolors = "roygbiv"\nchosen = random.choice(colors)\nprint(chosen)',
+          'import random\n\ncards = "A23456789TJQK"\nchosen = random.choice(cards)\nprint(chosen)',
       },
       predictPrompt: "What do you think this program does?",
       conclusion:

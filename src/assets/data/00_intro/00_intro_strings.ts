@@ -151,7 +151,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now it's your turn to write some code of your own! Write a program that outputs the following two sentences, one after the other:\n\n1. `Who's out there?`\n2. `I heard Eric say \"me\".`",
+            "Now it's your turn to write some code! Write a program that outputs the following two sentences, one after the other:\n\n1. `Who's out there?`\n2. `I heard Eric say \"me\".`\n\nYou should be able to create this program by adding two different strings to the `print()` statements below.\n\nOnce you're ready, check that your program works by `Run Code` button. Then, if everything looks right, click the `Run Tests` button. When you do this, the website will double check that your program produces the exactly correct output. If the generated output matches expectations, the `Run Tests` button will turn the section green. If there's an error, look for where the generated output differs from expectations, fix the error, and then rerun the tests.",
         },
       ],
       example: {

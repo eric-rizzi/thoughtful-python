@@ -53,7 +53,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Create an Instagram post notification. Print these three lines exactly:\n```\nTaylor liked your photo\n"Great shot!" \n42 others also liked it\n```\n\nWatch out for:\n- The quotation marks around "Great shot!" must appear in the output\n- Each line needs its own print statement',
+            'Create an Instagram post notification program that prints these three lines exactly:\n```\nTaylor liked your photo\n"Great shot!" \n42 others also liked it\n```\n\nWatch out for:\n- The quotation marks around "Great shot!" must appear in the output\n- Each line needs its own print statement\n\nTo check your work, click the `Run Code` button. Once you think your program is ready, click the `Run Tests` button to check that the generated output exactly matches expectations.',
         },
       ],
       example: {

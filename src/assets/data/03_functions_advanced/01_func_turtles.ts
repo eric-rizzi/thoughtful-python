@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'One of the oldest ways to teach programming is with drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by controlling a virtual turtle\'s movements around the screen. The turtle carries a pen and leaves a trail as it moves. You can tell it to move forward, turn, lift its pen up, put it down, and even change colors. By combining these simple commands, you can create complex drawings.',
+            "One of the oldest ways to teach programming is with drawing libraries. These libraries are called \"turtle libraries\" because they let you create drawings by controlling a virtual turtle's movements around the screen. The turtle carries a pen and leaves a trail as it moves. You can tell the turtle to move forward, turn, lift its pen up, put its pen down, and even change the pen's colors. By combining these simple commands, you can create complex drawings.",
         },
         {
           kind: "image",
@@ -47,7 +47,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's start with the basics. The program below imports the `turtle` library, and then moves the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each individual command affects the turtle's movement.",
+            "Let's start with the basics. The program below imports the `turtle` library, and then uses functions within the library to move the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each individual function affects the turtle's movement.",
         },
       ],
       example: {
@@ -86,7 +86,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now let's try something more interesting. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` call that results int the shape being drawn once. Given all this, predict what shape will be drawn, then run it to check you prediction.",
+            "Now let's try something more interesting. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` function call that results in the shape being drawn once. Given all this, predict what shape will be drawn, then run the program to check you prediction.",
         },
       ],
       example: {
@@ -95,9 +95,9 @@ const lessonData: Lesson = {
           "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n\nmake_shape()",
       },
       predictPrompt:
-        "Look at the pattern of forward and right commands. What shape do you think this will draw?",
+        "Look at the pattern of `forward()` and `right()` function calls. What shape do you think this will draw?",
       conclusion:
-        "It draws a square! Each `right(90)` makes a 90-degree turn, and four 90-degree turns bring you back to where you started.",
+        "It draws a square! Each `right(90)` function call makes a 90-degree turn, and four 90-degree turns bring you back to where you started.",
     } as PRIMMSectionData,
 
     {
@@ -108,7 +108,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The code below is very similar to the program above. There's only one difference: we call the function four times. Given this change, predict what shape will be drawn, then run it to check you prediction.",
+            "The code below is very similar to the program above. There's only one difference: we call the function four times. Given this change, predict what shape will be drawn, then run the program to check you prediction.",
         },
       ],
       example: {
@@ -117,7 +117,7 @@ const lessonData: Lesson = {
           "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n\nmake_shape()\nmake_shape()\nmake_shape()\nmake_shape()\n",
       },
       predictPrompt:
-        "Look at the pattern of forward and right commands. What shape do you think this will draw?",
+        "Look at the pattern of `forward()` and `right()` functions. What shape do you think this will draw?",
       conclusion:
         "It draws a square! Each `right(90)` makes a 90-degree turn, and four 90-degree turns bring you back to where you started.",
     } as PRIMMSectionData,
@@ -129,7 +129,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now it's your turn! Write a program that draws an equilateral triangle (all sides the same length).\n\nHint: A triangle has 3 sides, and the angles add up to 180 degrees. For an equilateral triangle, each turn should be 120 degrees (not 60!).",
+            "Now it's your turn! Write a program that draws an equilateral triangle (all sides the same length).\n\nHint: The interior angles add up to 180 degrees.",
         },
       ],
       example: {
@@ -172,7 +172,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In this lesson, you learned about a new library named `turtle`. In addition, you experimented with using that library within functions of your own to build increasingly complex shapes. In the next lesson, we'll use functions to build increasingly complex drawings. The goal is for you to appreciate how functions can package up other, smaller pieces to create something very interesting.",
+            "In this lesson, you learned about a new library named `turtle`. In addition, you experimented with using that library within functions of your own to build increasingly complex shapes. In the next lesson, we'll use functions to build even more complex drawings. The goal is for you to appreciate how functions can package up other, smaller pieces to create something very interesting.",
         },
       ],
     } as InformationSectionData,
