@@ -13,7 +13,7 @@ import type {
 } from "../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Review and Practice 2",
+  title: "Function Unit Challenge",
   guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98" as LessonId,
   description:
     "Practice what you've learned so far in terms of data types, variables, and functions via interleaving.",
@@ -26,7 +26,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "You've learned a lot in the previous three lessons: how to create functions, how to call functions, and how to provide inputs to functions to get different outputs. As with the previous review section, this lesson  **interleaving** to help solidify your understanding. By pulling everything you've learned so far and asking questions about it in a mixed up order, your brain will be able to make stronger connections between the concepts. Be sure to take your time and think carefully about each problem!",
+            "You've learned a lot in the previous three lessons: how to create functions, how to call functions, and how to use function input values. As with the previous review section, this lesson uses **interleaving** to help solidify your understanding. By pulling in everything you've learned so far and asking questions about it in a mixed up order, your brain will be able to make stronger connections between the concepts. Be sure to take your time and think carefully about each problem!",
         },
       ],
     } as InformationSectionData,
@@ -37,17 +37,19 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value:
-            "Which line does the `TypeError` below identify as a problem?:```````",
+          value: `Which line does the \`TypeError\` below identify as a problem?:\n\`\`\`\nPyodide Execution Error: 
+Execution Error: Traceback (most recent call last):
+  File "/lib/python311.zip/_pyodide/_base.py", line 573, in eval_code_async
+    await CodeRunner(
+  File "/lib/python311.zip/_pyodide/_base.py", line 393, in run_async
+    coroutine = eval(self.code, globals, locals)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<exec>", line 31, in <module>
+TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         },
       ],
-      options: [
-        '"It\'s a beautiful day"',
-        '"She said "hello" to me"',
-        "'Hello, World'",
-        '\'""""\'',
-      ],
-      correctAnswer: 1,
+      options: ["line 33", "line 393", "line 573", "line 1"],
+      correctAnswer: 0,
       feedback: {
         correct: "Correct!",
       },
