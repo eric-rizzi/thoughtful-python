@@ -130,20 +130,20 @@ const unitData: Unit[] = [
       "Learn how to control the flow of your programs using `if`, `else`, and `elif` statements.",
     lessons: [
       {
-        path: "04_conditionals/lesson_1",
-        guid: "77d6e706-4068-41cc-abf6-f435f6aca538",
+        path: "04_conditionals/00_cond_intro",
+        guid: "b4e7c932-5a81-4d29-9c73-8f2e4b7a1d36",
       },
       {
-        path: "04_conditionals/lesson_2",
-        guid: "0f92c4de-ca4d-49f8-af65-7f9843f50341",
+        path: "04_conditionals/01_cond_if_else",
+        guid: "c9f3d821-7b42-4e89-a634-1d8e5f9c2b47",
       },
       {
-        path: "04_conditionals/lesson_3",
-        guid: "cbf11a92-aefe-422f-8e71-0245e5c13e43",
+        path: "04_conditionals/02_cond_if_elif",
+        guid: "d8a4e732-9f51-4c83-b821-6e7d3f8c9a42",
       },
       {
-        path: "04_conditionals/lesson_4",
-        guid: "3bbea3a7-7cc2-4026-9073-304f121ceb1c",
+        path: "04_conditionals/03_cond_bool",
+        guid: "e5b6f823-4d71-4a92-bc58-9f2e6d8a7c31",
       },
       {
         path: "04_conditionals/lesson_5",
