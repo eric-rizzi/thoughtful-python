@@ -123,80 +123,109 @@ const unitData: Unit[] = [
     ],
   } as Unit,
   {
-    id: "python_strings",
-    title: "Python Strings Deep Dive",
-    image: "unit_04_strings.svg",
-    description:
-      "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
-    lessons: [
-      {
-        path: "01_strings/lesson_1",
-        guid: "03cff8d8-33a0-49ed-98c4-d51613995340",
-      },
-      {
-        path: "01_strings/lesson_2",
-        guid: "a9e039a5-d551-4068-b797-553ef721bac9",
-      },
-      {
-        path: "01_strings/lesson_3",
-        guid: "1af50da8-e219-4845-b9e1-52db34b1437e",
-      },
-      {
-        path: "01_strings/lesson_4",
-        guid: "3ed77482-b004-49dd-bc5d-e588f42883aa",
-      },
-    ],
-  } as Unit,
-  {
     id: "python_conditionals",
     title: "Python Conditionals (If/Else)",
-    image: "unit_05_conditionals.svg",
+    image: "unit_04_conditionals.svg",
     description:
       "Learn how to control the flow of your programs using `if`, `else`, and `elif` statements.",
     lessons: [
       {
-        path: "02_conditionals/lesson_1",
+        path: "04_conditionals/lesson_1",
         guid: "77d6e706-4068-41cc-abf6-f435f6aca538",
       },
       {
-        path: "02_conditionals/lesson_2",
+        path: "04_conditionals/lesson_2",
         guid: "0f92c4de-ca4d-49f8-af65-7f9843f50341",
       },
       {
-        path: "02_conditionals/lesson_3",
+        path: "04_conditionals/lesson_3",
         guid: "cbf11a92-aefe-422f-8e71-0245e5c13e43",
       },
       {
-        path: "02_conditionals/lesson_4",
+        path: "04_conditionals/lesson_4",
         guid: "3bbea3a7-7cc2-4026-9073-304f121ceb1c",
       },
       {
-        path: "02_conditionals/lesson_5",
+        path: "04_conditionals/lesson_5",
         guid: "a001f2f7-66ad-4799-af46-a4acbf8f1098",
+      },
+    ],
+  } as Unit,
+  {
+    id: "loops" as UnitId,
+    title: "Loops",
+    image: "unit_05_loops.svg",
+    description:
+      "Learn how to use loops in your code to further exploit patterns and create even more interesting shapes.",
+    lessons: [
+      {
+        path: "05_loops/00_loops_intro",
+        guid: "d8f3c921-4a56-4b72-9e15-2c8f7d4a3b91",
+      },
+      {
+        path: "05_loops/01_loops_nesting",
+        guid: "e9f2d834-6b71-4a89-b523-1e7c9f8d2a56",
+      },
+      {
+        path: "05_loops/02_loops_and_vars",
+        guid: "c7d5e921-8f34-4b89-a821-3f9c7d2e5a14",
+      },
+      {
+        path: "05_loops/03_loops_and_funcs",
+        guid: "f8a2c754-9d63-4e87-b912-7c5a8f9e3d21",
+      },
+      {
+        path: "05_loops/04_loops_wrap_up",
+        guid: "a8c3f729-5e42-4d91-b8a7-2f9e6c8d7b31",
+      },
+    ],
+  } as Unit,
+  {
+    id: "python_strings",
+    title: "Python Strings Deep Dive",
+    image: "unit_06_strings.svg",
+    description:
+      "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
+    lessons: [
+      {
+        path: "06_strings/lesson_1",
+        guid: "03cff8d8-33a0-49ed-98c4-d51613995340",
+      },
+      {
+        path: "06_strings/lesson_2",
+        guid: "a9e039a5-d551-4068-b797-553ef721bac9",
+      },
+      {
+        path: "06_strings/lesson_3",
+        guid: "1af50da8-e219-4845-b9e1-52db34b1437e",
+      },
+      {
+        path: "06_strings/lesson_4",
+        guid: "3ed77482-b004-49dd-bc5d-e588f42883aa",
       },
     ],
   } as Unit,
   {
     id: "python_lists_intro",
     title: "Python Lists (Intro)",
-    image: "unit_06_lists_intro.svg",
+    image: "unit_07_lists_intro.svg",
     description:
       "This worksheet is intended to show you how lists work in Python and how they compare with strings.",
     lessons: [
       {
-        path: "03_lists_intro/lesson_1",
+        path: "07_lists_intro/lesson_1",
         guid: "c3aa36b7-5c56-476f-a38f-2a9fd39e08eb",
       },
       {
-        path: "03_lists_intro/lesson_2",
+        path: "07_lists_intro/lesson_2",
         guid: "cde4e0a6-c51e-495f-83fd-21ed00cf06c1",
       },
       {
-        path: "03_lists_intro/lesson_3",
+        path: "07_lists_intro/lesson_3",
         guid: "84868dd9-81cb-4eb9-82d8-09f7efb6a2f8",
       },
       {
-        path: "03_lists_intro/lesson_4",
+        path: "07_lists_intro/lesson_4",
         guid: "88591a12-9ec3-463b-a3cc-68a9e91ca4ff",
       },
     ],
@@ -204,15 +233,15 @@ const unitData: Unit[] = [
   {
     id: "python_lists_advanced",
     title: "Python Lists (Advanced)",
-    image: "unit_07_lists_advanced.svg",
+    image: "unit_08_lists_advanced.svg",
     description: "Stretch your understand of lists with an ethical puzzle.",
     lessons: [
       {
-        path: "04_lists_advanced/lesson_1",
+        path: "08_lists_advanced/lesson_1",
         guid: "fb0724da-2741-41bf-a737-5ad0eaf0291f",
       },
       {
-        path: "04_lists_advanced/lesson_2",
+        path: "08_lists_advanced/lesson_2",
         guid: "fe7493be-7ed6-439d-bc1b-2dd5fc08382a",
       },
     ],

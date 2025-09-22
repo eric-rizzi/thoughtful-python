@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:e2e": "playwright test"
+    "e2e-test": "playwright test"
   },
   "dependencies": {
     "@codemirror/lang-python": "^6.2.1",
