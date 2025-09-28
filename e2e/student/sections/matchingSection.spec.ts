@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("MatchingSection tests", () => {
+test.describe("MatchingSection tests @flaky", () => {
   // All matching sections tests get 5 retries
   test.describe.configure({ retries: 5 });
 

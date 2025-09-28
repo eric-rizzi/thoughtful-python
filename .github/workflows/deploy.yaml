@@ -1,9 +1,9 @@
-name: Build and Deploy
+name: Build, Test, and Deploy
 
 on:
   push:
-    branches: [main] # Change to your main branch name if different (e.g., "master")
-  workflow_dispatch: # Allows manual triggering
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,6 +11,7 @@ permissions:
   id-token: write
 
 jobs:
+  # Job 1: Build the application and run unit tests
   build:
     runs-on: ubuntu-latest
     steps:
@@ -32,25 +33,74 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # Catch "404's" with the index so don't end up with an actual 404
-      - name: Create 404.html for SPA routing on GitHub Pages
+      - name: Create 404.html for SPA routing
         run: cp ./dist/index.html ./dist/404.html
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # Upload the built site as an artifact
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: "./dist"
+          name: dist-files
+          path: ./dist
 
+  # Job 2: Run Playwright E2E tests
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.44.0-jammy
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download the build artifact from the previous job
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: ./dist
+
+      - name: Run Playwright tests
+        run: npm run e2e-test:ci
+
+      # Optional: Upload test results for debugging
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  # Job 3: Deploy to GitHub Pages
   deploy:
+    needs: test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
+      - name: Download artifact for deployment
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: .
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
