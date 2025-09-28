@@ -48,7 +48,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.44.0-jammy
+      image: mcr.microsoft.com/playwright:v1.55.0-jammy
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,7 +70,6 @@ jobs:
       - name: Run Playwright tests
         run: npm run e2e-test:ci
 
-      # Optional: Upload test results for debugging
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
