@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react"; // 👈 Import useEffect
 import type {
   CoverageSectionData,
   InputParam,
@@ -11,6 +11,7 @@ import coverageStyles from "./CoverageSection.module.css";
 import { useInteractiveTableLogic } from "../../hooks/useInteractiveTableLogic";
 import CodeEditor from "../CodeEditor";
 import ContentRenderer from "../content_blocks/ContentRenderer";
+import { useProgressActions } from "../../stores/progressStore";
 
 interface CoverageSectionProps {
   section: CoverageSectionData;
@@ -23,9 +24,10 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
   unitId,
   lessonId,
 }) => {
+  const { completeSection } = useProgressActions();
+
   const {
     savedState,
-    isSectionComplete,
     runningStates,
     isLoading,
     pyodideError,
@@ -51,6 +53,14 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
   const totalChallenges = section.coverageTable.rows.length;
   const progressPercent =
     totalChallenges > 0 ? (completedCount / totalChallenges) * 100 : 0;
+
+  const isComplete = totalChallenges > 0 && completedCount === totalChallenges;
+
+  useEffect(() => {
+    if (isComplete) {
+      completeSection(unitId, lessonId, section.id);
+    }
+  }, [isComplete, unitId, lessonId, section.id, completeSection]);
 
   return (
     <section id={section.id} className={styles.section}>
@@ -159,9 +169,7 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
             <div className={styles.progressBar}>
               <div
                 className={
-                  isSectionComplete
-                    ? styles.progressFillComplete
-                    : styles.progressFill
+                  isComplete ? styles.progressFillComplete : styles.progressFill
                 }
                 style={{ width: `${progressPercent}%` }}
               ></div>

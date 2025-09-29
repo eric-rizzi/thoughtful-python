@@ -5,18 +5,32 @@ test.describe("MultipleChoiceSection tests", () => {
     await page.goto(
       "/thoughtful-python/lesson/xx_learning/01_learning_reflection"
     );
+
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Why Reflection?" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
     await page.getByLabel("It forces you to retrieve").check();
     await page
       .locator("#reflection-quiz")
       .getByRole("button", { name: "Submit Answer" })
       .click();
     await expect(page.getByText("Correct! Re-organizing and")).toBeVisible();
+
+    await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
   test("Can get answer wrong with multiple choice", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/xx_learning/01_learning_reflection"
     );
+
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Why Reflection?" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
     await page
       .locator("div")
       .filter({
@@ -32,5 +46,7 @@ test.describe("MultipleChoiceSection tests", () => {
       page.locator("#reflection-quiz").getByText("Oops! Time penalty active.")
     ).toBeVisible();
     await expect(page.getByText("Incorrect!")).toBeVisible();
+
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 });

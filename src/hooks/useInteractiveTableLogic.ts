@@ -77,23 +77,6 @@ export const useInteractiveTableLogic = ({
     [rowIndex: number]: boolean;
   }>({});
 
-  const isSectionComplete = useMemo(() => {
-    if (rows.length === 0 || !state) return false;
-    return rows.every((_, rowIndex) => {
-      if (mode === "coverage") {
-        return (
-          (state as SavedCoverageState).challengeStates?.[rowIndex]
-            ?.isCorrect === true
-        );
-      } else {
-        return (
-          (state as SavedPredictionState).predictions?.[rowIndex]?.isCorrect ===
-          true
-        );
-      }
-    });
-  }, [rows, mode, state]);
-
   const runRow = useCallback(
     async (rowIndex: number) => {
       setRunningStates((prev) => ({ ...prev, [rowIndex]: true }));
@@ -238,7 +221,6 @@ export const useInteractiveTableLogic = ({
 
   return {
     savedState: state, // Renamed for consistency in consuming components
-    isSectionComplete,
     runningStates,
     isLoading: isPyodideLoading,
     pyodideError,

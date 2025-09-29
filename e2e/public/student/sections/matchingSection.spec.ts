@@ -9,6 +9,11 @@ test.describe("MatchingSection tests @flaky", () => {
   }) => {
     await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
 
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Matching PRIMM" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
     const predictBlock = page.getByText(
       "Force yourself to try and understand a program"
     );
@@ -40,12 +45,19 @@ test.describe("MatchingSection tests @flaky", () => {
     await page.waitForTimeout(100);
 
     await expect(page.getByText("Correct!")).toBeVisible();
+
+    await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
   test("Test can get a wrong answer from the MatchingSection", async ({
     page,
   }) => {
     await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Matching PRIMM" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
     const predictBlock = page.getByText(
       "Force yourself to try and understand a program"
@@ -82,5 +94,7 @@ test.describe("MatchingSection tests @flaky", () => {
         "Not quite right. You can drag the answers to rearrange them."
       )
     ).toBeVisible();
+
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 });

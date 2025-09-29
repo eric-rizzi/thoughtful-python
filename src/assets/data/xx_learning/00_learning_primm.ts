@@ -110,8 +110,8 @@ const lessonData: Lesson = {
     } as InformationSectionData,
     {
       kind: "MultipleSelection",
-      id: "learning-through-reflection-quiz",
-      title: "Getting the Most Out of Reflection",
+      id: "learning-through-primm-quiz",
+      title: "Getting the Most Out of PRIMM",
       content: [
         {
           kind: "text",
@@ -133,7 +133,7 @@ const lessonData: Lesson = {
     } as MultipleSelectionSectionData,
     {
       kind: "Information",
-      id: "primm-wrapup" as SectionId,
+      id: "primm-wrap-up" as SectionId,
       title: "Wrapping Up PRIMM",
       content: [
         {

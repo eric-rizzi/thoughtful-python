@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import type {
   PredictionSectionData,
   UnitId,
@@ -10,6 +10,7 @@ import predictionStyles from "./CoverageSection.module.css";
 import { useInteractiveTableLogic } from "../../hooks/useInteractiveTableLogic";
 import CodeEditor from "../CodeEditor";
 import ContentRenderer from "../content_blocks/ContentRenderer";
+import { useProgressActions } from "../../stores/progressStore";
 
 interface PredictionSectionProps {
   section: PredictionSectionData;
@@ -22,9 +23,10 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
   unitId,
   lessonId,
 }) => {
+  const { completeSection } = useProgressActions();
+
   const {
     savedState,
-    isSectionComplete,
     runningStates,
     isLoading,
     pyodideError,
@@ -50,6 +52,14 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
   const progressPercent =
     totalChallenges > 0 ? (completedCount / totalChallenges) * 100 : 0;
 
+  const isComplete = totalChallenges > 0 && completedCount === totalChallenges;
+
+  useEffect(() => {
+    if (isComplete) {
+      completeSection(unitId, lessonId, section.id);
+    }
+  }, [isComplete, unitId, lessonId, section.id, completeSection]);
+
   return (
     <section id={section.id} className={styles.section}>
       <h2 className={styles.title}>{section.title}</h2>
@@ -70,8 +80,8 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
           />
           <div className={predictionStyles.coverageInstruction}>
             <p>
-              For each "Expected Output" below, fill in the input fields and
-              click "Run" to see if the code produces that exact output.
+              For each row of inputs below, predict what the code will output
+              and enter it in the "Your Prediction" column.
             </p>
           </div>
 
@@ -144,9 +154,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
             <div className={styles.progressBar}>
               <div
                 className={
-                  isSectionComplete
-                    ? styles.progressFillComplete
-                    : styles.progressFill
+                  isComplete ? styles.progressFillComplete : styles.progressFill
                 }
                 style={{ width: `${progressPercent}%` }}
               ></div>

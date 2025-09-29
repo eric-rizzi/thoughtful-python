@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("PrimmSection tests", () => {
+test.describe("ReflectionSection tests", () => {
   test("Test can run the PRIMM section up to requiring AI", async ({
     page,
   }) => {
