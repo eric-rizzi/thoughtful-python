@@ -26,7 +26,7 @@ function App() {
   const { clearPenalty } = useProgressActions();
 
   const handleModalClose = () => {
-    logout(); // Performs a full logout, clearing the stale state
+    logout(); // Peforms a full logout, clearing the stale state
     setSessionExpired(false); // Reset the flag for the next session
   };
 

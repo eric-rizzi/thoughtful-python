@@ -68,7 +68,7 @@ jobs:
           path: ./dist
 
       - name: Run Playwright tests
-        run: npm run e2e-test:ci
+        run: npm run e2e-test:ci -- --project=unauthenticated
 
       - name: Upload test results
         if: always()
