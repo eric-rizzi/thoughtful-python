@@ -394,7 +394,7 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
             {isLoading && !submitError
               ? "Processing..."
               : !isAuthenticated
-              ? "Please log in to Get AI Feedback"
+              ? "Please Log In to Get AI Feedback"
               : "Get Feedback"}
           </button>
           <button
@@ -421,6 +421,8 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
           >
             {isLoading && !submitError
               ? "Submitting..."
+              : !isAuthenticated
+              ? "Please Log In to Submit to Journal"
               : isSectionMarkedCompleteInStore
               ? "Submitted ✓"
               : "Submit to Journal"}
