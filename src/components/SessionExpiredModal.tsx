@@ -1,20 +1,30 @@
 import React from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { useAuthActions } from "../stores/authStore";
+import { useAuthStore } from "../stores/authStore"; // Use the main store
 import styles from "./SessionExpiredModal.module.css";
 
-const SessionExpiredModal: React.FC = () => {
-  const { login } = useAuthActions();
+interface SessionExpiredModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const { login } = useAuthStore((state) => state.actions);
+
+  // If the modal isn't supposed to be open, render nothing.
+  if (!isOpen) {
+    return null;
+  }
 
   const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
     if (credentialResponse.credential) {
       try {
-        // The login action already handles setting the new state and syncing progress.
         await login(credentialResponse.credential);
-        // The modal will disappear automatically when the sessionHasExpired state is reset.
       } catch (e) {
         console.error("Re-login process failed:", e);
-        // Optionally show an error message within the modal
       }
     } else {
       console.error("Login failed: No credential returned from Google.");
@@ -34,6 +44,9 @@ const SessionExpiredModal: React.FC = () => {
             }}
           />
         </div>
+        <button onClick={onClose} className={styles.closeButton}>
+          Cancel and Log Out
+        </button>
       </div>
     </div>
   );

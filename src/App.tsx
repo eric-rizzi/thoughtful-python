@@ -21,8 +21,14 @@ function App() {
   const theme = useThemeStore((state) => state.theme);
   const isSyncingProgress = useAuthStore((state) => state.isSyncingProgress);
   const sessionHasExpired = useAuthStore((state) => state.sessionHasExpired);
+  const { logout, setSessionExpired } = useAuthStore((state) => state.actions);
   const penaltyEndTime = useProgressStore((state) => state.penaltyEndTime);
   const { clearPenalty } = useProgressActions();
+
+  const handleModalClose = () => {
+    logout(); // Performs a full logout, clearing the stale state
+    setSessionExpired(false); // Reset the flag for the next session
+  };
 
   useEffect(() => {
     const root = document.documentElement;
@@ -53,7 +59,10 @@ function App() {
   return (
     <>
       {isSyncingProgress && <SyncingOverlay />}
-      {sessionHasExpired && <SessionExpiredModal />}
+      <SessionExpiredModal
+        isOpen={sessionHasExpired}
+        onClose={handleModalClose}
+      />
       <Routes>
         {/* Routes that use the standard student-facing layout */}
         <Route element={<StudentLayout />}>
