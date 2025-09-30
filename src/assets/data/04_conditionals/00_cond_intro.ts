@@ -20,12 +20,12 @@ const lessonData: Lesson = {
     {
       kind: "Information",
       id: "decisions-intro",
-      title: "Functions That Think",
+      title: "Functions That React",
       content: [
         {
           kind: "text",
           value:
-            "So far, every function you've written does the exact same thing every time. Give it the same input, get the same output. But real programs need to make decisions! What if you want a function that says 'Good morning!' before noon but 'Good afternoon!' after noon? Or a function that only lets you in if you know the password?\n\nThat's where **if statements** come in. An if statement lets your code ask a question and then choose whether to run certain lines based on the answer. It's like teaching your functions to think!",
+            "So far, every function you've written does the exact same thing every time. Given the same input, the function will return the same output. But real programs need to make decisions! What if you want a function that says 'Good morning!' early in the day but 'Good afternoon!' later? Or a function that only lets you in if you know the password?\n\nThat's where `if` statements come in. An `if` statement lets your code choose which lines of code to run based on the situation. It's like teaching your functions to react to the real world!",
         },
       ],
     } as InformationSectionData,
@@ -37,7 +37,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's see how an if statement works. Watch carefully - the indented line only runs sometimes! Run this code and pay attention to when 'It's hot outside!' appears:",
+            "Let's see how an `if` statement works. Watch carefully - the indented line only runs sometimes! Run this code and pay attention to when 'It's hot outside!' appears:",
         },
       ],
       example: {
@@ -60,13 +60,13 @@ const lessonData: Lesson = {
       options: [
         "Every time the function is called",
         "Never - it's just there for show",
-        "Only when temp is greater than 30",
-        "Only when temp equals exactly 30",
+        "Only when `temp` is greater than 30",
+        "Only when `temp` equals exactly 30",
       ],
       correctAnswer: 2,
       feedback: {
         correct:
-          "Correct! The if statement checks if temp > 30. When this condition is True, the indented code runs. When it's False, Python skips it!",
+          "Correct! The `if` statement checks `if temp > 30`. When this condition is True, the indented code runs. When it's False, Python skips it!",
       },
     } as MultipleChoiceSectionData,
     {
@@ -77,13 +77,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If statements can compare strings too! Look at this password checker and predict what will happen:",
+            "`if` statements can compare strings too! Look at this password checker and predict what will happen:",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_password(attempt):\n    print(f"You entered: {attempt}")\n    if attempt == "cheese":\n        print("Welcome, it\'s lovely to see you")\n    print("Done checking")\n\ncheck_password("cheese")\nprint("---")\ncheck_password("CHEESE")\nprint("---")\ncheck_password("pizza")',
+          'def check_password(attempt):\n    print(f"Checking the password")\n    if attempt == "cheese":\n        print("Welcome, it\'s lovely to see you")\n    print("Done checking")\n\ncheck_password("cheese")\nprint("---")\ncheck_password("CHEESE")\nprint("---")\ncheck_password("pizza")',
       },
       predictPrompt:
         "Which function calls will print 'Welcome, it's lovely to see you'? Remember that Python cares about uppercase vs lowercase!",
