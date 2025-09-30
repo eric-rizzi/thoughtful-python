@@ -7,99 +7,7 @@ import type {
 } from "../types/data";
 import { usePyodide } from "../contexts/PyodideContext";
 import { useProgressActions } from "../stores/progressStore";
-
-// A helper function to create a delay for animation
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-interface RealTurtleInstance {
-  execute: (commands: JsTurtleCommand[]) => Promise<void>;
-  reset: () => void;
-  clear: () => void;
-}
-
-// This function sets up the canvas and defines how to draw the turtle commands.
-const setupJsTurtle = (canvas: HTMLCanvasElement): RealTurtleInstance => {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error("Could not get 2D rendering context for canvas.");
-  }
-
-  let x = canvas.width / 2;
-  let y = canvas.height / 2;
-  let heading = 0;
-  let penDown = true;
-  let penColor = "black";
-  let penSize = 2;
-
-  const resetTurtleState = () => {
-    x = canvas.width / 2;
-    y = canvas.height / 2;
-    heading = 0;
-    penDown = true;
-    penColor = "black";
-    penSize = 2;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-  };
-
-  resetTurtleState();
-
-  const executeCommand = (command: JsTurtleCommand) => {
-    switch (command.type) {
-      case "forward":
-        const distance = command.distance;
-        const rad = heading * (Math.PI / 180);
-        x += distance * Math.cos(rad);
-        y += distance * Math.sin(rad);
-        if (penDown) ctx.lineTo(x, y);
-        else ctx.moveTo(x, y);
-        break;
-      case "left":
-        heading = (heading - command.angle) % 360;
-        break;
-      case "right":
-        heading = (heading + command.angle) % 360;
-        break;
-      case "penup":
-        penDown = false;
-        break;
-      case "pendown":
-        penDown = true;
-        ctx.moveTo(x, y);
-        break;
-      case "setPenColor":
-        penColor = command.color;
-        ctx.strokeStyle = penColor;
-        break;
-      // Other commands like 'goto', 'clear' can be added here if needed.
-    }
-  };
-
-  const executeAllCommands = async (
-    commands: JsTurtleCommand[]
-  ): Promise<void> => {
-    resetTurtleState();
-    ctx.lineWidth = penSize;
-    ctx.strokeStyle = penColor;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-
-    for (const command of commands) {
-      executeCommand(command);
-      await sleep(50); // Animation delay
-    }
-    ctx.stroke(); // Draw the final path
-  };
-
-  return {
-    execute: executeAllCommands,
-    reset: resetTurtleState,
-    clear: resetTurtleState,
-  };
-};
+import { RealTurtleInstance, setupJsTurtle } from "../lib/turtleRenderer";
 
 // This is the Python code that will be run in Pyodide to capture turtle commands.
 const pythonCaptureModuleCode = `
@@ -109,16 +17,114 @@ import json
 _js_turtle_commands_ = []
 
 class CaptureTurtle:
+    def __init__(self):
+        self._speed = 6  # Default speed
+        
     def _add_command(self, command_dict):
         _js_turtle_commands_.append(command_dict)
-    def forward(self, distance): self._add_command({'type': 'forward', 'distance': float(distance)})
-    def backward(self, distance): self.forward(-distance)
-    def right(self, angle): self._add_command({'type': 'right', 'angle': float(angle)})
-    def left(self, angle): self._add_command({'type': 'left', 'angle': float(angle)})
-    def penup(self): self._add_command({'type': 'penup'})
-    def pendown(self): self._add_command({'type': 'pendown'})
-    def color(self, color_str): self._add_command({'type': 'setPenColor', 'color': color_str})
-    # Add aliases
+        
+    def forward(self, distance): 
+        self._add_command({'type': 'forward', 'distance': float(distance)})
+        
+    def backward(self, distance): 
+        self.forward(-distance)
+        
+    def right(self, angle): 
+        self._add_command({'type': 'right', 'angle': float(angle)})
+        
+    def left(self, angle): 
+        self._add_command({'type': 'left', 'angle': float(angle)})
+        
+    def goto(self, x, y=None):
+        if y is None and hasattr(x, '__iter__'):
+            x, y = x
+        # Send raw coordinates - conversion happens in JS
+        self._add_command({'type': 'goto', 'x': float(x), 'y': float(y)})
+        
+    def penup(self): 
+        self._add_command({'type': 'penup'})
+        
+    def pendown(self): 
+        self._add_command({'type': 'pendown'})
+        
+    def color(self, *args):
+        # Handle different color formats for pen color
+        if len(args) == 1:
+            color_value = args[0]
+            if isinstance(color_value, str):
+                self._add_command({'type': 'setPenColor', 'color': color_value})
+            elif isinstance(color_value, tuple) and len(color_value) == 3:
+                # Convert RGB tuple to hex
+                r, g, b = color_value
+                hex_color = '#{:02x}{:02x}{:02x}'.format(
+                    int(r*255) if r <= 1 else int(r), 
+                    int(g*255) if g <= 1 else int(g), 
+                    int(b*255) if b <= 1 else int(b)
+                )
+                self._add_command({'type': 'setPenColor', 'color': hex_color})
+        elif len(args) == 3:
+            # RGB values as separate arguments
+            r, g, b = args
+            hex_color = '#{:02x}{:02x}{:02x}'.format(
+                int(r*255) if r <= 1 else int(r), 
+                int(g*255) if g <= 1 else int(g), 
+                int(b*255) if b <= 1 else int(b)
+            )
+            self._add_command({'type': 'setPenColor', 'color': hex_color})
+            
+    def fillcolor(self, *args):
+        # Handle fill color
+        if len(args) == 1:
+            color_value = args[0]
+            if isinstance(color_value, str):
+                self._add_command({'type': 'setFillColor', 'color': color_value})
+            elif isinstance(color_value, tuple) and len(color_value) == 3:
+                r, g, b = color_value
+                hex_color = '#{:02x}{:02x}{:02x}'.format(
+                    int(r*255) if r <= 1 else int(r), 
+                    int(g*255) if g <= 1 else int(g), 
+                    int(b*255) if b <= 1 else int(b)
+                )
+                self._add_command({'type': 'setFillColor', 'color': hex_color})
+        elif len(args) == 3:
+            # RGB values as separate arguments
+            r, g, b = args
+            hex_color = '#{:02x}{:02x}{:02x}'.format(
+                int(r*255) if r <= 1 else int(r), 
+                int(g*255) if g <= 1 else int(g), 
+                int(b*255) if b <= 1 else int(b)
+            )
+            self._add_command({'type': 'setFillColor', 'color': hex_color})
+            
+    def begin_fill(self):
+        self._add_command({'type': 'beginFill'})
+        
+    def end_fill(self):
+        self._add_command({'type': 'endFill'})
+        
+    def width(self, width):
+        self._add_command({'type': 'setPenSize', 'size': float(width)})
+        
+    def speed(self, speed=None):
+        if speed is None:
+            return self._speed
+        # Convert string speed values
+        speed_map = {
+            'fastest': 0,
+            'fast': 10,
+            'normal': 6,
+            'slow': 3,
+            'slowest': 1
+        }
+        if isinstance(speed, str):
+            speed = speed_map.get(speed.lower(), 6)
+        self._speed = max(0, min(10, int(speed)))
+        self._add_command({'type': 'setSpeed', 'speed': self._speed})
+        
+    def clear(self):
+        self._add_command({'type': 'clear'})
+    
+    # Common aliases
     fd = forward
     bk = backward
     rt = right
@@ -135,7 +141,7 @@ sys.modules['turtle'] = TurtleModule()
 `;
 
 interface UseTurtleExecutionProps {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  canvasRef: React.RefObject<HTMLDivElement | null>;
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
@@ -153,17 +159,28 @@ export const useTurtleExecution = ({
     isLoading: isPyodideLoading,
     error: pyodideError,
   } = usePyodide();
-  const { completeSection } = useProgressActions(); // Get the completion action
+  const { completeSection } = useProgressActions();
 
   const [isRunning, setIsRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize the JS turtle renderer when the canvas is ready
   useEffect(() => {
-    if (canvasRef.current && !jsTurtleRef.current) {
-      jsTurtleRef.current = setupJsTurtle(canvasRef.current);
+    // This effect will run when Pyodide is ready and the canvasRef is attached.
+    // The guards prevent it from running more than once.
+    if (!isPyodideLoading && canvasRef.current && !jsTurtleRef.current) {
+      const container = canvasRef.current;
+
+      jsTurtleRef.current = setupJsTurtle(container);
     }
-  }, [canvasRef]);
+
+    // This cleanup function will run when the component unmounts.
+    return () => {
+      if (jsTurtleRef.current) {
+        jsTurtleRef.current.destroy();
+        jsTurtleRef.current = null;
+      }
+    };
+  }, [canvasRef, isPyodideLoading]); // Dependency array is key to the logic
 
   // The main function that takes Python code and executes it
   const runTurtleCode = useCallback(

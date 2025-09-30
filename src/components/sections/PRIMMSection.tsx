@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type {
@@ -42,8 +42,8 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
   });
 
   const { runPythonCode, isLoading: isPyodideLoading } = usePyodide();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { runTurtleCode, isLoading: isTurtleLoading } = useTurtleExecution({
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const { runTurtleCode, isLoading, error } = useTurtleExecution({
     canvasRef,
     unitId,
     lessonId,
@@ -151,10 +151,17 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
                     <span className={primmStyles.infoLabel}>Key Output:</span>
                     {isTurtle ? (
                       <div
+                        ref={canvasRef}
                         className={styles.turtleCanvasContainer}
-                        style={{ marginTop: "1rem" }}
+                        style={{
+                          width: 400,
+                          height: 300,
+                          border: "1px solid #ccc",
+                          borderRadius: "4px",
+                          backgroundColor: "#fff",
+                        }}
                       >
-                        <canvas ref={canvasRef} width={400} height={300} />
+                        {/* p5.js will inject its canvas here */}
                       </div>
                     ) : (
                       <pre className={primmStyles.keyOutputText}>

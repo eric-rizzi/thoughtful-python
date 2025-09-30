@@ -315,3 +315,21 @@ export interface DisplayableAssignment {
   primmExampleId?: string; // Only for PRIMM
   assignmentDisplayTitle: string; // e.g., "Reflection: Variables" or "PRIMM: Example 1 - Loops"
 }
+
+// Turtle
+
+export type JsTurtleCommand =
+  | { type: "forward"; distance: number }
+  | { type: "backward"; distance: number }
+  | { type: "right"; angle: number }
+  | { type: "left"; angle: number }
+  | { type: "goto"; x: number; y: number }
+  | { type: "penup" }
+  | { type: "pendown" }
+  | { type: "setPenColor"; color: string }
+  | { type: "setFillColor"; color: string }
+  | { type: "setPenSize"; size: number }
+  | { type: "setSpeed"; speed: number }
+  | { type: "beginFill" }
+  | { type: "endFill" }
+  | { type: "clear" };

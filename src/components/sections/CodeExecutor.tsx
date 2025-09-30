@@ -25,8 +25,8 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
   lessonId,
   sectionId,
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [code, setCode] = useState(example.initialCode);
+  const canvasRef = useRef<HTMLDivElement>(null); // 1. Add this back
   const { runTurtleCode, isLoading, error } = useTurtleExecution({
     canvasRef,
     unitId,
@@ -58,10 +58,18 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
       )}
       <div>
         <h4>Turtle Output:</h4>
-        <div className={styles.turtleCanvasContainer}>
-          <canvas ref={canvasRef} width={400} height={300}>
-            Your browser does not support the canvas element.
-          </canvas>
+        <div
+          ref={canvasRef}
+          className={styles.turtleCanvasContainer}
+          style={{
+            width: 400,
+            height: 300,
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            backgroundColor: "#fff",
+          }}
+        >
+          {/* p5.js will inject its canvas here */}
         </div>
       </div>
     </div>
