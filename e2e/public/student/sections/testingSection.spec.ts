@@ -130,7 +130,7 @@ test.describe("TestingSection `return` tests", () => {
 
     await page
       .locator("#multi-input-testing div")
-      .filter({ hasText: "91234567›⌄def do_math(num_1," })
+      .filter({ hasText: "def do_math(num_1," })
       .nth(3)
       .click();
     await page
@@ -163,7 +163,7 @@ test.describe("TestingSection `return` tests", () => {
 
     await page
       .locator("#multi-input-testing div")
-      .filter({ hasText: "91234567›⌄def do_math(num_1," })
+      .filter({ hasText: "def do_math(num_1," })
       .nth(3)
       .click();
     await page
