@@ -154,6 +154,7 @@ export const useTurtleExecution = ({
   sectionId,
 }: UseTurtleExecutionProps) => {
   const jsTurtleRef = useRef<RealTurtleInstance | null>(null);
+  const stopRequestedRef = useRef(false);
   const {
     pyodide,
     isLoading: isPyodideLoading,
@@ -192,6 +193,8 @@ export const useTurtleExecution = ({
 
       setIsRunning(true);
       setError(null);
+      stopRequestedRef.current = false;
+
       if (jsTurtleRef.current) jsTurtleRef.current.clear();
 
       await new Promise((resolve) => requestAnimationFrame(resolve));
@@ -247,8 +250,16 @@ json.dumps(_js_turtle_commands_)
     [pyodide, isPyodideLoading, completeSection, unitId, lessonId, sectionId]
   );
 
+  const stopExecution = useCallback(() => {
+    if (jsTurtleRef.current) {
+      stopRequestedRef.current = true; // Set flag
+      jsTurtleRef.current.stop();
+    }
+  }, []); // No dependencies needed
+
   return {
     runTurtleCode,
+    stopExecution,
     isLoading: isRunning || isPyodideLoading,
     error: error || pyodideError,
   };

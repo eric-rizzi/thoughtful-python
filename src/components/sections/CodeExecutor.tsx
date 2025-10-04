@@ -27,12 +27,14 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
 }) => {
   const [code, setCode] = useState(example.initialCode);
   const canvasRef = useRef<HTMLDivElement>(null); // 1. Add this back
-  const { runTurtleCode, isLoading, error } = useTurtleExecution({
-    canvasRef,
-    unitId,
-    lessonId,
-    sectionId,
-  });
+  const { runTurtleCode, stopExecution, isLoading, error } = useTurtleExecution(
+    {
+      canvasRef,
+      unitId,
+      lessonId,
+      sectionId,
+    }
+  );
 
   return (
     <div className={styles.turtleEditorContainer}>
@@ -50,6 +52,11 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
         >
           {isLoading ? "Executing..." : "Run Code"}
         </button>
+        {isLoading && (
+          <button onClick={stopExecution} className={`${styles.runButton}`}>
+            Stop
+          </button>
+        )}
       </div>
       {error && (
         <div className={styles.errorFeedback}>

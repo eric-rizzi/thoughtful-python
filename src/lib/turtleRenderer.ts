@@ -4,6 +4,7 @@ import type { JsTurtleCommand } from "../types/data";
 // The public interface for our turtle renderer instance
 export interface RealTurtleInstance {
   execute: (commands: JsTurtleCommand[]) => Promise<void>;
+  stop: () => void;
   reset: () => void;
   clear: () => void;
   destroy: () => void;
@@ -503,6 +504,16 @@ export const setupJsTurtle = (container: HTMLElement): RealTurtleInstance => {
     });
   };
 
+  const stopAnimation = () => {
+    animationQueue.length = 0; // Clear all upcoming tasks
+    currentTask = null; // Stop the current task
+    if (animationResolve) {
+      animationResolve(); // Resolve the promise to unblock the hook
+      animationResolve = null;
+    }
+    // Note: We leave the drawing as-is, showing the stopped state.
+  };
+
   const clearCanvas = () => {
     resetTurtleState();
     if (sketch) sketch.background(255);
@@ -520,6 +531,7 @@ export const setupJsTurtle = (container: HTMLElement): RealTurtleInstance => {
 
   return {
     execute: executeAllCommands,
+    stop: stopAnimation,
     reset: clearCanvas,
     clear: clearCanvas,
     destroy,
