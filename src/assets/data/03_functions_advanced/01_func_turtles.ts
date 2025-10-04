@@ -86,7 +86,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now let's try a more complex shape. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` function call that results in the shape being drawn once. Given all this, predict what shape will be drawn, then run the program to check you prediction.",
+            "Now let's try a more complex shape. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` function call that results in the shape being drawn once. Given all this, predict what shape will be drawn, then run the program to check you prediction.",
         },
       ],
       example: {
@@ -129,7 +129,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now it's your turn! Write a program that draws an equilateral triangle (all sides the same length).\n\nHint: The interior angles add up to 180 degrees.",
+            "Now it's your turn! Write a program that draws an equilateral triangle (all sides the same length).\n\nHint: The exterior angles add up to 360 degrees.",
         },
       ],
       example: {

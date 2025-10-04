@@ -36,13 +36,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's improve our square-drawing function by adding a `size` and a `color` input. Now we can draw squares of any size and any color without rewriting the function! Run this code and see what happens:",
+            "Let's improve our square-drawing function from the previous lesson by adding a `size` and a `color` input. Now we can draw squares of any size and any color without rewriting the function! Run this code and see what happens:",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\n\ndef draw_square(size, color):\n  turtle.color(color)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n\n# Draw squares of different sizes\ndraw_square(50, "red")\ndraw_square(100, "yellow")\ndraw_square(25, "blue")',
+          'import turtle\n\ndef draw_square(size, color):\n  turtle.color(color)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n\n# Draw squares of different sizes\ndraw_square(100, "red")\ndraw_square(75, "yellow")\ndraw_square(50, "blue")',
       },
     } as ObservationSectionData,
     {
@@ -58,9 +58,9 @@ const lessonData: Lesson = {
       ],
       options: [
         "It makes the function run faster",
-        "It lets us draw squares of different types of squares without rewriting code",
-        "It makes the squares more colorful",
-        "It is required by Python",
+        "It lets us draw different types of squares",
+        "It makes the go from black to red",
+        "It is required by Python for a function to execute",
       ],
       correctAnswer: 1,
       feedback: {
