@@ -122,18 +122,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
         {isTurtle && (
           <div className={primmStyles.infoEntry}>
             <span className={primmStyles.infoLabel}>Turtle Output:</span>
-            <div
-              ref={canvasRef}
-              className={styles.turtleCanvasContainer}
-              style={{
-                width: 400,
-                height: 300,
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                backgroundColor: "#fff",
-                position: "relative",
-              }}
-            ></div>
+            <div ref={canvasRef} className={styles.turtleCanvasContainer}></div>
           </div>
         )}
 

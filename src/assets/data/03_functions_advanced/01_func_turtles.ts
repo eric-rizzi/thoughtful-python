@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'One of the oldest ways to teach programming is by having students use drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by controlling a virtual turtle\'s movements around the screen. The "turtle" carries a pen and leaves a trail as it moves. You can tell the "turtle" to move forward, turn, lift its pen up, put its pen down, and even change the pen\'s colors. By combining these simple commands, you can create complex drawings.',
+            'One of the oldest ways to teach programming is by having students use drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by controlling a virtual turtle\'s movements around the screen. The "turtle" carries a pen and leaves a trail as it moves. You can tell the "turtle" to move forward, turn, lift its pen up, put its pen down, and even change the pen\'s colors. By combining these simple commands, you can create complex drawings like the one below.',
         },
         {
           kind: "image",
@@ -35,7 +35,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Turtles are wonderful tool for learning programming because you can see what each line of code does. With this foundation, you can build up to more and more complex shapes.",
+            "Drawing libraries are wonderful tool for learning programming because you can see what each line of code does. With this foundation, you can build up to more and more complex shapes.",
         },
       ],
     } as InformationSectionData,
@@ -47,7 +47,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's start with the basics. The program below imports the `turtle` library, and then uses functions within the library to move the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each individual function affects the turtle's movement.",
+            "Let's start with the basics. The program below imports the `turtle` library. It then uses functions within the library to move the turtle around the screen. Run the program and watch what the turtle does. Pay attention to how each individual function affects the turtle's movement.",
         },
       ],
       example: {
@@ -114,7 +114,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n\nmake_shape()\nmake_shape()\nmake_shape()\nmake_shape()\n",
+          "import turtle\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n\nmake_shape()\nmake_shape()\nmake_shape()\nmake_shape()\n",
       },
       predictPrompt:
         "Look at the pattern of `forward()` and `right()` functions. What shape do you think this will draw?",

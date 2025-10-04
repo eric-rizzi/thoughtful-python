@@ -65,17 +65,7 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
       )}
       <div>
         <h4>Turtle Output:</h4>
-        <div
-          ref={canvasRef}
-          className={styles.turtleCanvasContainer}
-          style={{
-            width: 400,
-            height: 300,
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            backgroundColor: "#fff",
-          }}
-        >
+        <div ref={canvasRef} className={styles.turtleCanvasContainer}>
           {/* p5.js will inject its canvas here */}
         </div>
       </div>

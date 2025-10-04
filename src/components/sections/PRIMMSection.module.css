@@ -85,10 +85,18 @@
 }
 
 .infoEntry {
+  margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
 .infoEntry:last-child {
   margin-bottom: 0;
+}
+
+.turtleCanvasContainer {
+  border: "1px solid #ccc";
+  borderradius: "4px";
+  backgroundcolor: "#fff";
+  position: "relative";
 }
 
 .infoLabel {
