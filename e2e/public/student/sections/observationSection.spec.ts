@@ -58,9 +58,9 @@ test.describe("ObservationSection tests", () => {
     await page.locator(".cm-content > div:nth-child(3)").first().click();
     await page
       .getByText(
-        "import turtlet = turtle.Turtle()def make_T(): t.forward(100) t.right(90) t."
+        "import turtledef make_T(): turtle.forward(100) turtle.right(90) turtle."
       )
-      .fill("import turtle\nt = turtle.Turtle()\nt.righ()");
+      .fill("import turtle\n\nturtle.righ()");
     await page
       .locator("#first-turtle")
       .getByRole("button", { name: "Run Code" })
@@ -85,12 +85,12 @@ test.describe("ObservationSection tests", () => {
     await page.locator("#first-turtle").getByText("import turtle").click();
     await page
       .getByText(
-        "import turtlet = turtle.Turtle()def make_T(): t.forward(100) t.right(90) t."
+        "import turtledef make_T(): turtle.forward(100) turtle.right(90) turtle."
       )
       .press("ControlOrMeta+a");
     await page
       .getByText(
-        "import turtlet = turtle.Turtle()def make_T(): t.forward(100) t.right(90) t."
+        "import turtledef make_T(): turtle.forward(100) turtle.right(90) turtle."
       )
       .fill("def h t");
     await page

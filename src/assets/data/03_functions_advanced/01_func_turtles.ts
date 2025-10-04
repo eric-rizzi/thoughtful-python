@@ -24,7 +24,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "One of the oldest ways to teach programming is with drawing libraries. These libraries are called \"turtle libraries\" because they let you create drawings by controlling a virtual turtle's movements around the screen. The turtle carries a pen and leaves a trail as it moves. You can tell the turtle to move forward, turn, lift its pen up, put its pen down, and even change the pen's colors. By combining these simple commands, you can create complex drawings.",
+            'One of the oldest ways to teach programming is by having students use drawing libraries. These libraries are called "turtle libraries" because they let you create drawings by controlling a virtual turtle\'s movements around the screen. The "turtle" carries a pen and leaves a trail as it moves. You can tell the "turtle" to move forward, turn, lift its pen up, put its pen down, and even change the pen\'s colors. By combining these simple commands, you can create complex drawings.',
         },
         {
           kind: "image",

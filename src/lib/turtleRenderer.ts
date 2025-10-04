@@ -175,18 +175,24 @@ export const setupJsTurtle = (container: HTMLElement): RealTurtleInstance => {
         p.push();
         p.translate(x, y);
         p.rotate(p.radians(heading));
-        p.fill(50, 150, 50);
-        p.stroke(30, 100, 30);
+
+        // --- NEW TURTLE DRAWING LOGIC ---
         p.strokeWeight(1.5);
-        p.beginShape();
-        p.vertex(12, 0);
-        p.vertex(-6, -7);
-        p.vertex(-3, 0);
-        p.vertex(-6, 7);
-        p.endShape(p.CLOSE);
-        p.fill(255, 0, 0);
-        p.noStroke();
-        p.circle(0, 0, 3);
+        p.stroke(30, 100, 30); // Dark green outline
+        p.fill(50, 150, 50); // Lighter green fill
+
+        // Legs (simple ellipses)
+        p.ellipse(-8, -10, 8, 6);
+        p.ellipse(8, -10, 8, 6);
+        p.ellipse(-8, 10, 8, 6);
+        p.ellipse(8, 10, 8, 6);
+
+        // Body (a larger ellipse)
+        p.ellipse(0, 0, 22, 22);
+
+        // Head (a circle)
+        p.ellipse(15, 0, 12, 12);
+
         p.pop();
       }
 

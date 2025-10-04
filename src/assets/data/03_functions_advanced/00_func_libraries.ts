@@ -23,7 +23,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the previous unit you learned how to create and use your own functions, but you've actually been **using functions from the very beginning**: namely `print()`. The `print()` function's job is to display any input given to it to the user. \"Inside\" the `print()` function there's lots of code, including calls to sub-functions that in turn call their own sub-sub-functions. A single call to `print()` ends up calling layers upon layers of functions that interact with the deepest parts of the computer to change the proper pixels.",
+            "In the previous unit you learned how to create and use your own functions, but you've actually been **using functions from the very beginning**: namely `print()`. The `print()` function's job is to display the inputs given on the computer screen. \"Inside\" the `print()` function there's a lot of code, including calls to sub-functions that in turn call their own sub-sub-functions. In practice, a single call to `print()` is an incredible cascade; layers upon layers of functions are used to interact with the deepest parts of the computer to change all the right pixels on your monitor.",
         },
       ],
     } as InformationSectionData,
@@ -47,7 +47,7 @@ const lessonData: Lesson = {
       correctAnswers: [0, 2, 4],
       feedback: {
         correct:
-          "Correct! Functions help organize, reuse, and build upon code.",
+          "Correct! Functions help organize, reuse, and build upon existing code.",
       },
     } as MultipleSelectionSectionData,
     {
@@ -58,7 +58,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'How many instructions are executed to do a simple `print("Hello, World")` call?',
+            'How many instructions end up being executed by a simple `print("Hello, World")` call?',
         },
       ],
       options: [
@@ -93,7 +93,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "The first library we're going to experiment with is the `random` library. Randomness is a really common requirement for programs, which is why Python has a several different random functions in the `random` library.\n\nThe first function from the `random` library we're going to use is the `randint()` function. Read the code below carefully and pay close attention to how the `random` library its `randint()` function are used. Then, run the code **several times** to see how a new, random integer is generated every time.",
+            "The first library we're going to experiment with is the `random` library. Randomness is a really common requirement in programming, which is why Python has a several different random functions in the `random` library.\n\nThe first function from the `random` library we're going to use is the `randint()` function. Read the code below carefully and pay close attention to how the `random` library's `randint()` function is used. Then, run the code **several times** to see how a new, random integer is generated every time.",
         },
       ],
       example: {
@@ -113,10 +113,10 @@ const lessonData: Lesson = {
         },
       ],
       options: [
-        "Creates a random number immediately",
-        "Makes the random library's functions available to use",
+        "Creates a random number immediately for the program to use",
+        "Makes the random library's functions available",
         "Prints random text to the screen",
-        "Generates a random error",
+        "Generates a random error for the user to debug",
       ],
       correctAnswer: 1,
       feedback: {
@@ -170,7 +170,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Python also provides a `math` library with advanced mathematical functions. Just like with `random`, you need to import it first. Once you've imported it, you can use dozens of different advanced mathematical operations.\n\nRun the code below and observe what a few of these `math` functions do:",
+            "Python also provides a `math` library with advanced mathematical functions. Just like with `random`, you need to import the `math` library first. Once you've imported the library, you can any one of the dozens of different advanced mathematical functions within it.\n\nRun the code below and observe what a few of the functions inside the `math` library do:",
         },
       ],
       example: {
