@@ -21,7 +21,7 @@ interface PyodideContextType {
   error: Error | null; // Holds any initialization error
   runPythonCode: (
     code: string
-  ) => Promise<{ output: string; error: string | null }>; // Function to run code
+  ) => Promise<{ output: string; error: string | null; result: any }>;
   loadPackages: (packages: string[]) => Promise<void>; // Function to load packages
 }
 
@@ -159,21 +159,23 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
     initialize();
   }, [loadPyodideScript, pyodide, isInitializing]); // Include dependencies used inside effect
 
-  // Function provided by context to run Python code
   const runPythonCode = useCallback(
-    async (code: string): Promise<{ output: string; error: string | null }> => {
+    async (
+      code: string
+    ): Promise<{ output: string; error: string | null; result: any }> => {
       if (!pyodide || isInitializing) {
         const message = `Python environment is ${
           isInitializing ? "initializing" : "not ready"
         }. Please wait.`;
         console.warn(message);
-        return { output: "", error: message };
+        return { output: "", error: message, result: null };
       }
 
       // console.log("Running Python code via context...");
       let stdout = "";
       let stderr = "";
       let fullError = null;
+      let result: any = null;
 
       try {
         // Temporarily redirect stdout/stderr for this specific run
@@ -188,25 +190,27 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
           },
         });
 
-        // Execute the Python code
-        await pyodide.runPythonAsync(code);
-        // console.log("Python code finished execution.");
+        const resultProxy = await pyodide.runPythonAsync(code);
+
+        if (resultProxy !== undefined) {
+          result = resultProxy.toString();
+
+          if (typeof resultProxy.destroy === "function") {
+            resultProxy.destroy();
+          }
+        }
       } catch (err) {
         console.error("Error executing Python code:", err);
         // Capture the execution error itself in addition to stderr
         const errorMessage = err instanceof Error ? err.message : String(err);
-        fullError = `${stderr}\nExecution Error: ${errorMessage}`; // Combine stderr and exception
-        stderr = ""; // Clear stderr as it's now part of fullError
-      } finally {
-        // It's good practice to restore default handlers if you have them,
-        // but simply leaving them redirected until the next run is also okay
-        // pyodide.setStdout({ batched: (msg) => console.log("Pyodide Default stdout:", msg) });
-        // pyodide.setStderr({ batched: (msg) => console.error("Pyodide Default stderr:", msg) });
+        fullError = `${stderr}\nExecution Error: ${errorMessage}`;
+        stderr = "";
       }
-      return { output: stdout, error: fullError }; // Return captured output and any error string
+
+      return { output: stdout, error: fullError, result };
     },
     [pyodide, isInitializing]
-  ); // Dependencies for useCallback
+  );
 
   // Function provided by context to load packages
   const loadPackages = useCallback(

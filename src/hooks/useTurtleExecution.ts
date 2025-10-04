@@ -155,10 +155,11 @@ export const useTurtleExecution = ({
 }: UseTurtleExecutionProps) => {
   const jsTurtleRef = useRef<RealTurtleInstance | null>(null);
   const stopRequestedRef = useRef(false);
+
   const {
-    pyodide,
     isLoading: isPyodideLoading,
     error: pyodideError,
+    runPythonCode,
   } = usePyodide();
   const { completeSection } = useProgressActions();
 
@@ -186,7 +187,7 @@ export const useTurtleExecution = ({
   // The main function that takes Python code and executes it
   const runTurtleCode = useCallback(
     async (codeToRun: string): Promise<JsTurtleCommand[]> => {
-      if (isPyodideLoading || !pyodide) {
+      if (isPyodideLoading) {
         setError("Python environment is not ready.");
         return [];
       }
@@ -199,6 +200,10 @@ export const useTurtleExecution = ({
 
       await new Promise((resolve) => requestAnimationFrame(resolve));
 
+      // Calculate the line offset before creating the script
+      const pythonModuleLines = pythonCaptureModuleCode.split("\n").length;
+      const scriptPrefixLines = pythonModuleLines + 2;
+
       const fullPythonScript = `
 ${pythonCaptureModuleCode}
 _js_turtle_commands_.clear()
@@ -209,7 +214,16 @@ ${codeToRun
   .join("\n")}
 except Exception as e:
     import traceback
-    print(f"PYTHON_EXECUTION_ERROR:: {e}\\n{traceback.format_exc()}")
+    import json
+    tb = traceback.extract_tb(e.__traceback__)
+    user_code_frame = tb[-1] if tb else None
+    line_num = user_code_frame.lineno - ${scriptPrefixLines} if user_code_frame else 'N/A'
+    error_info = {
+        "type": type(e).__name__,
+        "message": str(e),
+        "line": line_num
+    }
+    print(f"PYTHON_EXECUTION_ERROR:: {json.dumps(error_info)}")
     _js_turtle_commands_ = []
 finally:
     pass
@@ -219,23 +233,40 @@ json.dumps(_js_turtle_commands_)
 
       let parsedJsCommands: JsTurtleCommand[] = [];
       try {
-        const resultProxy = await pyodide.runPythonAsync(fullPythonScript);
-        const rawOutput = resultProxy.toString();
+        const result = await runPythonCode(fullPythonScript);
 
-        const errorMatch = rawOutput.match(
-          /PYTHON_EXECUTION_ERROR:: ([\s\S]*)/
-        );
-        if (errorMatch && errorMatch[1]) {
-          throw new Error(errorMatch[1].trim());
+        if (result.error) {
+          setError(result.error); // Display the raw error from the context
+          return [];
         }
 
-        parsedJsCommands = JSON.parse(rawOutput);
+        console.log(result.result);
+        const errorMarker = "PYTHON_EXECUTION_ERROR::";
+        const markerIndex = result.output
+          ? result.output.indexOf(errorMarker)
+          : -1;
+
+        if (markerIndex !== -1) {
+          const jsonString = result.output.substring(
+            markerIndex + errorMarker.length
+          );
+          const errorInfo = JSON.parse(jsonString);
+          const friendlyMessage = `Error on line ${errorInfo.line}: ${errorInfo.type}\n${errorInfo.message}`;
+          setError(friendlyMessage);
+          return [];
+        }
+
+        if (result.result) {
+          parsedJsCommands = JSON.parse(result.result);
+        }
+
         if (jsTurtleRef.current) {
           await jsTurtleRef.current.execute(parsedJsCommands);
         }
 
-        // Mark the section as complete after a successful run
-        completeSection(unitId, lessonId, sectionId);
+        if (!stopRequestedRef.current) {
+          completeSection(unitId, lessonId, sectionId);
+        }
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
         console.error("Turtle execution error:", errorMessage);
@@ -247,15 +278,22 @@ json.dumps(_js_turtle_commands_)
 
       return parsedJsCommands;
     },
-    [pyodide, isPyodideLoading, completeSection, unitId, lessonId, sectionId]
+    [
+      runPythonCode,
+      isPyodideLoading,
+      completeSection,
+      unitId,
+      lessonId,
+      sectionId,
+    ]
   );
 
   const stopExecution = useCallback(() => {
-    if (jsTurtleRef.current) {
-      stopRequestedRef.current = true; // Set flag
+    if (jsTurtleRef.current && typeof jsTurtleRef.current.stop === "function") {
+      stopRequestedRef.current = true;
       jsTurtleRef.current.stop();
     }
-  }, []); // No dependencies needed
+  }, []);
 
   return {
     runTurtleCode,

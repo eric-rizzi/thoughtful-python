@@ -136,11 +136,13 @@ test.describe("TestingSection `return` tests", () => {
     await page
       .getByText("def do_math(num_1, num_2): #")
       .press("ControlOrMeta+a");
+    await page.waitForTimeout(1000);
     await page
       .getByText("def do_math(num_1, num_2):")
       .fill(
         "def do_math(num_1, num_2):\n  return num_1 * num_2 + 1\n\n\ndo_math(2, 2)\ndo_math(4, 2)\ndo_math(4, 1)\ndo_math(6, 1)"
       );
+    await page.waitForTimeout(1000);
     await page.getByRole("button", { name: "Run Tests" }).click();
     await expect(
       page.getByText("Your solution passed 4 out of 4 tests.")
@@ -148,9 +150,7 @@ test.describe("TestingSection `return` tests", () => {
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
-});
 
-test.describe("TestingSection `return` tests", () => {
   test("Test that can click the `Run Tests` button and get a fail", async ({
     page,
   }) => {
@@ -169,11 +169,13 @@ test.describe("TestingSection `return` tests", () => {
     await page
       .getByText("def do_math(num_1, num_2): #")
       .press("ControlOrMeta+a");
+    await page.waitForTimeout(1000);
     await page
       .getByText("def do_math(num_1, num_2):")
       .fill(
         "def do_math(num_1, num_2):\n  return num_1 * num_2 - 1\n\n\ndo_math(2, 2)\ndo_math(4, 2)\ndo_math(4, 1)\ndo_math(6, 1)"
       );
+    await page.waitForTimeout(1000);
     await page.getByRole("button", { name: "Run Tests" }).click();
     await expect(
       page.getByText("Your solution passed 0 out of 4 tests.")
