@@ -5,6 +5,12 @@ test.describe("PrimmSection tests with regular code", () => {
     page,
   }) => {
     await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Using PRIMM on Code" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
     await page
       .getByRole("textbox", { name: "What do you think the program" })
       .click();
@@ -25,6 +31,8 @@ test.describe("PrimmSection tests with regular code", () => {
       .getByRole("button", { name: "Get AI Feedback", exact: true })
       .click();
     await expect(page.getByText("Authentication or")).toBeVisible();
+
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 });
 
@@ -35,6 +43,11 @@ test.describe("PrimmSection tests with turtles", () => {
     await page.goto(
       "/thoughtful-python/lesson/03_functions_advanced/01_func_turtles"
     );
+
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Drawing A Shape" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
     await expect(page.locator("#square-primm #defaultCanvas0")).toBeVisible();
     await page
@@ -64,5 +77,7 @@ test.describe("PrimmSection tests with turtles", () => {
       .getByRole("button", { name: "Get AI Feedback", exact: true })
       .click();
     await expect(page.getByText("Authentication or")).toBeVisible();
+
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 });

@@ -29,6 +29,7 @@ const mockSectionData: PRIMMSectionData = {
     visualization: "text",
   },
   predictPrompt: "What will the output of this code be?",
+  conclusion: "This concludes the PRIMM challenge.",
 };
 
 // A base state for the useEnhancedPRIMM hook mock
@@ -250,7 +251,7 @@ describe("PRIMMSection", () => {
     );
 
     expect(
-      screen.getByText(/great work! you've completed this primm exercise/i)
+      screen.getByText(/this concludes the primm challenge./i)
     ).toBeInTheDocument();
   });
 });

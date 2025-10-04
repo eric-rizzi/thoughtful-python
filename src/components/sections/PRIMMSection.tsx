@@ -239,7 +239,7 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
           )}
 
         {isSectionComplete && (
-          <div className={styles.completionMessage}>section.conclusion</div>
+          <div className={styles.completionMessage}>{section.conclusion}</div>
         )}
       </div>
     </section>

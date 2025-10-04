@@ -81,7 +81,7 @@ const lessonData: Lesson = {
     {
       kind: "PRIMM",
       id: "square-primm" as SectionId,
-      title: "Drawing Shapes",
+      title: "Drawing A Shape",
       content: [
         {
           kind: "text",
@@ -103,7 +103,7 @@ const lessonData: Lesson = {
     {
       kind: "PRIMM",
       id: "multi-square-primm" as SectionId,
-      title: "Drawing Shapes",
+      title: "Drawing Multiple Shapes",
       content: [
         {
           kind: "text",
