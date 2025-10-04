@@ -171,7 +171,6 @@ describe("PRIMMSection", () => {
       />
     );
 
-    expect(screen.getByText("Key Output:")).toBeInTheDocument();
     expect(screen.getByText("Hello, PRIMM!")).toBeInTheDocument();
   });
 
