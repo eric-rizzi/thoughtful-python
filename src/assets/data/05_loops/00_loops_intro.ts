@@ -44,7 +44,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\nt.forward(100)\nt.left(120)\nt.forward(100)\nt.left(120)\nt.forward(100)\nt.left(120)",
+          "import turtle\n\nturtle.forward(100)\nturtle.left(120)\nturtle.forward(100)\nturtle.left(120)\nturtle.forward(100)\nturtle.left(120)",
       },
       predictPrompt:
         "What shape will this draw? Why do you think the angle is 120 degrees instead of 60 degrees (since triangles have 60-degree angles inside)?",
@@ -59,13 +59,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Here's the same triangle, but now using a **loop** to eliminate the repetition. Notice how much cleaner this is!\n\nThe key parts are:\n- `for i in range(3):` tells Python to repeat 3 times\n- The **indented** code below is what gets repeated\n- Just like with functions, indentation shows what's 'inside' the loop",
+            "Here's the same triangle, but now using a **loop** to eliminate the repetition. Notice how much cleaner this is!\n\nThe key parts are:\n- `for i in range(3):` tells Python to repeat 3 times\n- The **indented** code below is what gets repeated\n- Just like with functions, indentation shows what's \"inside\" the loop",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Draw a triangle using a loop\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)",
+          "import turtle\n\n# Draw a triangle using a loop\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)",
       },
     } as ObservationSectionData,
     {
@@ -79,7 +79,7 @@ const lessonData: Lesson = {
         },
         {
           kind: "code",
-          value: "for i in range(7):\n    print('Hello')",
+          value: "for i in range(7):\n    print('Hello')\n",
         },
       ],
       options: ["6 times", "7 times", "8 times", "It depends on i"],
@@ -102,13 +102,13 @@ const lessonData: Lesson = {
         {
           kind: "code",
           value:
-            "# Current repetitive way:\nt.forward(80)\nt.right(90)\nt.forward(80)\nt.right(90)\nt.forward(80)\nt.right(90)\nt.forward(80)\nt.right(90)",
+            "# Current repetitive way:\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.right(90)",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Convert to a loop:\n# Your code here",
+          "import turtle\n\n# Your code here converting the code above to a loop",
       },
       testCases: [
         {
@@ -133,7 +133,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Draw a pentagon\nfor i in range(5):\n    turtle.forward(80)\n    turtle.right(72)",
+          "import turtle\n\n# Draw a pentagon\nfor i in range(5):\n    turtle.forward(80)\n    turtle.right(72)\n",
       },
       predictPrompt:
         "This draws a pentagon. Can you figure out why the angle is 72 degrees? Hint: what's 360 ÷ 5?",
@@ -154,7 +154,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Hexagon (6 sides)\nfor i in range(6):\n    # Your code here\n    pass\n\n# Move to new position\nt.penup()\nt.forward(150)\nt.pendown()\n\n# Octagon (8 sides)\n# Your code here\n\n# Move to new position\nt.penup()\nt.backward(300)\nt.pendown()\n\n# Nonagon (9 sides)\n# Your code here",
+          "import turtle\n\n# Hexagon (6 sides)\nfor i in range(6):\n    # Your code here\n    pass\n\n# Move to new position\nturtle.penup()\nturtle.forward(150)\nturtle.pendown()\n\n# Octagon (8 sides)\n# Your code here\n\n# Move to new position\nturtle.penup()\nturtle.backward(300)\nturtle.pendown()\n\n# Nonagon (9 sides)\n# Your code here",
       },
       testCases: [
         {
@@ -220,7 +220,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nt.speed(0)\n\n# 7-pointed star\nfor i in range(7):\n    # Your code here\n    pass\n\n# Move to new position\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\n# 8-pointed star pattern\n# Your code here",
+          "import turtle\n\nturtle.speed(0)\n\n# 7-pointed star\nfor i in range(7):\n    # Your code here\n    pass\n\n# Move to new position\nturtle.penup()\nturtle.goto(-150, 0)\nturtle.pendown()\n\n# 8-pointed star pattern\n# Your code here",
       },
       testCases: [
         {
@@ -246,11 +246,9 @@ const lessonData: Lesson = {
         "`for i in range(5):` repeats exactly 5 times",
         "The code inside a loop must be indented",
         "Loops can only be used for drawing shapes",
-        "The variable `i` in `for i in range(n):` counts from 0 to n-1",
-        "You can use any variable name instead of `i`",
         "Loops eliminate the need to write repetitive code",
       ],
-      correctAnswers: [0, 1, 3, 4, 5],
+      correctAnswers: [0, 1, 3],
       feedback: {
         correct:
           "Excellent! You understand that loops are a general programming concept for eliminating repetition, not just for turtle graphics.",
@@ -283,7 +281,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Fantastic work! You've transformed from writing repetitive code to describing patterns. You've learned:\n- How `for i in range(n):` repeats code n times\n- The 360÷sides pattern for regular polygons\n- How to create stars by using different angles\n- That indentation shows what's inside the loop\n\nIn the next lesson, we'll explore what happens when you put a loop inside another loop. If one loop can draw a square, imagine what two loops can create!",
+            "Fantastic work! You've transformed from writing repetitive code to describing patterns. You've learned:\n- How `for i in range(n):` repeats code n times\n- The 360÷sides pattern for regular polygons\n- How to create stars by using different angles\n- That indentation shows what's \"inside\" the loop\n\nIn the next lesson, we'll explore what happens when you put a loop inside another loop. If one loop can draw a square, imagine what two loops can create!",
         },
       ],
     } as InformationSectionData,

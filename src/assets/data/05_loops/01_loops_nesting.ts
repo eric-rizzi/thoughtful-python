@@ -147,7 +147,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.speed(0)\n\n# Starting position\nt.penup()\nt.goto(-100, 100)\nt.pendown()\n\nfor row in range(3):\n    for col in range(4):\n        # Draw a small square\n        for side in range(4):\n            turtle.forward(20)\n            turtle.right(90)\n        \n        # Move to next column position\n        turtle.penup()\n        turtle.forward(30)\n        turtle.pendown()\n    \n    # Move to next row\n    turtle.penup()\n    turtle.backward(120)  # 30 * 4 = 120\n    turtle.right(90)\n    turtle.forward(30)\n    turtle.left(90)\n    turtle.pendown()",
+          "import turtle\n\nturtle.speed(0)\n\n# Starting position\nturtle.penup()\nturtle.goto(-100, 100)\nturtle.pendown()\n\nfor row in range(3):\n    for col in range(4):\n        # Draw a small square\n        for side in range(4):\n            turtle.forward(20)\n            turtle.right(90)\n        \n        # Move to next column position\n        turtle.penup()\n        turtle.forward(30)\n        turtle.pendown()\n    \n    # Move to next row\n    turtle.penup()\n    turtle.backward(120)  # 30 * 4 = 120\n    turtle.right(90)\n    turtle.forward(30)\n    turtle.left(90)\n    turtle.pendown()",
       },
       predictPrompt:
         "This has THREE nested loops! The innermost draws a square, the middle loop draws a row of squares, and the outer loop creates multiple rows. How many squares total will be drawn?",

@@ -44,7 +44,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.speed(0)\n\ndef draw_polygon(sides, size):\n    '''Draw any regular polygon'''\n    angle = 360 / sides\n    \n    for i in range(sides):\n        turtle.forward(size)\n        turtle.right(angle)\n\n# Test with different shapes\ndraw_polygon(3, 80)   # Triangle\n\nt.penup()\nt.forward(120)\nt.pendown()\n\ndraw_polygon(5, 60)   # Pentagon\n\nt.penup()\nt.forward(100)\nt.pendown()\n\ndraw_polygon(8, 40)   # Octagon",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_polygon(sides, size):\n    '''Draw any regular polygon'''\n    angle = 360 / sides\n    \n    for i in range(sides):\n        turtle.forward(size)\n        turtle.right(angle)\n\n# Test with different shapes\ndraw_polygon(3, 80)   # Triangle\n\nturtle.penup()\nturtle.forward(120)\nturtle.pendown()\n\ndraw_polygon(5, 60)   # Pentagon\n\nturtle.penup()\nturtle.forward(100)\nturtle.pendown()\n\ndraw_polygon(8, 40)   # Octagon",
       },
     } as ObservationSectionData,
     {
@@ -79,7 +79,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.speed(0)\n\ndef draw_star(points, size):\n    '''Draw a star with any number of points'''\n    angle = 180 - (180 / points)\n    \n    for i in range(points):\n        turtle.forward(size)\n        turtle.right(angle)\n\n# Draw three different stars\ndraw_star(5, 100)\n\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\ndraw_star(7, 80)\n\nt.penup()\nt.goto(150, 0)\nt.pendown()\n\ndraw_star(9, 60)",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_star(points, size):\n    '''Draw a star with any number of points'''\n    angle = 180 - (180 / points)\n    \n    for i in range(points):\n        turtle.forward(size)\n        turtle.right(angle)\n\n# Draw three different stars\ndraw_star(5, 100)\n\nturtle.penup()\nturtle.goto(-150, 0)\nturtle.pendown()\n\ndraw_star(7, 80)\n\nturtle.penup()\nturtle.goto(150, 0)\nturtle.pendown()\n\ndraw_star(9, 60)",
       },
       predictPrompt:
         "This function draws stars with different numbers of points. How does changing the `points` parameter affect the shape?",
@@ -130,7 +130,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.speed(0)\n\ndef draw_flower(num_petals, petal_sides, petal_size):\n    '''Draw a flower with custom petals'''\n    rotation_angle = 360 / num_petals\n    \n    for petal in range(num_petals):\n        # Draw one petal (a polygon)\n        for side in range(petal_sides):\n            turtle.forward(petal_size)\n            turtle.right(360 / petal_sides)\n        \n        # Rotate for next petal\n        turtle.right(rotation_angle)\n\n# Draw different flowers\ndraw_flower(6, 4, 30)  # 6 square petals\n\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\ndraw_flower(8, 3, 25)  # 8 triangular petals\n\nt.penup()\nt.goto(150, 0)\nt.pendown()\n\ndraw_flower(12, 6, 20)  # 12 hexagonal petals",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_flower(num_petals, petal_sides, petal_size):\n    '''Draw a flower with custom petals'''\n    rotation_angle = 360 / num_petals\n    \n    for petal in range(num_petals):\n        # Draw one petal (a polygon)\n        for side in range(petal_sides):\n            turtle.forward(petal_size)\n            turtle.right(360 / petal_sides)\n        \n        # Rotate for next petal\n        turtle.right(rotation_angle)\n\n# Draw different flowers\ndraw_flower(6, 4, 30)  # 6 square petals\n\nturtle.penup()\nturtle.goto(-150, 0)\nturtle.pendown()\n\ndraw_flower(8, 3, 25)  # 8 triangular petals\n\nturtle.penup()\nturtle.goto(150, 0)\nturtle.pendown()\n\ndraw_flower(12, 6, 20)  # 12 hexagonal petals",
       },
     } as ObservationSectionData,
     {
