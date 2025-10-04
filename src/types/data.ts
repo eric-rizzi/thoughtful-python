@@ -246,7 +246,7 @@ export interface PRIMMSectionData extends LessonSection {
   kind: "PRIMM";
   example: ExecutableCode;
   predictPrompt: string;
-  conclusion?: string;
+  conclusion: string;
 }
 
 // This will be the structure stored per PRIMM example via useSectionProgress

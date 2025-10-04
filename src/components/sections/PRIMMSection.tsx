@@ -239,20 +239,9 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
           )}
 
         {isSectionComplete && (
-          <div className={styles.completionMessage}>
-            🎉 Great work! You've completed this PRIMM exercise.
-          </div>
+          <div className={styles.completionMessage}>section.conclusion</div>
         )}
       </div>
-
-      {section.conclusion && isSectionComplete && (
-        <div className={primmStyles.conclusion}>
-          <h4>Conclusion</h4>
-          <ContentRenderer
-            content={[{ kind: "text", value: section.conclusion }]}
-          />
-        </div>
-      )}
     </section>
   );
 };

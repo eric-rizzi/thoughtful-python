@@ -101,12 +101,13 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "For each score, predict which grade will be assigned. Remember: Python checks conditions from top to bottom and stops at the first True condition.",
+          value:
+            "For each score, predict which grade will be assigned. Remember: Python checks conditions from top to bottom and stops at the first True condition.",
         },
       ],
       example: {
         visualization: "console",
-        initialCode: 
+        initialCode:
           'def assign_grade(score):\n    if score >= 90:\n        print("A")\n    elif score >= 80:\n        print("B")\n    elif score >= 70:\n        print("C")\n    elif score >= 60:\n        print("D")\n    else:\n        print("F")',
       },
       predictionTable: {
@@ -231,7 +232,7 @@ const lessonData: Lesson = {
         "Nested conditionals let you group related decisions. Here we first check if it's freezing, and only if it's not do we distinguish between cold and warm.",
     } as PRIMMSectionData,
     {
-      kind: "DebuggerSectionData",
+      kind: "Debugger",
       id: "fix-everything" as SectionId,
       title: "Debug Challenge: Fix Everything",
       content: [
@@ -323,12 +324,13 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "This function classifies pets by number of legs. Predict the output for each input:",
+          value:
+            "This function classifies pets by number of legs. Predict the output for each input:",
         },
       ],
       example: {
         visualization: "console",
-        initialCode: 
+        initialCode:
           'def classify_pet(legs):\n    if legs == 0:\n        print("Fish or snake")\n    elif legs == 2:\n        print("Bird")\n    elif legs == 4:\n        print("Dog or cat")\n    elif legs == 8:\n        print("Spider")\n    else:\n        print("Unknown creature")',
       },
       predictionTable: {
@@ -351,7 +353,8 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "A movie theater has different prices by age. Provide ages that result in each ticket price:",
+          value:
+            "A movie theater has different prices by age. Provide ages that result in each ticket price:",
         },
       ],
       example: {

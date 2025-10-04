@@ -134,7 +134,7 @@ const lessonData: Lesson = {
       },
     } as ObservationSectionData,
     {
-      kind: "DebuggerSectionData",
+      kind: "Debugger",
       id: "debug-function-loops" as SectionId,
       title: "Watching Function Loops",
       content: [

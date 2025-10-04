@@ -102,7 +102,7 @@ const lessonData: Lesson = {
       },
     } as MatchingSectionData,
     {
-      kind: "DebuggerSectionData",
+      kind: "Debugger",
       id: "variable-scope-debug" as SectionId,
       title: "Loop Variables and Scope",
       content: [

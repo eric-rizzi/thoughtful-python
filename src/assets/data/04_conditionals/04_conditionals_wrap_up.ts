@@ -4,9 +4,7 @@ import type {
   LessonId,
   SectionId,
   MultipleChoiceSectionData,
-  MultipleSelectionSectionData,
   TestingSectionData,
-  MatchingSectionData,
 } from "../../../types/data";
 
 const lessonData: Lesson = {
@@ -70,7 +68,6 @@ const lessonData: Lesson = {
         functionToTest: "__main__",
       },
     } as TestingSectionData,
-
     {
       kind: "Information",
       id: "review-conclusion",
