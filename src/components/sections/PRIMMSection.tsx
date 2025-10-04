@@ -48,11 +48,11 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
     unitId,
     lessonId,
     sectionId: section.id,
+    autoCompleteOnRun: false,
   });
 
   const [isRunningCode, setIsRunningCode] = useState(false);
   const isTurtle = section.example.visualization === "turtle";
-
   const isExecutionEngineBusy = isPyodideLoading || isTurtleLoading;
 
   const handleRunAndLockPrediction = useCallback(async () => {
@@ -64,9 +64,10 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
       actions.setActualOutput("Turtle drawing was displayed.");
     } else {
       const result = await runPythonCode(section.example.initialCode);
-      actions.setActualOutput(result.output || result.error || "");
+      actions.setActualOutput(result.output || result.error || "No output.");
     }
 
+    // Execution is finished
     setIsRunningCode(false);
   }, [
     runPythonCode,
@@ -91,10 +92,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
     const isLoading = isRunningCode || isExecutionEngineBusy;
     if (isLoading) {
       return { text: "Executing...", disabled: true };
-    }
-    // This state is effectively "finished running"
-    if (state.isPredictionLocked) {
-      return { text: "Complete", disabled: true };
     }
     return {
       text: "Run Code",
@@ -145,7 +142,6 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
             rows={3}
             disabled={state.isPredictionLocked}
           />
-          {/* MODIFIED: The button now disappears after the code has run */}
           {!state.actualPyodideOutput && (
             <button
               onClick={handleRunAndLockPrediction}

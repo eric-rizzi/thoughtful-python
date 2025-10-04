@@ -98,6 +98,7 @@ interface UseTurtleExecutionProps {
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
+  autoCompleteOnRun?: boolean;
 }
 
 export const useTurtleExecution = ({
@@ -105,6 +106,7 @@ export const useTurtleExecution = ({
   unitId,
   lessonId,
   sectionId,
+  autoCompleteOnRun = true,
 }: UseTurtleExecutionProps) => {
   const jsTurtleRef = useRef<RealTurtleInstance | null>(null);
   const stopRequestedRef = useRef(false);
@@ -210,7 +212,7 @@ json.dumps(_js_turtle_commands_)
           await jsTurtleRef.current.execute(parsedJsCommands);
         }
 
-        if (!stopRequestedRef.current) {
+        if (!stopRequestedRef.current && autoCompleteOnRun) {
           completeSection(unitId, lessonId, sectionId);
         }
       } catch (e) {
@@ -230,6 +232,7 @@ json.dumps(_js_turtle_commands_)
       unitId,
       lessonId,
       sectionId,
+      autoCompleteOnRun,
     ]
   );
 
