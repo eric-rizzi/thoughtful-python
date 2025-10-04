@@ -68,7 +68,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "console",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_square(size):\n    for i in range(4):\n    t.forward(size)  # Not indented!\n        t.right(90)\n\ndraw_square(50)",
+          "import turtle\n\n\ndef draw_square(size):\n    for i in range(4):\n    turtle.forward(size)  # Not indented!\n        turtle.right(90)\n\ndraw_square(50)",
       },
       predictPrompt:
         "Line 5 isn't indented properly. What type of error will Python raise, and why?",
@@ -158,7 +158,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_hexagon(size):\nfor i in range(6):  # Bug 1: Missing indentation\n        t.forwrd(size)  # Bug 2: Misspelled forward\n        t.right(60)  # Bug 3: Wrong angle (should be 360/6)\n\n# Draw three hexagons\nfor hexagon_num in range(3):\n    size = "30" + (hexagon_num * 20)  # Bug 4: String instead of integer\n    draw_hexagon(size)\n    \n    # Move for next hexagon\n    t.penup()\n    t.forward(100)\n    t.pendown()',
+          'import turtle\n\nturtle.speed(0)\n\ndef draw_hexagon(size):\nfor i in range(6):  # Bug 1: Missing indentation\n        turtle.forwrd(size)  # Bug 2: Misspelled forward\n        turtle.right(60)  # Bug 3: Wrong angle (should be 360/6)\n\n# Draw three hexagons\nfor hexagon_num in range(3):\n    size = "30" + (hexagon_num * 20)  # Bug 4: String instead of integer\n    draw_hexagon(size)\n    \n    # Move for next hexagon\n    turtle.penup()\n    turtle.forward(100)\n    turtle.pendown()',
       },
       testCases: [
         {
@@ -239,7 +239,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nimport random\nimport math\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_spiral_flower(petals, base_size, color_list):\n    """A function combining all our concepts"""\n    \n    for petal_num in range(petals):\n        # Choose random color from list (using random library)\n        color = random.choice(color_list)\n        t.color(color)\n        \n        # Use math library for smooth curves\n        angle = 360 / petals\n        \n        # Nested loop for spiral petal\n        for i in range(15):\n            # Loop variable creates spiral\n            size = base_size + (i * 2)\n            t.forward(size)\n            t.right(30)\n        \n        # Return to center\n        t.penup()\n        t.home()\n        t.pendown()\n        \n        # Rotate for next petal\n        t.right(petal_num * angle + angle)\n\n# Create list of colors (remember lists?)\ncolors = ["red", "blue", "purple", "green", "orange"]\n\n# Call our function\ndraw_spiral_flower(8, 5, colors)\n\n# Add a message\nt.penup()\nt.goto(-100, -150)\nt.write("Created with Python!", font=("Arial", 16, "normal"))',
+          'import turtle\nimport random\nimport math\n\nt.speed(0)\n\ndef draw_spiral_flower(petals, base_size, color_list):\n    """A function combining all our concepts"""\n    \n    for petal_num in range(petals):\n        # Choose random color from list (using random library)\n        color = random.choice(color_list)\n        turtle.color(color)\n        \n        # Use math library for smooth curves\n        angle = 360 / petals\n        \n        # Nested loop for spiral petal\n        for i in range(15):\n            # Loop variable creates spiral\n            size = base_size + (i * 2)\n            turtle.forward(size)\n            turtle.right(30)\n        \n        # Return to center\n        turtle.penup()\n        turtle.home()\n        turtle.pendown()\n        \n        # Rotate for next petal\n        turtle.right(petal_num * angle + angle)\n\n# Create list of colors (remember lists?)\ncolors = ["red", "blue", "purple", "green", "orange"]\n\n# Call our function\ndraw_spiral_flower(8, 5, colors)\n\n# Add a message\nt.penup()\nt.goto(-100, -150)\nt.write("Created with Python!", font=("Arial", 16, "normal"))',
       },
     } as ObservationSectionData,
     {
@@ -274,7 +274,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nimport random\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_plant(height, branches):\n    '''Draw a single plant with given height and branches'''\n    # Draw stem\n    \n    # Draw branches using a loop\n    \n    # Your creative implementation here\n    pass\n\ndef draw_garden(rows, cols):\n    '''Draw a grid of plants'''\n    # Use nested loops for grid\n    \n    # Call draw_plant for each position\n    \n    # Add variety with random library\n    pass\n\n# Create your garden\n# Make it beautiful and unique!\n",
+          "import turtle\nimport random\n\nturtle.speed(0)\n\ndef draw_plant(height, branches):\n    '''Draw a single plant with given height and branches'''\n    # Draw stem\n    \n    # Draw branches using a loop\n    \n    # Your creative implementation here\n    pass\n\ndef draw_garden(rows, cols):\n    '''Draw a grid of plants'''\n    # Use nested loops for grid\n    \n    # Call draw_plant for each position\n    \n    # Add variety with random library\n    pass\n\n# Create your garden\n# Make it beautiful and unique!\n",
       },
       testCases: [
         {
@@ -299,7 +299,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          '# Unit 1: Drawing a square the hard way\n"""\nt.forward(50)\nt.right(90)\nt.forward(50)\nt.right(90)\nt.forward(50)\nt.right(90)\nt.forward(50)\nt.right(90)\n"""\n\n# Unit 2: Using a function\n"""\ndef draw_square():\n    t.forward(50)\n    t.right(90)\n    t.forward(50)\n    t.right(90)\n    t.forward(50)\n    t.right(90)\n    t.forward(50)\n    t.right(90)\n"""\n\n# Unit 3 (Now): The power of loops and parameters!\nimport turtle\nimport random\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_polygon(sides, size):\n    for i in range(sides):\n        t.forward(size)\n        t.right(360 / sides)\n\ndef draw_pattern(count, min_sides=3, max_sides=8):\n    for i in range(count):\n        sides = random.randint(min_sides, max_sides)\n        size = random.randint(20, 60)\n        color = random.choice(["red", "blue", "green", "purple"])\n        \n        t.color(color)\n        draw_polygon(sides, size)\n        t.right(360 / count)\n\n# One line creates a complex pattern!\ndraw_pattern(12)',
+          '# Unit 1: Drawing a square the hard way\n"""\nt.forward(50)\nt.right(90)\nt.forward(50)\nt.right(90)\nt.forward(50)\nt.right(90)\nt.forward(50)\nt.right(90)\n"""\n\n# Unit 2: Using a function\n"""\ndef draw_square():\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n    turtle.forward(50)\n    turtle.right(90)\n"""\n\n# Unit 3 (Now): The power of loops and parameters!\nimport turtle\nimport random\n\nturtle.speed(0)\n\ndef draw_polygon(sides, size):\n    for i in range(sides):\n        turtle.forward(size)\n        turtle.right(360 / sides)\n\ndef draw_pattern(count, min_sides=3, max_sides=8):\n    for i in range(count):\n        sides = random.randint(min_sides, max_sides)\n        size = random.randint(20, 60)\n        color = random.choice(["red", "blue", "green", "purple"])\n        \n        turtle.color(color)\n        draw_polygon(sides, size)\n        turtle.right(360 / count)\n\n# One line creates a complex pattern!\ndraw_pattern(12)',
       },
       predictPrompt:
         "Compare the three approaches. How many lines would the first approach need to create what the last one does in one function call?",

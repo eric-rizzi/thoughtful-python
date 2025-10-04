@@ -42,7 +42,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\n\ndef draw_square(size, color):\n  t.color(color)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n\n# Draw squares of different sizes\ndraw_square(50, "red")\ndraw_square(100, "yellow")\ndraw_square(25, "blue")',
+          'import turtle\n\ndef draw_square(size, color):\n  turtle.color(color)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n\n# Draw squares of different sizes\ndraw_square(50, "red")\ndraw_square(100, "yellow")\ndraw_square(25, "blue")',
       },
     } as ObservationSectionData,
     {
@@ -82,7 +82,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_triangle(size):\n  t.forward(size)\n  t.left(120)\n  t.forward(size)\n  t.left(120)\n  t.forward(size)\n  t.left(120)\n\n# Draw triangles\ndraw_triangle(80)\nt.penup()\nt.forward(100)\nt.pendown()\ndraw_triangle(40)",
+          "import turtle\n\ndef draw_triangle(size):\n  turtle.forward(size)\n  turtle.left(120)\n  turtle.forward(size)\n  turtle.left(120)\n  turtle.forward(size)\n  turtle.left(120)\n\n# Draw triangles\ndraw_triangle(80)\nturtle.penup()\nturtle.forward(100)\nturtle.pendown()\ndraw_triangle(40)",
       },
       predictPrompt:
         "Two triangles will be drawn. How will they differ? Where will they appear?",
@@ -103,7 +103,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_square_at(x, y, size):\n  # Move to position without drawing\n  t.penup()\n  t.goto(x, y)\n  t.pendown()\n\n    # Draw the square\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n  t.forward(size)\n  t.right(90)\n\n# Draw squares in different positions\ndraw_square_at(-100, 50, 40)\ndraw_square_at(50, 50, 40)\ndraw_square_at(-25, -50, 40)",
+          "import turtle\n\ndef draw_square_at(x, y, size):\n  # Move to position without drawing\n  turtle.penup()\n  turtle.goto(x, y)\n  turtle.pendown()\n\n    # Draw the square\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n  turtle.forward(size)\n  turtle.right(90)\n\n# Draw squares in different positions\ndraw_square_at(-100, 50, 40)\ndraw_square_at(50, 50, 40)\ndraw_square_at(-25, -50, 40)",
       },
     } as DebuggerSectionData,
     {
@@ -120,7 +120,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n  # Your code here\n  pass\n\n# Test your function\ndraw_rectangle(100, 50)\nt.penup()\nt.forward(120)\nt.pendown()\ndraw_rectangle(30, 80)",
+          "import turtle\n\ndef draw_rectangle(width, height):\n  # Your code here\n  pass\n\n# Test your function\ndraw_rectangle(100, 50)\nturtle.penup()\nturtle.forward(120)\nturtle.pendown()\ndraw_rectangle(30, 80)",
       },
       testCases: [
         {
@@ -150,7 +150,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\n\ndef draw_rectangle(width, height):\n  t.forward(width)\n  t.right(90)\n  t.forward(height)\n  t.right(90)\n  t.forward(width)\n  t.right(90)\n  t.forward(height)\n  t.right(90)\n\ndef draw_door(width, height, color):\n  t.color(color)\n  draw_rectangle(width, height)\n  t.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nt.penup()\nt.goto(60, 0)\nt.pendown()\ndraw_rectangle(40, 40)',
+          'import turtle\n\ndef draw_rectangle(width, height):\n  turtle.forward(width)\n  turtle.right(90)\n  turtle.forward(height)\n  turtle.right(90)\n  turtle.forward(width)\n  turtle.right(90)\n  turtle.forward(height)\n  turtle.right(90)\n\ndef draw_door(width, height, color):\n  turtle.color(color)\n  draw_rectangle(width, height)\n  turtle.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nt.penup()\nt.goto(60, 0)\nt.pendown()\ndraw_rectangle(40, 40)',
       },
       predictPrompt:
         "What two shapes will be drawn? What will be different about them?",

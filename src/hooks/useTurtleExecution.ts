@@ -9,7 +9,7 @@ import { usePyodide } from "../contexts/PyodideContext";
 import { useProgressActions } from "../stores/progressStore";
 import { RealTurtleInstance, setupJsTurtle } from "../lib/turtleRenderer";
 
-// This is the Python code that will be run in Pyodide to capture turtle commands.
+// MODIFIED: The Python code has been updated to simulate a module-level turtle.
 const pythonCaptureModuleCode = `
 import sys
 import json
@@ -18,126 +18,79 @@ _js_turtle_commands_ = []
 
 class CaptureTurtle:
     def __init__(self):
-        self._speed = 6  # Default speed
-        
+        self._speed = 6
     def _add_command(self, command_dict):
         _js_turtle_commands_.append(command_dict)
-        
-    def forward(self, distance): 
+    def forward(self, distance):
         self._add_command({'type': 'forward', 'distance': float(distance)})
-        
-    def backward(self, distance): 
+    def backward(self, distance):
         self.forward(-distance)
-        
-    def right(self, angle): 
+    def right(self, angle):
         self._add_command({'type': 'right', 'angle': float(angle)})
-        
-    def left(self, angle): 
+    def left(self, angle):
         self._add_command({'type': 'left', 'angle': float(angle)})
-        
     def goto(self, x, y=None):
         if y is None and hasattr(x, '__iter__'):
             x, y = x
-        # Send raw coordinates - conversion happens in JS
         self._add_command({'type': 'goto', 'x': float(x), 'y': float(y)})
-        
-    def penup(self): 
+    def penup(self):
         self._add_command({'type': 'penup'})
-        
-    def pendown(self): 
+    def pendown(self):
         self._add_command({'type': 'pendown'})
-        
     def color(self, *args):
-        # Handle different color formats for pen color
         if len(args) == 1:
             color_value = args[0]
             if isinstance(color_value, str):
                 self._add_command({'type': 'setPenColor', 'color': color_value})
             elif isinstance(color_value, tuple) and len(color_value) == 3:
-                # Convert RGB tuple to hex
                 r, g, b = color_value
-                hex_color = '#{:02x}{:02x}{:02x}'.format(
-                    int(r*255) if r <= 1 else int(r), 
-                    int(g*255) if g <= 1 else int(g), 
-                    int(b*255) if b <= 1 else int(b)
-                )
+                hex_color = '#{:02x}{:02x}{:02x}'.format(int(r*255) if r <= 1 else int(r), int(g*255) if g <= 1 else int(g), int(b*255) if b <= 1 else int(b))
                 self._add_command({'type': 'setPenColor', 'color': hex_color})
         elif len(args) == 3:
-            # RGB values as separate arguments
             r, g, b = args
-            hex_color = '#{:02x}{:02x}{:02x}'.format(
-                int(r*255) if r <= 1 else int(r), 
-                int(g*255) if g <= 1 else int(g), 
-                int(b*255) if b <= 1 else int(b)
-            )
+            hex_color = '#{:02x}{:02x}{:02x}'.format(int(r*255) if r <= 1 else int(r), int(g*255) if g <= 1 else int(g), int(b*255) if b <= 1 else int(b))
             self._add_command({'type': 'setPenColor', 'color': hex_color})
-            
     def fillcolor(self, *args):
-        # Handle fill color
         if len(args) == 1:
             color_value = args[0]
             if isinstance(color_value, str):
                 self._add_command({'type': 'setFillColor', 'color': color_value})
             elif isinstance(color_value, tuple) and len(color_value) == 3:
                 r, g, b = color_value
-                hex_color = '#{:02x}{:02x}{:02x}'.format(
-                    int(r*255) if r <= 1 else int(r), 
-                    int(g*255) if g <= 1 else int(g), 
-                    int(b*255) if b <= 1 else int(b)
-                )
+                hex_color = '#{:02x}{:02x}{:02x}'.format(int(r*255) if r <= 1 else int(r), int(g*255) if g <= 1 else int(g), int(b*255) if b <= 1 else int(b))
                 self._add_command({'type': 'setFillColor', 'color': hex_color})
         elif len(args) == 3:
-            # RGB values as separate arguments
             r, g, b = args
-            hex_color = '#{:02x}{:02x}{:02x}'.format(
-                int(r*255) if r <= 1 else int(r), 
-                int(g*255) if g <= 1 else int(g), 
-                int(b*255) if b <= 1 else int(b)
-            )
+            hex_color = '#{:02x}{:02x}{:02x}'.format(int(r*255) if r <= 1 else int(r), int(g*255) if g <= 1 else int(g), int(b*255) if b <= 1 else int(b))
             self._add_command({'type': 'setFillColor', 'color': hex_color})
-            
     def begin_fill(self):
         self._add_command({'type': 'beginFill'})
-        
     def end_fill(self):
         self._add_command({'type': 'endFill'})
-        
     def width(self, width):
         self._add_command({'type': 'setPenSize', 'size': float(width)})
-        
     def speed(self, speed=None):
         if speed is None:
             return self._speed
-        # Convert string speed values
-        speed_map = {
-            'fastest': 0,
-            'fast': 10,
-            'normal': 6,
-            'slow': 3,
-            'slowest': 1
-        }
+        speed_map = {'fastest': 0, 'fast': 10, 'normal': 6, 'slow': 3, 'slowest': 1}
         if isinstance(speed, str):
             speed = speed_map.get(speed.lower(), 6)
         self._speed = max(0, min(10, int(speed)))
         self._add_command({'type': 'setSpeed', 'speed': self._speed})
-        
     def clear(self):
         self._add_command({'type': 'clear'})
-    
-    # Common aliases
-    fd = forward
-    bk = backward
-    rt = right
-    lt = left
-    pu = penup
-    pd = pendown
+    fd, bk, rt, lt, pu, pd = forward, backward, right, left, penup, pendown
 
-class TurtleModule:
-    def __init__(self):
-        self.Turtle = CaptureTurtle
-        self.Screen = lambda: type('DummyScreen', (object,), {'exitonclick': lambda: None})()
-
-sys.modules['turtle'] = TurtleModule()
+# --- NEW IMPLEMENTATION ---
+# Create a single, global instance of our turtle capturer.
+_instance = CaptureTurtle()
+# For compatibility, add dummy Screen and Turtle attributes to the instance.
+_instance.Screen = lambda: type('DummyScreen', (object,), {'exitonclick': lambda: None})()
+_instance.Turtle = CaptureTurtle
+# Replace the 'turtle' module with our pre-made instance.
+# Now when a student calls \`turtle.forward()\`, they are calling
+# the .forward() method on our singleton \`_instance\`.
+sys.modules['turtle'] = _instance
 `;
 
 interface UseTurtleExecutionProps {
@@ -167,24 +120,18 @@ export const useTurtleExecution = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // This effect will run when Pyodide is ready and the canvasRef is attached.
-    // The guards prevent it from running more than once.
     if (!isPyodideLoading && canvasRef.current && !jsTurtleRef.current) {
       const container = canvasRef.current;
-
       jsTurtleRef.current = setupJsTurtle(container);
     }
-
-    // This cleanup function will run when the component unmounts.
     return () => {
       if (jsTurtleRef.current) {
         jsTurtleRef.current.destroy();
         jsTurtleRef.current = null;
       }
     };
-  }, [canvasRef, isPyodideLoading]); // Dependency array is key to the logic
+  }, [canvasRef, isPyodideLoading]);
 
-  // The main function that takes Python code and executes it
   const runTurtleCode = useCallback(
     async (codeToRun: string): Promise<JsTurtleCommand[]> => {
       if (isPyodideLoading) {
@@ -200,7 +147,6 @@ export const useTurtleExecution = ({
 
       await new Promise((resolve) => requestAnimationFrame(resolve));
 
-      // Calculate the line offset before creating the script
       const pythonModuleLines = pythonCaptureModuleCode.split("\n").length;
       const scriptPrefixLines = pythonModuleLines + 2;
 
@@ -218,11 +164,7 @@ except Exception as e:
     tb = traceback.extract_tb(e.__traceback__)
     user_code_frame = tb[-1] if tb else None
     line_num = user_code_frame.lineno - ${scriptPrefixLines} if user_code_frame else 'N/A'
-    error_info = {
-        "type": type(e).__name__,
-        "message": str(e),
-        "line": line_num
-    }
+    error_info = { "type": type(e).__name__, "message": str(e), "line": line_num }
     print(f"PYTHON_EXECUTION_ERROR:: {json.dumps(error_info)}")
     _js_turtle_commands_ = []
 finally:
@@ -236,11 +178,10 @@ json.dumps(_js_turtle_commands_)
         const result = await runPythonCode(fullPythonScript);
 
         if (result.error) {
-          setError(result.error); // Display the raw error from the context
+          setError(result.error);
           return [];
         }
 
-        console.log(result.result);
         const errorMarker = "PYTHON_EXECUTION_ERROR::";
         const markerIndex = result.output
           ? result.output.indexOf(errorMarker)
@@ -250,9 +191,13 @@ json.dumps(_js_turtle_commands_)
           const jsonString = result.output.substring(
             markerIndex + errorMarker.length
           );
-          const errorInfo = JSON.parse(jsonString);
-          const friendlyMessage = `Error on line ${errorInfo.line}: ${errorInfo.type}\n${errorInfo.message}`;
-          setError(friendlyMessage);
+          try {
+            const errorInfo = JSON.parse(jsonString.trim());
+            const friendlyMessage = `Error on line ${errorInfo.line}: ${errorInfo.type}\n${errorInfo.message}`;
+            setError(friendlyMessage);
+          } catch (e) {
+            setError("A Python error occurred, but it could not be displayed.");
+          }
           return [];
         }
 
@@ -275,7 +220,6 @@ json.dumps(_js_turtle_commands_)
       } finally {
         setIsRunning(false);
       }
-
       return parsedJsCommands;
     },
     [

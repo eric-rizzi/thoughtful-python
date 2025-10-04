@@ -65,7 +65,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Draw a triangle using a loop\nfor i in range(3):\n    t.forward(100)\n    t.left(120)",
+          "import turtle\nt = turtle.Turtle()\n\n# Draw a triangle using a loop\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)",
       },
     } as ObservationSectionData,
     {
@@ -133,7 +133,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Draw a pentagon\nfor i in range(5):\n    t.forward(80)\n    t.right(72)",
+          "import turtle\nt = turtle.Turtle()\n\n# Draw a pentagon\nfor i in range(5):\n    turtle.forward(80)\n    turtle.right(72)",
       },
       predictPrompt:
         "This draws a pentagon. Can you figure out why the angle is 72 degrees? Hint: what's 360 ÷ 5?",
@@ -203,7 +203,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\n# Five-pointed star\nfor i in range(5):\n    t.forward(100)\n    t.right(144)  # Not 72!\n\n# Try changing 144 to other values like 135 or 160",
+          "import turtle\n\n# Five-pointed star\nfor i in range(5):\n    turtle.forward(100)\n    turtle.right(144)  # Not 72!\n\n# Try changing 144 to other values like 135 or 160",
       },
     } as ObservationSectionData,
     {
@@ -220,7 +220,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# 7-pointed star\nfor i in range(7):\n    # Your code here\n    pass\n\n# Move to new position\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\n# 8-pointed star pattern\n# Your code here",
+          "import turtle\n\nt.speed(0)\n\n# 7-pointed star\nfor i in range(7):\n    # Your code here\n    pass\n\n# Move to new position\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\n# 8-pointed star pattern\n# Your code here",
       },
       testCases: [
         {

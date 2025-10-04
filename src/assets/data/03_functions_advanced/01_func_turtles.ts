@@ -53,7 +53,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef make_T():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.left(180)\n  t.forward(200)\n\nmake_T()",
+          "import turtle\n\ndef make_T():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.left(180)\n  turtle.forward(200)\n\nmake_T()",
       },
     } as ObservationSectionData,
     {
@@ -92,7 +92,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n\nmake_shape()",
+          "import turtle\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n\nmake_shape()",
       },
       predictPrompt:
         "Look at the pattern of `forward()` and `right()` function calls. What shape do you think this will draw?",
@@ -114,7 +114,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef make_shape():\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n  t.forward(100)\n  t.right(90)\n\nmake_shape()\nmake_shape()\nmake_shape()\nmake_shape()\n",
+          "import turtle\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.right(90)\n\nmake_shape()\nmake_shape()\nmake_shape()\nmake_shape()\n",
       },
       predictPrompt:
         "Look at the pattern of `forward()` and `right()` functions. What shape do you think this will draw?",
@@ -135,7 +135,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef make_triangle():\n  # Each side should be 100 pixels\n\nmake_triangle()",
+          "import turtle\n\ndef make_triangle():\n  # Each side should be 100 pixels\n\nmake_triangle()",
       },
       testCases: [
         {

@@ -44,7 +44,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Outer loop: repeat 6 times\nfor i in range(6):\n    # Inner loop: draw a square\n    for j in range(4):\n        t.forward(50)\n        t.right(90)\n    \n    # After each square, rotate\n    t.right(60)",
+          "import turtle\n\nturtle.speed(0)\n\n# Outer loop: repeat 6 times\nfor i in range(6):\n    # Inner loop: draw a square\n    for j in range(4):\n        turtle.forward(50)\n        turtle.right(90)\n    \n    # After each square, rotate\n    turtle.right(60)",
       },
       predictPrompt:
         "The inner loop draws a square (4 sides, 90° turns). The outer loop repeats this 6 times, rotating 60° after each square. What pattern will this create?",
@@ -64,7 +64,7 @@ const lessonData: Lesson = {
         {
           kind: "code",
           value:
-            "for i in range(3):\n    for j in range(4):\n        t.forward(50)",
+            "for i in range(3):\n    for j in range(4):\n        turtle.forward(50)",
         },
       ],
       options: ["3 times", "4 times", "7 times", "12 times"],
@@ -88,7 +88,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\nt.speed(0)\n\nfor i in range(3):\n    print(f"Starting flower petal {i}")\n    \n    # Draw one triangle\n    for j in range(3):\n        t.forward(40)\n        t.left(120)\n    \n    print(f"Finished petal {i}")\n    t.right(120)  # Rotate for next petal',
+          'import turtle\n\nturtle.speed(0)\n\nfor i in range(3):\n    print(f"Starting flower petal {i}")\n    \n    # Draw one triangle\n    for j in range(3):\n        turtle.forward(40)\n        turtle.left(120)\n    \n    print(f"Finished petal {i}")\n    turtle.right(120)  # Rotate for next petal',
       },
     } as DebuggerSectionData,
     {
@@ -105,7 +105,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Draw a flower with 12 petals\nfor i in range(12):\n    # Draw one petal (elongated loop)\n    for j in range(2):\n        t.forward(60)\n        t.right(60)\n        t.forward(60)\n        t.right(120)\n    \n    # Rotate for next petal\n    t.right(30)  # 360/12 = 30\n\n# Try changing 12 to 8 and 30 to 45!",
+          "import turtle\n\nturtle.speed(0)\n\n# Draw a flower with 12 petals\nfor i in range(12):\n    # Draw one petal (elongated loop)\n    for j in range(2):\n        turtle.forward(60)\n        turtle.right(60)\n        turtle.forward(60)\n        turtle.right(120)\n    \n    # Rotate for next petal\n    turtle.right(30)  # 360/12 = 30\n\n# Try changing 12 to 8 and 30 to 45!",
       },
     } as ObservationSectionData,
     {
@@ -122,7 +122,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Draw 8 triangles in a circle\n# Your code here\n",
+          "import turtle\n\nturtle.speed(0)\n\n# Draw 8 triangles in a circle\n# Your code here\n",
       },
       testCases: [
         {
@@ -147,7 +147,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Starting position\nt.penup()\nt.goto(-100, 100)\nt.pendown()\n\nfor row in range(3):\n    for col in range(4):\n        # Draw a small square\n        for side in range(4):\n            t.forward(20)\n            t.right(90)\n        \n        # Move to next column position\n        t.penup()\n        t.forward(30)\n        t.pendown()\n    \n    # Move to next row\n    t.penup()\n    t.backward(120)  # 30 * 4 = 120\n    t.right(90)\n    t.forward(30)\n    t.left(90)\n    t.pendown()",
+          "import turtle\n\nturtle.speed(0)\n\n# Starting position\nt.penup()\nt.goto(-100, 100)\nt.pendown()\n\nfor row in range(3):\n    for col in range(4):\n        # Draw a small square\n        for side in range(4):\n            turtle.forward(20)\n            turtle.right(90)\n        \n        # Move to next column position\n        turtle.penup()\n        turtle.forward(30)\n        turtle.pendown()\n    \n    # Move to next row\n    turtle.penup()\n    turtle.backward(120)  # 30 * 4 = 120\n    turtle.right(90)\n    turtle.forward(30)\n    turtle.left(90)\n    turtle.pendown()",
       },
       predictPrompt:
         "This has THREE nested loops! The innermost draws a square, the middle loop draws a row of squares, and the outer loop creates multiple rows. How many squares total will be drawn?",
@@ -193,7 +193,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Draw 5 flowers in a line, each bigger than the last\nfor flower_num in range(5):\n    # Calculate size for this flower\n    size = 20 + (flower_num * 10)\n    \n    # Draw one flower with 6 square petals\n    # Your code here\n    \n    # Move to position for next flower\n    # Your code here\n    pass",
+          "import turtle\n\nturtle.speed(0)\n\n# Draw 5 flowers in a line, each bigger than the last\nfor flower_num in range(5):\n    # Calculate size for this flower\n    size = 20 + (flower_num * 10)\n    \n    # Draw one flower with 6 square petals\n    # Your code here\n    \n    # Move to position for next flower\n    # Your code here\n    pass",
       },
       testCases: [
         {
@@ -218,7 +218,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\nfor rotation in range(8):\n    # Draw one square\n    for side in range(4):\n        t.forward(70)\n        t.right(90)\n    \n    # Rotate slightly for next square\n    t.right(45)  # 360/8 = 45",
+          "import turtle\n\nturtle.speed(0)\n\nfor rotation in range(8):\n    # Draw one square\n    for side in range(4):\n        turtle.forward(70)\n        turtle.right(90)\n    \n    # Rotate slightly for next square\n    turtle.right(45)  # 360/8 = 45",
       },
       predictPrompt:
         "Each iteration draws a square, then rotates 45°. With 8 iterations and 45° each time, what will the final pattern look like?",
@@ -239,7 +239,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Create your mandala here\n# Remember: outer loop for rotation, inner loop(s) for shapes\n",
+          "import turtle\n\nturtle.speed(0)\n\n# Create your mandala here\n# Remember: outer loop for rotation, inner loop(s) for shapes\n",
       },
       testCases: [
         {

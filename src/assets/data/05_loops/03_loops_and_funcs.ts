@@ -44,7 +44,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_polygon(sides, size):\n    '''Draw any regular polygon'''\n    angle = 360 / sides\n    \n    for i in range(sides):\n        t.forward(size)\n        t.right(angle)\n\n# Test with different shapes\ndraw_polygon(3, 80)   # Triangle\n\nt.penup()\nt.forward(120)\nt.pendown()\n\ndraw_polygon(5, 60)   # Pentagon\n\nt.penup()\nt.forward(100)\nt.pendown()\n\ndraw_polygon(8, 40)   # Octagon",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_polygon(sides, size):\n    '''Draw any regular polygon'''\n    angle = 360 / sides\n    \n    for i in range(sides):\n        turtle.forward(size)\n        turtle.right(angle)\n\n# Test with different shapes\ndraw_polygon(3, 80)   # Triangle\n\nt.penup()\nt.forward(120)\nt.pendown()\n\ndraw_polygon(5, 60)   # Pentagon\n\nt.penup()\nt.forward(100)\nt.pendown()\n\ndraw_polygon(8, 40)   # Octagon",
       },
     } as ObservationSectionData,
     {
@@ -79,7 +79,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_star(points, size):\n    '''Draw a star with any number of points'''\n    angle = 180 - (180 / points)\n    \n    for i in range(points):\n        t.forward(size)\n        t.right(angle)\n\n# Draw three different stars\ndraw_star(5, 100)\n\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\ndraw_star(7, 80)\n\nt.penup()\nt.goto(150, 0)\nt.pendown()\n\ndraw_star(9, 60)",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_star(points, size):\n    '''Draw a star with any number of points'''\n    angle = 180 - (180 / points)\n    \n    for i in range(points):\n        turtle.forward(size)\n        turtle.right(angle)\n\n# Draw three different stars\ndraw_star(5, 100)\n\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\ndraw_star(7, 80)\n\nt.penup()\nt.goto(150, 0)\nt.pendown()\n\ndraw_star(9, 60)",
       },
       predictPrompt:
         "This function draws stars with different numbers of points. How does changing the `points` parameter affect the shape?",
@@ -100,7 +100,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_spiral(turns, growth_rate):\n    '''Draw a square spiral with custom parameters'''\n    # Your code here\n    pass\n\n# Test your function\ndraw_spiral(30, 3)",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_spiral(turns, growth_rate):\n    '''Draw a square spiral with custom parameters'''\n    # Your code here\n    pass\n\n# Test your function\ndraw_spiral(30, 3)",
       },
       testCases: [
         {
@@ -130,7 +130,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_flower(num_petals, petal_sides, petal_size):\n    '''Draw a flower with custom petals'''\n    rotation_angle = 360 / num_petals\n    \n    for petal in range(num_petals):\n        # Draw one petal (a polygon)\n        for side in range(petal_sides):\n            t.forward(petal_size)\n            t.right(360 / petal_sides)\n        \n        # Rotate for next petal\n        t.right(rotation_angle)\n\n# Draw different flowers\ndraw_flower(6, 4, 30)  # 6 square petals\n\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\ndraw_flower(8, 3, 25)  # 8 triangular petals\n\nt.penup()\nt.goto(150, 0)\nt.pendown()\n\ndraw_flower(12, 6, 20)  # 12 hexagonal petals",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_flower(num_petals, petal_sides, petal_size):\n    '''Draw a flower with custom petals'''\n    rotation_angle = 360 / num_petals\n    \n    for petal in range(num_petals):\n        # Draw one petal (a polygon)\n        for side in range(petal_sides):\n            turtle.forward(petal_size)\n            turtle.right(360 / petal_sides)\n        \n        # Rotate for next petal\n        turtle.right(rotation_angle)\n\n# Draw different flowers\ndraw_flower(6, 4, 30)  # 6 square petals\n\nt.penup()\nt.goto(-150, 0)\nt.pendown()\n\ndraw_flower(8, 3, 25)  # 8 triangular petals\n\nt.penup()\nt.goto(150, 0)\nt.pendown()\n\ndraw_flower(12, 6, 20)  # 12 hexagonal petals",
       },
     } as ObservationSectionData,
     {
@@ -147,7 +147,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_growing_pattern(shapes, start_size, growth):\n    '''Draw shapes that grow in size'''\n    for i in range(shapes):\n        # Calculate current size\n        current_size = start_size + (i * growth)\n        print(f\"Drawing shape {i} with size {current_size}\")\n        \n        # Draw a square with current size\n        for j in range(4):\n            t.forward(current_size)\n            t.right(90)\n        \n        # Move to next position\n        t.penup()\n        t.forward(current_size + 10)\n        t.pendown()\n\n# Draw 4 squares, starting at 20, growing by 15\ndraw_growing_pattern(4, 20, 15)",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_growing_pattern(shapes, start_size, growth):\n    '''Draw shapes that grow in size'''\n    for i in range(shapes):\n        # Calculate current size\n        current_size = start_size + (i * growth)\n        print(f\"Drawing shape {i} with size {current_size}\")\n        \n        # Draw a square with current size\n        for j in range(4):\n            turtle.forward(current_size)\n            turtle.right(90)\n        \n        # Move to next position\n        turtle.penup()\n        turtle.forward(current_size + 10)\n        turtle.pendown()\n\n# Draw 4 squares, starting at 20, growing by 15\ndraw_growing_pattern(4, 20, 15)",
       },
     } as DebuggerSectionData,
     {
@@ -164,7 +164,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_shape_grid(rows, cols, shape_size, spacing):\n    '''Draw a grid of shapes'''\n    start_x = -(cols * spacing) / 2\n    start_y = (rows * spacing) / 2\n    \n    for row in range(rows):\n        for col in range(cols):\n            # Calculate position\n            x = start_x + (col * spacing)\n            y = start_y - (row * spacing)\n            \n            # Move to position\n            t.penup()\n            t.goto(x, y)\n            t.pendown()\n            \n            # Draw a shape (triangle in this case)\n            for side in range(3):\n                t.forward(shape_size)\n                t.left(120)\n\n# Create a 3x4 grid of triangles\ndraw_shape_grid(3, 4, 25, 40)",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_shape_grid(rows, cols, shape_size, spacing):\n    '''Draw a grid of shapes'''\n    start_x = -(cols * spacing) / 2\n    start_y = (rows * spacing) / 2\n    \n    for row in range(rows):\n        for col in range(cols):\n            # Calculate position\n            x = start_x + (col * spacing)\n            y = start_y - (row * spacing)\n            \n            # Move to position\n            turtle.penup()\n            turtle.goto(x, y)\n            turtle.pendown()\n            \n            # Draw a shape (triangle in this case)\n            for side in range(3):\n                turtle.forward(shape_size)\n                turtle.left(120)\n\n# Create a 3x4 grid of triangles\ndraw_shape_grid(3, 4, 25, 40)",
       },
       predictPrompt:
         "This creates a 3x4 grid. How many total triangles will be drawn? How does the `spacing` parameter affect the result?",
@@ -185,7 +185,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_pattern_ring(num_shapes, shape_sides, shape_size):\n    '''Draw shapes arranged in a circle'''\n    # Calculate rotation between shapes\n    \n    # Loop to draw each shape\n    # Your code here\n    pass\n\n# Test your function\ndraw_pattern_ring(8, 5, 30)  # 8 pentagons in a circle",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_pattern_ring(num_shapes, shape_sides, shape_size):\n    '''Draw shapes arranged in a circle'''\n    # Calculate rotation between shapes\n    \n    # Loop to draw each shape\n    # Your code here\n    pass\n\n# Test your function\ndraw_pattern_ring(8, 5, 30)  # 8 pentagons in a circle",
       },
       testCases: [
         {
@@ -248,7 +248,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_mandala(layers, shapes_per_layer, shape_sides, base_size):\n    '''Draw a complex mandala pattern'''\n    # For each layer\n    for layer in range(layers):\n        # Calculate size for this layer (shrinks by 20% each time)\n        size = base_size * (0.8 ** layer)\n        \n        # Draw shapes in a ring for this layer\n        # Your code here\n        \n        # Optional: rotate slightly for next layer\n        pass\n\n# Create a mandala with 3 layers, 8 shapes each\ndraw_mandala(3, 8, 6, 40)",
+          "import turtle\n\nturtle.speed(0)\n\ndef draw_mandala(layers, shapes_per_layer, shape_sides, base_size):\n    '''Draw a complex mandala pattern'''\n    # For each layer\n    for layer in range(layers):\n        # Calculate size for this layer (shrinks by 20% each time)\n        size = base_size * (0.8 ** layer)\n        \n        # Draw shapes in a ring for this layer\n        # Your code here\n        \n        # Optional: rotate slightly for next layer\n        pass\n\n# Create a mandala with 3 layers, 8 shapes each\ndraw_mandala(3, 8, 6, 40)",
       },
       testCases: [
         {
@@ -273,7 +273,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nimport random\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_random_burst(lines, max_length):\n    '''Draw a random burst pattern'''\n    for i in range(lines):\n        # Random length up to max\n        length = random.randint(10, max_length)\n        \n        # Random color\n        colors = ['red', 'blue', 'green', 'purple', 'orange']\n        t.color(random.choice(colors))\n        \n        # Draw line and return\n        t.forward(length)\n        t.backward(length)\n        \n        # Rotate for next line\n        t.right(360 / lines)\n\n# Create three random bursts\nfor burst in range(3):\n    x = random.randint(-150, 150)\n    y = random.randint(-100, 100)\n    \n    t.penup()\n    t.goto(x, y)\n    t.pendown()\n    \n    draw_random_burst(12, 80)",
+          "import turtle\nimport random\n\nturtle.speed(0)\n\ndef draw_random_burst(lines, max_length):\n    '''Draw a random burst pattern'''\n    for i in range(lines):\n        # Random length up to max\n        length = random.randint(10, max_length)\n        \n        # Random color\n        colors = ['red', 'blue', 'green', 'purple', 'orange']\n        turtle.color(random.choice(colors))\n        \n        # Draw line and return\n        turtle.forward(length)\n        turtle.backward(length)\n        \n        # Rotate for next line\n        turtle.right(360 / lines)\n\n# Create three random bursts\nfor burst in range(3):\n    x = random.randint(-150, 150)\n    y = random.randint(-100, 100)\n    \n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    \n    draw_random_burst(12, 80)",
       },
       predictPrompt:
         "This creates 3 random bursts. How do the function parameters and random library work together?",

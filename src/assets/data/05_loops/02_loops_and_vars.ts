@@ -44,7 +44,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\nt = turtle.Turtle()\n\n# Draw lines of increasing length\nfor i in range(8):\n    print(f"i is now: {i}")\n    t.forward(i * 10)  # Each line is longer!\n    t.backward(i * 10)  # Return to center\n    t.right(45)  # Rotate for next line\n\n# Notice: when i=0, line is 0 pixels (invisible)\n# when i=1, line is 10 pixels\n# when i=2, line is 20 pixels, etc.',
+          'import turtle\n\n\n# Draw lines of increasing length\nfor i in range(8):\n    print(f"i is now: {i}")\n    turtle.forward(i * 10)  # Each line is longer!\n    turtle.backward(i * 10)  # Return to center\n    turtle.right(45)  # Rotate for next line\n\n# Notice: when i=0, line is 0 pixels (invisible)\n# when i=1, line is 10 pixels\n# when i=2, line is 20 pixels, etc.',
       },
     } as ObservationSectionData,
     {
@@ -61,7 +61,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\nfor i in range(6):\n    # Calculate size based on i\n    size = 20 + (i * 15)\n    \n    # Draw a square with that size\n    for j in range(4):\n        t.forward(size)\n        t.right(90)\n    \n    # The squares share a corner",
+          "import turtle\n\nturtle.speed(0)\n\nfor i in range(6):\n    # Calculate size based on i\n    size = 20 + (i * 15)\n    \n    # Draw a square with that size\n    for j in range(4):\n        turtle.forward(size)\n        turtle.right(90)\n    \n    # The squares share a corner",
       },
       predictPrompt:
         "When i=0, size=20. When i=1, size=35. When i=2, size=50. What pattern will the 6 squares create?",
@@ -105,7 +105,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Square spiral\nfor i in range(100):\n    t.forward(i * 2)  # Each side grows by 2 pixels\n    t.right(90)\n\n# Try changing 90 to 91 for a different spiral!\n# Or try 120 for a triangular spiral!",
+          "import turtle\n\nturtle.speed(0)\n\n# Square spiral\nfor i in range(100):\n    turtle.forward(i * 2)  # Each side grows by 2 pixels\n    turtle.right(90)\n\n# Try changing 90 to 91 for a different spiral!\n# Or try 120 for a triangular spiral!",
       },
     } as ObservationSectionData,
     {
@@ -122,7 +122,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Draw 5 triangles, each smaller than the last\nfor i in range(5):\n    # Calculate the size for this triangle\n    # Your code here\n    \n    # Draw the triangle\n    # Remember: triangles use 120° exterior angles\n    pass",
+          "import turtle\n\nturtle.speed(0)\n\n# Draw 5 triangles, each smaller than the last\nfor i in range(5):\n    # Calculate the size for this triangle\n    # Your code here\n    \n    # Draw the triangle\n    # Remember: triangles use 120° exterior angles\n    pass",
       },
       testCases: [
         {
@@ -147,7 +147,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\nfor i in range(36):\n    # Use i for size\n    t.forward(i * 5)\n    \n    # Use i for color intensity (just for fun)\n    # (This creates a gradual color change)\n    \n    # Use i for rotation\n    t.right(90 + i)\n    \n# The angle increases each time, creating a curve!",
+          "import turtle\n\nturtle.speed(0)\n\nfor i in range(36):\n    # Use i for size\n    turtle.forward(i * 5)\n    \n    # Use i for color intensity (just for fun)\n    # (This creates a gradual color change)\n    \n    # Use i for rotation\n    turtle.right(90 + i)\n    \n# The angle increases each time, creating a curve!",
       },
       predictPrompt:
         "The forward distance grows by 5 each time, and the angle grows from 90° to 125°. What shape will emerge?",
@@ -192,7 +192,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Create a starburst pattern\nfor i in range(18):\n    # Draw line of length i * 8\n    # Return to center\n    # Rotate for next line\n    pass",
+          "import turtle\n\nturtle.speed(0)\n\n# Create a starburst pattern\nfor i in range(18):\n    # Draw line of length i * 8\n    # Return to center\n    # Rotate for next line\n    pass",
       },
       testCases: [
         {
@@ -217,7 +217,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Outer loop: create multiple spirals\nfor i in range(3):\n    # Each spiral starts bigger\n    start_size = 10 + (i * 20)\n    \n    # Inner loop: draw one spiral\n    for j in range(15):\n        t.forward(start_size + j * 3)\n        t.right(90)\n    \n    # Move to next starting position\n    t.penup()\n    t.forward(100)\n    t.pendown()",
+          "import turtle\n\nturtle.speed(0)\n\n# Outer loop: create multiple spirals\nfor i in range(3):\n    # Each spiral starts bigger\n    start_size = 10 + (i * 20)\n    \n    # Inner loop: draw one spiral\n    for j in range(15):\n        turtle.forward(start_size + j * 3)\n        turtle.right(90)\n    \n    # Move to next starting position\n    turtle.penup()\n    turtle.forward(100)\n    turtle.pendown()",
       },
       predictPrompt:
         "The outer loop creates 3 spirals. Each spiral starts at a different size. How will the three spirals differ?",
@@ -263,7 +263,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\nt.speed(0)\n\n# Draw 8 hexagons, each smaller and rotated\nfor i in range(8):\n    # Calculate size for this hexagon\n    size = 80 - (i * 10)\n    \n    # Draw the hexagon\n    # Your code here\n    \n    # Rotate for next hexagon\n    # Your code here\n    pass",
+          "import turtle\n\nturtle.speed(0)\n\n# Draw 8 hexagons, each smaller and rotated\nfor i in range(8):\n    # Calculate size for this hexagon\n    size = 80 - (i * 10)\n    \n    # Draw the hexagon\n    # Your code here\n    \n    # Rotate for next hexagon\n    # Your code here\n    pass",
       },
       testCases: [
         {
