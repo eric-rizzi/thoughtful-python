@@ -176,6 +176,7 @@ json.dumps(_js_turtle_commands_)
       let parsedJsCommands: JsTurtleCommand[] = [];
       try {
         const result = await runPythonCode(fullPythonScript);
+        console.log(result);
 
         if (result.error) {
           setError(result.error);

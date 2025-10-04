@@ -86,7 +86,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now let's try something more interesting. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` function call that results in the shape being drawn once. Given all this, predict what shape will be drawn, then run the program to check you prediction.",
+            "Now let's try a more complex shape. The code below has three main parts. First, the `turtle` library is imported, giving us the ability to draw shapes. Second, there's a `make_shape()` function that has the turtle draw some mysterious shape. Finally, there's a `make_shape()` function call that results in the shape being drawn once. Given all this, predict what shape will be drawn, then run the program to check you prediction.",
         },
       ],
       example: {
