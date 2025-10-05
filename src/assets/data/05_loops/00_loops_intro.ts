@@ -8,7 +8,6 @@ import type {
   MultipleChoiceSectionData,
   MultipleSelectionSectionData,
   TestingSectionData,
-  MatchingSectionData,
   ReflectionSectionData,
 } from "../../../types/data";
 
@@ -26,30 +25,28 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "So far, you've been writing the same code over and over. Remember drawing a square? You wrote `forward(100)` and `right(90)` four separate times. What if you wanted to draw a shape with 100 sides? There has to be a better way!\n\nThat's where **loops** come in. Loops are one of the most powerful concepts in programming because they let you tell the computer to repeat actions without writing the same code multiple times. They turn you from someone who types instructions into someone who describes patterns.",
+            "At this point you've covered data types, variables, functions, and conditionals. There's only one more thing you need to learn to be considered a competent, beginner programmer: **loops**. Loops are a way of further compacting your ideas in code.\n\nRemember programming the turtle to draw a triangle? You wrote `forward(100)` and `right(120)` three separate times. For a triangle this gets repetitive, but imagine how annoying it would be if you wanted to draw a shape with 100 sides. That's where loops come in. Loops are powerful because they let you tell the computer to repeat actions without having to write the same code multiple times. They turn you from someone who types instructions into someone who describes patterns.",
         },
       ],
     } as InformationSectionData,
     {
       kind: "PRIMM",
-      id: "three-lefts-primm" as SectionId,
-      title: "Three Lefts Make a Right",
+      id: "four-lefts-primm" as SectionId,
+      title: "Four Lefts Make a Right",
       content: [
         {
           kind: "text",
           value:
-            "Let's start with a simple shape drawn the repetitive way. Look at this code carefully and predict what it will draw.",
+            "Let's start with a simple, repetitive program. Look at this code carefully and predict what it will draw.",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.forward(100)\nturtle.left(120)\nturtle.forward(100)\nturtle.left(120)\nturtle.forward(100)\nturtle.left(120)",
+          "import turtle\n\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(100)\nturtle.left(90)\nturtle.forward(100)\nturtle.left(90)\n",
       },
-      predictPrompt:
-        "What shape will this draw? Why do you think the angle is 120 degrees instead of 60 degrees (since triangles have 60-degree angles inside)?",
-      conclusion:
-        "The turtle turns the OUTSIDE corner (exterior angle), not the inside! For a triangle, the exterior angle is 120°. This is why we use 120° to draw a triangle with 60° interior angles.",
+      predictPrompt: "What shape will this draw?",
+      conclusion: "Four right angles add up to a square.",
     } as PRIMMSectionData,
     {
       kind: "Observation",
@@ -59,13 +56,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Here's the same triangle, but now using a **loop** to eliminate the repetition. Notice how much cleaner this is!\n\nThe key parts are:\n- `for i in range(3):` tells Python to repeat 3 times\n- The **indented** code below is what gets repeated\n- Just like with functions, indentation shows what's \"inside\" the loop",
+            'Here\'s a program to draw the same shape that uses a **loop** to eliminate the repetition. The key parts are:\n- `for i in range(4):` tells Python to repeat the code "within" the loop 4 times\n- Just like with functions, indentation shows what\'s "inside" the loop',
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\n# Draw a triangle using a loop\nfor i in range(3):\n    turtle.forward(100)\n    turtle.left(120)",
+          "import turtle\n\n# Draw the shape using a loop\nfor i in range(4):\n    turtle.forward(100)\n    turtle.left(90)",
       },
     } as ObservationSectionData,
     {
@@ -75,34 +72,40 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "How many times will the following loop repeat?",
+          value:
+            'The word `for` was chosen very carefully. It means for every number up to four (four times), run the code "inside" the loop. Put another way, `for i in range(4)` means "run the following code four times".\n\nHow many times will the following loop repeat?',
         },
         {
           kind: "code",
           value: "for i in range(7):\n    print('Hello')\n",
         },
       ],
-      options: ["6 times", "7 times", "8 times", "It depends on i"],
+      options: ["Six times", "Seven times", "Eight times", "It depends on i"],
       correctAnswer: 1,
       feedback: {
         correct:
-          "Correct! The range(7) creates a sequence from 0 to 6 (seven numbers), so the loop runs 7 times.",
+          'Correct! The code "inside" the loop runs seven times, means `Hello` is printed seven times.',
       },
     } as MultipleChoiceSectionData,
     {
-      kind: "Testing",
-      id: "square-builder" as SectionId,
-      title: "Challenge: Square Builder",
+      kind: "Observation",
+      id: "pentago-builder" as SectionId,
+      title: "Challenge: Pentagon Builder",
       content: [
         {
           kind: "text",
           value:
-            "Convert this repetitive square-drawing code to use a loop. Your loop should draw the exact same square but with only 3 lines of code inside your function (not counting the import and turtle setup).",
+            "As stated, loops are a way of encoding patterns to avoid repetition. For example, the code below draws a pentagon in the least efficient way possible.",
         },
         {
           kind: "code",
           value:
-            "# Current repetitive way:\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.right(90)\nturtle.forward(80)\nturtle.right(90)",
+            "# Current repetitive way:\nturtle.forward(80)\nturtle.right(72)\nturtle.forward(80)\nturtle.right(72)\nturtle.forward(80)\nturtle.right(72)\nturtle.forward(80)\nturtle.right(72)\nturtle.forward(80)\nturtle.right(72)\n",
+        },
+        {
+          kind: "text",
+          value:
+            "See if you can use a loop to rewrite the program above more efficiently. Your loop should draw the exact same pentagon but with only 3 lines of code inside your function (not counting the `import`).",
         },
       ],
       example: {
@@ -110,36 +113,7 @@ const lessonData: Lesson = {
         initialCode:
           "import turtle\n\n# Your code here converting the code above to a loop",
       },
-      testCases: [
-        {
-          input: [null],
-          expected: "SHAPE:square[80]",
-          description: "Test that a square with side length 80 is drawn",
-        },
-      ],
-      functionToTest: "__main__",
-    } as TestingSectionData,
-    {
-      kind: "PRIMM",
-      id: "pentagon-mystery" as SectionId,
-      title: "Pentagon Patterns",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Now let's explore a pentagon (5-sided shape). Look at this code and predict what will happen, paying special attention to the angle used.",
-        },
-      ],
-      example: {
-        visualization: "turtle",
-        initialCode:
-          "import turtle\n\n# Draw a pentagon\nfor i in range(5):\n    turtle.forward(80)\n    turtle.right(72)\n",
-      },
-      predictPrompt:
-        "This draws a pentagon. Can you figure out why the angle is 72 degrees? Hint: what's 360 ÷ 5?",
-      conclusion:
-        "The pattern is 360 ÷ number_of_sides! This works for any regular polygon because the turtle makes one complete turn (360°) by the time it returns to the start.",
-    } as PRIMMSectionData,
+    } as ObservationSectionData,
     {
       kind: "Testing",
       id: "shape-collection" as SectionId,
@@ -166,29 +140,48 @@ const lessonData: Lesson = {
       functionToTest: "__main__",
     } as TestingSectionData,
     {
-      kind: "Matching",
-      id: "angle-patterns" as SectionId,
-      title: "Shape Angle Patterns",
+      kind: "PRIMM",
+      id: "loop-mystery" as SectionId,
+      title: "Loop Mysteries",
       content: [
         {
           kind: "text",
           value:
-            "You've discovered the pattern! Match each shape with the correct angle the turtle needs to turn:",
+            'Now let\'s explore a crazy shape. Look at this code and predict what will happen, paying special attention to the number of times we loop and the angle used "within" the loop.',
         },
       ],
-      prompts: [
-        { "Triangle (3 sides)": "120°" },
-        { "Square (4 sides)": "90°" },
-        { "Pentagon (5 sides)": "72°" },
-        { "Hexagon (6 sides)": "60°" },
-        { "Octagon (8 sides)": "45°" },
-        { "Decagon (10 sides)": "36°" },
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\n\n# Draw the shape\nfor i in range(36):\n    turtle.forward(15)\n    turtle.right(10)\n",
+      },
+      predictPrompt: "What do you think will be the output of the program?",
+      conclusion:
+        "The pattern is 36 (loops) * 10 (angle) = 360°! This works for any regular polygon because the turtle makes one complete turn (360°) by the time it returns to the start.",
+    } as PRIMMSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "loop-counting",
+      title: "Counting Loop Iterations",
+      content: [
+        {
+          kind: "text",
+          value:
+            "If there weren't loops in the program above, how many times of code would be required to create the same shape?",
+        },
       ],
+      options: [
+        "20 lines of code",
+        "36 lines lines of code",
+        "55 lines of code",
+        "72 lines of code",
+      ],
+      correctAnswer: 3,
       feedback: {
         correct:
-          "Perfect! You've mastered the 360÷sides pattern. This is the key to drawing any regular polygon!",
+          "Correct! The two lines of code inside the loop are run 36 times which means 72 lines of code.",
       },
-    } as MatchingSectionData,
+    } as MultipleChoiceSectionData,
     {
       kind: "Observation",
       id: "star-patterns" as SectionId,
@@ -197,40 +190,18 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Not all shapes follow the simple 360÷sides rule. Stars are special because the turtle turns MORE than it needs to, creating points. Watch how this five-pointed star uses 144° instead of the 72° a pentagon would use:",
+            'Not all shapes follow the simple "multiples to 360°" rule. Stars are special because the turtle turns MORE than it needs to, creating points. See if you can create a start like the image below.\n\nHint: the angle is greater than 120 degrees.',
+        },
+        {
+          kind: "image",
+          src: "05_loops/turtle-star.png",
         },
       ],
       example: {
         visualization: "turtle",
-        initialCode:
-          "import turtle\n\n# Five-pointed star\nfor i in range(5):\n    turtle.forward(100)\n    turtle.right(144)  # Not 72!\n\n# Try changing 144 to other values like 135 or 160",
+        initialCode: "import turtle\n\n# Five-pointed star",
       },
     } as ObservationSectionData,
-    {
-      kind: "Testing",
-      id: "star-designer" as SectionId,
-      title: "Challenge: Star Designer",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Create two different star patterns:\n\n1. A 7-pointed star (try angle = 180 - (180÷7) ≈ 154°)\n2. An 8-pointed star with a different pattern (try 135°)\n\nExperiment with different angles to see what patterns you can create!",
-        },
-      ],
-      example: {
-        visualization: "turtle",
-        initialCode:
-          "import turtle\n\nturtle.speed(0)\n\n# 7-pointed star\nfor i in range(7):\n    # Your code here\n    pass\n\n# Move to new position\nturtle.penup()\nturtle.goto(-150, 0)\nturtle.pendown()\n\n# 8-pointed star pattern\n# Your code here",
-      },
-      testCases: [
-        {
-          input: [null],
-          expected: "SHAPES:star7,star8",
-          description: "Test that two star patterns are drawn",
-        },
-      ],
-      functionToTest: "__main__",
-    } as TestingSectionData,
     {
       kind: "MultipleSelection",
       id: "loop-understanding",
