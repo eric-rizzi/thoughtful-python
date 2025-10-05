@@ -44,7 +44,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\n\n\n# Draw lines of increasing length\nfor i in range(8):\n    print(f"i is now: {i}")\n    turtle.forward(i * 10)  # Each line is longer!\n    turtle.backward(i * 10)  # Return to center\n    turtle.right(45)  # Rotate for next line\n\n# Notice: when i=0, line is 0 pixels (invisible)\n# when i=1, line is 10 pixels\n# when i=2, line is 20 pixels, etc.',
+          "import turtle\n\n\n# Draw lines of increasing length\nfor i in range(18):\n    turtle.forward(i * 10)  # Each line is longer!\n    turtle.backward(i * 10)  # Return to center\n    turtle.right(20)  # Rotate for next line\n",
       },
     } as ObservationSectionData,
     {

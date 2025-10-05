@@ -26,7 +26,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the last lesson, you used loops to draw individual shapes. But what if you want to draw multiple shapes in a pattern? What if you want to draw 8 squares arranged in a circle? Or 5 triangles in a row?\n\nYou could call your shape-drawing code multiple times, but there's a more powerful approach: **nested loops**. A nested loop is simply a loop inside another loop. The inner loop completes ALL its repetitions before the outer loop continues to its next repetition.\n\nThink of it like a clock: the second hand (inner loop) makes a complete rotation before the minute hand (outer loop) moves once.",
+            "In the last lesson, you used loops to draw individual shapes. But what if you want to draw multiple shapes in a pattern? For example, what if you want to draw eight squares arranged in a circle or five triangles in a row?\n\nWhenever there's repeating patterns, you should think of using loops. Therefore, if you're making a regular polygon, you should use a loop. Whenever you're repeatedly creating the same shape, you should thing of a **nested loops**. A nested loop is simply a loop inside another loop. The inner loop completes ALL its repetitions before the outer loop continues to its next repetition.",
         },
       ],
     } as InformationSectionData,
