@@ -4,7 +4,7 @@ const unitData: Unit[] = [
   {
     id: "learning_to_learn" as UnitId,
     title: "Learning to Learn",
-    image: "xx_learning/images/unit_xx_learning.svg",
+    image: "xx_learning/images/unit_icon_learning.svg",
     description:
       'Understand how this website differs from other "Learn Python" websites and learn a little bit about learning.',
     lessons: [
@@ -25,7 +25,7 @@ const unitData: Unit[] = [
   {
     id: "intro_python" as UnitId,
     title: "Introduction to Python",
-    image: "00_intro/images/unit_00_intro.svg",
+    image: "00_intro/images/unit_icon_intro.svg",
     description:
       "Learn the fundamentals of Python programming through interactive lessons that run directly in your browser.",
     lessons: [
@@ -50,7 +50,7 @@ const unitData: Unit[] = [
   {
     id: "variables_debugging" as UnitId,
     title: "Variables and Debugging",
-    image: "01_variables/images/unit_01_variables.svg",
+    image: "01_variables/images/unit_icon_variables.svg",
     description:
       "Learn how to store data and reuse it to make you programs more versatile.",
     lessons: [
@@ -75,7 +75,7 @@ const unitData: Unit[] = [
   {
     id: "python_format_strings",
     title: "Python Format Strings",
-    image: "02_strings/images/unit_02_strings.svg",
+    image: "02_strings/images/unit_icon_strings.svg",
     description:
       "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
     lessons: [
@@ -100,24 +100,24 @@ const unitData: Unit[] = [
   {
     id: "intro_functions" as UnitId,
     title: "Functions",
-    image: "02_functions/images/unit_02_functions.svg",
+    image: "03_functions/images/unit_icon_functions.svg",
     description:
       "Learn how to use functions to help reduce the size of your code and make it more readable.",
     lessons: [
       {
-        path: "02_functions/lessons/00_func_intro",
+        path: "03_functions/lessons/00_func_intro",
         guid: "3ad2a551-618e-4398-918a-02342f824ab1",
       },
       {
-        path: "02_functions/lessons/01_func_exec",
+        path: "03_functions/lessons/01_func_exec",
         guid: "bfa974e1-7042-48a4-a568-19a1816ea474",
       },
       {
-        path: "02_functions/lessons/02_func_inputs",
+        path: "03_functions/lessons/02_func_inputs",
         guid: "ab5bed79-7662-423e-90ef-952539f59099",
       },
       {
-        path: "02_functions/lessons/03_func_wrap_up",
+        path: "03_functions/lessons/03_func_wrap_up",
         guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134ef98",
       },
     ],
@@ -125,24 +125,24 @@ const unitData: Unit[] = [
   {
     id: "advanced_functions" as UnitId,
     title: "Advanced Functions",
-    image: "03_functions_advanced/images/unit_03_functions_advanced.svg",
+    image: "04_functions_advanced/images/unit_icon_functions_advanced.svg",
     description:
       "Learn how you can use functions other people wrote to create more complex and visually interesting outputs.",
     lessons: [
       {
-        path: "03_functions_advanced/lessons/00_func_libraries",
+        path: "04_functions_advanced/lessons/00_func_libraries",
         guid: "ab95ab6a-a2ff-46af-b63c-1066b16fce49",
       },
       {
-        path: "03_functions_advanced/lessons/01_func_turtles",
+        path: "04_functions_advanced/lessons/01_func_turtles",
         guid: "973a0fb8-67fa-463d-a12d-0df9f55eb547",
       },
       {
-        path: "03_functions_advanced/lessons/02_func_turtle_inputs",
+        path: "04_functions_advanced/lessons/02_func_turtle_inputs",
         guid: "a707da7a-de11-4470-8d08-d537748c0982",
       },
       {
-        path: "03_functions_advanced/lessons/03_func_neighbors",
+        path: "04_functions_advanced/lessons/03_func_neighbors",
         guid: "e32ef864-111e-4647-b877-fb321a196c80",
       },
     ],
@@ -150,28 +150,28 @@ const unitData: Unit[] = [
   {
     id: "python_conditionals",
     title: "Python Conditionals (If/Else)",
-    image: "04_conditionals/images/unit_04_conditionals.svg",
+    image: "05_conditionals/images/unit_icon_conditionals.svg",
     description:
       "Learn how to control the flow of your programs using `if`, `else`, and `elif` statements.",
     lessons: [
       {
-        path: "04_conditionals/lessons/00_cond_intro",
+        path: "05_conditionals/lessons/00_cond_intro",
         guid: "b4e7c932-5a81-4d29-9c73-8f2e4b7a1d36",
       },
       {
-        path: "04_conditionals/lessons/01_cond_if_else",
+        path: "05_conditionals/lessons/01_cond_if_else",
         guid: "c9f3d821-7b42-4e89-a634-1d8e5f9c2b47",
       },
       {
-        path: "04_conditionals/lessons/02_cond_if_elif",
+        path: "05_conditionals/lessons/02_cond_if_elif",
         guid: "d8a4e732-9f51-4c83-b821-6e7d3f8c9a42",
       },
       {
-        path: "04_conditionals/lessons/03_cond_bool",
+        path: "05_conditionals/lessons/03_cond_bool",
         guid: "e5b6f823-4d71-4a92-bc58-9f2e6d8a7c31",
       },
       {
-        path: "04_conditionals/lessons/lesson_5",
+        path: "05_conditionals/lessons/lesson_5",
         guid: "a001f2f7-66ad-4799-af46-a4acbf8f1098",
       },
     ],
@@ -179,16 +179,16 @@ const unitData: Unit[] = [
   {
     id: "loops" as UnitId,
     title: "Loops",
-    image: "05_loops/images/unit_05_loops.svg",
+    image: "06_loops/images/unit_icon_loops.svg",
     description:
       "Learn how to use loops in your code to further exploit patterns and create even more interesting shapes.",
     lessons: [
       {
-        path: "05_loops/lessons/00_loops_intro",
+        path: "06_loops/lessons/00_loops_intro",
         guid: "d8f3c921-4a56-4b72-9e15-2c8f7d4a3b91",
       },
       {
-        path: "05_loops/lessons/01_loops_nesting",
+        path: "06_loops/lessons/01_loops_nesting",
         guid: "e9f2d834-6b71-4a89-b523-1e7c9f8d2a56",
       },
     ],
@@ -196,20 +196,20 @@ const unitData: Unit[] = [
   {
     id: "loops" as UnitId,
     title: "Advanced Loops",
-    image: "06_loops_advanced/images/unit_06_loops_advanced.svg",
+    image: "07_loops_advanced/images/unit_icon_loops_advanced.svg",
     description:
       "Learn how to use loops in your code to further exploit patterns and create even more interesting shapes.",
     lessons: [
       {
-        path: "06_loops_advanced/lessons/00_loops_and_vars",
+        path: "07_loops_advanced/lessons/00_loops_and_vars",
         guid: "c7d5e921-8f34-4b89-a821-3f9c7d2e5a14",
       },
       {
-        path: "06_loops_advanced/lessons/01_loops_and_funcs",
+        path: "07_loops_advanced/lessons/01_loops_and_funcs",
         guid: "f8a2c754-9d63-4e87-b912-7c5a8f9e3d21",
       },
       {
-        path: "06_loops_advanced/lessons/02_loops_wrap_up",
+        path: "07_loops_advanced/lessons/02_loops_wrap_up",
         guid: "a8c3f729-5e42-4d91-b8a7-2f9e6c8d7b31",
       },
     ],
@@ -217,7 +217,7 @@ const unitData: Unit[] = [
   {
     id: "python_lists_intro",
     title: "Python Lists (Intro)",
-    image: "08_lists_intro/images/unit_08_lists_intro.svg",
+    image: "08_lists_intro/images/unit_icon_lists_intro.svg",
     description:
       "This worksheet is intended to show you how lists work in Python and how they compare with strings.",
     lessons: [
@@ -242,7 +242,7 @@ const unitData: Unit[] = [
   {
     id: "python_lists_advanced",
     title: "Python Lists (Advanced)",
-    image: "09_lists_advanced/images/unit_09_lists_advanced.svg",
+    image: "09_lists_advanced/images/unit_icon_lists_advanced.svg",
     description: "Stretch your understand of lists with an ethical puzzle.",
     lessons: [
       {

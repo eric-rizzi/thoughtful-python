@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
     loadData();
   }, []);
 
-  const defaultImagePath = `${BASE_PATH}images/default-unit.svg`;
+  const defaultImagePath = `${BASE_PATH}images/unit_icon_default.svg`;
 
   const handleImageError = (
     event: React.SyntheticEvent<HTMLImageElement, Event>
@@ -86,7 +86,7 @@ const HomePage: React.FC = () => {
               <div className={styles.unitImageContainer}>
                 <img
                   src={`${BASE_PATH}data/${
-                    unit.image || "images/default-unit.svg"
+                    unit.image || "images/unit_icon_default.svg"
                   }`}
                   alt={`${unit.title} image`}
                   className={styles.unitImage}
