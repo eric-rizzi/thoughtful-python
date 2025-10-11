@@ -8,7 +8,7 @@ import type {
   PRIMMSectionData,
   ReflectionSectionData,
   SectionId,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Inputs to Functions",

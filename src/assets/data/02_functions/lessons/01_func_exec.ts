@@ -7,7 +7,7 @@ import type {
   MultipleChoiceSectionData,
   SectionId,
   TestingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Functions and Computers",

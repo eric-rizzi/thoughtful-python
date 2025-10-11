@@ -3,7 +3,7 @@ import type {
   MultipleChoiceSectionData,
   ObservationSectionData,
   ReflectionSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Creative Project - Mad Libs",

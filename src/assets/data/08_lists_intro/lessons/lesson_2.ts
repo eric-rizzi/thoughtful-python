@@ -2,7 +2,7 @@ import type {
   Lesson,
   ObservationSectionData,
   PRIMMSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Python Lists (Basic)",

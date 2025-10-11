@@ -8,7 +8,7 @@ import type {
   TestingSectionData,
   MultipleChoiceSectionData,
   DebuggerSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Building with Inputs",

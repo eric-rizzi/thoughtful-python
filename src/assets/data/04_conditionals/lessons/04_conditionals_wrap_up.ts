@@ -5,7 +5,7 @@ import type {
   SectionId,
   MultipleChoiceSectionData,
   TestingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Conditionals Unit Challenge",

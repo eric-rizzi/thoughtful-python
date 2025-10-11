@@ -10,7 +10,7 @@ import type {
   TestingSectionData,
   DebuggerSectionData,
   ReflectionSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Patterns Within Patterns",

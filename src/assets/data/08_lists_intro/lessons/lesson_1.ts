@@ -1,21 +1,71 @@
 import type {
   Lesson,
+  MultipleChoiceSectionData,
   ObservationSectionData,
   PRIMMSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Python Lists (Basic)",
-  guid: "84868dd9-81cb-4eb9-82d8-09f7efb6a2f8",
-  description: "W",
+  title: "Grocery Lists",
+  guid: "c3aa36b7-5c56-476f-a38f-2a9fd39e08eb",
+  description: 'Compare "real world" lists with their Python equivalent.',
   sections: [
     {
       kind: "Information",
-      id: "python-history",
-      title: "The History of Python",
+      id: "python-lists-intro-1",
+      title: "Programming vs. Real World",
       content:
-        '`Python` was created by _Guido van Rossum_ and first released in 1991. Its clean syntax, which uses indentation rather than braces to define code blocks, makes it particularly accessible for beginners who can focus on learning programming concepts without getting distracted by complex syntax. Python has become popular for learning due to its readability. The language\'s philosophy of "there should be one—and preferably only one—obvious way to do it" creates a straightforward learning path that helps beginners develop good programming habits from the start.',
+        "Lists, or a collection of items, are a very natural concept that you interact with daily. Use the questions below to help formalize your understanding.",
     },
+    {
+      kind: "Observation",
+      id: "python-lists-intro-1",
+      title: "Two item list",
+      content:
+        "Lists are denoted with via square brackets: `[ ]`. They can hold multiple items of different types. In the example below, they are holding strings representing things you should buy.",
+      example: {
+        id: "hello-world",
+        title: "REMOVE",
+        description: "",
+        code: 'gl = []\ngl.append("eggs")\ngl.append("apples")\nprint(gl)',
+      },
+    } as ObservationSectionData,
+    {
+      kind: "MultipleChoice",
+      id: "question-1",
+      title: "Question 1: Append",
+      content: "What does it seem that the `append()` function does?",
+      options: [
+        "Removes an item from the list",
+        "Adds and item to the front of the list",
+        "Adds and item to the back of the list",
+        "Duplicates all of the items of the list",
+      ],
+      correctAnswer: 3,
+      feedback: {
+        correct:
+          "Correct! The print() function is used to display output to the console.",
+        incorrect:
+          "Incorrect. The print() function is used to display output to the console.",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "PRIMM",
+      id: "primm-grocer-lists",
+      title: "Grocery lists",
+      content:
+        "Use the code below to answer the following questions and complete the required tasks.",
+      examples: [
+        {
+          id: "primm-nested-example",
+          code: 'def do_something_0(to_add):\n    gl = ["bread", "apples"]\n    gl.append(to_add)\n\n    for elem in gl:\n        print(f"Buy {elem}!")\n\n    print(f"But the {gl[-1]} is most important!")\n\nif __name__ == "__main__":\n    do_something_0("ice cream")',
+          predictPrompt:
+            'What lines will be printed when this code runs with `answer = "c"`?',
+        },
+      ],
+      conclusion:
+        "When `answer` is 'c', the outer `if` is false, so the outer `else` block executes. Inside that, the inner `if answer == \"b\"` is also false, so its `else` block runs, printing 'Other'. Finally, the 'All done' print statement outside all conditionals always runs.",
+    } as PRIMMSectionData,
     {
       kind: "PRIMM",
       id: "primm-grocer-lists",
@@ -46,7 +96,7 @@ const lessonData: Lesson = {
           "Comments are used to explain code and make your programs more readable:",
         code: '# This is a comment\nprint("This code is executed") # This is an inline comment\n\n# The following line is not executed\n# print("This won\'t be printed")',
       },
-    } as ObservationSectionData,
+    },
     {
       kind: "Observation",
       id: "basic-math",

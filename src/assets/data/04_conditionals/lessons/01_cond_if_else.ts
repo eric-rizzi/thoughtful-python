@@ -12,7 +12,7 @@ import type {
   ReflectionSectionData,
   PredictionSectionData,
   CoverageSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Two Paths: If/Else",

@@ -28,3 +28,4 @@ repomix*
 test-results/
 .playwright-report/
 .playwright/
+src/assets/old/

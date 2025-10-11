@@ -166,16 +166,25 @@ const unitData: Unit[] = [
         path: "05_loops/lessons/01_loops_nesting",
         guid: "e9f2d834-6b71-4a89-b523-1e7c9f8d2a56",
       },
+    ],
+  } as Unit,
+  {
+    id: "loops" as UnitId,
+    title: "Loops",
+    image: "06_loops_advanced/images/unit_06_loops_advanced.svg",
+    description:
+      "Learn how to use loops in your code to further exploit patterns and create even more interesting shapes.",
+    lessons: [
       {
-        path: "05_loops/lessons/02_loops_and_vars",
+        path: "06_loops_advanced/lessons/00_loops_and_vars",
         guid: "c7d5e921-8f34-4b89-a821-3f9c7d2e5a14",
       },
       {
-        path: "05_loops/lessons/03_loops_and_funcs",
+        path: "06_loops_advanced/lessons/01_loops_and_funcs",
         guid: "f8a2c754-9d63-4e87-b912-7c5a8f9e3d21",
       },
       {
-        path: "05_loops/lessons/04_loops_wrap_up",
+        path: "06_loops_advanced/lessons/02_loops_wrap_up",
         guid: "a8c3f729-5e42-4d91-b8a7-2f9e6c8d7b31",
       },
     ],
@@ -183,24 +192,24 @@ const unitData: Unit[] = [
   {
     id: "python_strings",
     title: "Python Strings Deep Dive",
-    image: "06_strings/images/unit_06_strings.svg",
+    image: "07_strings/images/unit_07_strings.svg",
     description:
       "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
     lessons: [
       {
-        path: "06_strings/lessons/lesson_1",
+        path: "07_strings/lessons/lesson_1",
         guid: "03cff8d8-33a0-49ed-98c4-d51613995340",
       },
       {
-        path: "06_strings/lessons/lesson_2",
+        path: "07_strings/lessons/lesson_2",
         guid: "a9e039a5-d551-4068-b797-553ef721bac9",
       },
       {
-        path: "06_strings/lessons/lesson_3",
+        path: "07_strings/lessons/lesson_3",
         guid: "1af50da8-e219-4845-b9e1-52db34b1437e",
       },
       {
-        path: "06_strings/lessons/lesson_4",
+        path: "07_strings/lessons/lesson_4",
         guid: "3ed77482-b004-49dd-bc5d-e588f42883aa",
       },
     ],
@@ -208,24 +217,24 @@ const unitData: Unit[] = [
   {
     id: "python_lists_intro",
     title: "Python Lists (Intro)",
-    image: "07_lists_intro/images/unit_07_lists_intro.svg",
+    image: "08_lists_intro/images/unit_08_lists_intro.svg",
     description:
       "This worksheet is intended to show you how lists work in Python and how they compare with strings.",
     lessons: [
       {
-        path: "07_lists_intro/lessons/lesson_1",
+        path: "08_lists_intro/lessons/lesson_1",
         guid: "c3aa36b7-5c56-476f-a38f-2a9fd39e08eb",
       },
       {
-        path: "07_lists_intro/lessons/lesson_2",
+        path: "08_lists_intro/lessons/lesson_2",
         guid: "cde4e0a6-c51e-495f-83fd-21ed00cf06c1",
       },
       {
-        path: "07_lists_intro/lessons/lesson_3",
+        path: "08_lists_intro/lessons/lesson_3",
         guid: "84868dd9-81cb-4eb9-82d8-09f7efb6a2f8",
       },
       {
-        path: "07_lists_intro/lessons/lesson_4",
+        path: "08_lists_intro/lessons/lesson_4",
         guid: "88591a12-9ec3-463b-a3cc-68a9e91ca4ff",
       },
     ],
@@ -233,15 +242,15 @@ const unitData: Unit[] = [
   {
     id: "python_lists_advanced",
     title: "Python Lists (Advanced)",
-    image: "08_lists_advanced/images/unit_08_lists_advanced.svg",
+    image: "09_lists_advanced/images/unit_09_lists_advanced.svg",
     description: "Stretch your understand of lists with an ethical puzzle.",
     lessons: [
       {
-        path: "08_lists_advanced/lessons/lesson_1",
+        path: "09_lists_advanced/lessons/lesson_1",
         guid: "fb0724da-2741-41bf-a737-5ad0eaf0291f",
       },
       {
-        path: "08_lists_advanced/lessons/lesson_2",
+        path: "09_lists_advanced/lessons/lesson_2",
         guid: "fe7493be-7ed6-439d-bc1b-2dd5fc08382a",
       },
     ],

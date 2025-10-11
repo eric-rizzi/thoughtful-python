@@ -7,7 +7,7 @@ import type {
   PRIMMSectionData,
   MultipleChoiceSectionData,
   MatchingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Strings vs. Integers",

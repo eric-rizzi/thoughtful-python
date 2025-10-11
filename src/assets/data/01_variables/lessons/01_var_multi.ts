@@ -7,7 +7,7 @@ import type {
   MultipleChoiceSectionData,
   PRIMMSectionData,
   MatchingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Multiple Data Streams",

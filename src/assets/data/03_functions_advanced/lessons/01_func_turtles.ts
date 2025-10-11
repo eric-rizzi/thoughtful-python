@@ -8,7 +8,7 @@ import type {
   PRIMMSectionData,
   TestingSectionData,
   ReflectionSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Drawing with Turtles",

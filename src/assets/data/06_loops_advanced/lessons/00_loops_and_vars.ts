@@ -10,7 +10,7 @@ import type {
   TestingSectionData,
   MatchingSectionData,
   ReflectionSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "The Loop Variable Artist",

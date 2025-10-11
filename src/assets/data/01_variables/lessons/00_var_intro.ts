@@ -8,7 +8,7 @@ import type {
   PRIMMSectionData,
   DebuggerSectionData,
   MultipleChoiceSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Storing Data",

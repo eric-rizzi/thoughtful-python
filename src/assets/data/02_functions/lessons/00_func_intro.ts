@@ -9,7 +9,7 @@ import type {
   ReflectionSectionData,
   SectionId,
   TestingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Introduction to Functions",

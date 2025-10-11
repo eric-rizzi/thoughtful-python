@@ -10,7 +10,7 @@ import type {
   PredictionSectionData,
   SectionId,
   TestingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Function Unit Challenge",

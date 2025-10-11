@@ -9,7 +9,7 @@ import type {
   MultipleSelectionSectionData,
   TestingSectionData,
   ReflectionSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Making Decisions",

@@ -7,7 +7,7 @@ import type {
   MultipleChoiceSectionData,
   MultipleSelectionSectionData,
   PRIMMSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Functions Everywhere",

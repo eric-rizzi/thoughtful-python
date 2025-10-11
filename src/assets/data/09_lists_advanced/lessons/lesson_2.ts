@@ -1,8 +1,8 @@
-import type { Lesson } from "../../../types/data";
+import type { Lesson } from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "TODO",
-  guid: "fb0724da-2741-41bf-a737-5ad0eaf0291f",
+  guid: "fe7493be-7ed6-439d-bc1b-2dd5fc08382a",
   description:
     "Welcome to your first Python lesson! In this lesson, you'll learn the fundamentals of Python programming.",
   sections: [

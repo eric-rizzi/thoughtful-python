@@ -3,7 +3,7 @@ import type {
   MultipleChoiceSectionData,
   PRIMMSectionData,
   TestingSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "String Formatting and f-strings",

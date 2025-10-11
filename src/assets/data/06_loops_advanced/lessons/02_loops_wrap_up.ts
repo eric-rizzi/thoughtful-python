@@ -11,7 +11,7 @@ import type {
   MatchingSectionData,
   ReflectionSectionData,
   DebuggerSectionData,
-} from "../../../types/data";
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Loops Unit Challenge",
