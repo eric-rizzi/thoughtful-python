@@ -13,7 +13,7 @@ const ImageBlock: React.FC<ImageBlockProps> = ({ block }) => {
   if (block.src.startsWith("https")) {
     imageUrl = block.src;
   } else {
-    imageUrl = `${BASE_PATH}/${block.src}`;
+    imageUrl = `${BASE_PATH}${block.src}`;
   }
 
   const imageStyles: React.CSSProperties = {};

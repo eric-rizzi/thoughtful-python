@@ -73,6 +73,31 @@ const unitData: Unit[] = [
     ],
   } as Unit,
   {
+    id: "python_format_strings",
+    title: "Python Format Strings",
+    image: "02_strings/images/unit_02_strings.svg",
+    description:
+      "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
+    lessons: [
+      {
+        path: "02_strings/lessons/00_intro_fstrings",
+        guid: "a7d9e2f1-3c4b-5a6d-8e9f-1a2b3c4d5e6f",
+      },
+      {
+        path: "02_strings/lessons/01_fstring_practice",
+        guid: "b8e0f3g2-4d5c-6b7a-9f0e-2b3c4d5e6f7g",
+      },
+      {
+        path: "02_strings/lessons/02_mad_libs",
+        guid: "c9f1g4h3-5e6d-7c8b-0g1f-3c4d5e6f7g8h",
+      },
+      {
+        path: "02_strings/lessons/03_fstrings_wrap_up",
+        guid: "d0g2h5i4-6f7e-8d9c-1h2g-4d5e6f7g8h9i",
+      },
+    ],
+  } as Unit,
+  {
     id: "intro_functions" as UnitId,
     title: "Functions",
     image: "02_functions/images/unit_02_functions.svg",
@@ -186,31 +211,6 @@ const unitData: Unit[] = [
       {
         path: "06_loops_advanced/lessons/02_loops_wrap_up",
         guid: "a8c3f729-5e42-4d91-b8a7-2f9e6c8d7b31",
-      },
-    ],
-  } as Unit,
-  {
-    id: "python_strings",
-    title: "Python Strings Deep Dive",
-    image: "07_strings/images/unit_07_strings.svg",
-    description:
-      "Explore string manipulation, f-strings, type casting, and create fun projects like Mad Libs.",
-    lessons: [
-      {
-        path: "07_strings/lessons/lesson_1",
-        guid: "03cff8d8-33a0-49ed-98c4-d51613995340",
-      },
-      {
-        path: "07_strings/lessons/lesson_2",
-        guid: "a9e039a5-d551-4068-b797-553ef721bac9",
-      },
-      {
-        path: "07_strings/lessons/lesson_3",
-        guid: "1af50da8-e219-4845-b9e1-52db34b1437e",
-      },
-      {
-        path: "07_strings/lessons/lesson_4",
-        guid: "3ed77482-b004-49dd-bc5d-e588f42883aa",
       },
     ],
   } as Unit,

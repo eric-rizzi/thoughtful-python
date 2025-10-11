@@ -7,7 +7,7 @@ import type { ImageBlock as ImageBlockData } from "../../../types/data";
 
 // Mock the config module to provide a consistent BASE_PATH for tests
 vi.mock("../../../config", () => ({
-  BASE_PATH: "/mock-base-path",
+  BASE_PATH: "/mock-base-path/",
 }));
 
 describe("ImageBlock", () => {
