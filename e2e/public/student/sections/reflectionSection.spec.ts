@@ -5,7 +5,7 @@ test.describe("ReflectionSection tests", () => {
     page,
   }) => {
     await page.goto(
-      "/thoughtful-python/lesson/xx_learning/01_learning_reflection"
+      "/thoughtful-python/lesson/xx_learning/lessons/01_learning_reflection"
     );
     await expect(
       page.getByText("Please Log In to Get AI Feedback")

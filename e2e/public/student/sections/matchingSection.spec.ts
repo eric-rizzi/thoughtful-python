@@ -7,7 +7,9 @@ test.describe("MatchingSection tests @flaky", () => {
   test("Test can get a right answer from the MatchingSection", async ({
     page,
   }) => {
-    await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+    await page.goto(
+      "/thoughtful-python/lesson/xx_learning/lessons/00_learning_primm"
+    );
 
     const sectionItem = page
       .getByRole("listitem")
@@ -52,7 +54,9 @@ test.describe("MatchingSection tests @flaky", () => {
   test("Test can get a wrong answer from the MatchingSection", async ({
     page,
   }) => {
-    await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+    await page.goto(
+      "/thoughtful-python/lesson/xx_learning/lessons/00_learning_primm"
+    );
 
     const sectionItem = page
       .getByRole("listitem")

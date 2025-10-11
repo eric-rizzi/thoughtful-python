@@ -2,7 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test.describe("MultipleSelectionSection tests", () => {
   test("Can get answer right with multiple selection", async ({ page }) => {
-    await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+    await page.goto(
+      "/thoughtful-python/lesson/xx_learning/lessons/00_learning_primm"
+    );
 
     const sectionItem = page.getByRole("listitem").filter({
       hasText: "Getting the Most Out of",
@@ -22,7 +24,9 @@ test.describe("MultipleSelectionSection tests", () => {
   });
 
   test("Can get answer wrong with multiple selection", async ({ page }) => {
-    await page.goto("/thoughtful-python/lesson/xx_learning/00_learning_primm");
+    await page.goto(
+      "/thoughtful-python/lesson/xx_learning/lessons/00_learning_primm"
+    );
 
     const sectionItem = page.getByRole("listitem").filter({
       hasText: "Getting the Most Out of",

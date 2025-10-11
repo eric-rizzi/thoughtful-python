@@ -4,7 +4,9 @@ test.describe("CoverageSection tests", () => {
   test("Test get complete if all coverage inputs are right", async ({
     page,
   }) => {
-    await page.goto("/thoughtful-python/lesson/02_functions/03_func_wrap_up");
+    await page.goto(
+      "/thoughtful-python/lesson/03_functions/lessons/03_func_wrap_up"
+    );
 
     const sectionItem = page.getByRole("listitem").filter({
       hasText: "Different Inputs",
@@ -50,7 +52,9 @@ test.describe("CoverageSection tests", () => {
   });
 
   test("Test get 2/3 if coverage are mostly right", async ({ page }) => {
-    await page.goto("/thoughtful-python/lesson/02_functions/03_func_wrap_up");
+    await page.goto(
+      "/thoughtful-python/lesson/03_functions/lessons/03_func_wrap_up"
+    );
 
     const sectionItem = page.getByRole("listitem").filter({
       hasText: "Different Inputs",
