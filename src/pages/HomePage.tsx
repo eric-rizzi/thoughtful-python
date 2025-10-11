@@ -85,7 +85,9 @@ const HomePage: React.FC = () => {
             <div className={styles.unitCard}>
               <div className={styles.unitImageContainer}>
                 <img
-                  src={`${BASE_PATH}images/${unit.image || "default-unit.svg"}`}
+                  src={`${BASE_PATH}data/${
+                    unit.image || "images/default-unit.svg"
+                  }`}
                   alt={`${unit.title} image`}
                   className={styles.unitImage}
                   onError={handleImageError}

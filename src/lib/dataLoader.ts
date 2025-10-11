@@ -51,7 +51,7 @@ function processUnitsData(): void {
       id: UnitId;
       title: string;
       description: string;
-      image?: string;
+      image: string;
       lessons: RawLessonIdentifier[];
     };
     const rawUnits = unitsDataFromTsModule as RawUnit[]; // Cast the imported data

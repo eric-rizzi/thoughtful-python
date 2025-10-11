@@ -24,10 +24,6 @@ export default defineConfig({
           dest: ".",
         },
         {
-          src: "src/assets/python",
-          dest: ".",
-        },
-        {
           src: "public/404.html",
           dest: ".",
         },

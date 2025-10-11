@@ -27,7 +27,7 @@ const lessonData: Lesson = {
         },
         {
           kind: "image",
-          src: "00_intro/simple_program.png",
+          src: "data/00_intro/images/simple_program.png",
           alt: "Screenshot of a simple Python program in VSCode",
           maxWidthPercentage: 70,
         },

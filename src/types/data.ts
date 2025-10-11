@@ -297,7 +297,7 @@ export interface Unit {
   title: string;
   description: string;
   lessons: LessonReference[];
-  image?: string;
+  image: string;
 }
 
 export interface UnitsData {
