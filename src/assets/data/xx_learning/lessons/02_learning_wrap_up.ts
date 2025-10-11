@@ -7,7 +7,7 @@ import type {
 } from "../../../../types/data";
 
 const lessonData: Lesson = {
-  title: "The Science Behind Our Method",
+  title: "The Science Behind the Method",
   guid: "dbd45993-6473-4df3-959a-04b7289a229e" as LessonId,
   description:
     "Learning is a well researched process. Understand what best practices are and how this website aligns with them.",

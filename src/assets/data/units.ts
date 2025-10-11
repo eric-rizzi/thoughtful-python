@@ -170,7 +170,7 @@ const unitData: Unit[] = [
   } as Unit,
   {
     id: "loops" as UnitId,
-    title: "Loops",
+    title: "Advanced Loops",
     image: "06_loops_advanced/images/unit_06_loops_advanced.svg",
     description:
       "Learn how to use loops in your code to further exploit patterns and create even more interesting shapes.",

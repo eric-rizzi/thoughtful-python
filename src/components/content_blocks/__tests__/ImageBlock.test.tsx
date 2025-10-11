@@ -7,7 +7,7 @@ import type { ImageBlock as ImageBlockData } from "../../../types/data";
 
 // Mock the config module to provide a consistent BASE_PATH for tests
 vi.mock("../../../config", () => ({
-  BASE_PATH: "/mock-base-path/",
+  BASE_PATH: "/mock-base-path",
 }));
 
 describe("ImageBlock", () => {
@@ -22,11 +22,8 @@ describe("ImageBlock", () => {
 
     const img = screen.getByAltText("A local Python logo");
     expect(img).toBeInTheDocument();
-    // Verify that the BASE_PATH and "images/" prefix are added
-    expect(img).toHaveAttribute(
-      "src",
-      "/mock-base-path/images/local/python-logo.png"
-    );
+    // Verify that the BASE_PATH prefix is added
+    expect(img).toHaveAttribute("src", "/mock-base-path/local/python-logo.png");
   });
 
   it("uses the source URL directly for an external image", () => {
