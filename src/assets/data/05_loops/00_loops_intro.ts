@@ -25,7 +25,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "At this point you've covered data types, variables, functions, and conditionals. There's only one more thing you need to learn to be considered a competent, beginner programmer: **loops**. Loops are a way of further compacting your ideas in code.\n\nRemember programming the turtle to draw a triangle? You wrote `forward(100)` and `right(120)` three separate times. For a triangle this gets repetitive, but imagine how annoying it would be if you wanted to draw a shape with 100 sides. That's where loops come in. Loops are powerful because they let you tell the computer to repeat actions without having to write the same code multiple times. They turn you from someone who types instructions into someone who describes patterns.",
+            "At this point you've covered data types, variables, functions, and conditionals. There's only one more thing you need to learn to be considered a competent, beginner programmer: **loops**. Loops are a way of further compacting your ideas in code.\n\nRemember programming the turtle to draw a triangle? You wrote `forward(100)` and `right(120)` three separate times. For a triangle this gets repetitive, but imagine how annoying it would be if you wanted to draw a shape with 100 sides. That's where loops come in.\n\nLoops are powerful because they let you tell the computer to repeat actions without having to write the same code multiple times. They turn you from someone who types instructions into someone who describes patterns.",
         },
       ],
     } as InformationSectionData,
@@ -56,7 +56,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Here\'s a program to draw the same shape that uses a **loop** to eliminate the repetition. The key parts are:\n- `for i in range(4):` tells Python to repeat the code "within" the loop 4 times\n- Just like with functions, indentation shows what\'s "inside" the loop',
+            'The problem with the code above is that it\'s very repetitive. It\'s the same two lines repeated over and over.\n\nBelow is a program to draw the **same exact shape using a loop**. The loop allows us to eliminate the repetition and create a smaller program. The key parts are:\n- `for i in range(4):` tells Python to repeat the code "within" the loop 4 times\n- Just like with functions, indentation shows what\'s "inside" the loop\n\nTake a little time to compare the two different representations.',
         },
       ],
       example: {
@@ -73,7 +73,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'The word `for` was chosen very carefully. It means for every number up to four (four times), run the code "inside" the loop. Put another way, `for i in range(4)` means "run the following code four times".\n\nHow many times will the following loop repeat?',
+            'The creators of Python chose the word `for` very intentionally. It means for every number up to four (four times), run the code "inside" the loop. Put another way, `for i in range(4)` means "run the following code four times".\n\nFor loops let you easily set how many times they should repeat. How many times will the following loop repeat?',
         },
         {
           kind: "code",
@@ -84,12 +84,35 @@ const lessonData: Lesson = {
       correctAnswer: 1,
       feedback: {
         correct:
-          'Correct! The code "inside" the loop runs seven times, means `Hello` is printed seven times.',
+          'Correct! The code "inside" the loop runs seven times, meaning `Hello` is printed seven times.',
       },
     } as MultipleChoiceSectionData,
     {
+      kind: "MultipleSelection",
+      id: "loop-understanding",
+      title: "Loop Syntax Check",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Which of the following statements about loops are true? Select all that apply.",
+        },
+      ],
+      options: [
+        "`for i in range(5):` repeats exactly 5 times",
+        "The code inside a loop must be indented",
+        "Loops can only be used for drawing shapes",
+        "Loops eliminate the need to write repetitive code",
+      ],
+      correctAnswers: [0, 1, 3],
+      feedback: {
+        correct:
+          "Excellent! You understand that loops are a general programming concept for eliminating repetition, not just for turtle graphics.",
+      },
+    } as MultipleSelectionSectionData,
+    {
       kind: "Observation",
-      id: "pentago-builder" as SectionId,
+      id: "pentagon-builder" as SectionId,
       title: "Challenge: Pentagon Builder",
       content: [
         {
@@ -105,7 +128,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "See if you can use a loop to rewrite the program above more efficiently. Your loop should draw the exact same pentagon but with only 3 lines of code inside your function (not counting the `import`).",
+            "See if you can use a loop to rewrite the program more efficiently. Your loop should draw the exact same pentagon but with only 3 lines additional lines of code (not including the `import`).",
         },
       ],
       example: {
@@ -122,7 +145,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Time to create multiple shapes! Create three separate programs:\n\n1. A hexagon (6 sides, each 60 pixels)\n2. An octagon (8 sides, each 50 pixels)\n3. A nonagon (9 sides, each 45 pixels)\n\nRemember the pattern: angle = 360 ÷ sides\n\nTest each shape individually before moving to the next.",
+            "Time to create multiple shapes! Create three separate programs:\n\n1. A hexagon (6 sides, each 60 pixels)\n2. An octagon (8 sides, each 50 pixels)\n3. A nonagon (9 sides, each 45 pixels). A mathematical trick for knowing how much to turn for each shape is `360 / num_sides`.\n\nTest each shape individually before moving to the next.",
         },
       ],
       example: {
@@ -167,7 +190,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If there weren't loops in the program above, how many times of code would be required to create the same shape?",
+            "If there weren't loops in the program above, how many lines of code would be required to create the same shape?",
         },
       ],
       options: [
@@ -190,7 +213,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Not all shapes follow the simple "multiples to 360°" rule. Stars are special because the turtle turns MORE than it needs to, creating points. See if you can create a start like the image below.\n\nHint: the angle is greater than 120 degrees.',
+            'Not all shapes follow the simple "multiplies to 360°" rule. Stars are special because the turtle actually does two complete rotates: 720 degrees. See if you can create a star like the image below.\n\nHint: the angle is greater than 120 degrees.',
         },
         {
           kind: "image",
@@ -203,29 +226,6 @@ const lessonData: Lesson = {
       },
     } as ObservationSectionData,
     {
-      kind: "MultipleSelection",
-      id: "loop-understanding",
-      title: "Loop Mastery Check",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Which of the following statements about loops are true? Select all that apply.",
-        },
-      ],
-      options: [
-        "`for i in range(5):` repeats exactly 5 times",
-        "The code inside a loop must be indented",
-        "Loops can only be used for drawing shapes",
-        "Loops eliminate the need to write repetitive code",
-      ],
-      correctAnswers: [0, 1, 3],
-      feedback: {
-        correct:
-          "Excellent! You understand that loops are a general programming concept for eliminating repetition, not just for turtle graphics.",
-      },
-    } as MultipleSelectionSectionData,
-    {
       kind: "Reflection",
       id: "loop-patterns-reflection" as SectionId,
       title: "Loop Patterns Reflection",
@@ -233,7 +233,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Loops transform repetitive code into elegant patterns. You've discovered that regular polygons follow the 360÷sides rule and that stars break this rule in interesting ways.\n\nCreate a simple example that shows how loops eliminate repetition and explain the mathematical pattern you used. Remember to use the phrase 'as seen in the example above'.",
+            'Loops transform repetitive code into elegant patterns. Create a simple example that shows how loops eliminate repetition and explain the pattern that is being repeated inside the loop. Remember to use the phrase "as seen in the example above".',
         },
       ],
       topic: "How Loops Create Patterns",
@@ -252,7 +252,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Fantastic work! You've transformed from writing repetitive code to describing patterns. You've learned:\n- How `for i in range(n):` repeats code n times\n- The 360÷sides pattern for regular polygons\n- How to create stars by using different angles\n- That indentation shows what's \"inside\" the loop\n\nIn the next lesson, we'll explore what happens when you put a loop inside another loop. If one loop can draw a square, imagine what two loops can create!",
+            "Fantastic work! You've transformed from writing repetitive code to describing patterns. You've learned:\n- How `for i in range(n):` repeats code n times\n- The 360÷sides pattern for regular polygons\n- That indentation shows what's \"inside\" the loop\n\nIn the next lesson, we'll explore what happens when you put a loop inside another loop.",
         },
       ],
     } as InformationSectionData,

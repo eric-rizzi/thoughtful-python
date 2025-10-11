@@ -26,7 +26,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the last lesson, you used loops to draw individual shapes. But what if you want to draw multiple shapes in a pattern? For example, what if you want to draw eight squares arranged in a circle or five triangles in a row?\n\nWhenever there's repeating patterns, you should think of using loops. Therefore, if you're making a regular polygon, you should use a loop. Whenever you're repeatedly creating the same shape, you should thing of a **nested loops**. A nested loop is simply a loop inside another loop. The inner loop completes ALL its repetitions before the outer loop continues to its next repetition.",
+            "In the previous lesson, you used loops to draw individual shapes. But what if you want to draw more complex patterns? For example, what if you want to draw eight squares arranged in a circle or five triangles in a row?\n\nWhenever there's repeating patterns, you should think of using loops. This means if you're making a single polygon, you should use a single loop. This also means if you're repeatedly creating the same shape, you should thing of a **nested loops**. A nested loop is simply a loop inside another loop. The inner loop completes ALL its repetitions before the outer loop continues to its next repetition.",
         },
       ],
     } as InformationSectionData,
@@ -38,13 +38,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's start with something visual. This program has two loops - one inside the other. The indentation shows which loop is inside which. Predict what this will draw:",
+            'Let\'s start with something visual. This program has two loops - one "inside" the other. The indentation shows which loop is "inside" which. Use the comments to help you predict what this program will draw:',
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.speed(0)\n\n# Outer loop: repeat 6 times\nfor i in range(6):\n    # Inner loop: draw a square\n    for j in range(4):\n        turtle.forward(50)\n        turtle.right(90)\n    \n    # After each square, rotate\n    turtle.right(60)",
+          "import turtle\n\n# Outer loop: repeat 6 times\nfor i in range(6):\n    # Inner loop: draw a shape\n    for j in range(4):\n        turtle.forward(50)\n        turtle.right(90)\n    \n    # After each shape is completed, rotate\n    turtle.right(60)",
       },
       predictPrompt:
         "The inner loop draws a square (4 sides, 90° turns). The outer loop repeats this 6 times, rotating 60° after each square. What pattern will this create?",
@@ -59,7 +59,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If you have nested loops like this, how many times total does the `forward()` function get called?",
+            'The program above was a "nested" loop because there was a loop "inside" another loop. Nested loops can do very complex things because there is a multiplicative effect. The our loop runs six times. The inner loops runs 4 times. This means that the code "within" the inner loop runs 6 x 4 = 24 times.\n\nIf you have nested loops like this, how many times total does the `forward()` function get called?',
         },
         {
           kind: "code",
@@ -71,7 +71,7 @@ const lessonData: Lesson = {
       correctAnswer: 3,
       feedback: {
         correct:
-          "Correct! The outer loop runs 3 times, and for EACH of those times, the inner loop runs 4 times. So 3 × 4 = 12 total forward() calls.",
+          "Correct! The outer loop runs 3 times, and for EACH of those times, the inner loop runs 4 times. So 3 x 4 = 12 total `forward()` calls.",
       },
     } as MultipleChoiceSectionData,
     {
@@ -82,13 +82,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's slow down and watch how nested loops actually work. Step through this code and pay attention to:\n- How `j` resets to 0 each time `i` increases\n- The inner loop completes fully before the outer loop continues\n- The total number of times the shape is drawn",
+            "Let's slow down and watch how nested loops actually work with just some simple prints. Step through this code and pay attention to:\n- The inner loop completing fully before the outer loop continues\n- The fact that the `Hi from the inner loop` line is printed 2 x 3 = 6 times\n- How the `print()` statements around the inner loop only run twice each",
         },
       ],
       example: {
-        visualization: "turtle",
+        visualization: "console",
         initialCode:
-          'import turtle\n\nturtle.speed(0)\n\nfor i in range(3):\n    print(f"Starting flower petal {i}")\n    \n    # Draw one triangle\n    for j in range(3):\n        turtle.forward(40)\n        turtle.left(120)\n    \n    print(f"Finished petal {i}")\n    turtle.right(120)  # Rotate for next petal',
+          'print("About to start program")\n\nfor i in range(2):\n  print("About to run inner loop")\n  for j in range(3):\n    print("Hi from the inner loop")\n  print("Done inner loop")\n\nprint("All done program")',
       },
     } as DebuggerSectionData,
     {
@@ -99,13 +99,13 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Nested loops are perfect for creating flower patterns. The inner loop draws one petal, and the outer loop arranges multiple petals in a circle. Run this code and then try changing the numbers to see different flowers:",
+            "Nested loops are perfect for creating flower patterns. The inner loop draws one petal, and the outer loop arranges multiple petals in a circle. Run this code and then try changing the numbers to see different flowers.\n\nOne thing to note is that the code uses `turtle.speed(0)` to make the turtle run at max speed.",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\nturtle.speed(0)\n\n# Draw a flower with 12 petals\nfor i in range(12):\n    # Draw one petal (elongated loop)\n    for j in range(2):\n        turtle.forward(60)\n        turtle.right(60)\n        turtle.forward(60)\n        turtle.right(120)\n    \n    # Rotate for next petal\n    turtle.right(30)  # 360/12 = 30\n\n# Try changing 12 to 8 and 30 to 45!",
+          "import turtle\n\nturtle.speed(0)\n\n# Draw a flower with 12 petals\nfor i in range(12):\n    # Draw one petal (square)\n    for j in range(4):\n        turtle.forward(60)\n        turtle.right(90)\n\n    # Rotate for next petal\n    turtle.right(30)  # 360/12 = 30\n\n# Try changing 12 to 8 and 30 to 45!",
       },
     } as ObservationSectionData,
     {
