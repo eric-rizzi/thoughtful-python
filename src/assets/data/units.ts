@@ -159,19 +159,23 @@ const unitData: Unit[] = [
         guid: "b4e7c932-5a81-4d29-9c73-8f2e4b7a1d36",
       },
       {
-        path: "05_conditionals/lessons/01_cond_if_else",
+        path: "05_conditionals/lessons/01_multiple_ifs",
+        guid: "e6f8g0h2-7a9b-4c5d-9e1f-5g6h7i8j9k0l",
+      },
+      {
+        path: "05_conditionals/lessons/02_cond_if_else",
         guid: "c9f3d821-7b42-4e89-a634-1d8e5f9c2b47",
       },
       {
-        path: "05_conditionals/lessons/02_cond_if_elif",
+        path: "05_conditionals/lessons/03_cond_if_elif",
         guid: "d8a4e732-9f51-4c83-b821-6e7d3f8c9a42",
       },
       {
-        path: "05_conditionals/lessons/03_cond_bool",
+        path: "05_conditionals/lessons/04_cond_bool",
         guid: "e5b6f823-4d71-4a92-bc58-9f2e6d8a7c31",
       },
       {
-        path: "05_conditionals/lessons/lesson_5",
+        path: "05_conditionals/lessons/05_cond_wrap_up",
         guid: "a001f2f7-66ad-4799-af46-a4acbf8f1098",
       },
     ],
