@@ -3,12 +3,13 @@ import type {
   Lesson,
   LessonId,
   SectionId,
-  ObservationSectionData,
   PRIMMSectionData,
   MultipleChoiceSectionData,
   MultipleSelectionSectionData,
   TestingSectionData,
   ReflectionSectionData,
+  MatchingSectionData,
+  DebuggerSectionData,
 } from "../../../../types/data";
 
 const lessonData: Lesson = {
@@ -25,27 +26,30 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "So far, every function you've written does the exact same thing every time. Given the same input, the function will return the same output. But real programs need to make decisions! What if you want a function that says 'Good morning!' early in the day but 'Good afternoon!' later? Or a function that only lets you in if you know the password?\n\nThat's where `if` statements come in. An `if` statement lets your code choose which lines of code to run based on the situation. It's like teaching your functions to react to the real world!",
+            'So far, every function you\'ve written does exactly the same thing every time you run it. Given the same input, the function will produce the same output. But real programs need to make decisions. For example, what if you want to program a clock that says "Good morning" and "Good night" at the proper times?\n\nThat\'s where `if` statements come in. An `if` statement lets your code choose which lines of code to run based on the situation. It\'s like teaching your functions to react to the real world.',
         },
       ],
     } as InformationSectionData,
     {
-      kind: "Observation",
+      kind: "PRIMM",
       id: "first-if" as SectionId,
-      title: "Your First If Statement",
+      title: "Your First `if` Statement",
       content: [
         {
           kind: "text",
           value:
-            "Let's see how an `if` statement works. Watch carefully - the indented line only runs sometimes! Run this code and pay attention to when 'It's hot outside!' appears:",
+            "Below is a function that contains an `if` statement. The function is called three times with different inputs. Take a few minutes to read the code and then predict what will happen:",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_temperature(temp):\n    print(f"The temperature is {temp} degrees")\n    if temp > 30:\n        print("It\'s hot outside!")\n    print("Temperature check complete")\n\ncheck_temperature(35)\nprint("---")\ncheck_temperature(20)\nprint("---")\ncheck_temperature(31)',
+          'def check_temp(temp):\n    print(f"The temp is {temp} degrees")\n    if temp > 30:\n        print("It\'s hot outside!")\n    print("Temp check complete")\n\ncheck_temp(35)\nprint("-+-+-+-+-+-")\ncheck_temp(20)\nprint("-+-+-+-+-+-")\ncheck_temp(31)',
       },
-    } as ObservationSectionData,
+      predictPrompt: "Which function calls will print 'It's hot outside!'?",
+      conclusion:
+        "When the condition is True, the indented code runs. When False, Python skips it.",
+    } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
       id: "when-prints",
@@ -70,26 +74,48 @@ const lessonData: Lesson = {
       },
     } as MultipleChoiceSectionData,
     {
-      kind: "PRIMM",
+      kind: "Debugger",
       id: "string-comparison-primm" as SectionId,
       title: "Comparing Strings",
       content: [
         {
           kind: "text",
           value:
-            "`if` statements can compare strings too! Look at this password checker and predict what will happen:",
+            '`if` statements work by only running code under certain conditions. If the conditions match expectations, then the indented code under the `if` statement are run. Otherwise, the indented code is skipped and the computer jumps to the code after the indentation.\n\nBelow is a small program that checks whether you have the proper password. The most important thing to see is that the "welcome" message only runs if the input is a match. Step through each line of the program. The most important thing to notice is how the computer goes down different paths depending on the input.',
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_password(attempt):\n    print(f"Checking the password")\n    if attempt == "cheese":\n        print("Welcome, it\'s lovely to see you")\n    print("Done checking")\n\ncheck_password("cheese")\nprint("---")\ncheck_password("CHEESE")\nprint("---")\ncheck_password("pizza")',
+          'def check_password(attempt):\n    print(f"Checking the password")\n    if attempt == "cheese":\n        print("Welcome, it\'s lovely to see you")\n    print("Done checking")\n\ncheck_password("cheese")\nprint("---")\ncheck_password("pizza")\nprint("---")\ncheck_password("cheesy!")',
       },
-      predictPrompt:
-        "Which function calls will print 'Welcome, it's lovely to see you'? Remember that Python cares about uppercase vs lowercase!",
-      conclusion:
-        "Only check_password('cheese') prints the welcome message! Python sees 'cheese', 'CHEESE', and 'Cheese' as completely different. The == checks if two things are EXACTLY the same.",
-    } as PRIMMSectionData,
+    } as DebuggerSectionData,
+    {
+      kind: "Matching",
+      id: "matching-comparisons" as SectionId,
+      title: "New Operations",
+      content: [
+        {
+          kind: "text",
+          value:
+            'Something interesting happened in the previous examples. Basically, the values of different variables were "compared" to determine if a bit of code should run or not. If `temp > 30` and if `attempt == "cheese"` were **true**, then the code indented under the `if` statement **was run**. If `temp > 30` and if `attempt == "cheese"` were **not true** (false), then the code indented under the `if` statement **was skipped**. \n\nPython gives you a bunch of different ways to compare data (you\'ve already seen two). See if you can match the "comparisons" with what they mean:',
+        },
+      ],
+      prompts: [
+        { "`if x > y:`": "If the value in x is **greater than** y" },
+        {
+          "`if x >= y:`": "If the value in x is **greater than or equal to** y",
+        },
+        { "`if x < y:`": "If the value in x is **less than** y" },
+        { "`if x <= y:`": "If the value in x is **less than or equal to** y" },
+        { "`if x == y:`": "If the value in x is **equal to** y" },
+        { "`if x != y:`": "If the value in x is **not equal to** y" },
+      ],
+      feedback: {
+        correct:
+          'Perfect! Conditionals all you to determine under which conditions code "within" an `if` statement should run.',
+      },
+    } as MatchingSectionData,
     {
       kind: "MultipleChoice",
       id: "equals-comparison",
@@ -97,77 +123,70 @@ const lessonData: Lesson = {
       content: [
         {
           kind: "text",
-          value: "What's the difference between = and == in Python?",
+          value:
+            "One thing that's a little weird in the question above is the use of `==`. The question is, why are there two equal signs? In previous lessons, we've seen single equal signs: `=`. What's the difference between `=` and `==` in Python?",
         },
       ],
       options: [
         "They do the same thing",
-        "= assigns a value to a variable, == checks if two things are equal",
-        "== assigns a value to a variable, = checks if two things are equal",
-        "= is for numbers, == is for strings",
+        "`=` assigns a value to a variable, `==` checks if two things are equal",
+        "`==` assigns a value to a variable, `=` checks if two things are equal",
+        "`=` is for numbers, `==` is for strings",
       ],
       correctAnswer: 1,
       feedback: {
         correct:
-          "Correct! Use = to store values in variables (like x = 5). Use == to check if things are equal in an if statement (like if x == 5).",
+          "Correct! Use `=` to store values in variables (like `x = 5`). Use `==` to check if things are equal in an if statement (like `if x == 5`).",
       },
     } as MultipleChoiceSectionData,
     {
-      kind: "Testing",
+      kind: "Matching",
+      id: "if-format-checker" as SectionId,
+      title: "Common Mistakes",
+      content: [
+        {
+          kind: "text",
+          value:
+            '`if` statements have a very particular syntax. Similar to functions themselves, they have some code "within" them (indented) that only runs under certain conditions. See if you can match the `if` statement attempts below with the common mistake they illustrate:',
+        },
+      ],
+      prompts: [
+        {
+          '```if x == y\n  print("Equal")```':
+            "Missing colon at the end of the `if` statement",
+        },
+        { '```if x = y:\n  print("Equal")```': 'Incorrect "equality" check' },
+        {
+          '```If x == y\n  print("Equal")```':
+            "Improperly capitalize if statement",
+        },
+        {
+          'if x == y:\nprint("Equal")': "Incorrect indentation",
+        },
+        {
+          'if x > x:\n  print("Equal")': "Incorrect comparison of variables",
+        },
+      ],
+    } as MatchingSectionData,
+    {
+      kind: "Matching",
       id: "age-checker" as SectionId,
       title: "Challenge: Age Checker",
       content: [
         {
           kind: "text",
           value:
-            "Create a function `check_voting_age(age)` that:\n1. Prints the person's age\n2. If the age is 18 or greater, prints 'You can vote!'\n3. Always prints 'Thank you for checking'\n\nMake sure to test with ages 17, 18, and 19 to verify it works correctly at the boundary!",
+            "Now it's time to see if you can create your own function using conditionals. Since it's your first attempt, we'll provide the code that your have to put into the proper order.\n\nCreate a function `check_voting_age(age)` that:\n1. Prints the person's age\n2. If the age is 18 or greater, prints 'You can vote!'\n3. Always prints 'Thank you for checking'",
         },
       ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_voting_age(age):\n    # Print the age\n    \n    # Check if they can vote (>= 18)\n    \n    # Thank them\n    pass\n\n# Test your function\ncheck_voting_age(17)\nprint("---")\ncheck_voting_age(18)\nprint("---")\ncheck_voting_age(19)',
-      },
-      testCases: [
-        {
-          input: [17],
-          expected: "17\nThank you for checking",
-          description: "Test with age 17 (cannot vote)",
-        },
-        {
-          input: [18],
-          expected: "18\nYou can vote!\nThank you for checking",
-          description: "Test with age 18 (can vote)",
-        },
-        {
-          input: [19],
-          expected: "19\nYou can vote!\nThank you for checking",
-          description: "Test with age 19 (can vote)",
-        },
+      prompts: [
+        { "Line 1": "def check_voting_age(age):" },
+        { "Line 2": "print(age)" },
+        { "Line 3": "if age >= 18:" },
+        { "Line 4": "  print('You can vote!')" },
+        { "Line 5": 'print("Thank you for checking")' },
       ],
-      functionToTest: "check_voting_age",
-    } as TestingSectionData,
-    {
-      kind: "PRIMM",
-      id: "case-insensitive-primm" as SectionId,
-      title: "Case-Insensitive Checking",
-      content: [
-        {
-          kind: "text",
-          value:
-            "The `.lower()` function is incredibly useful! It converts all letters in a string to lowercase. This lets us check for a word regardless of how the user typed it:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def greet_friend(name):\n    if name.lower() == "alice":\n        print("Hey Alice! Great to see my best friend!")\n    print(f"Thanks for visiting, {name}")\n\ngreet_friend("alice")\nprint("---")\ngreet_friend("ALICE")\nprint("---")\ngreet_friend("Alice")\nprint("---")\ngreet_friend("Bob")',
-      },
-      predictPrompt:
-        "The function checks if name.lower() == 'alice'. Which function calls will trigger the special greeting? Think about what .lower() does to each input!",
-      conclusion:
-        "All three versions of Alice get the special greeting! The .lower() function converts 'alice', 'ALICE', and 'Alice' all to 'alice', making the comparison work regardless of capitalization.",
-    } as PRIMMSectionData,
+    } as MatchingSectionData,
     {
       kind: "MultipleSelection",
       id: "greater-equal-check",
@@ -180,14 +199,14 @@ const lessonData: Lesson = {
         },
       ],
       options: [
+        "check_score(0)",
         "check_score(89)",
         "check_score(90)",
         "check_score(91)",
         "check_score(100)",
-        "check_score(0)",
-        "check_score(90.5)",
+        "check_score(900)",
       ],
-      correctAnswers: [1, 2, 3, 5],
+      correctAnswers: [2, 3, 4, 5],
       feedback: {
         correct:
           "Correct! The >= operator means 'greater than or equal to', so 90 and anything above 90 will trigger the if statement. 89 is not included!",
@@ -201,91 +220,33 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Create a function `check_grade(score)` that:\n1. Always prints 'Your score: [score]'\n2. If the score is greater than 90, also prints 'Outstanding work!'\n3. If the score is greater than 80 (but not greater than 90), prints 'Great job!'\n4. Always prints 'Keep studying!'\n\nHint: You'll need TWO separate if statements (not if/else, just two ifs).",
+            "Now it's time to see if you can write a function with conditionals without any help. Create a function `check_temp(temp)` that:\n1. Always prints 'The temp is [temp] degrees'\n2. If the temp is **less than** 32, also prints 'It's cold outside!'\n3. Always prints 'Temp check complete'\n\nWhile you're writing your program, remember to indent the code inside the `if` statement and to include `:` in the proper places.",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_grade(score):\n    # Always print the score\n    \n    # Check for outstanding (> 90)\n    \n    # Check for great (> 80)\n    \n    # Always print encouragement\n    pass\n\n# Test your function\ncheck_grade(95)\nprint("---")\ncheck_grade(85)\nprint("---")\ncheck_grade(75)',
+          'def check_temp(temp):\n    # Always print the temp\n    \n    # Check for if it\'s cold (< 32)\n    \n    # Always print encouragement\n    pass\n\n# Test your function\ncheck_temp(75)\nprint("---")\ncheck_temp(30)\nprint("---")\ncheck_temp(-44)',
       },
       testCases: [
         {
-          input: [95],
-          expected: "Your score: 95\nOutstanding work!\nKeep studying!",
-          description: "Test with score 95",
+          input: [33],
+          expected: "The temp is 33 degrees\nTemp check complete",
+          description: "Test with temp 33",
         },
         {
-          input: [85],
-          expected: "Your score: 85\nGreat job!\nKeep studying!",
-          description: "Test with score 85",
+          input: [32],
+          expected: "The temp is 32 degrees\nTemp check complete",
+          description: "Test with temp 32",
         },
         {
-          input: [75],
-          expected: "Your score: 75\nKeep studying!",
-          description: "Test with score 75",
-        },
-      ],
-      functionToTest: "check_grade",
-    } as TestingSectionData,
-    {
-      kind: "PRIMM",
-      id: "multiple-conditions-primm" as SectionId,
-      title: "Multiple If Statements",
-      content: [
-        {
-          kind: "text",
-          value:
-            "You can have multiple if statements in a function! Each one is checked independently:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def analyze_word(word):\n    print(f"Analyzing: {word}")\n    \n    if len(word) > 5:\n        print("That\'s a long word!")\n    \n    if word.upper() == word:\n        print("WHY ARE YOU SHOUTING?")\n    \n    if "e" in word.lower():\n        print("Contains the letter e")\n    \n    print("Analysis complete")\n\nanalyze_word("HELLO")\nprint("---")\nanalyze_word("Python")\nprint("---")\nanalyze_word("WOW")',
-      },
-      predictPrompt:
-        "Each if statement is checked separately. For each word, predict which messages will appear. Remember: len() gives the length, .upper() converts to uppercase, and 'in' checks if something is contained in a string.",
-      conclusion:
-        "Each if statement runs independently! A word can trigger none, one, some, or all of the if statements depending on its properties.",
-    } as PRIMMSectionData,
-    {
-      kind: "Testing",
-      id: "password-validator" as SectionId,
-      title: "Challenge: Password Strength Checker",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Create a function `check_password_simple(password)` that:\n1. Always prints 'Checking password...'\n2. If the password is exactly 'cheese', prints 'Welcome, it's lovely to see you'\n3. If the password contains the letter 'a', prints 'Your password contains an a'\n4. If the length is less than 5, prints 'That's a short password!'\n5. Always prints 'Check complete'\n\nUse .lower() for checking if it contains 'a' so it works for both 'a' and 'A'.",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_password_simple(password):\n    # Start message\n    \n    # Check for exact match with "cheese"\n    \n    # Check if contains "a" (use .lower())\n    \n    # Check if length < 5\n    \n    # End message\n    pass\n\n# Test your function\ncheck_password_simple("cheese")\nprint("---")\ncheck_password_simple("Apple")\nprint("---")\ncheck_password_simple("xyz")',
-      },
-      testCases: [
-        {
-          input: ["cheese"],
+          input: [31],
           expected:
-            "Checking password...\nWelcome, it's lovely to see you\nCheck complete",
-          description: "Test with 'cheese'",
-        },
-        {
-          input: ["Apple"],
-          expected:
-            "Checking password...\nYour password contains an a\nCheck complete",
-          description: "Test with 'Apple'",
-        },
-        {
-          input: ["xyz"],
-          expected:
-            "Checking password...\nThat's a short password!\nCheck complete",
-          description: "Test with 'xyz'",
+            "The temp is 31 degrees\nIt's cold outside!\nTemp check complete",
+          description: "Test temp 31",
         },
       ],
-      functionToTest: "check_password_simple",
+      functionToTest: "check_temp",
     } as TestingSectionData,
     {
       kind: "Reflection",
@@ -295,12 +256,12 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If statements let your functions make decisions. The code inside an if statement only runs when the condition is True. You can have multiple if statements, and each is checked independently.\n\nCreate a simple example with at least two if statements in one function, and explain how they control which code runs. Remember to use the phrase 'as seen in the example above'.",
+            "If statements let your functions make decisions. The code inside an if statement only runs when the condition is True. You can have multiple if statements, and each is checked independently.\n\nCreate a simple example with at least one `if` statement in a function, and explain how it controls which code runs. Remember to use the phrase 'as seen in the example above'.",
         },
       ],
       topic: "How If Statements Control Code",
       isTopicPredefined: true,
-      code: "Create a function with at least two if statements",
+      code: "Create a function with at least one if statement",
       isCodePredefined: false,
       explanation:
         "Explain how your if statements decide what code runs (3-4 sentences)",
@@ -314,7 +275,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Great work! You've learned how to make your functions think and decide. You discovered:\n- If statements check a condition and run code only when it's True\n- The == operator checks if two things are exactly equal\n- The >= and > operators compare numbers\n- The .lower() function helps make string comparisons case-insensitive\n- You can have multiple if statements that each check different things\n- Indentation shows what code belongs inside the if statement\n\nSo far, your functions can make decisions about what TO do. But what if you want to choose between doing one thing OR another? That's what we'll explore in the next lesson with if/else statements!",
+            "Great work! You've learned how to make your functions think and decide. You discovered:\n- If statements check a condition and run code only when it's True\n- The == operator checks if two things are exactly equal\n- The >= and > operators compare numbers\n- Indentation shows what code belongs inside the if statement\n\nSo far, your functions can make decisions about what TO do. But what if you want to choose between doing one thing OR another? That's what we'll explore in the next lesson with if/else statements!",
         },
       ],
     } as InformationSectionData,
