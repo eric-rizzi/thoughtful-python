@@ -26,7 +26,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the last lesson, you learned how to use a single `if` statement to add different paths through your functions. When a condition was True, the indented code ran. When it was False, Python skipped it.\n\nBut what if you need to check multiple things? For example, what if you're creating a function that checks whether someone is old enough to vote AND old enough to drive? That's where multiple if statements come in. In this lesson, you'll learn how to use several if statements in a single function to produce more complex and interesting programs.",
+            "In the last lesson, you learned how to use a single `if` statement to add different paths through your functions. When a condition was True, the indented code ran. When it was False, Python skipped the indented code.\n\nBut what if you need to check multiple things? For example, what if you're creating a function that checks whether someone is old enough to vote AND old enough to drive? That's where multiple if statements come in. In this lesson, you'll learn how to use several if statements in a single function to produce more complex and interesting programs.",
         },
       ],
     } as InformationSectionData,
@@ -76,7 +76,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the example above, you saw that 'Python' triggered one message while 'HEY' triggered two. This happened because each `if` is checked independently. Based on this, how many messages will be printed when you call the `check_score()` function with an input of `95`?",
+            "In the example above, you saw that `Python` triggered one message while `HEY` triggered two. This happened because each `if` is checked independently. Based on this, how many messages will be printed when you call the `check_score()` function with an input of `95`?",
         },
         {
           kind: "code",
@@ -104,7 +104,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Let's watch the computer execute a function with multiple if statements. Step through the code slowly and watch which if blocks get executed and which get skipped.\n\nThe most important thing to notice: Python checks EVERY if statement, regardless of whether previous ones were True or False. It doesn't stop after finding one True condition.",
+            "Let's watch the computer execute a function with multiple if statements. Step through the code slowly and watch which sections of indented code get executed and which get skipped.\n\nThe most important thing to notice: Python checks EVERY if statement, regardless of whether previous ones were True or False. It doesn't stop after finding one True condition.",
         },
       ],
       example: {
@@ -214,14 +214,14 @@ const lessonData: Lesson = {
         {
           kind: "code",
           value:
-            'def evaluate(x):\n    if x > 10:\n        print("Big")\n    if x > 5:\n        print("Medium")\n    if x < 5:\n        print("Small")',
+            'def evaluate(x):\n    if x > 100:\n        print("Big")\n    if x > 50:\n        print("Medium")\n    if x < 50:\n        print("Small")',
         },
       ],
       prompts: [
-        { "evaluate(15)": '"Big" and "Medium"' },
-        { "evaluate(7)": '"Medium" only' },
-        { "evaluate(3)": '"Small" only' },
-        { "evaluate(5)": "No messages" },
+        { "evaluate(150)": '"Big" and "Medium"' },
+        { "evaluate(70)": '"Medium" only' },
+        { "evaluate(30)": '"Small" only' },
+        { "evaluate(50)": "No messages" },
       ],
       feedback: {
         correct:
@@ -272,7 +272,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Great work! You've learned how to use multiple if statements in one function. Each if statement is checked independently, which means:\n- Multiple conditions can be True for the same input\n- Python checks every single if statement, even if previous ones were True\n- This is useful when you want to perform multiple independent checks\n\nBut sometimes, you don't want multiple conditions to be True at the same time. For example, if you're assigning letter grades (A, B, C, D, F), a student should get exactly ONE grade, not multiple. Or if you're checking a password, you want to say either 'Access granted' OR 'Access denied', not both.\n\nThat's what we'll learn in the next lesson: how to make your function choose between alternatives using if/else statements. You'll discover when to use multiple independent if statements (like we learned today) versus when to use if/else for mutually exclusive choices.",
+            "Great work! You've learned how to use multiple if statements in one function. Each if statement is checked independently, which means multiple conditions can be True for the same input - like getting both 'Outstanding!' and 'Great job!' for a score of 95.\n\nBut sometimes, you don't want multiple messages. If you're assigning letter grades, a student should get exactly ONE grade (A, B, C, D, or F), not multiple. If you're checking a password, you want either 'Access granted' OR 'Access denied', not both.\n\nThat's what we'll learn next: how to make your function choose between alternatives using if/else statements.",
         },
       ],
     } as InformationSectionData,

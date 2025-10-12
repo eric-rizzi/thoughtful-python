@@ -26,7 +26,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'So far, every function you\'ve written does exactly the same thing every time you run it. Given the same input, the function will produce the same output. But real programs need to make decisions. For example, what if you want to program a clock that says "Good morning" and "Good night" at the proper times?\n\nThat\'s where `if` statements come in. An `if` statement lets your code choose which lines of code to run based on the situation. It\'s like teaching your functions to react to the real world.',
+            'So far, every function you\'ve written acts in a very predictable way. Given the same input, the function will produce the same output. But real programs need to make decisions. For example, what if you want to program a clock that says "Good morning" and "Good night" at the proper times?\n\nThat\'s where `if` statements come in. An `if` statement lets your program choose which lines of code to run based on the situation. It\'s like teaching your functions to react to the real world.',
         },
       ],
     } as InformationSectionData,
@@ -38,7 +38,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Below is a function that contains an `if` statement. The function is called three times with different inputs. Take a few minutes to read the code and then predict what will happen:",
+            "Below is a `check_temp()` function that contains an `if` statement. The function is then called three times with different inputs. Take a few minutes to read the code and then predict what will happen:",
         },
       ],
       example: {
@@ -46,7 +46,7 @@ const lessonData: Lesson = {
         initialCode:
           'def check_temp(temp):\n    print(f"The temp is {temp} degrees")\n    if temp > 30:\n        print("It\'s hot outside!")\n    print("Temp check complete")\n\ncheck_temp(35)\nprint("-+-+-+-+-+-")\ncheck_temp(20)\nprint("-+-+-+-+-+-")\ncheck_temp(31)',
       },
-      predictPrompt: "Which function calls will print 'It's hot outside!'?",
+      predictPrompt: "Which function calls will print `It's hot outside!`?",
       conclusion:
         "When the condition is True, the indented code runs. When False, Python skips it.",
     } as PRIMMSectionData,
@@ -58,7 +58,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the code above, when will the message 'It's hot outside!' get printed?",
+            "In the code above, when does the message `It's hot outside!` get printed?",
         },
       ],
       options: [
@@ -81,7 +81,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            '`if` statements work by only running code under certain conditions. If the conditions match expectations, then the indented code under the `if` statement are run. Otherwise, the indented code is skipped and the computer jumps to the code after the indentation.\n\nBelow is a small program that checks whether you have the proper password. The most important thing to see is that the "welcome" message only runs if the input is a match. Step through each line of the program. The most important thing to notice is how the computer goes down different paths depending on the input.',
+            "`if` statements work by only running code under certain conditions. If the conditions match expectations, then the indented code under the `if` statement is run. Otherwise, the indented code is skipped and the computer jumps to the code after the indentation.\n\nBelow is a small program that checks whether you have the proper password. Use the debugger to step through each line of the program. The most important thing to notice is how the computer goes down different paths depending on the input.",
         },
       ],
       example: {
@@ -98,7 +98,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Something interesting happened in the previous examples. Basically, the values of different variables were "compared" to determine if a bit of code should run or not. If `temp > 30` and if `attempt == "cheese"` were **true**, then the code indented under the `if` statement **was run**. If `temp > 30` and if `attempt == "cheese"` were **not true** (false), then the code indented under the `if` statement **was skipped**. \n\nPython gives you a bunch of different ways to compare data (you\'ve already seen two). See if you can match the "comparisons" with what they mean:',
+            'Something interesting happened in the previous few examples. Basically, the values of different variables were "compared" to determine if a bit of code should run or not. If `temp > 30` and if `attempt == "cheese"` were **true**, then the code indented under the `if` statement **was run**. If `temp > 30` and if `attempt == "cheese"` were **not true**, then the code indented under the `if` statement **was skipped**. \n\nPython gives you a bunch of different ways to compare data (you\'ve already seen two). See if you can match the "comparisons" with what they mean:',
         },
       ],
       prompts: [
@@ -147,7 +147,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            '`if` statements have a very particular syntax. Similar to functions themselves, they have some code "within" them (indented) that only runs under certain conditions. See if you can match the `if` statement attempts below with the common mistake they illustrate:',
+            '`if` statements have a very particular syntax. Similar to functions, they have some code "within" them (indented) that only runs under certain conditions. See if you can match the `if` statement attempts below with the common mistake they illustrate:',
         },
       ],
       prompts: [
@@ -176,7 +176,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now it's time to see if you can create your own function using conditionals. Since it's your first attempt, we'll provide the code that your have to put into the proper order.\n\nCreate a function `check_voting_age(age)` that:\n1. Prints the person's age\n2. If the age is 18 or greater, prints 'You can vote!'\n3. Always prints 'Thank you for checking'",
+            "Now it's time to see if you can create your own function that uses conditionals. Since it's your first attempt, we'll provide the code and then leave it up to you to put the lines in the proper order.\n\nCreate a function `check_voting_age(age)` that:\n1. Prints the person's age\n2. If the age is 18 or greater, prints 'You can vote!'\n3. Always prints 'Thank you for checking'",
         },
       ],
       prompts: [
@@ -195,7 +195,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If a function has the line `if score >= 90:`, which of these function calls will trigger the if statement? Select all that apply.",
+            "If a function has the line `if score >= 90:`, which of these function calls will trigger the `if` statement? Select all that apply.",
         },
       ],
       options: [
@@ -220,7 +220,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now it's time to see if you can write a function with conditionals without any help. Create a function `check_temp(temp)` that:\n1. Always prints 'The temp is [temp] degrees'\n2. If the temp is **less than** 32, also prints 'It's cold outside!'\n3. Always prints 'Temp check complete'\n\nWhile you're writing your program, remember to indent the code inside the `if` statement and to include `:` in the proper places.",
+            "Now it's time to see if you can write a function with conditionals without any help. Create a function `check_temp(temp)` that:\n1. Always prints `The temp is [temp] degrees`\n2. If the temp is **less than** 32, also prints `It's cold outside!`\n3. Always prints `Temp check complete`\n\nWhile you're writing your program, remember to indent the code inside the `if` statement and to include `:` in the proper places.",
         },
       ],
       example: {
@@ -256,7 +256,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "If statements let your functions make decisions. The code inside an if statement only runs when the condition is True. You can have multiple if statements, and each is checked independently.\n\nCreate a simple example with at least one `if` statement in a function, and explain how it controls which code runs. Remember to use the phrase 'as seen in the example above'.",
+            "`if` statements let your functions make decisions. The code inside an `if` statement only runs when the condition is True. You can use `if` statements to add optional behavior, check boundaries, or respond differently to different inputs.\n\nCreate a simple example with at least one `if` statement in a function, and explain how it controls which code runs. Remember to use the phrase 'as seen in the example above'.",
         },
       ],
       topic: "How If Statements Control Code",
@@ -264,7 +264,7 @@ const lessonData: Lesson = {
       code: "Create a function with at least one if statement",
       isCodePredefined: false,
       explanation:
-        "Explain how your if statements decide what code runs (3-4 sentences)",
+        "Explain how your `if` statement decides what code runs (3-4 sentences)",
       isExplanationPredefined: false,
     } as ReflectionSectionData,
     {
