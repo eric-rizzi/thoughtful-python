@@ -3,95 +3,109 @@ import type {
   Lesson,
   LessonId,
   SectionId,
-  ObservationSectionData,
   PRIMMSectionData,
   MultipleChoiceSectionData,
+  MultipleSelectionSectionData,
   TestingSectionData,
   MatchingSectionData,
   ReflectionSectionData,
   PredictionSectionData,
   CoverageSectionData,
-  MultipleSelectionSectionData,
 } from "../../../../types/data";
 
 const lessonData: Lesson = {
   title: "Combining Conditions",
   guid: "e5b6f823-4d71-4a92-bc58-9f2e6d8a7c31" as LessonId,
   description:
-    "Learn how to combine multiple conditions using and, or, and not to create more sophisticated decision-making.",
+    "Learn how to combine multiple conditions using and, or, and not to create sophisticated decision-making.",
   sections: [
     {
       kind: "Information",
       id: "boolean-intro",
-      title: "When One Question Isn't Enough",
+      title: "Checking Multiple Things",
       content: [
         {
           kind: "text",
           value:
-            "Sometimes you need to check multiple things at once. Can you ride this roller coaster? You need to be tall enough AND brave enough. Can you get a discount? You qualify if you're a student OR a senior citizen.\n\nThat's where **boolean operators** come in. They let you combine conditions:\n- `and`: BOTH conditions must be True\n- `or`: AT LEAST ONE condition must be True\n- `not`: Flips True to False and False to True\n\nThese operators let your functions make complex decisions based on multiple factors.",
+            "So far, your conditionals have checked one thing at a time: `if age >= 18:` or `if score > 90:`. But sometimes you need to check multiple things at once.\n\nThink about a roller coaster: you need to be tall enough AND old enough to ride. Or think about movie theater discounts: you get a discount if you're a student OR a senior citizen.\n\nThat's where **boolean operators** come in. They let you combine conditions:\n- `and`: BOTH conditions must be True\n- `or`: AT LEAST ONE condition must be True\n- `not`: Flips True to False (and False to True)\n\nThese operators let your functions make complex decisions based on multiple factors.",
         },
       ],
     } as InformationSectionData,
     {
-      kind: "Observation",
+      kind: "PRIMM",
       id: "first-and" as SectionId,
       title: "The AND Operator",
       content: [
         {
           kind: "text",
           value:
-            "Let's see how `and` works. For a movie to be appropriate, it needs to be the right rating AND the right length:",
+            "Let's see how `and` works. Below is a function that checks if a movie is appropriate by checking TWO things: the rating AND the length. Predict which movies will be approved:",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_movie(rating, length_minutes):\n    if rating == "PG" and length_minutes <= 120:\n        print("Perfect for family movie night!")\n    else:\n        print("Let\'s find a different movie")\n\nprint("Movie 1:")\ncheck_movie("PG", 90)  # Right rating, right length\n\nprint("\\nMovie 2:")\ncheck_movie("PG", 180)  # Right rating, too long\n\nprint("\\nMovie 3:")\ncheck_movie("R", 90)   # Wrong rating, right length\n\nprint("\\nMovie 4:")\ncheck_movie("R", 180)  # Wrong rating, wrong length',
+          'def check_movie(rating, length_minutes):\n    if rating == "PG" and length_minutes <= 120:\n        print("Perfect for family movie night!")\n    else:\n        print("Let\'s find a different movie")\n\nprint("Movie 1:")\ncheck_movie("PG", 90)\n\nprint("\\nMovie 2:")\ncheck_movie("PG", 180)\n\nprint("\\nMovie 3:")\ncheck_movie("R", 90)\n\nprint("\\nMovie 4:")\ncheck_movie("R", 180)',
       },
-    } as ObservationSectionData,
+      predictPrompt:
+        "The condition checks TWO things with `and`. Which movies will print 'Perfect for family movie night!'? Think about what BOTH conditions need to be.",
+      conclusion:
+        "The `and` operator requires BOTH conditions to be True. Movie 1 works (PG rating AND short length). Movies 2, 3, and 4 fail because at least one condition is False.",
+    } as PRIMMSectionData,
     {
       kind: "MultipleChoice",
-      id: "and-truth",
-      title: "When Is AND True?",
+      id: "and-understanding",
+      title: "Understanding AND",
       content: [
         {
           kind: "text",
-          value: "When using `and`, when is the entire condition True?",
+          value:
+            "In the movie checker above, you saw that `and` requires both conditions to be True. When using `and`, the overall condition is True when:",
         },
       ],
       options: [
-        "When BOTH parts are True",
-        "When at least one part is True",
-        "When the first part is True",
-        "When the second part is True",
+        "At least one part is True",
+        "BOTH parts are True",
+        "The first part is True",
+        "Exactly one part is True",
       ],
-      correctAnswer: 0,
+      correctAnswer: 1,
       feedback: {
         correct:
-          "Correct! The `and` operator requires BOTH conditions to be True. If either one is False (or both are False), the entire condition is False.",
+          "Correct! The `and` operator only gives True when BOTH conditions are True. If either one (or both) is False, the entire condition is False.",
       },
     } as MultipleChoiceSectionData,
     {
-      kind: "Matching",
-      id: "and-truth-table" as SectionId,
-      title: "AND Truth Table",
+      kind: "Prediction",
+      id: "and-prediction" as SectionId,
+      title: "Ride Safety Check",
       content: [
         {
           kind: "text",
-          value: "Match each combination with its result when using `and`:",
+          value:
+            "After seeing how `and` works with the movie checker, let's practice with a ride safety function. This checks if someone is tall enough AND old enough. Predict who gets approved:",
         },
       ],
-      prompts: [
-        { "True and True": "True" },
-        { "True and False": "False" },
-        { "False and True": "False" },
-        { "False and False": "False" },
-      ],
-      feedback: {
-        correct:
-          "Perfect! With `and`, only True and True gives True. Everything else is False.",
+      example: {
+        visualization: "console",
+        initialCode:
+          'def check_ride_safety(height, age):\n    if height >= 48 and age >= 10:\n        print("You can ride!")\n    else:\n        print("Sorry, not this time")',
       },
-    } as MatchingSectionData,
+      predictionTable: {
+        functionToTest: "check_ride_safety",
+        columns: [
+          { variableName: "height", variableType: "number" },
+          { variableName: "age", variableType: "number" },
+        ],
+        rows: [
+          { inputs: [50, 12] },
+          { inputs: [50, 8] },
+          { inputs: [45, 12] },
+          { inputs: [48, 10] },
+          { inputs: [40, 8] },
+        ],
+      },
+    } as PredictionSectionData,
     {
       kind: "PRIMM",
       id: "or-operator-primm" as SectionId,
@@ -100,28 +114,53 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Now let's see how `or` works. You get a discount if you're a student OR a senior:",
+            "Now let's see how `or` works. This function gives discounts to children OR seniors. Predict who gets the discount:",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_discount(age, is_student):\n    if age < 12 or age >= 65:\n        print("You get a discount!")\n    else:\n        print("Regular price")\n\ncheck_discount(10, False)  # Child - gets discount\ncheck_discount(70, False)  # Senior - gets discount\ncheck_discount(30, False)  # Adult - no discount\ncheck_discount(11, False)  # Almost 12 - still gets discount',
+          'def check_discount(age):\n    if age < 12 or age >= 65:\n        print("You get a discount!")\n    else:\n        print("Regular price")\n\ncheck_discount(10)\nprint("---")\ncheck_discount(70)\nprint("---")\ncheck_discount(30)\nprint("---")\ncheck_discount(11)',
       },
       predictPrompt:
-        "With `or`, you get a discount if you're under 12 OR 65 and over. Which ages will get the discount?",
+        "The condition uses `or` to check if age is under 12 OR 65 and over. Which ages will get the discount?",
       conclusion:
-        "The `or` operator gives True if EITHER condition is True (or if both are True). It only gives False when BOTH conditions are False.",
+        "The `or` operator gives True if AT LEAST ONE condition is True. Children (under 12) get discounts. Seniors (65+) get discounts. Adults in between pay regular price.",
     } as PRIMMSectionData,
     {
-      kind: "Prediction",
-      id: "or-prediction" as SectionId,
-      title: "Predict OR Outcomes",
+      kind: "MultipleSelection",
+      id: "and-vs-or",
+      title: "AND vs OR",
       content: [
         {
           kind: "text",
           value:
-            "This function checks if someone can enter the park for free. Predict who gets in free:",
+            "You've now seen both `and` and `or` in action. The discount function showed that `or` only needs ONE condition to be True. Select all statements that are true:",
+        },
+      ],
+      options: [
+        "`and` requires BOTH conditions to be True",
+        "`or` requires BOTH conditions to be True",
+        "`or` requires AT LEAST ONE condition to be True",
+        "`and` requires AT LEAST ONE condition to be True",
+        "With `or`, if both conditions are True, the overall result is True",
+        "With `and`, if one condition is False, the overall result is False",
+      ],
+      correctAnswers: [0, 2, 4, 5],
+      feedback: {
+        correct:
+          "Perfect! Remember: `and` is strict (needs BOTH), `or` is flexible (needs AT LEAST ONE). If both are True with `or`, that's still True!",
+      },
+    } as MultipleSelectionSectionData,
+    {
+      kind: "Coverage",
+      id: "free-admission" as SectionId,
+      title: "Free Admission",
+      content: [
+        {
+          kind: "text",
+          value:
+            "The discount function above used `or` with a single input (age). Now let's practice with TWO inputs. This function gives free entry if you're under 5 OR you have a membership. Provide combinations that produce each output:",
         },
       ],
       example: {
@@ -129,57 +168,47 @@ const lessonData: Lesson = {
         initialCode:
           'def free_entry(age, has_membership):\n    if age < 5 or has_membership:\n        print("Free entry!")\n    else:\n        print("Please pay admission")',
       },
-      predictionTable: {
+      coverageTable: {
         functionToTest: "free_entry",
         columns: [
           { variableName: "age", variableType: "number" },
           { variableName: "has_membership", variableType: "boolean" },
         ],
         rows: [
-          { inputs: [3, false] },
-          { inputs: [3, true] },
-          { inputs: [25, true] },
-          { inputs: [25, false] },
-          { inputs: [5, false] },
+          {
+            expectedOutput: "Free entry!",
+            hint: "Young child without membership",
+          },
+          {
+            expectedOutput: "Free entry!",
+            hint: "Adult with membership",
+          },
+          {
+            expectedOutput: "Please pay admission",
+            hint: "Adult without membership",
+          },
+          {
+            expectedOutput: "Free entry!",
+            hint: "Young child with membership (both True!)",
+          },
         ],
       },
-    } as PredictionSectionData,
-    {
-      kind: "Matching",
-      id: "or-truth-table" as SectionId,
-      title: "OR Truth Table",
-      content: [
-        {
-          kind: "text",
-          value: "Match each combination with its result when using `or`:",
-        },
-      ],
-      prompts: [
-        { "True or True": "True" },
-        { "True or False": "True" },
-        { "False or True": "True" },
-        { "False or False": "False" },
-      ],
-      feedback: {
-        correct:
-          "Excellent! With `or`, only False or False gives False. Everything else is True.",
-      },
-    } as MatchingSectionData,
+    } as CoverageSectionData,
     {
       kind: "Testing",
       id: "ride-requirements" as SectionId,
-      title: "Challenge: Theme Park Ride",
+      title: "Challenge: Ride Requirements",
       content: [
         {
           kind: "text",
           value:
-            "Create a function `can_ride(height, age, has_adult)` that checks if someone can ride:\n\nYou CAN ride if:\n- You are at least 120cm tall AND at least 10 years old\nOR\n- You are at least 100cm tall AND have an adult with you\n\nPrint 'You can ride!' or 'Sorry, you cannot ride this attraction'",
+            "Create a function `can_ride(height, age, has_adult)` that checks if someone can ride a roller coaster.\n\nYou CAN ride if:\n- You are at least 120cm tall AND at least 10 years old\nOR\n- You are at least 100cm tall AND you have an adult with you\n\nPrint 'You can ride!' or 'Sorry, you cannot ride'\n\nHint: You'll need to combine `and` and `or` in one condition. Use parentheses to group: `(condition1 and condition2) or (condition3 and condition4)`",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          "def can_ride(height, age, has_adult):\n    # Check both conditions using and/or\n    # Remember: tall enough AND old enough\n    # OR: shorter but WITH adult\n    pass\n\n# Test cases\ncan_ride(125, 12, False)  # Tall and old enough\ncan_ride(105, 8, True)    # Short but has adult\ncan_ride(105, 8, False)   # Short and no adult\ncan_ride(95, 15, True)    # Too short even with adult",
+          "def can_ride(height, age, has_adult):\n    # Check: (tall AND old enough) OR (shorter but WITH adult)\n    pass\n\n# Test cases\ncan_ride(125, 12, False)\nprint('---')\ncan_ride(105, 8, True)\nprint('---')\ncan_ride(105, 8, False)\nprint('---')\ncan_ride(95, 15, True)",
       },
       testCases: [
         {
@@ -190,237 +219,67 @@ const lessonData: Lesson = {
         {
           input: [105, 8, true],
           expected: "You can ride!",
-          description: "Short but has adult",
+          description: "Shorter but has adult",
         },
         {
           input: [105, 8, false],
-          expected: "Sorry, you cannot ride this attraction",
-          description: "Short and no adult",
+          expected: "Sorry, you cannot ride",
+          description: "Shorter and no adult",
         },
         {
           input: [95, 15, true],
-          expected: "Sorry, you cannot ride this attraction",
+          expected: "Sorry, you cannot ride",
           description: "Too short even with adult",
         },
       ],
       functionToTest: "can_ride",
     } as TestingSectionData,
     {
-      kind: "Coverage",
-      id: "and-coverage" as SectionId,
-      title: "Make Both True",
+      kind: "Matching",
+      id: "read-conditions" as SectionId,
+      title: "Reading Complex Conditions",
       content: [
         {
           kind: "text",
           value:
-            "Provide inputs that will produce each output. Remember: `and` needs BOTH conditions True!",
+            "The ride requirements above combined `and` and `or` into one complex condition. Being able to read and understand these conditions is crucial. Match each condition to its plain English meaning:",
         },
       ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_access(age, has_permission):\n    if age >= 18 and has_permission:\n        print("Access granted")\n    else:\n        print("Access denied")',
-      },
-      coverageTable: {
-        functionToTest: "check_access",
-        columns: [
-          { variableName: "age", variableType: "number" },
-          { variableName: "has_permission", variableType: "boolean" },
-        ],
-        rows: [
-          {
-            expectedOutput: "Access granted",
-            hint: "Need age >= 18 AND permission true",
-          },
-          {
-            expectedOutput: "Access denied",
-            hint: "Adult but no permission",
-          },
-          {
-            expectedOutput: "Access denied",
-            hint: "Has permission but too young",
-          },
-          {
-            expectedOutput: "Access denied",
-            hint: "Neither condition true",
-          },
-        ],
-      },
-    } as CoverageSectionData,
-    {
-      kind: "PRIMM",
-      id: "not-operator-primm" as SectionId,
-      title: "The NOT Operator",
-      content: [
+      prompts: [
         {
-          kind: "text",
-          value:
-            "The `not` operator flips True to False and False to True. It's useful for checking if something is NOT the case:",
+          "if age >= 18 and has_permission:":
+            "Adult with permission (both required)",
         },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_quiet_hours(hour):\n    if not (hour >= 9 and hour <= 17):\n        print("Please be quiet - it\'s outside business hours")\n    else:\n        print("Normal noise level is fine")\n\ncheck_quiet_hours(8)   # Before 9am\ncheck_quiet_hours(12)  # Noon\ncheck_quiet_hours(18)  # After 5pm\ncheck_quiet_hours(22)  # Late night',
-      },
-      predictPrompt:
-        "The condition `not (hour >= 9 and hour <= 17)` is True when it's NOT between 9am and 5pm. Which hours require quiet?",
-      conclusion:
-        "The `not` operator reverses the condition. Here it's True when outside business hours (before 9 or after 17).",
-    } as PRIMMSectionData,
-    {
-      kind: "MultipleSelection",
-      id: "complex-condition" as SectionId,
-      title: "Complex Conditions",
-      content: [
         {
-          kind: "text",
-          value:
-            "For the condition `(age >= 13 and age <= 19) or is_student`, which inputs make it True? Select all that apply.",
+          "if is_student or is_senior:": "Student or senior (either qualifies)",
+        },
+        {
+          "if score > 90 and score <= 100:": "Score between 91 and 100",
+        },
+        {
+          "if day == 'saturday' or day == 'sunday':": "Weekend day",
         },
       ],
-      options: [
-        "age=15, is_student=False (teenager)",
-        "age=25, is_student=True (adult student)",
-        "age=10, is_student=False (child)",
-        "age=17, is_student=True (teen student)",
-        "age=30, is_student=False (adult non-student)",
-      ],
-      correctAnswers: [0, 1, 3],
       feedback: {
         correct:
-          "Correct! It's True for teenagers (13-19) OR students of any age. So teen non-students, adult students, and teen students all qualify!",
+          "Excellent! Being able to translate code into plain English (and vice versa) helps you write correct conditions and debug when things go wrong.",
       },
-    } as MultipleSelectionSectionData,
-    {
-      kind: "Testing",
-      id: "password-strength" as SectionId,
-      title: "Challenge: Password Strength Checker",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Create a function `check_password_strength(password)` that:\n\n1. If length >= 8 AND contains both uppercase and lowercase: prints 'Strong password!'\n2. Elif length >= 8: prints 'Add some capital letters'\n3. Else: prints 'Too short!'\n\nHints:\n- Use len(password) for length\n- Check for uppercase: password.lower() != password\n- Check for lowercase: password.upper() != password",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_password_strength(password):\n    # Check length\n    # Check for uppercase (password.lower() != password means it has uppercase)\n    # Check for lowercase (password.upper() != password means it has lowercase)\n    # Use and to combine conditions\n    pass\n\n# Test your function\ncheck_password_strength("abc")\ncheck_password_strength("abcdefgh")\ncheck_password_strength("AbCdEfGh")\ncheck_password_strength("ABCDEFGH")',
-      },
-      testCases: [
-        {
-          input: ["abc"],
-          expected: "Too short!",
-          description: "Too short",
-        },
-        {
-          input: ["abcdefgh"],
-          expected: "Add some capital letters",
-          description: "Long but no capitals",
-        },
-        {
-          input: ["AbCdEfGh"],
-          expected: "Strong password!",
-          description: "Long with mixed case",
-        },
-        {
-          input: ["ABCDEFGH"],
-          expected: "Add some capital letters",
-          description: "Long but all capitals",
-        },
-      ],
-      functionToTest: "check_password_strength",
-    } as TestingSectionData,
-    {
-      kind: "Prediction",
-      id: "combined-prediction" as SectionId,
-      title: "Admission Rules",
-      content: [
-        {
-          kind: "text",
-          value:
-            "A museum has complex admission rules. Predict who gets in free:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def free_admission(age, is_student, is_member):\n    if age < 5 or is_member:\n        print("Free admission!")\n    elif is_student and age < 18:\n        print("Student discount - half price")\n    else:\n        print("Full price")',
-      },
-      predictionTable: {
-        functionToTest: "free_admission",
-        columns: [
-          { variableName: "age", variableType: "number" },
-          { variableName: "is_student", variableType: "boolean" },
-          { variableName: "is_member", variableType: "boolean" },
-        ],
-        rows: [
-          { inputs: [4, false, false] },
-          { inputs: [16, true, false] },
-          { inputs: [25, false, true] },
-          { inputs: [20, true, false] },
-          { inputs: [3, false, true] },
-        ],
-      },
-    } as PredictionSectionData,
-    {
-      kind: "Coverage",
-      id: "or-coverage" as SectionId,
-      title: "Weekend or Holiday",
-      content: [
-        {
-          kind: "text",
-          value:
-            "The store is closed on weekends OR holidays. Provide days that result in each status:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def store_status(is_weekend, is_holiday):\n    if is_weekend or is_holiday:\n        print("Store is closed")\n    else:\n        print("Store is open")',
-      },
-      coverageTable: {
-        functionToTest: "store_status",
-        columns: [
-          { variableName: "is_weekend", variableType: "boolean" },
-          { variableName: "is_holiday", variableType: "boolean" },
-        ],
-        rows: [
-          {
-            expectedOutput: "Store is closed",
-            hint: "Weekend day",
-          },
-          {
-            expectedOutput: "Store is closed",
-            hint: "Weekday holiday",
-          },
-          {
-            expectedOutput: "Store is open",
-            hint: "Regular weekday",
-          },
-          {
-            expectedOutput: "Store is closed",
-            hint: "Weekend holiday",
-          },
-        ],
-      },
-    } as CoverageSectionData,
+    } as MatchingSectionData,
     {
       kind: "Testing",
       id: "game-access" as SectionId,
-      title: "Challenge: Game Access",
+      title: "Challenge: Game Access Rules",
       content: [
         {
           kind: "text",
           value:
-            "Create a function `can_play_game(age, has_permission, is_weekend)` that determines if someone can play:\n\nYou CAN play if:\n- You're 18 or older (no other requirements)\nOR\n- You're 13-17 AND have permission AND it's the weekend\nOR\n- You're under 13 AND have permission (any day)\n\nPrint 'You can play!' or 'Sorry, not right now'",
+            "Create a function `can_play_game(age, has_permission, is_weekend)` with complex access rules.\n\nYou CAN play if:\n- You're 18 or older (no other requirements)\nOR\n- You're 13-17 AND have permission AND it's the weekend\nOR  \n- You're under 13 AND have permission (any day)\n\nPrint 'You can play!' or 'Not right now'\n\nThis is challenging! Think carefully about how to combine the conditions. You'll need multiple `and` and `or` operators with parentheses.",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          "def can_play_game(age, has_permission, is_weekend):\n    # Adults can always play\n    # Teens need permission AND weekend\n    # Kids need permission (any day)\n    pass\n\n# Test cases\ncan_play_game(20, False, False)  # Adult\ncan_play_game(15, True, True)    # Teen with permission on weekend\ncan_play_game(15, True, False)   # Teen with permission on weekday\ncan_play_game(10, True, False)   # Kid with permission\ncan_play_game(10, False, True)   # Kid without permission",
+          "def can_play_game(age, has_permission, is_weekend):\n    # Adults (18+) can always play\n    # Teens (13-17) need permission AND weekend\n    # Kids (under 13) need permission (any day)\n    pass\n\n# Test cases\ncan_play_game(20, False, False)\nprint('---')\ncan_play_game(15, True, True)\nprint('---')\ncan_play_game(15, True, False)\nprint('---')\ncan_play_game(10, True, False)\nprint('---')\ncan_play_game(10, False, True)",
       },
       testCases: [
         {
@@ -435,13 +294,18 @@ const lessonData: Lesson = {
         },
         {
           input: [15, true, false],
-          expected: "Sorry, not right now",
+          expected: "Not right now",
           description: "Teen with permission on weekday",
         },
         {
           input: [10, true, false],
           expected: "You can play!",
           description: "Kid with permission any day",
+        },
+        {
+          input: [10, false, true],
+          expected: "Not right now",
+          description: "Kid without permission",
         },
       ],
       functionToTest: "can_play_game",
@@ -454,7 +318,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Boolean operators (and, or, not) let you combine simple conditions into complex decisions. With `and` both must be True, with `or` at least one must be True, and `not` flips the value.\n\nCreate a function using at least one `and` and one `or` to make a complex decision. Explain how the conditions work together. Remember to use the phrase 'as seen in the example above'.",
+            "Boolean operators (`and`, `or`, `not`) let you combine simple conditions into complex decisions. With `and`, all conditions must be True. With `or`, at least one must be True. With `not`, you flip the value.\n\nCreate a function using at least one `and` and one `or` to make a complex decision. Explain how the boolean operators work together in your example. Remember to use the phrase 'as seen in the example above'.",
         },
       ],
       topic: "How Boolean Operators Combine Conditions",
@@ -465,18 +329,6 @@ const lessonData: Lesson = {
         "Explain how your boolean operators create the logic (3-4 sentences)",
       isExplanationPredefined: false,
     } as ReflectionSectionData,
-    {
-      kind: "Information",
-      id: "boolean-conclusion",
-      title: "Conclusion",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Fantastic work! You've mastered boolean operators and can now create sophisticated conditions. You learned:\n- `and` requires ALL conditions to be True\n- `or` requires AT LEAST ONE condition to be True  \n- `not` flips True to False and False to True\n- You can combine these operators for complex logic\n- Parentheses help group conditions clearly\n\nYou can now write functions that make decisions based on multiple factors - age AND permission, student OR senior, NOT during quiet hours. Your functions can handle real-world complexity!\n\nIn the final lesson, we'll bring EVERYTHING together - all the conditionals you've learned plus everything from previous units. Get ready for the ultimate challenge!",
-        },
-      ],
-    } as InformationSectionData,
   ],
 };
 

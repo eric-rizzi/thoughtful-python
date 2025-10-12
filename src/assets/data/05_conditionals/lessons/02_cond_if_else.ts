@@ -7,11 +7,11 @@ import type {
   PRIMMSectionData,
   MultipleChoiceSectionData,
   TestingSectionData,
-  DebuggerSectionData,
   MatchingSectionData,
   ReflectionSectionData,
   PredictionSectionData,
   CoverageSectionData,
+  MultipleSelectionSectionData,
 } from "../../../../types/data";
 
 const lessonData: Lesson = {
@@ -28,7 +28,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the last lesson, your if statements decided whether to run extra code. But often, you want to do one thing OR another - not just something or nothing.\n\nThink about a password checker. Instead of just saying 'Welcome!' when the password is correct and nothing when it's wrong, you probably want to say 'Welcome!' OR 'Access denied!' That's exactly what `else` does.\n\nWith if/else, your function ALWAYS does exactly one of two things. It creates two paths through your code, and every input must take exactly one path.",
+            "In the last two lessons, your `if` statements decided whether to run optional code. Sometimes the code ran, sometimes it didn't. But often in programming, you want to do one thing OR another - not just something or nothing.\n\nThink about a password checker. When the password is wrong, you don't want silence - you want a clear message saying 'Access denied!'. That's where `else` comes in. With `if`/`else`, your function ALWAYS does exactly one of two things.",
         },
       ],
     } as InformationSectionData,
@@ -40,66 +40,40 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Here's our password checker from the worksheet. Notice how it ALWAYS prints one of two messages - never both, never neither:",
+            "To show the power of `if`/`else`, we're going to recreate a program from a previous lesson: the password program. The new version is more powerful because it forces the program to go down one path of the other. This means that the program ALWAYS prints one of two messages.\n\nWatch how different inputs to the `check_password()` function go down different paths through the function. In particular, notice how depending on whether the condition is true, either the code indented under the `if` OR the code indented under the `else` runs.",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_password(attempt):\n    if attempt.lower() == "cheese":\n        print("Welcome, it\'s lovely to see you")\n    else:\n        print("Get out of here!")\n\ncheck_password("cheese")\ncheck_password("CHEESE")\ncheck_password("crackers")\ncheck_password("pizza")',
+          'def check_password(attempt):\n    print("Checking password")\n    if attempt == "cheese":\n        print("Welcome, it\'s lovely to see you")\n    else:\n        print("Get out of here!")\n\ncheck_password("CHEESE")\nprint("-+-+-+-+-+-")\ncheck_password("cheese")\nprint("-+-+-+-+-+-")\ncheck_password("crackers")\nprint("-+-+-+-+-+-")\ncheck_password("pizza")',
       },
     } as ObservationSectionData,
     {
-      kind: "Prediction",
-      id: "password-prediction" as SectionId,
-      title: "Predict the Password Output",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Look at this password checker function. For each password attempt below, predict what message will be printed:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def secure_check(password):\n    if password.lower() == "secret":\n        print("Access granted!")\n    else:\n        print("Access denied!")',
-      },
-      predictionTable: {
-        functionToTest: "secure_check",
-        columns: [{ variableName: "password", variableType: "string" }],
-        rows: [
-          { inputs: ["secret"] },
-          { inputs: ["SECRET"] },
-          { inputs: ["Secret"] },
-          { inputs: ["password"] },
-          { inputs: ["SeCrEt"] },
-        ],
-      },
-    } as PredictionSectionData,
-    {
-      kind: "MultipleChoice",
+      kind: "MultipleSelection",
       id: "else-behavior",
-      title: "Understanding Else",
+      title: "Understanding If/Else Structure",
       content: [
         {
           kind: "text",
           value:
-            "In an if/else statement, when does the code in the else block run?",
+            "In the password checker above, notice the structure: the `if` and the `else` are lined up at the same indentation level, and the code under each one is indented further. Based on what you observed, select all the statements that are true:",
         },
       ],
       options: [
-        "Always, no matter what",
-        "Never - it's just for show",
-        "Only when the if condition is False",
-        "At the same time as the if block",
+        "The else block runs only when the `if` condition is False",
+        "Both the `if` and `else` blocks can run for the same input",
+        "The `if` and `else` must be at the same indentation level",
+        "Every input triggers exactly one of the two blocks",
+        "The code inside `if` part must be indented",
+        "The code inside `else` part must be indented",
       ],
-      correctAnswer: 2,
+      correctAnswers: [0, 2, 3, 4, 5],
       feedback: {
         correct:
-          "Correct! The else block runs when (and only when) the if condition is False. You get exactly one or the other - never both!",
+          "Perfect! The `if` and `else` are partners that guarantee exactly one path is taken. Indentation shows Python which code belongs to which block.",
       },
-    } as MultipleChoiceSectionData,
+    } as MultipleSelectionSectionData,
     {
       kind: "Coverage",
       id: "age-coverage" as SectionId,
@@ -108,7 +82,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "This function categorizes ages. Provide ages that will produce each output shown:",
+            "The code below is a simple function that determines, based on age, whether you're an adult or a minor. An `if`/`else` is perfect for this situation because you can only be one of these two things. It's a \"binary\" choice. Provide ages that will produce each output shown:",
         },
       ],
       example: {
@@ -133,105 +107,82 @@ const lessonData: Lesson = {
             expectedOutput: "You're an adult",
             hint: "What age is 18 or more?",
           },
-          {
-            expectedOutput: "You're an adult",
-            hint: "What about exactly 18?",
-          },
-          {
-            expectedOutput: "You're a minor",
-            hint: "Try age 0 - does it work?",
-          },
         ],
       },
     } as CoverageSectionData,
     {
-      kind: "Testing",
-      id: "polite-password" as SectionId,
-      title: "Challenge: Polite Password Checker",
+      kind: "MultipleChoice",
+      id: "boundary-question",
+      title: "Testing Boundaries",
       content: [
         {
           kind: "text",
           value:
-            "From the worksheet: Modify the password checker to give a personalized rejection message.\n\nCreate `polite_password_check(attempt)` that:\n1. If the attempt equals 'cheese' (case-insensitive), prints 'Welcome, it's lovely to see you'\n2. Otherwise, prints 'I'm sorry, [attempt] is not the password'\n\nFor example, if someone enters 'crackers', it should say 'I'm sorry, crackers is not the password'",
+            "In the age categorizer above, the condition checks `if age < 18`. What happens when age is exactly 18?",
+        },
+      ],
+      options: [
+        "It prints 'You're a minor' because 18 is close to being under 18",
+        "It prints 'You're an adult' because 18 < 18 is False",
+        "It prints both messages",
+        "It prints neither message",
+      ],
+      correctAnswer: 1,
+      feedback: {
+        correct:
+          "Correct! Since 18 < 18 is False, the else block runs. Testing boundary values (like exactly 18) is crucial for making sure your conditionals work correctly!",
+      },
+    } as MultipleChoiceSectionData,
+    {
+      kind: "Testing",
+      id: "fix-student-errors" as SectionId,
+      title: "Challenge: Fix the Errors",
+      content: [
+        {
+          kind: "text",
+          value:
+            "There are TWO errors in this student checker function. Your job is to fix both errors so the function works correctly. The function should print 'Good luck on your tests!' for students and 'Pay your rent!' for non-students.\n\nHints:\n- One error involves the comparison operator\n- One error involves indentation",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def polite_password_check(attempt):\n    # Check if password is correct (use .lower())\n    # If correct: welcome message\n    # If wrong: polite rejection with their attempt\n    pass\n\n# Test your function\npolite_password_check("cheese")\npolite_password_check("CHEESE")\npolite_password_check("crackers")\npolite_password_check("pizza")',
+          'def check_student(answer):\n    if answer.lower() = "yes":\n        print("Good luck on your tests!")\n        else:\n        print("Pay your rent!")\n\ncheck_student("yes")\nprint("---")\ncheck_student("no")',
       },
       testCases: [
         {
-          input: ["cheese"],
-          expected: "Welcome, it's lovely to see you",
-          description: "Test with correct password 'cheese'",
+          input: ["yes"],
+          expected: "Good luck on your tests!",
+          description: "Test with yes",
         },
         {
-          input: ["CHEESE"],
-          expected: "Welcome, it's lovely to see you",
-          description: "Test with uppercase 'CHEESE'",
+          input: ["YES"],
+          expected: "Good luck on your tests!",
+          description: "Test with YES (case insensitive)",
         },
         {
-          input: ["crackers"],
-          expected: "I'm sorry, crackers is not the password",
-          description: "Test with wrong password 'crackers'",
+          input: ["no"],
+          expected: "Pay your rent!",
+          description: "Test with no",
         },
       ],
-      functionToTest: "polite_password_check",
+      functionToTest: "check_student",
     } as TestingSectionData,
     {
-      kind: "DebuggerSectionData",
-      id: "fix-student-errors" as SectionId,
-      title: "Fix the Errors",
-      content: [
-        {
-          kind: "text",
-          value:
-            "This is directly from your worksheet! There are two errors in this student checker. Step through the code to see the errors, then fix them:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_student(answer):\n    if answer.lower() = "yes":  # Error 1: using = instead of ==\n        print("Good luck on your tests!")\n        else:  # Error 2: wrong indentation\n        print("Pay your rent!")\n\n# This will cause an error!\ncheck_student("yes")',
-      },
-    } as DebuggerSectionData,
-    {
-      kind: "PRIMM",
-      id: "volume-check-primm" as SectionId,
-      title: "Checking Volume",
-      content: [
-        {
-          kind: "text",
-          value:
-            "From the worksheet: This function checks if someone is SHOUTING by seeing if their text is all uppercase:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_volume(word):\n    if word.upper() == word:\n        print("OK ALREADY!")\n    else:\n        print("At least you were polite.")\n\ncheck_volume("HELLO")\ncheck_volume("hello")\ncheck_volume("Hello")\ncheck_volume("STOP")',
-      },
-      predictPrompt:
-        "The condition `word.upper() == word` checks if the word is already all uppercase. Predict what each function call will print.",
-      conclusion:
-        "The check `word.upper() == word` is True only when the word is already all capitals. 'HELLO' uppercased is still 'HELLO', so they're equal. But 'Hello' uppercased becomes 'HELLO', which is different from 'Hello'!",
-    } as PRIMMSectionData,
-    {
       kind: "Prediction",
-      id: "grade-prediction" as SectionId,
-      title: "Pass or Fail Predictions",
+      id: "pass-fail-prediction" as SectionId,
+      title: "Pass or Fail",
       content: [
         {
           kind: "text",
           value:
-            "This function determines if a student passes or fails. Predict the output for each score:",
+            "After fixing the errors above, you should have a better sense of how if/else works. Now let's practice predicting outputs. This function determines if a student passes or fails:",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_pass(score):\n    if score >= 60:\n        print("You passed!")\n    else:\n        print("You need to retake")',
+          'def check_pass(score):\n    if score >= 60:\n        print("Pass!")\n    else:\n        print("Retake!")',
       },
       predictionTable: {
         functionToTest: "check_pass",
@@ -240,55 +191,31 @@ const lessonData: Lesson = {
           { inputs: [59] },
           { inputs: [60] },
           { inputs: [61] },
-          { inputs: [0] },
           { inputs: [100] },
-          { inputs: [59.9] },
         ],
       },
     } as PredictionSectionData,
     {
-      kind: "Coverage",
-      id: "temperature-coverage" as SectionId,
-      title: "Temperature Boundaries",
+      kind: "PRIMM",
+      id: "volume-check-primm" as SectionId,
+      title: "Checking Volume",
       content: [
         {
           kind: "text",
-          value: "Provide temperatures that will produce each weather message:",
+          value:
+            "This function checks if someone is SHOUTING by seeing if their text is all uppercase. Predict what each function call will print:",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def weather_report(temp):\n    if temp > 25:\n        print("It\'s warm outside!")\n    else:\n        print("It\'s cool today")',
+          'def check_volume(word):\n    if word.upper() == word:\n        print("OK ALREADY!")\n    else:\n        print("At least you were polite.")\n\ncheck_volume("HELLO")\nprint("---")\ncheck_volume("hello")\nprint("---")\ncheck_volume("Hello")',
       },
-      coverageTable: {
-        functionToTest: "weather_report",
-        columns: [
-          {
-            variableName: "temp",
-            variableType: "number",
-          },
-        ],
-        rows: [
-          {
-            expectedOutput: "It's warm outside!",
-            hint: "Temperature must be greater than 25",
-          },
-          {
-            expectedOutput: "It's cool today",
-            hint: "Temperature must be 25 or less",
-          },
-          {
-            expectedOutput: "It's cool today",
-            hint: "What about exactly 25?",
-          },
-          {
-            expectedOutput: "It's warm outside!",
-            hint: "Try 25.1 - does it work?",
-          },
-        ],
-      },
-    } as CoverageSectionData,
+      predictPrompt:
+        "The condition `word.upper() == word` checks if the word is already all uppercase. Which words will trigger the shouting message?",
+      conclusion:
+        "The check is True only when the word is already all capitals. 'HELLO' uppercased is still 'HELLO', so they're equal. But 'Hello' uppercased becomes 'HELLO', which is different from 'Hello'!",
+    } as PRIMMSectionData,
     {
       kind: "Matching",
       id: "if-else-pairs" as SectionId,
@@ -316,115 +243,39 @@ const lessonData: Lesson = {
     } as MatchingSectionData,
     {
       kind: "Testing",
-      id: "vowel-checker" as SectionId,
-      title: "Challenge: Vowel Checker",
+      id: "temperature-advisor" as SectionId,
+      title: "Challenge: Temperature Advisor",
       content: [
         {
           kind: "text",
           value:
-            "Create a function `check_first_letter(word)` that:\n1. Prints 'Checking: [word]'\n2. If the first letter is a vowel (a, e, i, o, u), prints 'Starts with a vowel!'\n3. Otherwise, prints 'Starts with a consonant!'\n4. Always prints 'Check complete'\n\nHint: Use word[0] to get the first letter, and use .lower() to handle uppercase!\nHint: You can check if a letter is in a string with: `letter in 'aeiou'`",
+            "Create a function `temperature_advice(temp)` that gives clothing advice:\n1. If temp is less than 50, prints 'Wear a coat!'\n2. Otherwise, prints 'No coat needed!'\n\nMake sure to test with temperatures on both sides of the boundary (like 49, 50, and 51) to ensure your function works correctly.",
         },
       ],
       example: {
         visualization: "console",
         initialCode:
-          'def check_first_letter(word):\n    # Print what we\'re checking\n    \n    # Get first letter and check if it\'s a vowel\n    # Remember to use .lower() for case-insensitive check!\n    \n    # Always print completion message\n    pass\n\n# Test your function\ncheck_first_letter("apple")\nprint("---")\ncheck_first_letter("Elephant")\nprint("---")\ncheck_first_letter("python")\nprint("---")\ncheck_first_letter("ISLAND")',
+          'def temperature_advice(temp):\n    # Check if temp < 50\n    # Print appropriate advice\n    pass\n\n# Test your function\ntemperature_advice(45)\nprint("---")\ntemperature_advice(50)\nprint("---")\ntemperature_advice(65)',
       },
       testCases: [
         {
-          input: ["apple"],
-          expected: "Checking: apple\nStarts with a vowel!\nCheck complete",
-          description: "Test with 'apple'",
+          input: [45],
+          expected: "Wear a coat!",
+          description: "Test with cold temperature",
         },
         {
-          input: ["python"],
-          expected:
-            "Checking: python\nStarts with a consonant!\nCheck complete",
-          description: "Test with 'python'",
+          input: [50],
+          expected: "No coat needed!",
+          description: "Test boundary at exactly 50",
         },
         {
-          input: ["Elephant"],
-          expected: "Checking: Elephant\nStarts with a vowel!\nCheck complete",
-          description: "Test with 'Elephant' (uppercase E)",
+          input: [65],
+          expected: "No coat needed!",
+          description: "Test with warm temperature",
         },
       ],
-      functionToTest: "check_first_letter",
+      functionToTest: "temperature_advice",
     } as TestingSectionData,
-    {
-      kind: "Prediction",
-      id: "time-greeting-prediction" as SectionId,
-      title: "Time-Based Greetings",
-      content: [
-        {
-          kind: "text",
-          value:
-            "This function greets based on the hour (24-hour format). Predict each greeting:",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def greet_by_time(hour, name):\n    if hour < 12:\n        print(f"Good morning, {name}!")\n    else:\n        print(f"Good afternoon, {name}!")',
-      },
-      predictionTable: {
-        functionToTest: "greet_by_time",
-        columns: [
-          { variableName: "hour", variableType: "number" },
-          { variableName: "name", variableType: "string" },
-        ],
-        rows: [
-          { inputs: [11, "Alice"] },
-          { inputs: [12, "Bob"] },
-          { inputs: [0, "Charlie"] },
-          { inputs: [23, "Diana"] },
-          { inputs: [11.99, "Eve"] },
-        ],
-      },
-    } as PredictionSectionData,
-    {
-      kind: "Coverage",
-      id: "even-odd-coverage" as SectionId,
-      title: "Even or Odd Numbers",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Don't worry about how % works - just provide numbers that give each output. Hint: Even numbers are 0, 2, 4, 6, 8... and odd numbers are 1, 3, 5, 7, 9...",
-        },
-      ],
-      example: {
-        visualization: "console",
-        initialCode:
-          'def check_even_odd(number):\n    if number % 2 == 0:\n        print(f"{number} is even")\n    else:\n        print(f"{number} is odd")',
-      },
-      coverageTable: {
-        functionToTest: "check_even_odd",
-        columns: [
-          {
-            variableName: "number",
-            variableType: "number",
-          },
-        ],
-        rows: [
-          {
-            expectedOutput: "4 is even",
-            hint: "Use the number 4",
-          },
-          {
-            expectedOutput: "7 is odd",
-            hint: "Use the number 7",
-          },
-          {
-            expectedOutput: "0 is even",
-            hint: "What about zero?",
-          },
-          {
-            expectedOutput: "101 is odd",
-            hint: "Use the number 101",
-          },
-        ],
-      },
-    } as CoverageSectionData,
     {
       kind: "Reflection",
       id: "if-else-reflection" as SectionId,
@@ -452,7 +303,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Excellent work! You've mastered the if/else statement. You learned:\n- `else` creates a second path that runs when the `if` condition is False\n- Every input takes exactly ONE path - never both, never neither\n- The if and else must line up (same indentation level)\n- The code inside each block must be indented\n- How to predict outputs and provide inputs for specific outputs\n\nYou've also debugged indentation errors and learned why Python is so picky about spacing - it's how Python understands which code belongs together!\n\nBut what if you have more than two options? What about grades (A, B, C, D, F) or sizes (small, medium, large, extra-large)? That's what we'll tackle next with elif statements!",
+            "Great work! You've learned how if/else creates two mutually exclusive paths through your code. You discovered:\n- `else` runs when the `if` condition is False\n- Every input takes exactly ONE path - never both, never neither\n- The if and else must line up at the same indentation level\n- Testing boundary values (like exactly 18 or exactly 25) is important\n- How to work backwards from desired outputs to inputs\n\nBut what if you have more than two options? What about letter grades (A, B, C, D, F) or traffic lights (red, yellow, green)? That's what we'll learn next with `elif` statements!",
         },
       ],
     } as InformationSectionData,

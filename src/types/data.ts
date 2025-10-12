@@ -182,7 +182,7 @@ export interface DebuggerSectionData extends LessonSection {
 
 export interface InputParam {
   variableName: string; // Name of the variable used in the Python code
-  variableType: "text" | "number" | "boolean"; // Input type hint
+  variableType: "string" | "number" | "boolean"; // Input type hint
 }
 
 export interface PredictionTableRow {
