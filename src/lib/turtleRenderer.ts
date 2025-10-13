@@ -1,6 +1,40 @@
 import p5 from "p5";
 import type { JsTurtleCommand } from "../types/data";
 
+// Exported helper functions for testing
+
+/**
+ * Normalizes an angle to the -180 to 180 degree range.
+ * @param angle - The angle in degrees to normalize
+ * @returns The normalized angle
+ */
+export const normalizeAngle = (angle: number): number => {
+  while (angle > 180) angle -= 360;
+  while (angle < -180) angle += 360;
+  return angle;
+};
+
+/**
+ * Calculates move and turn speeds from a turtle speed setting (0-10).
+ * Speed 0 means instant (Infinity), speeds 1-10 are mapped to actual values.
+ * @param turtleSpeed - Speed value from 0 to 10
+ * @returns Object containing moveSpeed and turnSpeed
+ */
+export const calculateSpeedsFromTurtleSpeed = (
+  turtleSpeed: number
+): { moveSpeed: number; turnSpeed: number } => {
+  if (turtleSpeed === 0) {
+    // Speed 0 means instant (no animation)
+    return { moveSpeed: Infinity, turnSpeed: Infinity };
+  }
+  // Map speed 1-10 to actual movement speeds
+  const speedMap = [0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10];
+  const clampedSpeed = Math.max(1, Math.min(10, turtleSpeed));
+  const moveSpeed = speedMap[clampedSpeed];
+  const turnSpeed = moveSpeed * 2; // Rotation is proportionally faster
+  return { moveSpeed, turnSpeed };
+};
+
 // The public interface for our turtle renderer instance
 export interface RealTurtleInstance {
   execute: (commands: JsTurtleCommand[]) => Promise<void>;
@@ -105,23 +139,9 @@ export const setupJsTurtle = (container: HTMLElement): RealTurtleInstance => {
 
   // Helper to calculate actual speeds from turtle speed setting
   const calculateSpeeds = () => {
-    if (turtleSpeed === 0) {
-      // Speed 0 means instant (no animation)
-      moveSpeed = Infinity;
-      turnSpeed = Infinity;
-    } else {
-      // Map speed 1-10 to actual movement speeds
-      const speedMap = [0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10];
-      moveSpeed = speedMap[Math.max(1, Math.min(10, turtleSpeed))];
-      turnSpeed = moveSpeed * 2; // Rotation is proportionally faster
-    }
-  };
-
-  // Helper to normalize angles to -180 to 180 range
-  const normalizeAngle = (angle: number): number => {
-    while (angle > 180) angle -= 360;
-    while (angle < -180) angle += 360;
-    return angle;
+    const speeds = calculateSpeedsFromTurtleSpeed(turtleSpeed);
+    moveSpeed = speeds.moveSpeed;
+    turnSpeed = speeds.turnSpeed;
   };
 
   // Create the p5.js sketch
