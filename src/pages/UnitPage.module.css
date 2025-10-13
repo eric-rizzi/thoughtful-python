@@ -57,7 +57,9 @@
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease,
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
     border-left-color 0.3s ease;
   border-left: 4px solid #4b8bbe;
   display: flex;

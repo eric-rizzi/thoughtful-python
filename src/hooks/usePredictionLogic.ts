@@ -99,7 +99,7 @@ export const usePredictionLogic = ({
         const result = await runPythonCode(script);
         actualOutput = result.error
           ? `Error: ${result.error}`
-          : result.output?.trim() ?? "None";
+          : (result.output?.trim() ?? "None");
         isCorrect = !result.error && actualOutput === userPrediction.trim();
       } catch (err) {
         actualOutput =

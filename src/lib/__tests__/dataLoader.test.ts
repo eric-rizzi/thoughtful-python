@@ -172,8 +172,7 @@ describe("dataLoader", () => {
           { kind: "PRIMM", id: "primm-1" },
         ],
       };
-      const result =
-        dataLoader.getRequiredSectionsForLesson(lessonWithMixed);
+      const result = dataLoader.getRequiredSectionsForLesson(lessonWithMixed);
       expect(result).toEqual(["test-1", "pred-1", "primm-1"]);
     });
 
@@ -246,9 +245,7 @@ describe("dataLoader", () => {
         guid: "lesson-no-sections" as LessonId,
         title: "No Sections",
       } as any;
-      const result = dataLoader.hasReviewableAssignments(
-        lessonWithoutSections
-      );
+      const result = dataLoader.hasReviewableAssignments(lessonWithoutSections);
       expect(result).toBe(false);
     });
 

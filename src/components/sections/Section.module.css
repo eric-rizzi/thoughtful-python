@@ -377,7 +377,9 @@
   border-radius: 4px;
   border: 1px solid transparent; /* Add border for hover effect */
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
 }
 
 .quizOption:hover:not(.optionDisabled) {
@@ -592,7 +594,9 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.95rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .predictionInput:focus {

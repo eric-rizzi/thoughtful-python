@@ -127,7 +127,7 @@ export const useCoverageLogic = ({
 
         outputText = result.error
           ? `Error: ${result.error}`
-          : result.output?.trim() ?? "";
+          : (result.output?.trim() ?? "");
         isCorrect =
           !result.error && outputText === challenge.expectedOutput.trim();
       } catch (err) {

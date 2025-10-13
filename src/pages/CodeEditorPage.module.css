@@ -156,7 +156,9 @@
   border-radius: 4px;
   padding: 0.75rem;
   margin-bottom: 0.75rem;
-  transition: background-color 0.3s ease, border-left-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-left-color 0.3s ease;
   position: relative;
 }
 

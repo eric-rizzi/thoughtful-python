@@ -203,7 +203,7 @@ export interface AssignmentSubmission<T extends "Reflection" | "PRIMM"> {
 }
 
 export interface ListOfAssignmentSubmissionsResponse<
-  T extends "Reflection" | "PRIMM"
+  T extends "Reflection" | "PRIMM",
 > {
   assignmentType: T;
   unitId: UnitId;

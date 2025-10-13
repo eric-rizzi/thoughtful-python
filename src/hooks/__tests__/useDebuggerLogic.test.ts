@@ -112,7 +112,9 @@ describe("useDebuggerLogic", () => {
 
     expect(result.current.trace).toEqual(mockTrace);
     expect(result.current.error).toContain("NameError");
-    expect(result.current.error).toContain("name 'undefined_var' is not defined");
+    expect(result.current.error).toContain(
+      "name 'undefined_var' is not defined"
+    );
   });
 
   it("should handle Pyodide execution errors", async () => {
@@ -147,12 +149,15 @@ describe("useDebuggerLogic", () => {
     });
 
     expect(result.current.trace).toBeNull();
-    expect(result.current.error).toBe("Could not find trace markers in Pyodide output.");
+    expect(result.current.error).toBe(
+      "Could not find trace markers in Pyodide output."
+    );
   });
 
   it("should handle JSON parse errors", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "---DEBUGGER_TRACE_START---\n{invalid json}\n---DEBUGGER_TRACE_END---",
+      output:
+        "---DEBUGGER_TRACE_START---\n{invalid json}\n---DEBUGGER_TRACE_END---",
       error: null,
       result: null,
     });

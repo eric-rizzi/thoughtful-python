@@ -387,15 +387,15 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               !canAttemptInteraction
                 ? "Please fill in all fields"
                 : !isAuthenticated
-                ? "Please log in"
-                : "Get AI feedback"
+                  ? "Please log in"
+                  : "Get AI feedback"
             }
           >
             {isLoading && !submitError
               ? "Processing..."
               : !isAuthenticated
-              ? "Please Log In to Get AI Feedback"
-              : "Get Feedback"}
+                ? "Please Log In to Get AI Feedback"
+                : "Get Feedback"}
           </button>
           <button
             onClick={handleFinalSubmit}
@@ -411,21 +411,21 @@ const ReflectionSection: React.FC<ReflectionSectionProps> = ({
               !isAuthenticated
                 ? "Please log in"
                 : !canAttemptInteraction
-                ? "Please fill in all fields"
-                : !canSubmitToJournal
-                ? "Get qualifying AI feedback first ('achieves' or 'mostly')"
-                : isSectionMarkedCompleteInStore
-                ? "Section already completed"
-                : "Submit to Journal"
+                  ? "Please fill in all fields"
+                  : !canSubmitToJournal
+                    ? "Get qualifying AI feedback first ('achieves' or 'mostly')"
+                    : isSectionMarkedCompleteInStore
+                      ? "Section already completed"
+                      : "Submit to Journal"
             }
           >
             {isLoading && !submitError
               ? "Submitting..."
               : !isAuthenticated
-              ? "Please Log In to Submit to Journal"
-              : isSectionMarkedCompleteInStore
-              ? "Submitted ✓"
-              : "Submit to Journal"}
+                ? "Please Log In to Submit to Journal"
+                : isSectionMarkedCompleteInStore
+                  ? "Submitted ✓"
+                  : "Submit to Journal"}
           </button>
         </div>
         {submitError && <p className={styles.apiError}>{submitError}</p>}

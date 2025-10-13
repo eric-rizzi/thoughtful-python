@@ -45,7 +45,9 @@
   text-decoration: none;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
-  transition: background-color 0.3s, opacity 0.3s;
+  transition:
+    background-color 0.3s,
+    opacity 0.3s;
   font-size: 0.95rem;
   display: inline-block; /* Changed from block to inline-block for better flow with prev/next */
   line-height: 1.5; /* Ensure consistent vertical alignment */

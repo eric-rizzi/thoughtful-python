@@ -109,8 +109,8 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                     state?.isCorrect === true
                       ? coverageStyles.correctRow
                       : state?.isCorrect === false
-                      ? coverageStyles.incorrectRow
-                      : "";
+                        ? coverageStyles.incorrectRow
+                        : "";
 
                   return (
                     <tr key={rowIndex} className={rowClass}>

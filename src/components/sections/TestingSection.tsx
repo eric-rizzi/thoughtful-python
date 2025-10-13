@@ -61,8 +61,8 @@ const TestResultsDisplay: React.FC<{ results: TestResult[] }> = ({
                         {Array.isArray(firstFailed.expected)
                           ? firstFailed.expected.join("\n")
                           : typeof firstFailed.expected === "string"
-                          ? firstFailed.expected
-                          : JSON.stringify(firstFailed.expected)}
+                            ? firstFailed.expected
+                            : JSON.stringify(firstFailed.expected)}
                       </code>
                     </td>
                     <td>
@@ -70,8 +70,8 @@ const TestResultsDisplay: React.FC<{ results: TestResult[] }> = ({
                         {Array.isArray(firstFailed.actual)
                           ? firstFailed.actual.join("\n")
                           : typeof firstFailed.actual === "string"
-                          ? firstFailed.actual
-                          : JSON.stringify(firstFailed.actual)}
+                            ? firstFailed.actual
+                            : JSON.stringify(firstFailed.actual)}
                       </code>
                     </td>
                   </tr>

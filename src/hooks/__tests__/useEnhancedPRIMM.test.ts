@@ -332,9 +332,7 @@ describe("useEnhancedPRIMM", () => {
 
   it("should clear error when submitting new feedback", async () => {
     // First submission fails
-    mockedSubmitPrimmEvaluation.mockRejectedValueOnce(
-      new Error("First error")
-    );
+    mockedSubmitPrimmEvaluation.mockRejectedValueOnce(new Error("First error"));
 
     const { result } = renderHook(() => useEnhancedPRIMM(defaultProps));
 

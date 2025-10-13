@@ -3,7 +3,12 @@ import { vi } from "vitest";
 import { usePredictionLogic } from "../usePredictionLogic";
 import { usePyodide } from "../../contexts/PyodideContext";
 import { useSectionProgress } from "../useSectionProgress";
-import type { PredictionTableRow, UnitId, LessonId, SectionId } from "../../types/data";
+import type {
+  PredictionTableRow,
+  UnitId,
+  LessonId,
+  SectionId,
+} from "../../types/data";
 
 // Mock dependencies
 vi.mock("../../contexts/PyodideContext");
@@ -195,7 +200,9 @@ describe("usePredictionLogic", () => {
     const newState = updater({ predictions: { 0: { userAnswer: "5" } } });
 
     expect(newState.predictions[0].isCorrect).toBe(false);
-    expect(newState.predictions[0].actualOutput).toContain("Could not parse function name");
+    expect(newState.predictions[0].actualOutput).toContain(
+      "Could not parse function name"
+    );
   });
 
   it("should track running states during execution", async () => {

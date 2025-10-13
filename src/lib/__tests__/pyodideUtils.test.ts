@@ -264,7 +264,11 @@ describe("pyodideUtils", () => {
           description: "test with newlines and quotes",
         },
       ];
-      const result = generateTestCode("def func(s):\n  pass", "func", testCases);
+      const result = generateTestCode(
+        "def func(s):\n  pass",
+        "func",
+        testCases
+      );
       expect(result).toContain("test_cases = json.loads(");
       // Should not throw during generation
       expect(result).toBeTruthy();

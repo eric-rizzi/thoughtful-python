@@ -344,7 +344,7 @@ export async function getInstructorClassUnitProgress(
 }
 
 export async function getSubmissionsForAssignment<
-  T extends "Reflection" | "PRIMM"
+  T extends "Reflection" | "PRIMM",
 >(
   apiGatewayUrl: string,
   unitId: UnitId,

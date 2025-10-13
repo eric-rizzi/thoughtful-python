@@ -243,8 +243,8 @@ export async function getInstructorClassUnitProgressMock(
                   section_e: "2025-06-01",
                 }
               : seed > 0
-              ? { section_c: "2025-06-01" }
-              : {},
+                ? { section_c: "2025-06-01" }
+                : {},
           [`${unitId}/lesson_3`]: seed > 2 ? { section_f: "2025-06-01" } : {},
         },
       };
@@ -258,7 +258,7 @@ export async function getInstructorClassUnitProgressMock(
 }
 
 export async function getSubmissionsForAssignmentMock<
-  T extends "Reflection" | "PRIMM"
+  T extends "Reflection" | "PRIMM",
 >(
   unitId: UnitId,
   lessonId: LessonId,
@@ -328,8 +328,8 @@ export async function getSubmissionsForAssignmentMock<
           sourceVersionId: vd.isFinal
             ? prevVersionId
             : vIdx > 0
-            ? `mockR_${sId}_${lessonId.substring(0, 4)}_${sectionId}_v${vIdx}`
-            : null,
+              ? `mockR_${sId}_${lessonId.substring(0, 4)}_${sectionId}_v${vIdx}`
+              : null,
           finalEntryCreatedAt: vd.isFinal ? ts : null,
         });
         prevVersionId = currentVersionId;
@@ -458,8 +458,8 @@ export async function getInstructorStudentLearningEntriesMock(
           sourceVersionId: versionData.isFinal
             ? previousVersionId
             : vIdx > 0
-            ? `entry_${studentId}_${lId}_${sId}_v${vIdx}`
-            : null,
+              ? `entry_${studentId}_${lId}_${sId}_v${vIdx}`
+              : null,
           finalEntryCreatedAt: versionData.isFinal ? versionTimestamp : null,
         });
         previousVersionId = versionId;
@@ -482,9 +482,8 @@ export async function getInstructorStudentFinalLearningEntriesMock(
   );
   await mockApiDelay(600);
   // Leverage the existing mock that generates all versions, then filter
-  const allEntriesResponse = await getInstructorStudentLearningEntriesMock(
-    studentId
-  );
+  const allEntriesResponse =
+    await getInstructorStudentLearningEntriesMock(studentId);
   const finalEntries = allEntriesResponse.entries.filter(
     (entry) => entry.isFinal
   );

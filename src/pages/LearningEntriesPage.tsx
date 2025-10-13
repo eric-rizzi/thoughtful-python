@@ -33,9 +33,8 @@ const LearningEntriesPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await apiService.getFinalizedLearningEntries(
-          apiGatewayUrl
-        );
+        const response =
+          await apiService.getFinalizedLearningEntries(apiGatewayUrl);
         const sortedEntries = response.entries.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

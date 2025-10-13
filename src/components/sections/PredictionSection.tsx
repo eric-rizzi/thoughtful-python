@@ -105,8 +105,8 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                     rowState?.isCorrect === true
                       ? predictionStyles.correctRow
                       : rowState?.isCorrect === false
-                      ? predictionStyles.incorrectRow
-                      : "";
+                        ? predictionStyles.incorrectRow
+                        : "";
 
                   return (
                     <tr key={rowIndex} className={rowClass}>

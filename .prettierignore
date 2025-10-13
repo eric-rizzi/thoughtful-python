@@ -1,0 +1,42 @@
+# Build outputs
+dist
+build
+.coverage
+
+# Dependencies
+node_modules
+
+# Vite
+.vite
+
+# Test outputs
+coverage
+playwright-report
+test-results
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# Logs
+*.log
+
+# Package manager
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Assets that shouldn't be formatted
+*.min.js
+*.min.css
+
+# Static files
+public

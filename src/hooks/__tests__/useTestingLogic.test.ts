@@ -177,7 +177,9 @@ describe("useTestingLogic", () => {
       const { result } = renderHook(() => useTestingLogic(defaultProps));
 
       await act(async () => {
-        await result.current.runTests("def add(a, b):\n    return a + 'string'");
+        await result.current.runTests(
+          "def add(a, b):\n    return a + 'string'"
+        );
       });
 
       expect(result.current.testResults).toHaveLength(2);
@@ -191,7 +193,11 @@ describe("useTestingLogic", () => {
       ...defaultProps,
       functionToTest: "__main__",
       testCases: [
-        { input: null, expected: "Hello, World!", description: "prints greeting" },
+        {
+          input: null,
+          expected: "Hello, World!",
+          description: "prints greeting",
+        },
       ] as TestCase[],
     };
 
@@ -331,7 +337,9 @@ describe("useTestingLogic", () => {
 
       expect(result.current.testResults).not.toBeNull();
       expect(result.current.testResults![0].passed).toBe(false);
-      expect(result.current.testResults![0].actual).toContain("Execution error");
+      expect(result.current.testResults![0].actual).toContain(
+        "Execution error"
+      );
     });
 
     it("should reset state when running new tests", async () => {

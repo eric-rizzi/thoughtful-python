@@ -262,7 +262,7 @@ describe("useInteractiveTableLogic", () => {
       });
 
       expect(mockRunPythonCode).toHaveBeenCalledWith(
-        'def add(a, b):\n  return a + b\n\nadd(2, 3)'
+        "def add(a, b):\n  return a + b\n\nadd(2, 3)"
       );
 
       const state = result.current.savedState as any;
@@ -423,7 +423,9 @@ describe("useInteractiveTableLogic", () => {
       });
 
       const state = result.current.savedState as any;
-      expect(state.predictions[0].actualOutput).toContain("Error: Pyodide crash");
+      expect(state.predictions[0].actualOutput).toContain(
+        "Error: Pyodide crash"
+      );
       expect(state.predictions[0].isCorrect).toBe(false);
     });
 
@@ -454,7 +456,9 @@ describe("useInteractiveTableLogic", () => {
         useInteractiveTableLogic(predictionProps)
       );
 
-      expect(result.current.pyodideError?.message).toBe("Pyodide failed to load");
+      expect(result.current.pyodideError?.message).toBe(
+        "Pyodide failed to load"
+      );
     });
 
     it("should handle multiple rows independently", async () => {

@@ -2,7 +2,10 @@ import { renderHook, act } from "@testing-library/react";
 import { vi } from "vitest";
 import { useInteractiveExample } from "../useInteractiveExample";
 import { usePyodide } from "../../contexts/PyodideContext";
-import { useProgressStore, useProgressActions } from "../../stores/progressStore";
+import {
+  useProgressStore,
+  useProgressActions,
+} from "../../stores/progressStore";
 import type { UnitId, LessonId, SectionId } from "../../types/data";
 
 // Mock dependencies
