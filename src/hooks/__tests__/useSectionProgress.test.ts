@@ -157,4 +157,164 @@ describe("useSectionProgress", () => {
     const [state] = result.current;
     expect(state.completed).toBe(true);
   });
+
+  describe("edge cases", () => {
+    it("should handle storage returning null and use initial state", () => {
+      mockedLoadFromStorage.mockReturnValue(null);
+
+      const { result } = renderHook(() =>
+        useSectionProgress(...Object.values(hookArgs))
+      );
+
+      const [state] = result.current;
+      expect(state).toEqual(initialMockState);
+    });
+
+    it("should merge saved state with initial state", () => {
+      const partialSavedState = { completed: true };
+      const extendedInitialState = { completed: false, extra: "value" };
+      mockedLoadFromStorage.mockReturnValue(partialSavedState);
+
+      const { result } = renderHook(() =>
+        useSectionProgress(
+          hookArgs.unitId,
+          hookArgs.lessonId,
+          hookArgs.sectionId,
+          hookArgs.storageSubKey,
+          extendedInitialState as any,
+          checkCompletionMock
+        )
+      );
+
+      const [state] = result.current;
+      expect(state).toEqual({ completed: true, extra: "value" });
+    });
+
+    it("should call completeSection on mount and each setState when complete", () => {
+      checkCompletionMock.mockReturnValue(true);
+      mockedLoadFromStorage.mockReturnValue({ completed: true });
+
+      const { result } = renderHook(() =>
+        useSectionProgress(...Object.values(hookArgs))
+      );
+
+      const [, setPersistedState] = result.current;
+
+      // Called once on mount
+      expect(completeSectionMock).toHaveBeenCalledTimes(1);
+
+      // Set to same completed state multiple times
+      act(() => {
+        setPersistedState({ completed: true });
+      });
+      act(() => {
+        setPersistedState({ completed: true });
+      });
+
+      // Gets called each time state changes while complete
+      expect(completeSectionMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("should handle function updater pattern for setState", () => {
+      mockedLoadFromStorage.mockReturnValue({ completed: false });
+
+      const { result } = renderHook(() =>
+        useSectionProgress(...Object.values(hookArgs))
+      );
+
+      const [, setPersistedState] = result.current;
+
+      act(() => {
+        setPersistedState((prev: MockState) => ({
+          ...prev,
+          completed: true,
+        }));
+      });
+
+      expect(result.current[0].completed).toBe(true);
+      expect(mockedSaveToStorage).toHaveBeenCalledWith(
+        "user-123",
+        "test_storage_key",
+        { completed: true }
+      );
+    });
+
+    it("should use anonymous placeholder when user is not authenticated", () => {
+      mockedUseAuthStore.mockImplementation((selector: any) => {
+        const state = { isAuthenticated: false, user: null };
+        return selector(state);
+      });
+      mockedLoadFromStorage.mockReturnValue(null);
+
+      renderHook(() => useSectionProgress(...Object.values(hookArgs)));
+
+      expect(mockedLoadFromStorage).toHaveBeenCalledWith(
+        ANONYMOUS_USER_ID_PLACEHOLDER,
+        "test_storage_key"
+      );
+    });
+
+    it("should not call completeSection if already completed on mount", () => {
+      checkCompletionMock.mockReturnValue(true);
+      mockedLoadFromStorage.mockReturnValue({ completed: true });
+
+      renderHook(() => useSectionProgress(...Object.values(hookArgs)));
+
+      // Should be called once for initial complete state
+      expect(completeSectionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle checkCompletion returning false after being true", () => {
+      checkCompletionMock.mockReturnValue(false);
+      mockedLoadFromStorage.mockReturnValue({ completed: false });
+
+      const { result } = renderHook(() =>
+        useSectionProgress(...Object.values(hookArgs))
+      );
+
+      const [, setPersistedState] = result.current;
+
+      // First make it complete
+      checkCompletionMock.mockReturnValue(true);
+      act(() => {
+        setPersistedState({ completed: true });
+      });
+
+      expect(result.current[2]).toBe(true);
+      expect(completeSectionMock).toHaveBeenCalledTimes(1);
+
+      // Then make it incomplete again
+      checkCompletionMock.mockReturnValue(false);
+      act(() => {
+        setPersistedState({ completed: false });
+      });
+
+      expect(result.current[2]).toBe(false);
+      // Should not call completeSection again
+      expect(completeSectionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("should save state every time setter is called", () => {
+      mockedLoadFromStorage.mockReturnValue({ completed: false });
+
+      const { result } = renderHook(() =>
+        useSectionProgress(...Object.values(hookArgs))
+      );
+
+      const [, setPersistedState] = result.current;
+
+      act(() => {
+        setPersistedState({ completed: false });
+      });
+      act(() => {
+        setPersistedState({ completed: false });
+      });
+      act(() => {
+        setPersistedState({ completed: false });
+      });
+
+      // Should save every time, even with same value
+      expect(mockedSaveToStorage).toHaveBeenCalledTimes(3);
+    });
+  });
 });
