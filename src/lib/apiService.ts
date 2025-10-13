@@ -190,7 +190,7 @@ const handleApiResponse = async (response: Response) => {
     };
     try {
       errorData = await response.json();
-    } catch (e) {
+    } catch (_e) {
       // Ignore if body is not valid JSON
     }
     throw new ApiError(

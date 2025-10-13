@@ -166,7 +166,7 @@ except Exception as e:
     tb = traceback.extract_tb(e.__traceback__)
     user_code_frame = tb[-1] if tb else None
     line_num = user_code_frame.lineno - ${scriptPrefixLines} if user_code_frame else 'N/A'
-    error_info = { "type": type(e).__name__, "message": str(e), "line": line_num }
+    error_info = { "type": type(_e).__name__, "message": str(_e), "line": line_num }
     print(f"PYTHON_EXECUTION_ERROR:: {json.dumps(error_info)}")
     _js_turtle_commands_ = []
 finally:
@@ -198,7 +198,7 @@ json.dumps(_js_turtle_commands_)
             const errorInfo = JSON.parse(jsonString.trim());
             const friendlyMessage = `Error on line ${errorInfo.line}: ${errorInfo.type}\n${errorInfo.message}`;
             setError(friendlyMessage);
-          } catch (e) {
+          } catch (_e) {
             setError("A Python error occurred, but it could not be displayed.");
           }
           return [];
@@ -215,8 +215,8 @@ json.dumps(_js_turtle_commands_)
         if (!stopRequestedRef.current && autoCompleteOnRun) {
           completeSection(unitId, lessonId, sectionId);
         }
-      } catch (e) {
-        const errorMessage = e instanceof Error ? e.message : String(e);
+      } catch (_e) {
+        const errorMessage = _e instanceof Error ? _e.message : String(_e);
         console.error("Turtle execution error:", errorMessage);
         setError(errorMessage);
         parsedJsCommands = [];

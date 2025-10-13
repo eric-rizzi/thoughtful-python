@@ -22,10 +22,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ content }) => {
             return <ImageBlock key={index} block={block} />;
           case "video":
             return <VideoBlock key={index} block={block} />;
-          default:
+          default: {
             const _exhaustiveCheck: never = block;
             console.warn("Unknown content block kind:", _exhaustiveCheck);
             return <div key={index}>Unsupported content block</div>;
+          }
         }
       })}
     </div>

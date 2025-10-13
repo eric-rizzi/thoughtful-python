@@ -16,7 +16,7 @@ interface RenderFinalLearningEntryProps {
 
 const RenderFinalLearningEntry: React.FC<RenderFinalLearningEntryProps> = ({
   entry,
-  lessonTitle,
+  lessonTitle: _lessonTitle,
 }) => {
   const getAssessmentClass = (assessment?: AssessmentLevel | null): string => {
     if (!assessment) return "";

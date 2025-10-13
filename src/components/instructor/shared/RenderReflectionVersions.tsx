@@ -17,7 +17,7 @@ interface RenderReflectionVersionsProps {
 const RenderReflectionVersions: React.FC<RenderReflectionVersionsProps> = ({
   versions,
   lessonGuid,
-  sectionId,
+  sectionId: _sectionId,
 }) => {
   if (!versions || versions.length === 0) {
     return (

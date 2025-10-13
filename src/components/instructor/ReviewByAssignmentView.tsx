@@ -71,7 +71,7 @@ const ReviewByAssignmentView: React.FC<ReviewByAssignmentViewProps> = ({
               })[]
             );
           })
-          .catch((err) =>
+          .catch((_err) =>
             setError("Failed to load lessons for assignment list.")
           )
           .finally(() =>

@@ -6,7 +6,6 @@ import CodeEditor from "../CodeEditor";
 import { useTestingLogic, TestResult } from "../../hooks/useTestingLogic";
 import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import LoadingSpinner from "../LoadingSpinner";
-import { useProgressStore } from "../../stores/progressStore";
 
 interface TestingSectionProps {
   section: TestingSectionData;
