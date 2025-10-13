@@ -152,4 +152,207 @@ describe("apiService", () => {
       expect(setSessionExpiredMock).toHaveBeenCalledWith(true);
     });
   });
+
+  describe("ApiError class", () => {
+    it("should create an error with status and data", () => {
+      const error = new ApiError("Test error", 404, { message: "Not found" });
+      expect(error.message).toBe("Test error");
+      expect(error.status).toBe(404);
+      expect(error.data).toEqual({ message: "Not found" });
+      expect(error.name).toBe("ApiError");
+    });
+
+    it("should use message as data if no data provided", () => {
+      const error = new ApiError("Test error", 500);
+      expect(error.data).toEqual({ message: "Test error" });
+    });
+
+    it("should be an instance of Error", () => {
+      const error = new ApiError("Test error", 400);
+      expect(error instanceof Error).toBe(true);
+      expect(error instanceof ApiError).toBe(true);
+    });
+  });
+
+  describe("loginWithGoogle", () => {
+    it("should send googleIdToken and return tokens", async () => {
+      const mockTokens = {
+        accessToken: "access-123",
+        refreshToken: "refresh-456",
+      };
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockTokens),
+      });
+
+      const result = await apiService.loginWithGoogle(
+        "http://api.test",
+        "google-id-token"
+      );
+
+      expect(result).toEqual(mockTokens);
+      expect(mockFetch).toHaveBeenCalledWith("http://api.test/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ googleIdToken: "google-id-token" }),
+      });
+    });
+
+    it("should throw ApiError on failed login", async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 401,
+      });
+
+      await expect(
+        apiService.loginWithGoogle("http://api.test", "invalid-token")
+      ).rejects.toThrow(ApiError);
+    });
+  });
+
+  describe("refreshAccessToken", () => {
+    it("should send refresh token and return new tokens", async () => {
+      const newTokens = {
+        accessToken: "new-access",
+        refreshToken: "new-refresh",
+      };
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(newTokens),
+      });
+
+      const result = await apiService.refreshAccessToken(
+        "http://api.test",
+        "old-refresh-token"
+      );
+
+      expect(result).toEqual(newTokens);
+      expect(mockFetch).toHaveBeenCalledWith("http://api.test/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: "old-refresh-token" }),
+      });
+    });
+
+    it("should throw ApiError on failed refresh", async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 401,
+      });
+
+      await expect(
+        apiService.refreshAccessToken("http://api.test", "expired-token")
+      ).rejects.toThrow(ApiError);
+    });
+  });
+
+  describe("logoutUser", () => {
+    it("should send logout request with refresh token", async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+      });
+
+      await apiService.logoutUser("http://api.test", "refresh-token");
+
+      expect(mockFetch).toHaveBeenCalledWith("http://api.test/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: "refresh-token" }),
+      });
+    });
+
+    it("should not throw even if logout fails", async () => {
+      mockFetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+      });
+
+      // Should not throw - logout is best-effort
+      await expect(
+        apiService.logoutUser("http://api.test", "token")
+      ).resolves.not.toThrow();
+    });
+  });
+
+  describe("updateUserProgress", () => {
+    it("should send batch completions to server", async () => {
+      const batchInput = {
+        completions: [
+          { unitId: "unit-1", lessonId: "lesson-1", sectionId: "sec-1" },
+        ],
+      };
+      const mockResponse = { completion: {} };
+
+      getAccessTokenMock.mockReturnValue("access-token");
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockResponse),
+      });
+
+      const result = await apiService.updateUserProgress(
+        "http://api.test",
+        batchInput
+      );
+
+      expect(result).toEqual(mockResponse);
+      expect(mockFetch).toHaveBeenCalledWith("http://api.test/progress", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer access-token",
+        },
+        body: JSON.stringify(batchInput),
+      });
+    });
+  });
+
+  describe("fetchWithAuth - edge cases", () => {
+    it("should reject immediately if no access token available", async () => {
+      getAccessTokenMock.mockReturnValue(null);
+
+      await expect(
+        apiService.getUserProgress("http://api.test")
+      ).rejects.toThrow("No access token available.");
+    });
+
+    it("should handle 403 errors same as 401 (trigger refresh)", async () => {
+      const newTokens = {
+        accessToken: "new-access-token",
+        refreshToken: "new-refresh-token",
+      };
+      getAccessTokenMock.mockReturnValue("old-access-token");
+      getRefreshTokenMock.mockReturnValue("old-refresh-token");
+
+      // First call fails with 403
+      mockFetch.mockResolvedValueOnce({ status: 403, ok: false });
+      // Refresh succeeds
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(newTokens),
+      });
+      // Retry succeeds
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ data: "success" }),
+      });
+
+      const result = await apiService.getUserProgress("http://api.test");
+
+      expect(result).toEqual({ data: "success" });
+      expect(setTokensMock).toHaveBeenCalledWith(newTokens);
+    });
+
+    it("should logout if no refresh token available on 401", async () => {
+      getAccessTokenMock.mockReturnValue("access-token");
+      getRefreshTokenMock.mockReturnValue(null);
+
+      mockFetch.mockResolvedValueOnce({ status: 401, ok: false });
+
+      await expect(
+        apiService.getUserProgress("http://api.test")
+      ).rejects.toThrow("Session expired. Please log in again.");
+
+      expect(logoutMock).toHaveBeenCalled();
+    });
+  });
 });
