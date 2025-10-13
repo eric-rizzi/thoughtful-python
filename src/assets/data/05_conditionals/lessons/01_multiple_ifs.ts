@@ -272,7 +272,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Great work! You've learned how to use multiple if statements in one function. Each if statement is checked independently, which means multiple conditions can be True for the same input - like getting both 'Outstanding!' and 'Great job!' for a score of 95.\n\nBut sometimes, you don't want multiple messages. If you're assigning letter grades, a student should get exactly ONE grade (A, B, C, D, or F), not multiple. If you're checking a password, you want either 'Access granted' OR 'Access denied', not both.\n\nThat's what we'll learn next: how to make your function choose between alternatives using if/else statements.",
+            "Great work! You've learned how to use multiple if statements in one function. Each if statement is checked independently, which means multiple conditions can be True for the same input - like getting both 'Outstanding!' and 'Great job!' for a score of 95.\n\nBut sometimes, you don't want multiple messages. If you're assigning letter grades, a student should get exactly ONE grade (A, B, C, D, or F), not multiple. If you're checking a password, you want either 'Access granted' OR 'Access denied', not both. That's what we'll learn next: how to make your function choose between alternatives using if/else statements.",
         },
       ],
     } as InformationSectionData,

@@ -28,7 +28,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "In the last two lessons, your `if` statements decided whether to run optional code. Sometimes the code ran, sometimes it didn't. But often in programming, you want to do one thing OR another - not just something or nothing.\n\nThink about a password checker. When the password is wrong, you don't want silence - you want a clear message saying 'Access denied!'. That's where `else` comes in. With `if`/`else`, your function ALWAYS does exactly one of two things.",
+            "In the last two lessons, you used `if` statements to decide whether to run particular bits of code. Sometimes the indented code ran, and sometimes it didn't. Often in programming, however, you want to do something when a particular condition is not True. For example, think about a password checker. When the password is wrong, you don't want silence - you want a clear message saying 'Access denied!'. That's where `else` comes in. With `if`/`else`, your function ALWAYS does exactly one of two things. Learning to use the `else` properly gives you more control to match your programs to the situation.",
         },
       ],
     } as InformationSectionData,
@@ -40,7 +40,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "To show the power of `if`/`else`, we're going to recreate a program from a previous lesson: the password program. The new version is more powerful because it forces the program to go down one path of the other. This means that the program ALWAYS prints one of two messages.\n\nWatch how different inputs to the `check_password()` function go down different paths through the function. In particular, notice how depending on whether the condition is true, either the code indented under the `if` OR the code indented under the `else` runs.",
+            "To show the power of `if`/`else`, we're going to recreate a program from a previous lesson: the password program. The new version is more powerful because it forces the program to go down one of two paths. This means that the program ALWAYS prints one of two messages.\n\nWatch how different inputs to the `check_password()` function go down different paths through the function. In particular, notice how depending on whether the condition is true, either the code indented under the `if` OR the code indented under the `else` runs.",
         },
       ],
       example: {
@@ -61,7 +61,7 @@ const lessonData: Lesson = {
         },
       ],
       options: [
-        "The else block runs only when the `if` condition is False",
+        "The `else` block runs only when the `if` condition is False",
         "Both the `if` and `else` blocks can run for the same input",
         "The `if` and `else` must be at the same indentation level",
         "Every input triggers exactly one of the two blocks",
