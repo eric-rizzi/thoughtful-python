@@ -137,8 +137,9 @@ const lessonData: Lesson = {
         initialCode:
           'def assign_grade(score):\n    if score >= 90:\n        print("A")\n    elif score >= 80:\n        print("B")\n    elif score >= 70:\n        print("C")\n    elif score >= 60:\n        print("D")\n    else:\n        print("F")',
       },
+      testMode: "procedure",
+      functionToTest: "assign_grade",
       predictionTable: {
-        functionToTest: "assign_grade",
         columns: [{ variableName: "score", variableType: "number" }],
         rows: [
           { inputs: [100] },
@@ -165,8 +166,9 @@ const lessonData: Lesson = {
         initialCode:
           'def get_size(measurement):\n    if measurement < 10:\n        print("Small")\n    elif measurement < 20:\n        print("Medium")\n    elif measurement < 30:\n        print("Large")\n    else:\n        print("Extra Large")',
       },
+      testMode: "procedure",
+      functionToTest: "get_size",
       coverageTable: {
-        functionToTest: "get_size",
         columns: [
           {
             variableName: "measurement",
@@ -231,7 +233,7 @@ const lessonData: Lesson = {
           description: "Test hot",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "temperature_advice",
     } as TestingSectionData,
     {
@@ -294,7 +296,7 @@ const lessonData: Lesson = {
           description: "Test invalid",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "select_difficulty",
     } as TestingSectionData,
     {

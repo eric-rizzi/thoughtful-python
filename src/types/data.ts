@@ -167,13 +167,13 @@ export interface TestCase {
   description: string;
 }
 
-export type TestMode = "main_procedure" | "fn_procedure" | "fn_function";
+export type TestMode = "procedure" | "function";
 
 export interface TestingSectionData extends LessonSection {
   kind: "Testing";
   example: ExecutableCode;
   testMode: TestMode;
-  functionToTest?: string; // Required for fn_procedure and fn_function, not needed for main_procedure
+  functionToTest: string; // "__main__" for testing entire program output, function name for testing specific functions
   testCases: TestCase[];
 }
 
@@ -196,8 +196,9 @@ export interface PredictionTableRow {
 export interface PredictionSectionData extends LessonSection {
   kind: "Prediction";
   example: ExecutableCode;
+  testMode: TestMode;
+  functionToTest: string;
   predictionTable: {
-    functionToTest: string;
     columns: InputParam[];
     rows: PredictionTableRow[];
   };
@@ -211,8 +212,9 @@ export interface CoverageTableRow {
 export interface CoverageSectionData extends LessonSection {
   kind: "Coverage";
   example: ExecutableCode;
+  testMode: TestMode;
+  functionToTest: string;
   coverageTable: {
-    functionToTest: string;
     columns: InputParam[];
     rows: CoverageTableRow[];
   };

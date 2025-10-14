@@ -246,7 +246,7 @@ const lessonData: Lesson = {
           description: "Test temp 31",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "check_temp",
     } as TestingSectionData,
     {

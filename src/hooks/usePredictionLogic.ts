@@ -5,6 +5,7 @@ import type {
   SectionId,
   PredictionTableRow,
   SavedPredictionState,
+  TestMode,
 } from "../types/data";
 import { usePyodide } from "../contexts/PyodideContext";
 import { useSectionProgress } from "./useSectionProgress";
@@ -13,6 +14,7 @@ interface UsePredictionLogicProps {
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
+  testMode: TestMode;
   functionCode: string;
   predictionRows: PredictionTableRow[];
 }
@@ -21,6 +23,7 @@ export const usePredictionLogic = ({
   unitId,
   lessonId,
   sectionId,
+  testMode,
   functionCode,
   predictionRows,
 }: UsePredictionLogicProps) => {
@@ -94,12 +97,30 @@ export const usePredictionLogic = ({
         const functionCall = `${functionName}(${row.inputs
           .map((val) => JSON.stringify(val))
           .join(", ")})`;
-        const script = `${functionCode}\n\nprint(${functionCall})`;
+
+        let script: string;
+        if (testMode === "procedure") {
+          // For procedures: wrap the function call in print() to capture stdout
+          script = `${functionCode}\n\nprint(${functionCall})`;
+        } else {
+          // For functions: capture return value directly
+          script = `${functionCode}\n\n${functionCall}`;
+        }
 
         const result = await runPythonCode(script);
-        actualOutput = result.error
-          ? `Error: ${result.error}`
-          : (result.output?.trim() ?? "None");
+
+        if (testMode === "procedure") {
+          // For procedures: compare against stdout
+          actualOutput = result.error
+            ? `Error: ${result.error}`
+            : (result.output?.trim() ?? "");
+        } else {
+          // For functions: compare against return value (which appears in output)
+          actualOutput = result.error
+            ? `Error: ${result.error}`
+            : (result.output?.trim() ?? "");
+        }
+
         isCorrect = !result.error && actualOutput === userPrediction.trim();
       } catch (err) {
         actualOutput =
@@ -125,6 +146,7 @@ export const usePredictionLogic = ({
     [
       predictionRows,
       savedState.predictions,
+      testMode,
       functionCode,
       runPythonCode,
       setSavedState,

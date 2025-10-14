@@ -19,7 +19,7 @@ describe("useTestingLogic", () => {
     unitId: "unit-1" as UnitId,
     lessonId: "lesson-1" as LessonId,
     sectionId: "section-1" as SectionId,
-    testMode: "fn_function" as const,
+    testMode: "function" as const,
     functionToTest: "add",
     testCases: [
       { input: [2, 3], expected: 5, description: "adds 2 and 3" },
@@ -42,7 +42,7 @@ describe("useTestingLogic", () => {
     });
   });
 
-  describe("fn_function testing mode", () => {
+  describe("function testing mode", () => {
     it("should run tests for a function and mark all as passed", async () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
@@ -189,10 +189,10 @@ describe("useTestingLogic", () => {
     });
   });
 
-  describe("fn_procedure testing mode", () => {
+  describe("procedure testing mode", () => {
     const procedureProps = {
       ...defaultProps,
-      testMode: "fn_procedure" as const,
+      testMode: "procedure" as const,
       functionToTest: "greet",
       testCases: [
         { input: ["Alice"], expected: "Hello, Alice!", description: "greets Alice" },
@@ -346,11 +346,11 @@ describe("useTestingLogic", () => {
     });
   });
 
-  describe("main_procedure testing mode", () => {
+  describe("__main__ testing (procedure mode)", () => {
     const mainProps = {
       ...defaultProps,
-      testMode: "main_procedure" as const,
-      functionToTest: undefined,
+      testMode: "procedure" as const,
+      functionToTest: "__main__",
       testCases: [
         {
           input: null,

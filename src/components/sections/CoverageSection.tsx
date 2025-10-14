@@ -38,8 +38,9 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
     lessonId,
     sectionId: section.id,
     mode: "coverage",
+    testMode: section.testMode,
     functionCode: section.example.initialCode,
-    functionToTest: section.coverageTable.functionToTest,
+    functionToTest: section.functionToTest,
     columns: section.coverageTable.columns,
     rows: section.coverageTable.rows,
   });

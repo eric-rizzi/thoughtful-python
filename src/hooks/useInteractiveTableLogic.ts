@@ -8,6 +8,7 @@ import type {
   PredictionTableRow,
   SavedCoverageState,
   SavedPredictionState,
+  TestMode,
 } from "../types/data";
 import { usePyodide } from "../contexts/PyodideContext";
 // useSectionProgress is no longer needed
@@ -19,6 +20,7 @@ interface UseInteractiveTableLogicProps {
   lessonId: LessonId;
   sectionId: SectionId;
   mode: SectionMode;
+  testMode: TestMode;
   functionCode: string;
   functionToTest: string;
   columns: InputParam[];
@@ -32,6 +34,7 @@ export const useInteractiveTableLogic = ({
   lessonId,
   sectionId,
   mode,
+  testMode,
   functionCode,
   functionToTest,
   columns,
@@ -109,7 +112,16 @@ export const useInteractiveTableLogic = ({
         const functionCall = `${functionToTest}(${inputs
           .map((val) => JSON.stringify(val))
           .join(", ")})`;
-        const script = `${functionCode}\n\n${functionCall}`;
+
+        let script: string;
+        if (testMode === "function") {
+          // Functions return values - need to print them to capture output
+          script = `${functionCode}\n\nprint(${functionCall})`;
+        } else {
+          // Procedures print internally - just call them
+          script = `${functionCode}\n\n${functionCall}`;
+        }
+
         const result = await runPythonCode(script);
         actualOutput = result.error
           ? `Error: ${result.error}`
@@ -155,6 +167,7 @@ export const useInteractiveTableLogic = ({
       rows,
       mode,
       state,
+      testMode,
       functionToTest,
       functionCode,
       runPythonCode,

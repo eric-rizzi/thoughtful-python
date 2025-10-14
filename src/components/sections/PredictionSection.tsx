@@ -37,8 +37,9 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
     lessonId,
     sectionId: section.id,
     mode: "prediction",
+    testMode: section.testMode,
     functionCode: section.example.initialCode,
-    functionToTest: section.predictionTable.functionToTest,
+    functionToTest: section.functionToTest,
     columns: section.predictionTable.columns,
     rows: section.predictionTable.rows,
   });

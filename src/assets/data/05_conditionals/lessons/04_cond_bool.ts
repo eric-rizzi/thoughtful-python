@@ -91,8 +91,9 @@ const lessonData: Lesson = {
         initialCode:
           'def check_ride_safety(height, age):\n    if height >= 48 and age >= 10:\n        print("You can ride!")\n    else:\n        print("Sorry, not this time")',
       },
+      testMode: "procedure",
+      functionToTest: "check_ride_safety",
       predictionTable: {
-        functionToTest: "check_ride_safety",
         columns: [
           { variableName: "height", variableType: "number" },
           { variableName: "age", variableType: "number" },
@@ -168,8 +169,9 @@ const lessonData: Lesson = {
         initialCode:
           'def free_entry(age, has_membership):\n    if age < 5 or has_membership:\n        print("Free entry!")\n    else:\n        print("Please pay admission")',
       },
+      testMode: "procedure",
+      functionToTest: "free_entry",
       coverageTable: {
-        functionToTest: "free_entry",
         columns: [
           { variableName: "age", variableType: "number" },
           { variableName: "has_membership", variableType: "boolean" },
@@ -232,7 +234,7 @@ const lessonData: Lesson = {
           description: "Too short even with adult",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "can_ride",
     } as TestingSectionData,
     {
@@ -309,7 +311,7 @@ const lessonData: Lesson = {
           description: "Kid without permission",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "can_play_game",
     } as TestingSectionData,
     {

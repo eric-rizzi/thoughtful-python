@@ -144,7 +144,8 @@ const lessonData: Lesson = {
           description: "Test that a triangle is drawn",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

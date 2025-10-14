@@ -38,6 +38,7 @@ describe("useInteractiveTableLogic", () => {
     lessonId: "lesson-1" as LessonId,
     sectionId: "section-1" as SectionId,
     mode: "coverage" as const,
+    testMode: "function" as const,
     functionCode: "def add(a, b):\n  return a + b",
     functionToTest: "add",
     columns: defaultColumns,
@@ -49,6 +50,7 @@ describe("useInteractiveTableLogic", () => {
     lessonId: "lesson-1" as LessonId,
     sectionId: "section-1" as SectionId,
     mode: "prediction" as const,
+    testMode: "function" as const,
     functionCode: "def add(a, b):\n  return a + b",
     functionToTest: "add",
     columns: defaultColumns,
@@ -115,7 +117,7 @@ describe("useInteractiveTableLogic", () => {
       });
 
       expect(mockRunPythonCode).toHaveBeenCalledWith(
-        "def add(a, b):\n  return a + b\n\nadd(2, 3)"
+        "def add(a, b):\n  return a + b\n\nprint(add(2, 3))"
       );
 
       const state = result.current.savedState as any;
@@ -210,7 +212,7 @@ describe("useInteractiveTableLogic", () => {
       });
 
       expect(mockRunPythonCode).toHaveBeenCalledWith(
-        "def add(a, b):\n  return a + b\n\nadd(3.5, 3.5)"
+        "def add(a, b):\n  return a + b\n\nprint(add(3.5, 3.5))"
       );
     });
   });
@@ -262,7 +264,7 @@ describe("useInteractiveTableLogic", () => {
       });
 
       expect(mockRunPythonCode).toHaveBeenCalledWith(
-        "def add(a, b):\n  return a + b\n\nadd(2, 3)"
+        "def add(a, b):\n  return a + b\n\nprint(add(2, 3))"
       );
 
       const state = result.current.savedState as any;

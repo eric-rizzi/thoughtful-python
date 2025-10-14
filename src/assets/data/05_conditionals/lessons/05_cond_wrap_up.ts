@@ -90,8 +90,9 @@ const lessonData: Lesson = {
         initialCode:
           'def check_access(age, has_id):\n    if age >= 21 and has_id:\n        print("Enter")\n    else:\n        print("Access denied")',
       },
+      testMode: "procedure",
+      functionToTest: "check_access",
       coverageTable: {
-        functionToTest: "check_access",
         columns: [
           { variableName: "age", variableType: "number" },
           { variableName: "has_id", variableType: "boolean" },
@@ -204,7 +205,7 @@ const lessonData: Lesson = {
           description: "Test F grade",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "report_grade",
     } as TestingSectionData,
     {
@@ -248,8 +249,9 @@ const lessonData: Lesson = {
         initialCode:
           'def can_enter_free(age, has_ticket, is_member):\n    if (age < 5 and has_ticket) or is_member:\n        print("Welcome - free entry!")\n    else:\n        print("Please purchase a ticket")',
       },
+      testMode: "procedure",
+      functionToTest: "can_enter_free",
       coverageTable: {
-        functionToTest: "can_enter_free",
         columns: [
           { variableName: "age", variableType: "number" },
           { variableName: "has_ticket", variableType: "boolean" },
@@ -341,7 +343,7 @@ const lessonData: Lesson = {
           description: "Contains space",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "validate_password",
     } as TestingSectionData,
     {

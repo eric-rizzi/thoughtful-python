@@ -149,7 +149,8 @@ const lessonData: Lesson = {
           description: "Test with Alice, scores 50 and 70",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Testing",
@@ -175,7 +176,8 @@ const lessonData: Lesson = {
           description: "Test with Widget purchase",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

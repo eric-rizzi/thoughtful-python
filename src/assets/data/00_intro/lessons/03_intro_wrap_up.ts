@@ -68,7 +68,8 @@ const lessonData: Lesson = {
           description: "Test Instagram notification format",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Matching",
@@ -117,7 +118,8 @@ const lessonData: Lesson = {
           description: "Test twit statistics with calculations",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "MultipleSelection",

@@ -67,7 +67,8 @@ const lessonData: Lesson = {
           description: "Test don't get NameError",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Matching",
@@ -127,7 +128,8 @@ const lessonData: Lesson = {
           description: "Test with favorite_color='green' and lucky_number=7",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

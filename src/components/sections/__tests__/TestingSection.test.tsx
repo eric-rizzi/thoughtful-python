@@ -26,7 +26,7 @@ const mockSectionData: TestingSectionData = {
     initialCode: "def add(a, b):\n  return a + b",
     visualization: "console",
   },
-  testMode: "fn_function",
+  testMode: "function",
   functionToTest: "add",
   testCases: [
     {

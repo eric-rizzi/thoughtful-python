@@ -22,7 +22,7 @@ interface UseTestingLogicProps {
   lessonId: LessonId;
   sectionId: SectionId;
   testMode: TestMode;
-  functionToTest?: string; // Required for fn_procedure and fn_function modes
+  functionToTest: string; // "__main__" for testing entire program, function name for testing specific functions
   testCases: TestCase[];
 }
 
@@ -54,7 +54,7 @@ export const useTestingLogic = ({
       try {
         const results: TestResult[] = [];
 
-        if (testMode === "main_procedure") {
+        if (functionToTest === "__main__") {
           // Test entire program output
           for (const testCase of testCases) {
             const testScript = `
@@ -142,13 +142,8 @@ print(json.dumps(result))
               }
             }
           }
-        } else if (testMode === "fn_procedure" || testMode === "fn_function") {
-          // Test individual function (either capture stdout or return value)
-          if (!functionToTest) {
-            throw new Error(
-              `functionToTest is required for ${testMode} test mode`
-            );
-          }
+        } else {
+          // Test individual function (either capture stdout for "procedure" or return value for "function")
 
           // First, execute the user code to define the function
           const setupScript = `
@@ -172,7 +167,7 @@ if '${functionToTest}' not in globals():
 
           // Now run each test case
           for (const testCase of testCases) {
-            if (testMode === "fn_procedure") {
+            if (testMode === "procedure") {
               // Capture stdout from function call
               const testScript = `
 import json
@@ -262,7 +257,7 @@ print(json.dumps(result))
                 }
               }
             } else {
-              // fn_function: Capture return value
+              // testMode === "function": Capture return value
               const testScript = `
 import json
 import sys

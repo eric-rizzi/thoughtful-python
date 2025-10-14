@@ -24,7 +24,8 @@ describe("usePredictionLogic", () => {
     unitId: "unit-1" as UnitId,
     lessonId: "lesson-1" as LessonId,
     sectionId: "section-1" as SectionId,
-    functionCode: "def add(a, b):\n    return a + b",
+    testMode: "procedure" as const,
+    functionCode: "def add(a, b):\n    print(a + b)",
     predictionRows: [
       { inputs: [2, 3], id: "row-1" },
       { inputs: [5, 10], id: "row-2" },
@@ -118,7 +119,7 @@ describe("usePredictionLogic", () => {
     });
 
     expect(mockRunPythonCode).toHaveBeenCalledWith(
-      "def add(a, b):\n    return a + b\n\nprint(add(2, 3))"
+      "def add(a, b):\n    print(a + b)\n\nprint(add(2, 3))"
     );
 
     expect(mockSetSavedState).toHaveBeenCalled();
@@ -328,7 +329,7 @@ describe("usePredictionLogic", () => {
     });
 
     mockedUseSectionProgress.mockImplementation(((...args: any[]) => {
-      const state = { predictions: { 0: { userAnswer: "None" } } };
+      const state = { predictions: { 0: { userAnswer: "" } } };
       return [state, mockSetSavedState, false];
     }) as any);
 
@@ -339,8 +340,8 @@ describe("usePredictionLogic", () => {
     });
 
     const updater = mockSetSavedState.mock.calls[0][0];
-    const newState = updater({ predictions: { 0: { userAnswer: "None" } } });
+    const newState = updater({ predictions: { 0: { userAnswer: "" } } });
 
-    expect(newState.predictions[0].actualOutput).toBe("None");
+    expect(newState.predictions[0].actualOutput).toBe("");
   });
 });

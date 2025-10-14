@@ -134,7 +134,7 @@ const lessonData: Lesson = {
           description: "Test rectangle with width 30 and height 80",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "draw_rectangle",
     } as TestingSectionData,
     {
@@ -181,7 +181,7 @@ const lessonData: Lesson = {
           description: "Test that a house with roof is drawn",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "draw_house_base",
     } as TestingSectionData,
     {

@@ -131,7 +131,8 @@ const lessonData: Lesson = {
           description: "Test that 8 triangles are arranged in a circle",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -202,7 +203,8 @@ const lessonData: Lesson = {
           description: "Test that 5 flowers of increasing size are drawn",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -249,7 +251,8 @@ const lessonData: Lesson = {
             "Test that a circular pattern with nested loops is created",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

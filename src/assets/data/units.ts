@@ -259,6 +259,19 @@ const unitData: Unit[] = [
       },
     ],
   } as Unit,
+  {
+    id: "python_functions_return",
+    title: "Returning to Functions",
+    image: "10_functions_return/images/unit_icon_functions_return.svg",
+    description:
+      "Learns about one last wrinkle with functions - return statements.",
+    lessons: [
+      {
+        path: "10_functions_return/lessons/00_return_intro",
+        guid: "d6b6048d-ebb0-4ac8-9b06-60ad1134eaaa",
+      },
+    ],
+  } as Unit,
 ];
 
 export default unitData;

@@ -167,7 +167,8 @@ const lessonData: Lesson = {
           description: "Test that 3 hexagons of increasing size are drawn",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -223,7 +224,7 @@ const lessonData: Lesson = {
           description: "Test factorial of 7",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "calculate_factorial",
     } as TestingSectionData,
     {
@@ -284,7 +285,8 @@ const lessonData: Lesson = {
           description: "Test that a garden with multiple plants is created",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",

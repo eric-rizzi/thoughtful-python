@@ -90,8 +90,9 @@ const lessonData: Lesson = {
         initialCode:
           'def categorize_age(age):\n    if age < 18:\n        print("You\'re a minor")\n    else:\n        print("You\'re an adult")',
       },
+      testMode: "procedure",
+      functionToTest: "categorize_age",
       coverageTable: {
-        functionToTest: "categorize_age",
         columns: [
           {
             variableName: "age",
@@ -166,7 +167,7 @@ const lessonData: Lesson = {
           description: "Test with no",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "check_student",
     } as TestingSectionData,
     {
@@ -185,8 +186,9 @@ const lessonData: Lesson = {
         initialCode:
           'def check_pass(score):\n    if score >= 60:\n        print("Pass!")\n    else:\n        print("Retake!")',
       },
+      testMode: "procedure",
+      functionToTest: "check_pass",
       predictionTable: {
-        functionToTest: "check_pass",
         columns: [{ variableName: "score", variableType: "number" }],
         rows: [
           { inputs: [59] },
@@ -275,7 +277,7 @@ const lessonData: Lesson = {
           description: "Test with warm temperature",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "temperature_advice",
     } as TestingSectionData,
     {

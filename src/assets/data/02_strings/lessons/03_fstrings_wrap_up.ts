@@ -187,7 +187,8 @@ const lessonData: Lesson = {
           description: "Test profile card output",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Matching",
@@ -261,7 +262,8 @@ const lessonData: Lesson = {
           description: "Test price calculator with discount",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "MultipleChoice",

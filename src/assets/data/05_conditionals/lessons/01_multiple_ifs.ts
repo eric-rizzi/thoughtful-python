@@ -199,7 +199,7 @@ const lessonData: Lesson = {
           description: "Test with temp 105 (both warnings)",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "check_temp",
     } as TestingSectionData,
     {
@@ -263,7 +263,7 @@ const lessonData: Lesson = {
           description: "Test with score 75 (triggers no conditions)",
         },
       ],
-      testMode: "fn_procedure",
+      testMode: "procedure",
       functionToTest: "check_grade",
     } as TestingSectionData,
     {

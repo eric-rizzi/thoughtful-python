@@ -131,7 +131,8 @@ const lessonData: Lesson = {
           description: "Test that 5 triangles of decreasing size are drawn",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -201,7 +202,8 @@ const lessonData: Lesson = {
           description: "Test that a starburst pattern is created",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -272,7 +274,8 @@ const lessonData: Lesson = {
           description: "Test that 8 rotating, shrinking hexagons are drawn",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

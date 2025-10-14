@@ -162,7 +162,8 @@ const lessonData: Lesson = {
           description: "Test can print banana",
         },
       ],
-      testMode: "main_procedure",
+      testMode: "procedure",
+      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Information",
