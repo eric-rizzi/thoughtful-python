@@ -193,7 +193,7 @@ const lessonData: Lesson = {
           description: "Expected output",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "Information",

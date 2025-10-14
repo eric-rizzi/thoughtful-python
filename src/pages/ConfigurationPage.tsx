@@ -8,6 +8,7 @@ import {
   loadProgress as loadFromLocalStorage,
   ANONYMOUS_USER_ID_PLACEHOLDER,
 } from "../lib/localStorageUtils";
+import { UI_CONFIG } from "../config/constants";
 
 const USER_PROFILE_STORAGE_KEY = "userProfileSettings";
 
@@ -62,7 +63,7 @@ const ConfigurationPage: React.FC = () => {
     setTimeout(() => {
       setIsSaved(false);
       setStatusMessage("");
-    }, 3000);
+    }, UI_CONFIG.SUCCESS_MESSAGE_DURATION_MS);
   };
 
   return (

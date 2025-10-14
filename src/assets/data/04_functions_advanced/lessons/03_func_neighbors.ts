@@ -113,7 +113,7 @@ const lessonData: Lesson = {
           description: "Test that three houses are drawn",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "MultipleSelection",
@@ -201,7 +201,7 @@ const lessonData: Lesson = {
           description: "Test that a complete neighborhood is drawn",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "Reflection",

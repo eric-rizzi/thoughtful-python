@@ -167,10 +167,13 @@ export interface TestCase {
   description: string;
 }
 
+export type TestMode = "main_procedure" | "fn_procedure" | "fn_function";
+
 export interface TestingSectionData extends LessonSection {
   kind: "Testing";
   example: ExecutableCode;
-  functionToTest: string;
+  testMode: TestMode;
+  functionToTest?: string; // Required for fn_procedure and fn_function, not needed for main_procedure
   testCases: TestCase[];
 }
 

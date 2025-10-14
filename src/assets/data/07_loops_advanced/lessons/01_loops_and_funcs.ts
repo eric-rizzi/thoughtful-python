@@ -114,6 +114,7 @@ const lessonData: Lesson = {
           description: "Test spiral with 20 turns growing by 5",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "draw_spiral",
     } as TestingSectionData,
     {
@@ -199,6 +200,7 @@ const lessonData: Lesson = {
           description: "Test ring of 6 hexagons",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "draw_pattern_ring",
     } as TestingSectionData,
     {
@@ -257,6 +259,7 @@ const lessonData: Lesson = {
           description: "Test 3-layer mandala with hexagons",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "draw_mandala",
     } as TestingSectionData,
     {

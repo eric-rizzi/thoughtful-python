@@ -24,11 +24,12 @@ import {
   UnitId,
   UserId,
 } from "../types/data";
+import { MOCK_API_CONFIG } from "../config/constants";
 
 export const USE_MOCKED_API = false;
 const MOCKED_USER_ID = "mocked-google-user-id-12345" as UserId;
 
-const mockApiDelay = (duration: number = 500) =>
+const mockApiDelay = (duration: number = MOCK_API_CONFIG.RESPONSE_DELAY_MS) =>
   new Promise((resolve) => setTimeout(resolve, duration));
 
 export async function getUserProgressMock(): Promise<UserProgressData> {

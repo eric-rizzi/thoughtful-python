@@ -19,6 +19,7 @@ describe("useTestingLogic", () => {
     unitId: "unit-1" as UnitId,
     lessonId: "lesson-1" as LessonId,
     sectionId: "section-1" as SectionId,
+    testMode: "fn_function" as const,
     functionToTest: "add",
     testCases: [
       { input: [2, 3], expected: 5, description: "adds 2 and 3" },
@@ -41,7 +42,7 @@ describe("useTestingLogic", () => {
     });
   });
 
-  describe("function testing mode", () => {
+  describe("fn_function testing mode", () => {
     it("should run tests for a function and mark all as passed", async () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
@@ -188,10 +189,168 @@ describe("useTestingLogic", () => {
     });
   });
 
-  describe("__main__ testing mode", () => {
+  describe("fn_procedure testing mode", () => {
+    const procedureProps = {
+      ...defaultProps,
+      testMode: "fn_procedure" as const,
+      functionToTest: "greet",
+      testCases: [
+        { input: ["Alice"], expected: "Hello, Alice!", description: "greets Alice" },
+        { input: ["Bob"], expected: "Hello, Bob!", description: "greets Bob" },
+      ] as TestCase[],
+    };
+
+    it("should run tests capturing stdout from function and mark all as passed", async () => {
+      mockRunPythonCode
+        .mockResolvedValueOnce({
+          output: "Setup complete",
+          error: null,
+          result: null,
+        })
+        .mockResolvedValueOnce({
+          output: JSON.stringify({
+            success: true,
+            actual: "Hello, Alice!",
+            expected: "Hello, Alice!",
+            input: ["Alice"],
+            passed: true,
+          }),
+          error: null,
+          result: null,
+        })
+        .mockResolvedValueOnce({
+          output: JSON.stringify({
+            success: true,
+            actual: "Hello, Bob!",
+            expected: "Hello, Bob!",
+            input: ["Bob"],
+            passed: true,
+          }),
+          error: null,
+          result: null,
+        });
+
+      const { result } = renderHook(() => useTestingLogic(procedureProps));
+
+      await act(async () => {
+        await result.current.runTests('def greet(name):\n    print(f"Hello, {name}!")');
+      });
+
+      expect(result.current.testResults).toHaveLength(2);
+      expect(result.current.testResults![0].passed).toBe(true);
+      expect(result.current.testResults![1].passed).toBe(true);
+      expect(mockCompleteSection).toHaveBeenCalledWith(
+        procedureProps.unitId,
+        procedureProps.lessonId,
+        procedureProps.sectionId
+      );
+    });
+
+    it("should mark tests as failed when function prints wrong value", async () => {
+      mockRunPythonCode
+        .mockResolvedValueOnce({
+          output: "Setup complete",
+          error: null,
+          result: null,
+        })
+        .mockResolvedValueOnce({
+          output: JSON.stringify({
+            success: true,
+            actual: "Goodbye, Alice!",
+            expected: "Hello, Alice!",
+            input: ["Alice"],
+            passed: false,
+          }),
+          error: null,
+          result: null,
+        })
+        .mockResolvedValueOnce({
+          output: JSON.stringify({
+            success: true,
+            actual: "Goodbye, Bob!",
+            expected: "Hello, Bob!",
+            input: ["Bob"],
+            passed: false,
+          }),
+          error: null,
+          result: null,
+        });
+
+      const { result } = renderHook(() => useTestingLogic(procedureProps));
+
+      await act(async () => {
+        await result.current.runTests('def greet(name):\n    print(f"Goodbye, {name}!")');
+      });
+
+      expect(result.current.testResults).toHaveLength(2);
+      expect(result.current.testResults![0].passed).toBe(false);
+      expect(result.current.testResults![0].actual).toBe("Goodbye, Alice!");
+      expect(mockCompleteSection).not.toHaveBeenCalled();
+    });
+
+    it("should handle function not defined error", async () => {
+      mockRunPythonCode.mockResolvedValueOnce({
+        output: null,
+        error: "NameError: Function 'greet' is not defined.",
+        result: null,
+      });
+
+      const { result } = renderHook(() => useTestingLogic(procedureProps));
+
+      await act(async () => {
+        await result.current.runTests("# no function defined");
+      });
+
+      expect(result.current.error).toContain("Function 'greet' is not defined");
+    });
+
+    it("should handle runtime errors in test execution", async () => {
+      mockRunPythonCode
+        .mockResolvedValueOnce({
+          output: "Setup complete",
+          error: null,
+          result: null,
+        })
+        .mockResolvedValueOnce({
+          output: JSON.stringify({
+            success: false,
+            error: "TypeError: unsupported operand type(s)",
+            input: ["Alice"],
+            expected: "Hello, Alice!",
+          }),
+          error: null,
+          result: null,
+        })
+        .mockResolvedValueOnce({
+          output: JSON.stringify({
+            success: false,
+            error: "TypeError: unsupported operand type(s)",
+            input: ["Bob"],
+            expected: "Hello, Bob!",
+          }),
+          error: null,
+          result: null,
+        });
+
+      const { result } = renderHook(() => useTestingLogic(procedureProps));
+
+      await act(async () => {
+        await result.current.runTests(
+          "def greet(name):\n    print(name + 123)"
+        );
+      });
+
+      expect(result.current.testResults).toHaveLength(2);
+      expect(result.current.testResults![0].passed).toBe(false);
+      expect(result.current.testResults![0].actual).toContain("Error:");
+    });
+  });
+
+  describe("main_procedure testing mode", () => {
     const mainProps = {
       ...defaultProps,
-      functionToTest: "__main__",
+      testMode: "main_procedure" as const,
+      functionToTest: undefined,
       testCases: [
         {
           input: null,

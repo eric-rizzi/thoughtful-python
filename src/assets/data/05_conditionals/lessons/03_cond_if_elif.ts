@@ -231,6 +231,7 @@ const lessonData: Lesson = {
           description: "Test hot",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "temperature_advice",
     } as TestingSectionData,
     {
@@ -293,6 +294,7 @@ const lessonData: Lesson = {
           description: "Test invalid",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "select_difficulty",
     } as TestingSectionData,
     {

@@ -160,7 +160,7 @@ const lessonData: Lesson = {
           description: "Test that all three shapes are drawn correctly",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "PRIMM",

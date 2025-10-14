@@ -115,6 +115,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
     unitId,
     lessonId,
     sectionId: section.id,
+    testMode: section.testMode,
     functionToTest: section.functionToTest,
     testCases: section.testCases,
   });

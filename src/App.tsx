@@ -16,6 +16,7 @@ import { useAuthStore } from "./stores/authStore";
 import StudentLayout from "./components/StudentLayout";
 import SyncingOverlay from "./components/SyncingOverlay";
 import SessionExpiredModal from "./components/SessionExpiredModal";
+import { PROGRESS_CONFIG } from "./config/constants";
 
 function App() {
   const theme = useThemeStore((state) => state.theme);
@@ -52,7 +53,10 @@ function App() {
       }
     };
     checkPenalty();
-    const intervalId = setInterval(checkPenalty, 1000);
+    const intervalId = setInterval(
+      checkPenalty,
+      PROGRESS_CONFIG.PENALTY_CHECK_INTERVAL_MS
+    );
     return () => clearInterval(intervalId);
   }, [penaltyEndTime, clearPenalty]);
 

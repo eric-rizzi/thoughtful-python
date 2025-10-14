@@ -9,8 +9,9 @@ import type {
 import { ANONYMOUS_USER_ID_PLACEHOLDER } from "../lib/localStorageUtils";
 import { API_GATEWAY_BASE_URL } from "../config";
 import { IsoTimestamp, LessonId, SectionId, UnitId } from "../types/data";
+import { PROGRESS_CONFIG } from "../config/constants";
 
-export const BASE_PROGRESS_STORE_KEY = "lesson-progress-storage-v3"; // Incremented version due to structure change
+export const BASE_PROGRESS_STORE_KEY = PROGRESS_CONFIG.STORAGE_KEY;
 
 // Define SectionCompletionInput to include unitId, as it's needed for store and potentially API
 interface SectionCompletionInput extends ApiSectionCompletionInput {
@@ -19,7 +20,6 @@ interface SectionCompletionInput extends ApiSectionCompletionInput {
 }
 
 const EMPTY_COMPLETED_SECTIONS: { [sectionId: SectionId]: IsoTimestamp } = {};
-const PENALTY_DURATION_MS = 15 * 1000;
 
 interface ProgressStateData {
   completion: {
@@ -366,7 +366,9 @@ export const useProgressStore = create<ProgressState>()(
           console.warn("[ProgressStore] Local reset for all progress.");
         },
         startPenalty: () =>
-          set({ penaltyEndTime: Date.now() + PENALTY_DURATION_MS }),
+          set({
+            penaltyEndTime: Date.now() + PROGRESS_CONFIG.PENALTY_DURATION_MS,
+          }),
         clearPenalty: () => set({ penaltyEndTime: null }),
       },
     }),

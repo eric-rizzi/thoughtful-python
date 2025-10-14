@@ -12,6 +12,7 @@ import React, {
 // Assuming you have basic types defined in src/types/pyodide.d.ts
 // If not, replace PyodideInterface with 'any' for now.
 import type { PyodideInterface } from "../types/pyodide";
+import { PYODIDE_CONFIG } from "../config/constants";
 
 // Define the shape of the context value that components will consume
 interface PyodideContextType {
@@ -52,7 +53,7 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
   const loadPyodideScript = useCallback((): Promise<void> => {
     // Check if script tag already exists or if loadPyodide is already on window
     if (
-      document.getElementById("pyodide-script") ||
+      document.getElementById(PYODIDE_CONFIG.SCRIPT_ELEMENT_ID) ||
       typeof window.loadPyodide === "function"
     ) {
       // console.log("Pyodide script already loaded or function exists.");
@@ -62,8 +63,8 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
     return new Promise((resolve, reject) => {
       console.log("Creating Pyodide script element...");
       const script = document.createElement("script");
-      script.id = "pyodide-script";
-      script.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"; // Use a specific, stable version
+      script.id = PYODIDE_CONFIG.SCRIPT_ELEMENT_ID;
+      script.src = PYODIDE_CONFIG.SCRIPT_URL;
       script.async = true;
       script.onload = () => {
         console.log("Pyodide script 'onload' event fired.");
@@ -119,7 +120,7 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
         }
         console.log("Calling window.loadPyodide()...");
         return window.loadPyodide({
-          indexURL: `https://cdn.jsdelivr.net/pyodide/v0.25.0/full/`,
+          indexURL: PYODIDE_CONFIG.INDEX_URL,
         });
       });
 

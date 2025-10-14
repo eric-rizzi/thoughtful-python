@@ -101,7 +101,7 @@ const lessonData: Lesson = {
           description: "Test adventure completion",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "MultipleChoice",
@@ -150,7 +150,7 @@ const lessonData: Lesson = {
             "Create original Mad Lib (graded on creativity and correct syntax)",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "Reflection",

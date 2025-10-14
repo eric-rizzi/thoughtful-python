@@ -1,6 +1,12 @@
 import { useState, useCallback } from "react";
 import { usePyodide } from "../contexts/PyodideContext";
-import type { UnitId, LessonId, SectionId, TestCase } from "../types/data";
+import type {
+  UnitId,
+  LessonId,
+  SectionId,
+  TestCase,
+  TestMode,
+} from "../types/data";
 import { useProgressActions } from "../stores/progressStore";
 
 export interface TestResult {
@@ -15,7 +21,8 @@ interface UseTestingLogicProps {
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
-  functionToTest: string; // "__main__" for program output, function name for individual function testing
+  testMode: TestMode;
+  functionToTest?: string; // Required for fn_procedure and fn_function modes
   testCases: TestCase[];
 }
 
@@ -23,6 +30,7 @@ export const useTestingLogic = ({
   unitId,
   lessonId,
   sectionId,
+  testMode,
   functionToTest,
   testCases,
 }: UseTestingLogicProps) => {
@@ -46,7 +54,7 @@ export const useTestingLogic = ({
       try {
         const results: TestResult[] = [];
 
-        if (functionToTest === "__main__") {
+        if (testMode === "main_procedure") {
           // Test entire program output
           for (const testCase of testCases) {
             const testScript = `
@@ -134,8 +142,14 @@ print(json.dumps(result))
               }
             }
           }
-        } else {
-          // Test individual function
+        } else if (testMode === "fn_procedure" || testMode === "fn_function") {
+          // Test individual function (either capture stdout or return value)
+          if (!functionToTest) {
+            throw new Error(
+              `functionToTest is required for ${testMode} test mode`
+            );
+          }
+
           // First, execute the user code to define the function
           const setupScript = `
 import sys
@@ -158,7 +172,98 @@ if '${functionToTest}' not in globals():
 
           // Now run each test case
           for (const testCase of testCases) {
-            const testScript = `
+            if (testMode === "fn_procedure") {
+              // Capture stdout from function call
+              const testScript = `
+import json
+import sys
+from io import StringIO
+
+# Capture stdout
+old_stdout = sys.stdout
+captured_output = StringIO()
+sys.stdout = captured_output
+
+try:
+    user_func = globals()['${functionToTest}']
+    test_input = ${JSON.stringify(testCase.input)}
+    expected = ${JSON.stringify(testCase.expected)}
+
+    # Call function (ignore return value, capture print output)
+    user_func(*test_input)
+
+    # Get the output
+    output = captured_output.getvalue().strip()
+
+    # Restore stdout
+    sys.stdout = old_stdout
+
+    result = {
+        "success": True,
+        "actual": output,
+        "expected": expected,
+        "input": test_input,
+        "passed": output == expected
+    }
+
+except Exception as e:
+    # Restore stdout
+    sys.stdout = old_stdout
+
+    result = {
+        "success": False,
+        "error": str(e),
+        "input": ${JSON.stringify(testCase.input)},
+        "expected": ${JSON.stringify(testCase.expected)}
+    }
+
+print(json.dumps(result))
+`;
+
+              const testResult = await runPythonCode(testScript);
+
+              if (testResult.error) {
+                results.push({
+                  description: testCase.description,
+                  passed: false,
+                  actual: `Execution error: ${testResult.error}`,
+                  expected: testCase.expected,
+                  input: testCase.input,
+                });
+              } else {
+                try {
+                  const parsedResult = JSON.parse(testResult.output);
+
+                  if (parsedResult.success) {
+                    results.push({
+                      description: testCase.description,
+                      passed: parsedResult.passed,
+                      actual: parsedResult.actual,
+                      expected: parsedResult.expected,
+                      input: parsedResult.input,
+                    });
+                  } else {
+                    results.push({
+                      description: testCase.description,
+                      passed: false,
+                      actual: `Error: ${parsedResult.error}`,
+                      expected: parsedResult.expected,
+                      input: parsedResult.input,
+                    });
+                  }
+                } catch (e) {
+                  results.push({
+                    description: testCase.description,
+                    passed: false,
+                    actual: `Parse error: ${testResult.output}`,
+                    expected: testCase.expected,
+                    input: testCase.input,
+                  });
+                }
+              }
+            } else {
+              // fn_function: Capture return value
+              const testScript = `
 import json
 import sys
 from io import StringIO
@@ -171,16 +276,16 @@ try:
     user_func = globals()['${functionToTest}']
     test_input = ${JSON.stringify(testCase.input)}
     expected = ${JSON.stringify(testCase.expected)}
-    
+
     actual = user_func(*test_input)
-    
+
     # Convert to string for comparison if expected is string
     if isinstance(expected, str) and not isinstance(actual, str):
         actual = str(actual)
-    
+
     # Restore stdout
     sys.stdout = old_stdout
-    
+
     result = {
         "success": True,
         "actual": actual,
@@ -188,11 +293,11 @@ try:
         "input": test_input,
         "passed": actual == expected
     }
-    
+
 except Exception as e:
     # Restore stdout
     sys.stdout = old_stdout
-    
+
     result = {
         "success": False,
         "error": str(e),
@@ -244,6 +349,7 @@ print(json.dumps(result))
                 });
               }
             }
+            }
           }
         }
 
@@ -263,6 +369,7 @@ print(json.dumps(result))
       }
     },
     [
+      testMode,
       functionToTest,
       testCases,
       runPythonCode,

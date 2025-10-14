@@ -204,6 +204,7 @@ const lessonData: Lesson = {
           description: "Test F grade",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "report_grade",
     } as TestingSectionData,
     {
@@ -340,6 +341,7 @@ const lessonData: Lesson = {
           description: "Contains space",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "validate_password",
     } as TestingSectionData,
     {

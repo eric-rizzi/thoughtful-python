@@ -245,7 +245,7 @@ const lessonData: Lesson = {
           description: "Test with dog_age=3, should print 3 then 21",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "Information",

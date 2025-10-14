@@ -200,7 +200,7 @@ Run the code and see what happens!`,
           description: "Test happy birthday song to a Alex",
         },
       ],
-      functionToTest: "__main__",
+      testMode: "main_procedure",
     } as TestingSectionData,
     {
       kind: "Reflection",

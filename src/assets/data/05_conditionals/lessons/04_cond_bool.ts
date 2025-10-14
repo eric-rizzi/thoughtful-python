@@ -232,6 +232,7 @@ const lessonData: Lesson = {
           description: "Too short even with adult",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "can_ride",
     } as TestingSectionData,
     {
@@ -308,6 +309,7 @@ const lessonData: Lesson = {
           description: "Kid without permission",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "can_play_game",
     } as TestingSectionData,
     {

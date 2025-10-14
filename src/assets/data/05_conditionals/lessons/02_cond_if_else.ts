@@ -166,6 +166,7 @@ const lessonData: Lesson = {
           description: "Test with no",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "check_student",
     } as TestingSectionData,
     {
@@ -274,6 +275,7 @@ const lessonData: Lesson = {
           description: "Test with warm temperature",
         },
       ],
+      testMode: "fn_procedure",
       functionToTest: "temperature_advice",
     } as TestingSectionData,
     {

@@ -24,7 +24,9 @@ const mockSectionData: TestingSectionData = {
   content: [{ kind: "text", value: "Write a function to add two numbers." }],
   example: {
     initialCode: "def add(a, b):\n  return a + b",
+    visualization: "console",
   },
+  testMode: "fn_function",
   functionToTest: "add",
   testCases: [
     {
