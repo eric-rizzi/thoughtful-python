@@ -195,7 +195,11 @@ describe("useTestingLogic", () => {
       testMode: "procedure" as const,
       functionToTest: "greet",
       testCases: [
-        { input: ["Alice"], expected: "Hello, Alice!", description: "greets Alice" },
+        {
+          input: ["Alice"],
+          expected: "Hello, Alice!",
+          description: "greets Alice",
+        },
         { input: ["Bob"], expected: "Hello, Bob!", description: "greets Bob" },
       ] as TestCase[],
     };
@@ -233,7 +237,9 @@ describe("useTestingLogic", () => {
       const { result } = renderHook(() => useTestingLogic(procedureProps));
 
       await act(async () => {
-        await result.current.runTests('def greet(name):\n    print(f"Hello, {name}!")');
+        await result.current.runTests(
+          'def greet(name):\n    print(f"Hello, {name}!")'
+        );
       });
 
       expect(result.current.testResults).toHaveLength(2);
@@ -279,7 +285,9 @@ describe("useTestingLogic", () => {
       const { result } = renderHook(() => useTestingLogic(procedureProps));
 
       await act(async () => {
-        await result.current.runTests('def greet(name):\n    print(f"Goodbye, {name}!")');
+        await result.current.runTests(
+          'def greet(name):\n    print(f"Goodbye, {name}!")'
+        );
       });
 
       expect(result.current.testResults).toHaveLength(2);

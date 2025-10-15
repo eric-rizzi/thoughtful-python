@@ -303,47 +303,47 @@ except Exception as e:
 print(json.dumps(result))
 `;
 
-            const testResult = await runPythonCode(testScript);
+              const testResult = await runPythonCode(testScript);
 
-            if (testResult.error) {
-              results.push({
-                description: testCase.description,
-                passed: false,
-                actual: `Execution error: ${testResult.error}`,
-                expected: testCase.expected,
-                input: testCase.input,
-              });
-            } else {
-              try {
-                const parsedResult = JSON.parse(testResult.output);
-
-                if (parsedResult.success) {
-                  results.push({
-                    description: testCase.description,
-                    passed: parsedResult.passed,
-                    actual: parsedResult.actual,
-                    expected: parsedResult.expected,
-                    input: parsedResult.input,
-                  });
-                } else {
-                  results.push({
-                    description: testCase.description,
-                    passed: false,
-                    actual: `Error: ${parsedResult.error}`,
-                    expected: parsedResult.expected,
-                    input: parsedResult.input,
-                  });
-                }
-              } catch (e) {
+              if (testResult.error) {
                 results.push({
                   description: testCase.description,
                   passed: false,
-                  actual: `Parse error: ${testResult.output}`,
+                  actual: `Execution error: ${testResult.error}`,
                   expected: testCase.expected,
                   input: testCase.input,
                 });
+              } else {
+                try {
+                  const parsedResult = JSON.parse(testResult.output);
+
+                  if (parsedResult.success) {
+                    results.push({
+                      description: testCase.description,
+                      passed: parsedResult.passed,
+                      actual: parsedResult.actual,
+                      expected: parsedResult.expected,
+                      input: parsedResult.input,
+                    });
+                  } else {
+                    results.push({
+                      description: testCase.description,
+                      passed: false,
+                      actual: `Error: ${parsedResult.error}`,
+                      expected: parsedResult.expected,
+                      input: parsedResult.input,
+                    });
+                  }
+                } catch (e) {
+                  results.push({
+                    description: testCase.description,
+                    passed: false,
+                    actual: `Parse error: ${testResult.output}`,
+                    expected: testCase.expected,
+                    input: testCase.input,
+                  });
+                }
               }
-            }
             }
           }
         }
