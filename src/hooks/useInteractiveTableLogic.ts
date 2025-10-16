@@ -49,11 +49,21 @@ export const useInteractiveTableLogic = ({
   const initialState = useMemo((): TableState => {
     if (mode === "coverage") {
       const initialChallengeStates: SavedCoverageState["challengeStates"] = {};
-      rows.forEach((_, rowIndex) => {
+      rows.forEach((row, rowIndex) => {
+        const coverageRow = row as CoverageTableRow;
         const initialInputs: { [paramName: string]: string } = {};
+
         columns.forEach((param) => {
-          initialInputs[param.variableName] = "";
+          // Check if this parameter has a fixed value in the row
+          if (coverageRow.fixedInputs[param.variableName] !== undefined) {
+            // Use the fixed value
+            initialInputs[param.variableName] = String(coverageRow.fixedInputs[param.variableName]);
+          } else {
+            // Default to empty string for editable inputs
+            initialInputs[param.variableName] = "";
+          }
         });
+
         initialChallengeStates[rowIndex] = {
           inputs: initialInputs,
           actualOutput: null,
@@ -189,6 +199,12 @@ export const useInteractiveTableLogic = ({
         const currentState = prevState || initialState;
 
         if (mode === "coverage" && paramName) {
+          // Defensive check: Skip if this is a fixed input
+          const coverageRow = rows[rowIndex] as CoverageTableRow;
+          if (coverageRow.fixedInputs[paramName] !== undefined) {
+            return prevState;
+          }
+
           const prevCoverageState = currentState as SavedCoverageState;
           const existingStates = prevCoverageState.challengeStates || {};
           const currentRow =

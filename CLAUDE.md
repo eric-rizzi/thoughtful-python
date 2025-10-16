@@ -54,6 +54,7 @@ npm run lint         # Run ESLint on the codebase
 - **Testing**: Write code to pass test cases
 - **Prediction**: Predict function outputs before running
 - **Coverage**: Write inputs to test code paths
+  - Supports **fixed inputs**: Pre-filled, read-only parameter values that guide students to explore specific code paths
 - **PRIMM**: Predict, Run, Investigate, Modify, Make (AI-evaluated)
 - **Reflection**: Free-form coding with AI feedback
 - **Debugger**: Step through code execution

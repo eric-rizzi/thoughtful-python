@@ -102,14 +102,17 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         ],
         rows: [
           {
+            fixedInputs: {},
             expectedOutput: "12",
             hint: "12 = ? + ? + ? + ?",
           } as CoverageTableRow,
           {
+            fixedInputs: {},
             expectedOutput: "4",
             hint: "4 = ? + ? + ? + ?",
           } as CoverageTableRow,
           {
+            fixedInputs: {},
             expectedOutput: "28",
             hint: "28 = ? + ? + ? + ?",
           },

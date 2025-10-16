@@ -177,18 +177,22 @@ const lessonData: Lesson = {
         ],
         rows: [
           {
+            fixedInputs: {},
             expectedOutput: "Small",
             hint: "Less than 10",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Medium",
             hint: "10 to 19",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Large",
             hint: "20 to 29",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Extra Large",
             hint: "30 or more",
           },

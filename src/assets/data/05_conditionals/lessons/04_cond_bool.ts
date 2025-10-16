@@ -178,18 +178,22 @@ const lessonData: Lesson = {
         ],
         rows: [
           {
+            fixedInputs: { has_membership: false },
             expectedOutput: "Free entry!",
             hint: "Young child without membership",
           },
           {
+            fixedInputs: { has_membership: true },
             expectedOutput: "Free entry!",
             hint: "Adult with membership",
           },
           {
+            fixedInputs: { age: 45 },
             expectedOutput: "Please pay admission",
             hint: "Adult without membership",
           },
           {
+            fixedInputs: { age: 6 },
             expectedOutput: "Free entry!",
             hint: "Young child with membership (both True!)",
           },

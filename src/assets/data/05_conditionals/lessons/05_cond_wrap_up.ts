@@ -99,18 +99,22 @@ const lessonData: Lesson = {
         ],
         rows: [
           {
+            fixedInputs: {},
             expectedOutput: "Enter",
             hint: "Must be 21+ AND have ID",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Access denied",
             hint: "Old enough but no ID",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Access denied",
             hint: "Has ID but too young",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Access denied",
             hint: "Neither condition met",
           },
@@ -259,18 +263,22 @@ const lessonData: Lesson = {
         ],
         rows: [
           {
+            fixedInputs: {},
             expectedOutput: "Welcome - free entry!",
             hint: "Young child with ticket, not member",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Welcome - free entry!",
             hint: "Adult who is member (ticket doesn't matter)",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Please purchase a ticket",
             hint: "Young child without ticket, not member",
           },
           {
+            fixedInputs: {},
             expectedOutput: "Please purchase a ticket",
             hint: "Adult without membership",
           },

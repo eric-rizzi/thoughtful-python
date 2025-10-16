@@ -95,10 +95,12 @@ const lessonData: Lesson = {
         ],
         rows: [
           {
+            fixedInputs: {},
             expectedOutput: "You're a minor",
             hint: "What age is less than 18?",
           },
           {
+            fixedInputs: {},
             expectedOutput: "You're an adult",
             hint: "What age is 18 or more?",
           },

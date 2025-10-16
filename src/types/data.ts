@@ -205,6 +205,7 @@ export interface PredictionSectionData extends LessonSection {
 }
 
 export interface CoverageTableRow {
+  fixedInputs: { [variableName: string]: any }; // Pre-filled, locked values (use {} for no fixed inputs)
   expectedOutput: string; // The exact stdout expected
   hint?: string; // Optional hint for the user
 }

@@ -167,4 +167,51 @@ test.describe("CoverageSection tests", () => {
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
+
+  // This test requires a lesson with fixed inputs to be created
+  // Update the path and selectors when the lesson is ready
+  test.skip("Test fixed inputs are read-only and pre-filled", async ({ page }) => {
+    // TODO: Replace with actual lesson path that has fixed inputs
+    await page.goto(
+      "/thoughtful-python/lesson/UNIT_ID/lessons/LESSON_WITH_FIXED_INPUTS"
+    );
+
+    // TODO: Replace with actual section ID
+    const sectionLocator = page.locator("#coverage-with-fixed-inputs");
+
+    // Test that fixed inputs are visible and have values
+    const fixedInput = sectionLocator
+      .getByRole("row")
+      .first()
+      .getByRole("spinbutton")
+      .first();
+
+    // Fixed inputs should be disabled
+    await expect(fixedInput).toBeDisabled();
+
+    // Fixed inputs should have the pre-filled value
+    await expect(fixedInput).toHaveValue(/\d+/); // Some number value
+
+    // Editable inputs (if any in same row) should not be disabled
+    const editableInput = sectionLocator
+      .getByRole("row")
+      .first()
+      .getByRole("spinbutton")
+      .nth(1);
+
+    if (await editableInput.count() > 0) {
+      await expect(editableInput).not.toBeDisabled();
+    }
+
+    // User should be able to fill editable inputs and run the test
+    await editableInput.fill("5");
+    await sectionLocator
+      .getByRole("row")
+      .first()
+      .getByRole("button", { name: "Run" })
+      .click();
+
+    // Should show results
+    await expect(sectionLocator.getByText(/challenges completed/)).toBeVisible();
+  });
 });

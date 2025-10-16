@@ -116,27 +116,35 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                   return (
                     <tr key={rowIndex} className={rowClass}>
                       {section.coverageTable.columns.map(
-                        (param: InputParam) => (
-                          <td key={param.variableName}>
-                            <input
-                              type={
-                                param.variableType === "number"
-                                  ? "number"
-                                  : "text"
-                              }
-                              className={coverageStyles.coverageInput}
-                              value={state?.inputs[param.variableName] ?? ""}
-                              onChange={(e) =>
-                                handleUserInputChange(
-                                  rowIndex,
-                                  e.target.value,
-                                  param.variableName
-                                )
-                              }
-                              disabled={isRunning || isLoading}
-                            />
-                          </td>
-                        )
+                        (param: InputParam) => {
+                          const isFixed = challenge.fixedInputs[param.variableName] !== undefined;
+                          const inputClass = isFixed
+                            ? `${coverageStyles.coverageInput} ${coverageStyles.fixedInput}`
+                            : coverageStyles.coverageInput;
+
+                          return (
+                            <td key={param.variableName}>
+                              <input
+                                type={
+                                  param.variableType === "number"
+                                    ? "number"
+                                    : "text"
+                                }
+                                className={inputClass}
+                                value={state?.inputs[param.variableName] ?? ""}
+                                onChange={(e) =>
+                                  handleUserInputChange(
+                                    rowIndex,
+                                    e.target.value,
+                                    param.variableName
+                                  )
+                                }
+                                disabled={isRunning || isLoading || isFixed}
+                                readOnly={isFixed}
+                              />
+                            </td>
+                          );
+                        }
                       )}
                       <td className={coverageStyles.expectedOutputCell}>
                         <pre>{challenge.expectedOutput}</pre>

@@ -24,13 +24,13 @@ describe("useInteractiveTableLogic", () => {
   ];
 
   const coverageRows: CoverageTableRow[] = [
-    { expectedOutput: "5", id: "row-1" },
-    { expectedOutput: "10", id: "row-2" },
+    { fixedInputs: {}, expectedOutput: "5" },
+    { fixedInputs: {}, expectedOutput: "10" },
   ];
 
   const predictionRows: PredictionTableRow[] = [
-    { inputs: [2, 3], id: "row-1" },
-    { inputs: [5, 5], id: "row-2" },
+    { inputs: [2, 3] },
+    { inputs: [5, 5] },
   ];
 
   const coverageProps = {
@@ -225,6 +225,148 @@ describe("useInteractiveTableLogic", () => {
       expect(mockRunPythonCode).toHaveBeenCalledWith(
         "def add(a, b):\n  return a + b\n\nprint(add(3.5, 3.5))"
       );
+    });
+
+    describe("fixed inputs", () => {
+      const coverageRowsWithFixed: CoverageTableRow[] = [
+        { fixedInputs: { a: 2 }, expectedOutput: "7" }, // 'a' is fixed at 2, 'b' is editable
+        { fixedInputs: { a: 5, b: 5 }, expectedOutput: "10" }, // Both fixed
+        { fixedInputs: {}, expectedOutput: "15" }, // Nothing fixed
+      ];
+
+      const propsWithFixed = {
+        ...coverageProps,
+        rows: coverageRowsWithFixed,
+      };
+
+      it("should initialize fixed inputs with correct values", () => {
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(propsWithFixed)
+        );
+
+        const state = result.current.savedState as any;
+        // Row 0: 'a' is fixed at 2, 'b' is empty
+        expect(state.challengeStates[0].inputs.a).toBe("2");
+        expect(state.challengeStates[0].inputs.b).toBe("");
+
+        // Row 1: Both are fixed
+        expect(state.challengeStates[1].inputs.a).toBe("5");
+        expect(state.challengeStates[1].inputs.b).toBe("5");
+
+        // Row 2: Both are empty (no fixed inputs)
+        expect(state.challengeStates[2].inputs.a).toBe("");
+        expect(state.challengeStates[2].inputs.b).toBe("");
+      });
+
+      it("should not allow changing fixed inputs", () => {
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(propsWithFixed)
+        );
+
+        // Try to change the fixed input 'a' in row 0
+        act(() => {
+          result.current.handleUserInputChange(0, "99", "a");
+        });
+
+        const state = result.current.savedState as any;
+        // Value should remain unchanged
+        expect(state.challengeStates[0].inputs.a).toBe("2");
+      });
+
+      it("should allow changing non-fixed inputs in rows with mixed fixed/editable inputs", () => {
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(propsWithFixed)
+        );
+
+        // Change the editable input 'b' in row 0
+        act(() => {
+          result.current.handleUserInputChange(0, "5", "b");
+        });
+
+        const state = result.current.savedState as any;
+        // 'b' should change
+        expect(state.challengeStates[0].inputs.b).toBe("5");
+        // 'a' should remain fixed
+        expect(state.challengeStates[0].inputs.a).toBe("2");
+      });
+
+      it("should use fixed values when running the code", async () => {
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "7",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(propsWithFixed)
+        );
+
+        // Set the editable input 'b' for row 0 (a=2 is fixed)
+        act(() => {
+          result.current.handleUserInputChange(0, "5", "b");
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        // Should call with fixed 'a' value of 2 and editable 'b' value of 5
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          'def add(a, b):\n  return a + b\n\nprint(add(2, 5))'
+        );
+      });
+
+      it("should run rows with all inputs fixed", async () => {
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "10",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(propsWithFixed)
+        );
+
+        await act(async () => {
+          await result.current.runRow(1); // Row 1 has both a=5 and b=5 fixed
+        });
+
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          'def add(a, b):\n  return a + b\n\nprint(add(5, 5))'
+        );
+
+        const state = result.current.savedState as any;
+        expect(state.challengeStates[1].actualOutput).toBe("10");
+        expect(state.challengeStates[1].isCorrect).toBe(true);
+      });
+
+      it("should handle string fixed values correctly", () => {
+        const stringFixedRows: CoverageTableRow[] = [
+          { fixedInputs: { a: "hello" }, expectedOutput: "hello world" },
+        ];
+
+        const stringColumns: InputParam[] = [
+          { variableName: "a", variableType: "string" },
+          { variableName: "b", variableType: "string" },
+        ];
+
+        const stringProps = {
+          ...coverageProps,
+          columns: stringColumns,
+          rows: stringFixedRows,
+        };
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(stringProps)
+        );
+
+        const state = result.current.savedState as any;
+        expect(state.challengeStates[0].inputs.a).toBe("hello");
+      });
     });
   });
 

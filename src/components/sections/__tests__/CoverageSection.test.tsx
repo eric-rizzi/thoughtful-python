@@ -25,11 +25,16 @@ const mockSectionData: CoverageSectionData = {
   example: {
     initialCode:
       "def check_temp(t):\n  if t > 25:\n    return 'Hot'\n  return 'Normal'",
+    visualization: "console" as const,
   },
+  testMode: "function" as const,
+  functionToTest: "check_temp",
   coverageTable: {
-    functionToTest: "check_temp",
     columns: [{ variableName: "t", variableType: "number" }],
-    rows: [{ expectedOutput: "Hot" }, { expectedOutput: "Normal" }],
+    rows: [
+      { fixedInputs: {}, expectedOutput: "Hot" },
+      { fixedInputs: {}, expectedOutput: "Normal" },
+    ],
   },
 };
 
@@ -187,5 +192,159 @@ describe("CoverageSection", () => {
       .previousElementSibling?.firstChild;
 
     expect(progressBar).toHaveClass("progressFillComplete");
+  });
+
+  describe("fixed inputs", () => {
+    const mockSectionWithFixed: CoverageSectionData = {
+      kind: "Coverage",
+      id: "cov-fixed" as SectionId,
+      title: "Fixed Inputs Coverage",
+      content: [{ kind: "text", value: "Test with fixed inputs." }],
+      example: {
+        initialCode: "def calc(x, y):\n  return x + y",
+        visualization: "console" as const,
+      },
+      testMode: "function" as const,
+      functionToTest: "calc",
+      coverageTable: {
+        columns: [
+          { variableName: "x", variableType: "number" },
+          { variableName: "y", variableType: "number" },
+        ],
+        rows: [
+          { fixedInputs: { x: 5 }, expectedOutput: "10" }, // x is fixed, y is editable
+          { fixedInputs: { x: 10, y: 20 }, expectedOutput: "30" }, // both fixed
+          { fixedInputs: {}, expectedOutput: "15" }, // nothing fixed
+        ],
+      },
+    };
+
+    it("should render fixed inputs with readonly styling", () => {
+      const stateWithFixed: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { x: "5", y: "" }, actualOutput: null, isCorrect: null },
+          1: { inputs: { x: "10", y: "20" }, actualOutput: null, isCorrect: null },
+          2: { inputs: { x: "", y: "" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithFixed,
+        runningStates: {},
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: vi.fn(),
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={mockSectionWithFixed}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      const inputs = screen.getAllByRole("spinbutton");
+
+      // Row 0: x is fixed (inputs[0]), y is editable (inputs[1])
+      expect(inputs[0]).toHaveClass("fixedInput");
+      expect(inputs[0]).toHaveAttribute("readonly");
+      expect(inputs[0]).toBeDisabled();
+      expect(inputs[1]).not.toHaveClass("fixedInput");
+
+      // Row 1: both x (inputs[2]) and y (inputs[3]) are fixed
+      expect(inputs[2]).toHaveClass("fixedInput");
+      expect(inputs[2]).toHaveAttribute("readonly");
+      expect(inputs[3]).toHaveClass("fixedInput");
+      expect(inputs[3]).toHaveAttribute("readonly");
+
+      // Row 2: both x (inputs[4]) and y (inputs[5]) are editable
+      expect(inputs[4]).not.toHaveClass("fixedInput");
+      expect(inputs[5]).not.toHaveClass("fixedInput");
+    });
+
+    it("should display fixed values in the input fields", () => {
+      const stateWithFixed: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { x: "5", y: "" }, actualOutput: null, isCorrect: null },
+          1: { inputs: { x: "10", y: "20" }, actualOutput: null, isCorrect: null },
+          2: { inputs: { x: "", y: "" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithFixed,
+        runningStates: {},
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: vi.fn(),
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={mockSectionWithFixed}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      const inputs = screen.getAllByRole("spinbutton");
+
+      // Row 0: x=5 (fixed), y=empty
+      expect(inputs[0]).toHaveValue(5);
+      expect(inputs[1]).toHaveValue(null);
+
+      // Row 1: x=10 (fixed), y=20 (fixed)
+      expect(inputs[2]).toHaveValue(10);
+      expect(inputs[3]).toHaveValue(20);
+
+      // Row 2: both empty
+      expect(inputs[4]).toHaveValue(null);
+      expect(inputs[5]).toHaveValue(null);
+    });
+
+    it("should call handleUserInputChange even for fixed inputs (hook will reject)", async () => {
+      const handleUserInputChangeMock = vi.fn();
+      const stateWithFixed: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { x: "5", y: "" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithFixed,
+        runningStates: {},
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: handleUserInputChangeMock,
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={{
+            ...mockSectionWithFixed,
+            coverageTable: {
+              ...mockSectionWithFixed.coverageTable,
+              rows: [{ fixedInputs: { x: 5 }, expectedOutput: "10" }],
+            },
+          }}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      const inputs = screen.getAllByRole("spinbutton");
+      const fixedInput = inputs[0]; // x is fixed
+
+      // Try to change the fixed input using fireEvent (bypasses disabled attribute in tests)
+      fireEvent.change(fixedInput, { target: { value: "99" } });
+
+      // The onChange handler IS called (fireEvent bypasses disabled)
+      // But the hook's defensive check prevents the state change
+      expect(handleUserInputChangeMock).toHaveBeenCalledWith(0, "99", "x");
+    });
   });
 });

@@ -64,6 +64,13 @@
   font-size: 0.9rem;
 }
 
+.coverageInput.fixedInput {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  color: #666;
+  font-style: italic;
+}
+
 .expectedOutputCell,
 .actualOutputCell {
   font-family: "Menlo", "Consolas", "Courier New", monospace;
