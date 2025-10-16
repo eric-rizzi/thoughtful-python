@@ -39,4 +39,4 @@ yarn.lock
 *.min.css
 
 # Static files
-public
+/public

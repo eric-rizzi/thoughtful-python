@@ -45,10 +45,7 @@ test.describe("PredictionSection tests", () => {
       .getByRole("row", { name: "6 Run" })
       .getByPlaceholder("Predict the output")
       .fill("6");
-    await page
-      .getByRole("row", { name: "6 Run" })
-      .getByRole("button")
-      .click();
+    await page.getByRole("row", { name: "6 Run" }).getByRole("button").click();
     await expect(page.getByText("3 / 3 predictions correct")).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
@@ -99,16 +96,15 @@ test.describe("PredictionSection tests", () => {
       .getByRole("row", { name: "6 Run" })
       .getByPlaceholder("Predict the output")
       .fill("6");
-    await page
-      .getByRole("row", { name: "6 Run" })
-      .getByRole("button")
-      .click();
+    await page.getByRole("row", { name: "6 Run" }).getByRole("button").click();
     await expect(page.getByText("2 / 3 predictions correct")).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test get 3/3 if predictions for `return` functions", async ({ page }) => {
+  test("Test get 3/3 if predictions for `return` functions", async ({
+    page,
+  }) => {
     await page.goto(
       "/thoughtful-python/lesson/10_functions_return/lessons/00_return_intro"
     );
@@ -152,10 +148,7 @@ test.describe("PredictionSection tests", () => {
       .getByRole("row", { name: "6 Run" })
       .getByPlaceholder("Predict the output")
       .fill("6");
-    await page
-      .getByRole("row", { name: "6 Run" })
-      .getByRole("button")
-      .click();
+    await page.getByRole("row", { name: "6 Run" }).getByRole("button").click();
     await expect(page.getByText("3 / 3 predictions correct")).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);

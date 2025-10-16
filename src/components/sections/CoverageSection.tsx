@@ -117,7 +117,9 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                     <tr key={rowIndex} className={rowClass}>
                       {section.coverageTable.columns.map(
                         (param: InputParam) => {
-                          const isFixed = challenge.fixedInputs[param.variableName] !== undefined;
+                          const isFixed =
+                            challenge.fixedInputs[param.variableName] !==
+                            undefined;
                           const inputClass = isFixed
                             ? `${coverageStyles.coverageInput} ${coverageStyles.fixedInput}`
                             : coverageStyles.coverageInput;
@@ -127,7 +129,9 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                               {param.variableType === "boolean" ? (
                                 <select
                                   className={inputClass}
-                                  value={state?.inputs[param.variableName] ?? ""}
+                                  value={
+                                    state?.inputs[param.variableName] ?? ""
+                                  }
                                   onChange={(e) =>
                                     handleUserInputChange(
                                       rowIndex,
@@ -149,7 +153,9 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                                       : "text"
                                   }
                                   className={inputClass}
-                                  value={state?.inputs[param.variableName] ?? ""}
+                                  value={
+                                    state?.inputs[param.variableName] ?? ""
+                                  }
                                   onChange={(e) =>
                                     handleUserInputChange(
                                       rowIndex,

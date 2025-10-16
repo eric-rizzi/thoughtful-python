@@ -73,7 +73,8 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
         parts.push(`${result.error.type}: ${result.error.message}`);
       }
 
-      const formattedOutput = parts.length > 0 ? parts.join("\n") : "No output.";
+      const formattedOutput =
+        parts.length > 0 ? parts.join("\n") : "No output.";
       actions.setActualOutput(formattedOutput);
     }
 

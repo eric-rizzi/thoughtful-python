@@ -30,7 +30,7 @@ describe("useTestingLogic", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock console.error to suppress error logging in tests
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
     mockedUsePyodide.mockReturnValue({
       runPythonCode: mockRunPythonCode,
@@ -53,35 +53,35 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 5,
             expected: 5,
             input: [2, 3],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 15,
             expected: 15,
             input: [5, 10],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -105,35 +105,35 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 6,
             expected: 5,
             input: [2, 3],
             passed: false,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 50,
             expected: 15,
             input: [5, 10],
             passed: false,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -157,7 +157,8 @@ describe("useTestingLogic", () => {
         error: {
           type: "NameError",
           message: "Function 'add' is not defined.",
-        },        result: null,
+        },
+        result: null,
       });
 
       const { result } = renderHook(() => useTestingLogic(defaultProps));
@@ -173,9 +174,9 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
@@ -236,35 +237,35 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: "Hello, Alice!",
             expected: "Hello, Alice!",
             input: ["Alice"],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: "Hello, Bob!",
             expected: "Hello, Bob!",
             input: ["Bob"],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -290,35 +291,35 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: "Goodbye, Alice!",
             expected: "Hello, Alice!",
             input: ["Alice"],
             passed: false,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: "Goodbye, Bob!",
             expected: "Hello, Bob!",
             input: ["Bob"],
             passed: false,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -344,7 +345,8 @@ describe("useTestingLogic", () => {
         error: {
           type: "NameError",
           message: "Function 'greet' is not defined.",
-        },        result: null,
+        },
+        result: null,
       });
 
       const { result } = renderHook(() => useTestingLogic(procedureProps));
@@ -360,9 +362,9 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
@@ -497,29 +499,29 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: "invalid json {",
-        stderr: "",
-        error: null,
+          stdout: "invalid json {",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 15,
             expected: 15,
             input: [5, 10],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -538,9 +540,9 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
@@ -550,19 +552,20 @@ describe("useTestingLogic", () => {
           error: {
             type: "PythonError",
             message: "Pyodide internal error",
-          },          result: null,
+          },
+          result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 15,
             expected: 15,
             input: [5, 10],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -583,35 +586,35 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 5,
             expected: 5,
             input: [2, 3],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 15,
             expected: 15,
             input: [5, 10],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -628,34 +631,34 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: false,
             error: "some error",
             input: [2, 3],
             expected: 5,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 15,
             expected: 15,
             input: [5, 10],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 
@@ -687,9 +690,9 @@ describe("useTestingLogic", () => {
       await act(async () => {
         resolvePromise({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         });
         await promise;
@@ -704,35 +707,35 @@ describe("useTestingLogic", () => {
       mockRunPythonCode
         .mockResolvedValueOnce({
           success: true,
-        stdout: "Setup complete",
-        stderr: "",
-        error: null,
+          stdout: "Setup complete",
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 5,
             expected: 5,
             input: [2, 3],
             passed: true,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         })
         .mockResolvedValueOnce({
           success: true,
-        stdout: JSON.stringify({
+          stdout: JSON.stringify({
             success: true,
             actual: 10,
             expected: 15,
             input: [5, 10],
             passed: false,
           }),
-        stderr: "",
-        error: null,
+          stderr: "",
+          error: null,
           result: null,
         });
 

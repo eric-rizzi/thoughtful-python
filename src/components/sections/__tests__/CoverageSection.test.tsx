@@ -201,7 +201,8 @@ describe("CoverageSection", () => {
       title: "Boolean Inputs Coverage",
       content: [{ kind: "text", value: "Test with boolean inputs." }],
       example: {
-        initialCode: "def free_entry(age, has_membership):\n  if age < 12 or has_membership:\n    print('Free entry!')\n  else:\n    print('Please pay admission')",
+        initialCode:
+          "def free_entry(age, has_membership):\n  if age < 12 or has_membership:\n    print('Free entry!')\n  else:\n    print('Please pay admission')",
         visualization: "console" as const,
       },
       testMode: "procedure" as const,
@@ -221,8 +222,16 @@ describe("CoverageSection", () => {
     it("should render boolean inputs as dropdown selects", () => {
       const stateWithBoolean: SavedCoverageState = {
         challengeStates: {
-          0: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
-          1: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+          0: {
+            inputs: { age: "", has_membership: "" },
+            actualOutput: null,
+            isCorrect: null,
+          },
+          1: {
+            inputs: { age: "", has_membership: "" },
+            actualOutput: null,
+            isCorrect: null,
+          },
         },
       };
 
@@ -252,7 +261,7 @@ describe("CoverageSection", () => {
       expect(booleanSelects).toHaveLength(2);
 
       // Check that boolean selects have the right options
-      booleanSelects.forEach(select => {
+      booleanSelects.forEach((select) => {
         expect(select).toHaveTextContent("Select...");
         expect(select).toHaveTextContent("True");
         expect(select).toHaveTextContent("False");
@@ -263,7 +272,11 @@ describe("CoverageSection", () => {
       const handleUserInputChangeMock = vi.fn();
       const stateWithBoolean: SavedCoverageState = {
         challengeStates: {
-          0: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+          0: {
+            inputs: { age: "", has_membership: "" },
+            actualOutput: null,
+            isCorrect: null,
+          },
         },
       };
 
@@ -293,13 +306,21 @@ describe("CoverageSection", () => {
       const booleanSelect = screen.getByRole("combobox");
       fireEvent.change(booleanSelect, { target: { value: "True" } });
 
-      expect(handleUserInputChangeMock).toHaveBeenCalledWith(0, "True", "has_membership");
+      expect(handleUserInputChangeMock).toHaveBeenCalledWith(
+        0,
+        "True",
+        "has_membership"
+      );
     });
 
     it("should display selected boolean value in dropdown", () => {
       const stateWithBoolean: SavedCoverageState = {
         challengeStates: {
-          0: { inputs: { age: "25", has_membership: "True" }, actualOutput: null, isCorrect: null },
+          0: {
+            inputs: { age: "25", has_membership: "True" },
+            actualOutput: null,
+            isCorrect: null,
+          },
         },
       };
 
@@ -333,7 +354,11 @@ describe("CoverageSection", () => {
     it("should disable boolean dropdown when row is running or pyodide is loading", () => {
       const stateWithBoolean: SavedCoverageState = {
         challengeStates: {
-          0: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+          0: {
+            inputs: { age: "", has_membership: "" },
+            actualOutput: null,
+            isCorrect: null,
+          },
         },
       };
 
@@ -394,7 +419,11 @@ describe("CoverageSection", () => {
       const stateWithFixed: SavedCoverageState = {
         challengeStates: {
           0: { inputs: { x: "5", y: "" }, actualOutput: null, isCorrect: null },
-          1: { inputs: { x: "10", y: "20" }, actualOutput: null, isCorrect: null },
+          1: {
+            inputs: { x: "10", y: "20" },
+            actualOutput: null,
+            isCorrect: null,
+          },
           2: { inputs: { x: "", y: "" }, actualOutput: null, isCorrect: null },
         },
       };
@@ -439,7 +468,11 @@ describe("CoverageSection", () => {
       const stateWithFixed: SavedCoverageState = {
         challengeStates: {
           0: { inputs: { x: "5", y: "" }, actualOutput: null, isCorrect: null },
-          1: { inputs: { x: "10", y: "20" }, actualOutput: null, isCorrect: null },
+          1: {
+            inputs: { x: "10", y: "20" },
+            actualOutput: null,
+            isCorrect: null,
+          },
           2: { inputs: { x: "", y: "" }, actualOutput: null, isCorrect: null },
         },
       };

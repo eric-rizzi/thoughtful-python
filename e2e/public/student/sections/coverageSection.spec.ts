@@ -168,50 +168,63 @@ test.describe("CoverageSection tests", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  // This test requires a lesson with fixed inputs to be created
-  // Update the path and selectors when the lesson is ready
-  test.skip("Test fixed inputs are read-only and pre-filled", async ({ page }) => {
-    // TODO: Replace with actual lesson path that has fixed inputs
+  test("Test fixed inputs are read-only and pre-filled", async ({ page }) => {
     await page.goto(
-      "/thoughtful-python/lesson/UNIT_ID/lessons/LESSON_WITH_FIXED_INPUTS"
+      "/thoughtful-python/lesson/05_conditionals/lessons/04_cond_bool"
     );
 
-    // TODO: Replace with actual section ID
-    const sectionLocator = page.locator("#coverage-with-fixed-inputs");
+    const sectionItem = page.getByRole("listitem").filter({
+      hasText: "Free Admission",
+    });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
-    // Test that fixed inputs are visible and have values
-    const fixedInput = sectionLocator
-      .getByRole("row")
-      .first()
+    // Incorrect
+    await page
+      .getByRole("row", { name: "False Free entry! Run" })
       .getByRole("spinbutton")
-      .first();
-
-    // Fixed inputs should be disabled
-    await expect(fixedInput).toBeDisabled();
-
-    // Fixed inputs should have the pre-filled value
-    await expect(fixedInput).toHaveValue(/\d+/); // Some number value
-
-    // Editable inputs (if any in same row) should not be disabled
-    const editableInput = sectionLocator
-      .getByRole("row")
-      .first()
-      .getByRole("spinbutton")
-      .nth(1);
-
-    if (await editableInput.count() > 0) {
-      await expect(editableInput).not.toBeDisabled();
-    }
-
-    // User should be able to fill editable inputs and run the test
-    await editableInput.fill("5");
-    await sectionLocator
-      .getByRole("row")
-      .first()
-      .getByRole("button", { name: "Run" })
       .click();
+    await page
+      .getByRole("row", { name: "False Free entry! Run" })
+      .getByRole("spinbutton")
+      .fill("33");
+    await page
+      .getByRole("row", { name: "False Free entry! Run" })
+      .getByRole("button")
+      .click();
+    // Correct
+    await page
+      .getByRole("row", { name: "True Free entry! Run" })
+      .getByRole("spinbutton")
+      .click();
+    await page
+      .getByRole("row", { name: "True Free entry! Run" })
+      .getByRole("spinbutton")
+      .fill("33");
+    await page
+      .getByRole("row", { name: "True Free entry! Run" })
+      .getByRole("button")
+      .click();
+    // Incorrect
+    await page
+      .getByRole("row", { name: "45 Select... Please pay" })
+      .getByRole("combobox")
+      .selectOption("True");
+    await page
+      .getByRole("row", { name: "True Please pay admission Run" })
+      .getByRole("button")
+      .click();
+    // Incorrect
+    await page
+      .getByRole("row", { name: "Select... Free entry! Run" })
+      .getByRole("combobox")
+      .selectOption("False");
+    await page
+      .getByRole("row", { name: "False Free entry! Run" })
+      .getByRole("button")
+      .click();
+    await expect(page.getByText("1 / 4 challenges completed")).toBeVisible();
 
     // Should show results
-    await expect(sectionLocator.getByText(/challenges completed/)).toBeVisible();
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 });

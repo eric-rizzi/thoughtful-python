@@ -124,9 +124,9 @@ describe("PRIMMSection", () => {
     const user = userEvent.setup();
     mockRunPythonCode.mockResolvedValue({
       success: true,
-        stdout: "Hello, PRIMM!",
-        stderr: "",
-        error: null,
+      stdout: "Hello, PRIMM!",
+      stderr: "",
+      error: null,
     });
     vi.mocked(useEnhancedPRIMM).mockReturnValue({
       state: { ...mockPrimmState, userEnglishPrediction: "A prediction" },

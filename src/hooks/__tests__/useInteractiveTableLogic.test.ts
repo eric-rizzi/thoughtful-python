@@ -240,7 +240,8 @@ describe("useInteractiveTableLogic", () => {
 
       const booleanProps = {
         ...coverageProps,
-        functionCode: "def free_entry(age, has_membership):\n  if age < 12 or has_membership:\n    print('Free entry!')\n  else:\n    print('Please pay admission')",
+        functionCode:
+          "def free_entry(age, has_membership):\n  if age < 12 or has_membership:\n    print('Free entry!')\n  else:\n    print('Please pay admission')",
         functionToTest: "free_entry",
         testMode: "procedure" as const,
         columns: booleanColumns,
@@ -359,7 +360,10 @@ describe("useInteractiveTableLogic", () => {
 
       it("should handle fixed boolean inputs and initialize with 'False' string", async () => {
         const fixedBooleanRows: CoverageTableRow[] = [
-          { fixedInputs: { has_membership: false }, expectedOutput: "Free entry!" },
+          {
+            fixedInputs: { has_membership: false },
+            expectedOutput: "Free entry!",
+          },
         ];
 
         const fixedBooleanProps = {
@@ -400,7 +404,10 @@ describe("useInteractiveTableLogic", () => {
 
       it("should handle fixed boolean inputs with True value", async () => {
         const fixedBooleanRows: CoverageTableRow[] = [
-          { fixedInputs: { has_membership: true }, expectedOutput: "Free entry!" },
+          {
+            fixedInputs: { has_membership: true },
+            expectedOutput: "Free entry!",
+          },
         ];
 
         const fixedBooleanProps = {
@@ -527,7 +534,7 @@ describe("useInteractiveTableLogic", () => {
 
         // Should call with fixed 'a' value of 2 and editable 'b' value of 5
         expect(mockRunPythonCode).toHaveBeenCalledWith(
-          'def add(a, b):\n  return a + b\n\nprint(add(2, 5))'
+          "def add(a, b):\n  return a + b\n\nprint(add(2, 5))"
         );
       });
 
@@ -549,7 +556,7 @@ describe("useInteractiveTableLogic", () => {
         });
 
         expect(mockRunPythonCode).toHaveBeenCalledWith(
-          'def add(a, b):\n  return a + b\n\nprint(add(5, 5))'
+          "def add(a, b):\n  return a + b\n\nprint(add(5, 5))"
         );
 
         const state = result.current.savedState as any;
@@ -781,7 +788,13 @@ describe("useInteractiveTableLogic", () => {
       expect(result.current.runningStates[0]).toBe(true);
 
       await act(async () => {
-        resolvePromise({ success: true, stdout: "5", stderr: "", result: null, error: null });
+        resolvePromise({
+          success: true,
+          stdout: "5",
+          stderr: "",
+          result: null,
+          error: null,
+        });
         await promise;
       });
 
@@ -844,8 +857,20 @@ describe("useInteractiveTableLogic", () => {
 
     it("should handle multiple rows independently", async () => {
       mockRunPythonCode
-        .mockResolvedValueOnce({ success: true, stdout: "5", stderr: "", result: null, error: null })
-        .mockResolvedValueOnce({ success: true, stdout: "10", stderr: "", result: null, error: null });
+        .mockResolvedValueOnce({
+          success: true,
+          stdout: "5",
+          stderr: "",
+          result: null,
+          error: null,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          stdout: "10",
+          stderr: "",
+          result: null,
+          error: null,
+        });
 
       const { result } = renderHook(() =>
         useInteractiveTableLogic(predictionProps)

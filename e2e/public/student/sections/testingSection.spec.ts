@@ -215,7 +215,6 @@ test.describe("TestingSection `procedure` / `function_name` tests", () => {
   });
 });
 
-
 test.describe("TestingSection `function` / `function_name` tests", () => {
   test("Test that can click the `Run Tests` button and get a pass", async ({
     page,

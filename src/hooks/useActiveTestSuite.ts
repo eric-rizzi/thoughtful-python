@@ -110,7 +110,9 @@ export const useActiveTestSuite = (
       try {
         const mainCodeResult = await runPythonCode(mainCode);
         if (!mainCodeResult.success && mainCodeResult.error) {
-          throw new Error(`Error in main code: ${mainCodeResult.error.type}: ${mainCodeResult.error.message}`);
+          throw new Error(
+            `Error in main code: ${mainCodeResult.error.type}: ${mainCodeResult.error.message}`
+          );
         }
       } catch (e) {
         console.error("Error executing mainCode:", e);

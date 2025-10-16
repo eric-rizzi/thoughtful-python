@@ -133,8 +133,8 @@ export const useInteractiveTableLogic = ({
         const functionCall = `${functionToTest}(${inputs
           .map((val) => {
             // For booleans, use Python's True/False instead of JSON's true/false
-            if (typeof val === 'boolean') {
-              return val ? 'True' : 'False';
+            if (typeof val === "boolean") {
+              return val ? "True" : "False";
             }
             return JSON.stringify(val);
           })
