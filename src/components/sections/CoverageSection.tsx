@@ -124,24 +124,43 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
 
                           return (
                             <td key={param.variableName}>
-                              <input
-                                type={
-                                  param.variableType === "number"
-                                    ? "number"
-                                    : "text"
-                                }
-                                className={inputClass}
-                                value={state?.inputs[param.variableName] ?? ""}
-                                onChange={(e) =>
-                                  handleUserInputChange(
-                                    rowIndex,
-                                    e.target.value,
-                                    param.variableName
-                                  )
-                                }
-                                disabled={isRunning || isLoading || isFixed}
-                                readOnly={isFixed}
-                              />
+                              {param.variableType === "boolean" ? (
+                                <select
+                                  className={inputClass}
+                                  value={state?.inputs[param.variableName] ?? ""}
+                                  onChange={(e) =>
+                                    handleUserInputChange(
+                                      rowIndex,
+                                      e.target.value,
+                                      param.variableName
+                                    )
+                                  }
+                                  disabled={isRunning || isLoading || isFixed}
+                                >
+                                  <option value="">Select...</option>
+                                  <option value="True">True</option>
+                                  <option value="False">False</option>
+                                </select>
+                              ) : (
+                                <input
+                                  type={
+                                    param.variableType === "number"
+                                      ? "number"
+                                      : "text"
+                                  }
+                                  className={inputClass}
+                                  value={state?.inputs[param.variableName] ?? ""}
+                                  onChange={(e) =>
+                                    handleUserInputChange(
+                                      rowIndex,
+                                      e.target.value,
+                                      param.variableName
+                                    )
+                                  }
+                                  disabled={isRunning || isLoading || isFixed}
+                                  readOnly={isFixed}
+                                />
+                              )}
                             </td>
                           );
                         }

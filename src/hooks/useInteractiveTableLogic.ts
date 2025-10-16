@@ -56,8 +56,13 @@ export const useInteractiveTableLogic = ({
         columns.forEach((param) => {
           // Check if this parameter has a fixed value in the row
           if (coverageRow.fixedInputs[param.variableName] !== undefined) {
-            // Use the fixed value
-            initialInputs[param.variableName] = String(coverageRow.fixedInputs[param.variableName]);
+            const fixedValue = coverageRow.fixedInputs[param.variableName];
+            // For booleans, store as "True" or "False" to match Python/dropdown values
+            if (param.variableType === "boolean") {
+              initialInputs[param.variableName] = fixedValue ? "True" : "False";
+            } else {
+              initialInputs[param.variableName] = String(fixedValue);
+            }
           } else {
             // Default to empty string for editable inputs
             initialInputs[param.variableName] = "";
@@ -105,6 +110,12 @@ export const useInteractiveTableLogic = ({
         inputs = columns.map((col) => {
           const rawValue = challengeState?.inputs?.[col.variableName] || "";
           if (col.variableType === "number") return parseFloat(rawValue) || 0;
+          if (col.variableType === "boolean") {
+            // Convert string representation to actual boolean
+            // Accept "True"/"true"/"1" as true, "False"/"false"/"0" as false
+            const lowerValue = rawValue.toString().toLowerCase().trim();
+            return lowerValue === "true" || lowerValue === "1";
+          }
           return rawValue;
         });
         userValue = (row as CoverageTableRow).expectedOutput;
@@ -120,7 +131,13 @@ export const useInteractiveTableLogic = ({
 
       try {
         const functionCall = `${functionToTest}(${inputs
-          .map((val) => JSON.stringify(val))
+          .map((val) => {
+            // For booleans, use Python's True/False instead of JSON's true/false
+            if (typeof val === 'boolean') {
+              return val ? 'True' : 'False';
+            }
+            return JSON.stringify(val);
+          })
           .join(", ")})`;
 
         let script: string;

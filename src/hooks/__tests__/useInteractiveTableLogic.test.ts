@@ -227,6 +227,219 @@ describe("useInteractiveTableLogic", () => {
       );
     });
 
+    describe("boolean inputs", () => {
+      const booleanColumns: InputParam[] = [
+        { variableName: "age", variableType: "number" },
+        { variableName: "has_membership", variableType: "boolean" },
+      ];
+
+      const booleanRows: CoverageTableRow[] = [
+        { fixedInputs: {}, expectedOutput: "Free entry!" },
+        { fixedInputs: {}, expectedOutput: "Please pay admission" },
+      ];
+
+      const booleanProps = {
+        ...coverageProps,
+        functionCode: "def free_entry(age, has_membership):\n  if age < 12 or has_membership:\n    print('Free entry!')\n  else:\n    print('Please pay admission')",
+        functionToTest: "free_entry",
+        testMode: "procedure" as const,
+        columns: booleanColumns,
+        rows: booleanRows,
+      };
+
+      it("should parse 'True' string as Python True", async () => {
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "Free entry!",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(booleanProps)
+        );
+
+        act(() => {
+          result.current.handleUserInputChange(0, "25", "age");
+          result.current.handleUserInputChange(0, "True", "has_membership");
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        // Should call with Python True, not JavaScript true
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          expect.stringContaining("free_entry(25, True)")
+        );
+      });
+
+      it("should parse 'False' string as Python False", async () => {
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "Please pay admission",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(booleanProps)
+        );
+
+        act(() => {
+          result.current.handleUserInputChange(0, "25", "age");
+          result.current.handleUserInputChange(0, "False", "has_membership");
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        // Should call with Python False, not JavaScript false
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          expect.stringContaining("free_entry(25, False)")
+        );
+      });
+
+      it("should parse boolean values case-insensitively", async () => {
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "Free entry!",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(booleanProps)
+        );
+
+        act(() => {
+          result.current.handleUserInputChange(0, "25", "age");
+          result.current.handleUserInputChange(0, "true", "has_membership"); // lowercase
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          expect.stringContaining("free_entry(25, True)")
+        );
+      });
+
+      it("should treat empty string as false for boolean inputs", async () => {
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "Please pay admission",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(booleanProps)
+        );
+
+        act(() => {
+          result.current.handleUserInputChange(0, "25", "age");
+          result.current.handleUserInputChange(0, "", "has_membership");
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          expect.stringContaining("free_entry(25, False)")
+        );
+      });
+
+      it("should handle fixed boolean inputs and initialize with 'False' string", async () => {
+        const fixedBooleanRows: CoverageTableRow[] = [
+          { fixedInputs: { has_membership: false }, expectedOutput: "Free entry!" },
+        ];
+
+        const fixedBooleanProps = {
+          ...booleanProps,
+          rows: fixedBooleanRows,
+        };
+
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "Free entry!",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(fixedBooleanProps)
+        );
+
+        // Check that fixed boolean is initialized as "False" string for dropdown
+        const state = result.current.savedState as any;
+        expect(state.challengeStates[0].inputs.has_membership).toBe("False");
+
+        // Set only the editable input
+        act(() => {
+          result.current.handleUserInputChange(0, "5", "age");
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        // Should use fixed boolean value (Python False)
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          expect.stringContaining("free_entry(5, False)")
+        );
+      });
+
+      it("should handle fixed boolean inputs with True value", async () => {
+        const fixedBooleanRows: CoverageTableRow[] = [
+          { fixedInputs: { has_membership: true }, expectedOutput: "Free entry!" },
+        ];
+
+        const fixedBooleanProps = {
+          ...booleanProps,
+          rows: fixedBooleanRows,
+        };
+
+        mockRunPythonCode.mockResolvedValue({
+          success: true,
+          stdout: "Free entry!",
+          stderr: "",
+          result: null,
+          error: null,
+        });
+
+        const { result } = renderHook(() =>
+          useInteractiveTableLogic(fixedBooleanProps)
+        );
+
+        // Check that fixed boolean is initialized as "True" string for dropdown
+        const state = result.current.savedState as any;
+        expect(state.challengeStates[0].inputs.has_membership).toBe("True");
+
+        // Set only the editable input
+        act(() => {
+          result.current.handleUserInputChange(0, "25", "age");
+        });
+
+        await act(async () => {
+          await result.current.runRow(0);
+        });
+
+        // Should use fixed boolean value (Python True)
+        expect(mockRunPythonCode).toHaveBeenCalledWith(
+          expect.stringContaining("free_entry(25, True)")
+        );
+      });
+    });
+
     describe("fixed inputs", () => {
       const coverageRowsWithFixed: CoverageTableRow[] = [
         { fixedInputs: { a: 2 }, expectedOutput: "7" }, // 'a' is fixed at 2, 'b' is editable

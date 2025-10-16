@@ -194,6 +194,177 @@ describe("CoverageSection", () => {
     expect(progressBar).toHaveClass("progressFillComplete");
   });
 
+  describe("boolean inputs", () => {
+    const mockSectionWithBoolean: CoverageSectionData = {
+      kind: "Coverage",
+      id: "cov-bool" as SectionId,
+      title: "Boolean Inputs Coverage",
+      content: [{ kind: "text", value: "Test with boolean inputs." }],
+      example: {
+        initialCode: "def free_entry(age, has_membership):\n  if age < 12 or has_membership:\n    print('Free entry!')\n  else:\n    print('Please pay admission')",
+        visualization: "console" as const,
+      },
+      testMode: "procedure" as const,
+      functionToTest: "free_entry",
+      coverageTable: {
+        columns: [
+          { variableName: "age", variableType: "number" },
+          { variableName: "has_membership", variableType: "boolean" },
+        ],
+        rows: [
+          { fixedInputs: {}, expectedOutput: "Free entry!" },
+          { fixedInputs: {}, expectedOutput: "Please pay admission" },
+        ],
+      },
+    };
+
+    it("should render boolean inputs as dropdown selects", () => {
+      const stateWithBoolean: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+          1: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithBoolean,
+        runningStates: {},
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: vi.fn(),
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={mockSectionWithBoolean}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      // Should have number inputs for age (2 rows)
+      const numberInputs = screen.getAllByRole("spinbutton");
+      expect(numberInputs).toHaveLength(2);
+
+      // Should have dropdown selects for has_membership (2 rows)
+      const booleanSelects = screen.getAllByRole("combobox");
+      expect(booleanSelects).toHaveLength(2);
+
+      // Check that boolean selects have the right options
+      booleanSelects.forEach(select => {
+        expect(select).toHaveTextContent("Select...");
+        expect(select).toHaveTextContent("True");
+        expect(select).toHaveTextContent("False");
+      });
+    });
+
+    it("should call handleUserInputChange when boolean dropdown value changes", () => {
+      const handleUserInputChangeMock = vi.fn();
+      const stateWithBoolean: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithBoolean,
+        runningStates: {},
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: handleUserInputChangeMock,
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={{
+            ...mockSectionWithBoolean,
+            coverageTable: {
+              ...mockSectionWithBoolean.coverageTable,
+              rows: [{ fixedInputs: {}, expectedOutput: "Free entry!" }],
+            },
+          }}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      const booleanSelect = screen.getByRole("combobox");
+      fireEvent.change(booleanSelect, { target: { value: "True" } });
+
+      expect(handleUserInputChangeMock).toHaveBeenCalledWith(0, "True", "has_membership");
+    });
+
+    it("should display selected boolean value in dropdown", () => {
+      const stateWithBoolean: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { age: "25", has_membership: "True" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithBoolean,
+        runningStates: {},
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: vi.fn(),
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={{
+            ...mockSectionWithBoolean,
+            coverageTable: {
+              ...mockSectionWithBoolean.coverageTable,
+              rows: [{ fixedInputs: {}, expectedOutput: "Free entry!" }],
+            },
+          }}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      const booleanSelect = screen.getByRole("combobox") as HTMLSelectElement;
+      expect(booleanSelect.value).toBe("True");
+    });
+
+    it("should disable boolean dropdown when row is running or pyodide is loading", () => {
+      const stateWithBoolean: SavedCoverageState = {
+        challengeStates: {
+          0: { inputs: { age: "", has_membership: "" }, actualOutput: null, isCorrect: null },
+        },
+      };
+
+      vi.mocked(useInteractiveTableLogic).mockReturnValue({
+        savedState: stateWithBoolean,
+        runningStates: { 0: true },
+        isLoading: false,
+        pyodideError: null,
+        handleUserInputChange: vi.fn(),
+        runRow: vi.fn(),
+      });
+
+      render(
+        <CoverageSection
+          section={{
+            ...mockSectionWithBoolean,
+            coverageTable: {
+              ...mockSectionWithBoolean.coverageTable,
+              rows: [{ fixedInputs: {}, expectedOutput: "Free entry!" }],
+            },
+          }}
+          unitId={"unit-1" as UnitId}
+          lessonId={"lesson-1" as LessonId}
+        />
+      );
+
+      const booleanSelect = screen.getByRole("combobox");
+      expect(booleanSelect).toBeDisabled();
+    });
+  });
+
   describe("fixed inputs", () => {
     const mockSectionWithFixed: CoverageSectionData = {
       kind: "Coverage",
