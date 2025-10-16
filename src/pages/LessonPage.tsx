@@ -79,7 +79,7 @@ const LessonPage: React.FC = () => {
 
         if (!guid) {
           setError(
-            `Lesson not found for path: '${lessonPath}'. Please check the URL or units configuration.`
+            `Lesson not found for path: '${lessonPath}'. Please check the URL or unit manifest.`
           );
           setIsLoading(false);
           return;

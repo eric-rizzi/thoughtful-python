@@ -34,17 +34,29 @@ npm run lint         # Run ESLint on the codebase
 
 **Units and Lessons**: The curriculum is organized into units, each containing multiple lessons. Units are defined in `src/assets/data/units.ts` with metadata including:
 - Unit ID, title, description, and image
-- Array of lesson references with both GUID (LessonId) and file path (LessonPath)
+- Array of lesson paths (just the file path, no metadata)
 
-**Data Loader**: `src/lib/dataLoader.ts` handles all lesson loading:
-- Processes units data at module load time
-- Maintains maps between lesson GUIDs and file paths
-- Uses Vite's `import.meta.glob()` for dynamic lesson imports
+**Two Views Architecture**:
+
+1. **File System View** (for developers):
+   - Each unit is a self-contained folder in `src/assets/data/`
+   - Each lesson is a complete manifest with all metadata (GUID, title, description, sections)
+   - `units.ts` is just a lightweight index containing only lesson paths
+
+2. **Runtime View** (for the application):
+   - Complete Unit objects with full lesson metadata
+   - GUID ↔ Path mappings for navigation
+   - Cached lessons for performance
+
+**Data Loader**: `src/lib/dataLoader.ts` transforms the file system view into the runtime view:
+- Processes units data at module load time (paths only)
+- Lazily loads lesson manifests as they're accessed
+- Builds GUID↔Path mappings dynamically when lessons load
 - Validates data integrity (duplicate GUIDs, section IDs)
 - Caches loaded lessons to prevent redundant fetching
 
-**Lesson Structure**: Each lesson file (e.g., `src/assets/data/00_intro/lessons/00_intro_strings.ts`) exports a `Lesson` object containing:
-- `guid`: Unique LessonId that matches units.ts
+**Lesson Structure**: Each lesson file (e.g., `src/assets/data/00_intro/lessons/00_intro_strings.ts`) exports a complete `Lesson` object containing:
+- `guid`: Unique LessonId (must be globally unique across all lessons)
 - `title`, `description`: Basic metadata
 - `sections`: Array of different section types (see `src/types/data.ts`)
 
@@ -145,10 +157,49 @@ Routes defined in `src/App.tsx`:
 ## Key Development Notes
 
 ### Adding New Lessons
-1. Create lesson file in `src/assets/data/[unit]/lessons/[lesson].ts`
-2. Add lesson reference to `src/assets/data/units.ts` with unique GUID
-3. Ensure GUID in lesson file matches GUID in units.ts
-4. Ensure all section IDs within the lesson are unique
+
+To add a new lesson to the curriculum:
+
+1. **Create the lesson file** in the appropriate unit directory:
+   ```
+   src/assets/data/[unit_folder]/lessons/[lesson_name].ts
+   ```
+
+2. **Write the lesson manifest** with all metadata:
+   ```typescript
+   import type { Lesson, LessonId } from "../../../../types/data";
+
+   const lessonData: Lesson = {
+     guid: "YOUR-UNIQUE-GUID-HERE" as LessonId, // Generate with uuidgen
+     title: "Your Lesson Title",
+     description: "Brief description of the lesson",
+     sections: [
+       // Your sections here
+     ],
+   };
+
+   export default lessonData;
+   ```
+
+3. **Add the lesson path to `units.ts`**:
+   ```typescript
+   {
+     id: "your_unit_id" as UnitId,
+     title: "Your Unit",
+     // ... other unit metadata
+     lessons: [
+       { path: "unit_folder/lessons/lesson_name" }, // Just the path!
+     ],
+   }
+   ```
+
+4. **That's it!** The lesson is now part of the curriculum. No need to duplicate metadata in multiple places.
+
+**Important**:
+- Each lesson GUID must be globally unique
+- Use `uuidgen` (Mac/Linux) or an online UUID generator to create GUIDs
+- The lesson path in `units.ts` must match the actual file location (without .ts extension)
+- Ensure all section IDs within the lesson are unique
 
 ### Working with Section Types
 - Section kind determines which component renders it

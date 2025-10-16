@@ -24,6 +24,9 @@ const UnitPage: React.FC = () => {
   const [lessonsData, setLessonsData] = useState<Map<LessonId, Lesson | null>>(
     new Map()
   );
+  const [pathToGuidMap, setPathToGuidMap] = useState<Map<string, LessonId>>(
+    new Map()
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +43,7 @@ const UnitPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       setLessonsData(new Map());
+      setPathToGuidMap(new Map());
 
       try {
         const fetchedUnit = await fetchUnitById(unitId);
@@ -52,12 +56,12 @@ const UnitPage: React.FC = () => {
         const lessonPromises = fetchedUnit.lessons.map((lessonReference) =>
           fetchLessonData(lessonReference.path)
             .then((data) => ({
-              guid: lessonReference.guid,
+              path: lessonReference.path,
               status: "fulfilled",
               value: data,
             }))
             .catch((err) => ({
-              guid: lessonReference.guid,
+              path: lessonReference.path,
               status: "rejected",
               reason: err,
             }))
@@ -65,18 +69,22 @@ const UnitPage: React.FC = () => {
 
         const results = await Promise.all(lessonPromises);
         const loadedLessons = new Map<LessonId, Lesson | null>();
+        const pathToGuid = new Map<string, LessonId>();
+
         results.forEach((result) => {
-          if (result.status === "fulfilled") {
-            loadedLessons.set(result.guid, result.value);
-          } else {
+          if (result.status === "fulfilled" && result.value) {
+            loadedLessons.set(result.value.guid, result.value);
+            pathToGuid.set(result.path, result.value.guid);
+          } else if (result.status === "rejected") {
             console.error(
-              `Failed to load lesson ${result.guid}:`,
+              `Failed to load lesson ${result.path}:`,
               result.reason
             );
-            loadedLessons.set(result.guid, null);
+            // We can't set a null entry without knowing the GUID, skip it
           }
         });
         setLessonsData(loadedLessons);
+        setPathToGuidMap(pathToGuid);
       } catch (err) {
         console.error("Error loading unit page:", err);
         setError(
@@ -95,20 +103,26 @@ const UnitPage: React.FC = () => {
     const statuses = new Map<LessonId, CompletionStatus>();
     if (unit) {
       unit.lessons.forEach((lessonReference) => {
+        const lessonGuid = pathToGuidMap.get(lessonReference.path);
+        if (!lessonGuid) {
+          // Lesson not loaded yet or failed to load
+          return;
+        }
+
         let status: CompletionStatus = {
           text: "Not Started", // Default status
           class: "not-started",
         };
-        const lesson = lessonsData.get(lessonReference.guid);
+        const lesson = lessonsData.get(lessonGuid);
 
         if (lesson === null) {
           status = { text: "Info unavailable", class: "not-started" };
         } else if (lesson) {
           try {
             let completedSectionsForThisLesson = new Set<string>();
-            if (allCompletions?.[unit.id]?.[lessonReference.guid]) {
+            if (allCompletions?.[unit.id]?.[lessonGuid]) {
               completedSectionsForThisLesson = new Set(
-                Object.keys(allCompletions[unit.id][lessonReference.guid])
+                Object.keys(allCompletions[unit.id][lessonGuid])
               );
             }
 
@@ -138,17 +152,17 @@ const UnitPage: React.FC = () => {
             }
           } catch (e) {
             console.error(
-              `Error calculating status for ${lessonReference.guid}:`,
+              `Error calculating status for ${lessonGuid}:`,
               e
             );
             status = { text: "Status Error", class: "not-started" };
           }
         }
-        statuses.set(lessonReference.guid, status);
+        statuses.set(lessonGuid, status);
       });
     }
     return statuses;
-  }, [unit, lessonsData, allCompletions]);
+  }, [unit, lessonsData, pathToGuidMap, allCompletions]);
 
   if (isLoading) {
     return <LoadingSpinner message="Loading unit content..." />;
@@ -191,29 +205,32 @@ const UnitPage: React.FC = () => {
       </div>
       <div className={styles.lessonsList}>
         {unit.lessons.map((lessonReference, index) => {
-          const lesson = lessonsData.get(lessonReference.guid);
-          const status = lessonStatuses.get(lessonReference.guid) || {
-            text: "Loading...",
-            class: "not-started",
-          };
+          const lessonGuid = pathToGuidMap.get(lessonReference.path);
+          const lesson = lessonGuid ? lessonsData.get(lessonGuid) : undefined;
+          const status = lessonGuid
+            ? lessonStatuses.get(lessonGuid) || {
+                text: "Loading...",
+                class: "not-started",
+              }
+            : { text: "Loading...", class: "not-started" };
 
           if (lesson === null) {
             return (
               <div
-                key={lessonReference.guid}
+                key={lessonReference.path}
                 className={`${styles.lessonCard} ${styles.lessonCardError}`}
               >
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>Lesson Unavailable</h3>
                 <p className={styles.lessonDescription}>
-                  Could not load data for {lessonReference.guid}.
+                  Could not load data for {lessonReference.path}.
                 </p>
               </div>
             );
           }
           if (!lesson) {
             return (
-              <div key={lessonReference.guid} className={styles.lessonCard}>
+              <div key={lessonReference.path} className={styles.lessonCard}>
                 <div className={styles.lessonNumber}>Lesson {index + 1}</div>
                 <h3 className={styles.lessonTitle}>Loading...</h3>
               </div>
@@ -223,7 +240,7 @@ const UnitPage: React.FC = () => {
           return (
             <Link
               to={`/lesson/${lessonReference.path}`}
-              key={lessonReference.guid}
+              key={lessonReference.path}
               className={styles.lessonCardLink}
             >
               <div className={styles.lessonCard}>

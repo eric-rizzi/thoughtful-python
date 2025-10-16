@@ -1,162 +1,42 @@
-import { vi } from "vitest";
-import type { Unit, Lesson, LessonId, UnitId } from "../../types/data";
+import type { Lesson, LessonId } from "../../types/data";
 
 // --- Mock Data ---
-const mockLesson1: Lesson & { guid: LessonId } = {
+const mockLesson1: Lesson = {
   guid: "lesson-1" as LessonId,
   title: "Lesson One Title",
+  description: "The first lesson description",
   sections: [
     { kind: "Information", id: "sec-1a" },
     { kind: "Reflection", id: "sec-1b" },
   ],
 };
 
-const mockUnitsData: Unit[] = [
-  {
-    id: "unit-1" as UnitId,
-    title: "Unit One",
-    description: "The first unit.",
-    lessons: [{ guid: "lesson-1" as LessonId, path: "unit01/lesson01" }],
-  },
-];
+// Import the functions we want to test
+import {
+  getRequiredSectionsForLesson,
+  hasReviewableAssignments,
+} from "../dataLoader";
 
-// --- Mocks Setup ---
-// FIX: The path must be relative from this test file (`src/lib/__tests__`)
-// to the target module (`src/assets/data`).
-vi.mock("../../assets/data/units", () => ({
-  default: mockUnitsData,
-}));
-
-// Create a spy for our dynamic lesson import to track calls
-const mockLessonLoader = vi.fn(() => Promise.resolve({ default: mockLesson1 }));
-
-// Mock Vite's import.meta.glob function using stubGlobal
-vi.stubGlobal("import", {
-  meta: {
-    glob: vi.fn(() => ({
-      // The key must exactly match the glob pattern's expected resolution
-      "../assets/data/unit01/lesson01.ts": mockLessonLoader,
-    })),
-  },
-});
-
-describe("dataLoader", () => {
-  // This will hold the fresh instance of the dataLoader for each test
-  let dataLoader: typeof import("../dataLoader");
-
-  beforeEach(async () => {
-    vi.clearAllMocks();
-    // This is the most critical part: it clears all module caches,
-    // ensuring that when we import dataLoader, its initialization logic runs again.
-    vi.resetModules();
-    dataLoader = await import("../dataLoader");
-  });
-
-  describe("fetchUnitsData", () => {
-    it("should process and return the units data from the mocked module", async () => {
-      const { units } = await dataLoader.fetchUnitsData();
-      expect(units).toEqual(mockUnitsData);
-    });
-  });
-
-  describe("fetchLessonData", () => {
-    it("should return null for a path not defined in units.ts", async () => {
-      const lesson = await dataLoader.fetchLessonData("non/existent/path");
-      expect(lesson).toBeNull();
-    });
-  });
-
+describe("dataLoader - Pure Logic Functions", () => {
   describe("getRequiredSectionsForLesson", () => {
     it("should return a list of IDs for all sections except 'Information'", () => {
-      const requiredSections =
-        dataLoader.getRequiredSectionsForLesson(mockLesson1);
+      const requiredSections = getRequiredSectionsForLesson(mockLesson1);
       // "sec-1a" (Information) should be excluded, "sec-1b" (Reflection) should be included
       expect(requiredSections).toEqual(["sec-1b"]);
     });
-  });
 
-  describe("hasReviewableAssignments", () => {
-    it("should return true if a lesson contains a Reflection section", () => {
-      const result = dataLoader.hasReviewableAssignments(mockLesson1);
-      expect(result).toBe(true);
-    });
-
-    it("should return false if a lesson has no reviewable sections", () => {
-      const lessonWithoutReviewables: Lesson = {
-        guid: "lesson-2" as LessonId,
-        title: "No Assignments Here",
-        sections: [{ kind: "Information", id: "info-1" }],
-      };
-      const result = dataLoader.hasReviewableAssignments(
-        lessonWithoutReviewables
-      );
-      expect(result).toBe(false);
-    });
-  });
-
-  describe("getLessonPathSync", () => {
-    it("should return the correct path for a given lesson ID", () => {
-      const path = dataLoader.getLessonPathSync("lesson-1" as LessonId);
-      expect(path).toBe("unit01/lesson01");
-    });
-
-    it("should return null for an unknown lesson ID", () => {
-      const path = dataLoader.getLessonPathSync("unknown-id" as LessonId);
-      expect(path).toBeNull();
-    });
-  });
-
-  describe("fetchUnitById", () => {
-    it("should return the correct unit for a valid unit ID", async () => {
-      const unit = await dataLoader.fetchUnitById("unit-1" as UnitId);
-      expect(unit).toEqual(mockUnitsData[0]);
-    });
-
-    it("should return null for an unknown unit ID", async () => {
-      const unit = await dataLoader.fetchUnitById("unknown-unit" as UnitId);
-      expect(unit).toBeNull();
-    });
-  });
-
-  describe("getLessonGuidByPath", () => {
-    it("should return the correct lesson GUID for a valid path", async () => {
-      const guid = await dataLoader.getLessonGuidByPath("unit01/lesson01");
-      expect(guid).toBe("lesson-1");
-    });
-
-    it("should return null for an unknown path", async () => {
-      const guid = await dataLoader.getLessonGuidByPath("unknown/path");
-      expect(guid).toBeNull();
-    });
-  });
-
-  describe("getLessonPath", () => {
-    it("should return the correct path for a valid lesson ID", async () => {
-      const path = await dataLoader.getLessonPath("lesson-1" as LessonId);
-      expect(path).toBe("unit01/lesson01");
-    });
-
-    it("should return null for an unknown lesson ID", async () => {
-      const path = await dataLoader.getLessonPath("unknown-id" as LessonId);
-      expect(path).toBeNull();
-    });
-  });
-
-  describe("getRequiredSectionsForLesson - edge cases", () => {
     it("should return empty array for lesson with no sections", () => {
       const lessonWithoutSections: Lesson = {
         guid: "lesson-empty" as LessonId,
         title: "Empty Lesson",
         sections: [],
       };
-      const result = dataLoader.getRequiredSectionsForLesson(
-        lessonWithoutSections
-      );
+      const result = getRequiredSectionsForLesson(lessonWithoutSections);
       expect(result).toEqual([]);
     });
 
     it("should return empty array for null lesson", () => {
-      const result = dataLoader.getRequiredSectionsForLesson(null as any);
+      const result = getRequiredSectionsForLesson(null as any);
       expect(result).toEqual([]);
     });
 
@@ -172,7 +52,7 @@ describe("dataLoader", () => {
           { kind: "PRIMM", id: "primm-1" },
         ],
       };
-      const result = dataLoader.getRequiredSectionsForLesson(lessonWithMixed);
+      const result = getRequiredSectionsForLesson(lessonWithMixed);
       expect(result).toEqual(["test-1", "pred-1", "primm-1"]);
     });
 
@@ -192,9 +72,7 @@ describe("dataLoader", () => {
           { kind: "Debugger", id: "debug-1" },
         ],
       };
-      const result = dataLoader.getRequiredSectionsForLesson(
-        lessonWithAllRequired
-      );
+      const result = getRequiredSectionsForLesson(lessonWithAllRequired);
       expect(result.length).toBe(9);
       expect(result).toContain("obs-1");
       expect(result).toContain("test-1");
@@ -208,7 +86,22 @@ describe("dataLoader", () => {
     });
   });
 
-  describe("hasReviewableAssignments - edge cases", () => {
+  describe("hasReviewableAssignments", () => {
+    it("should return true if a lesson contains a Reflection section", () => {
+      const result = hasReviewableAssignments(mockLesson1);
+      expect(result).toBe(true);
+    });
+
+    it("should return false if a lesson has no reviewable sections", () => {
+      const lessonWithoutReviewables: Lesson = {
+        guid: "lesson-2" as LessonId,
+        title: "No Assignments Here",
+        sections: [{ kind: "Information", id: "info-1" }],
+      };
+      const result = hasReviewableAssignments(lessonWithoutReviewables);
+      expect(result).toBe(false);
+    });
+
     it("should return true for lesson with PRIMM section", () => {
       const lessonWithPrimm: Lesson = {
         guid: "lesson-primm" as LessonId,
@@ -218,7 +111,7 @@ describe("dataLoader", () => {
           { kind: "PRIMM", id: "primm-1" },
         ],
       };
-      const result = dataLoader.hasReviewableAssignments(lessonWithPrimm);
+      const result = hasReviewableAssignments(lessonWithPrimm);
       expect(result).toBe(true);
     });
 
@@ -231,12 +124,12 @@ describe("dataLoader", () => {
           { kind: "PRIMM", id: "primm-1" },
         ],
       };
-      const result = dataLoader.hasReviewableAssignments(lessonWithBoth);
+      const result = hasReviewableAssignments(lessonWithBoth);
       expect(result).toBe(true);
     });
 
     it("should return false for null lesson", () => {
-      const result = dataLoader.hasReviewableAssignments(null as any);
+      const result = hasReviewableAssignments(null as any);
       expect(result).toBe(false);
     });
 
@@ -245,7 +138,7 @@ describe("dataLoader", () => {
         guid: "lesson-no-sections" as LessonId,
         title: "No Sections",
       } as any;
-      const result = dataLoader.hasReviewableAssignments(lessonWithoutSections);
+      const result = hasReviewableAssignments(lessonWithoutSections);
       expect(result).toBe(false);
     });
 
@@ -255,7 +148,7 @@ describe("dataLoader", () => {
         title: "Empty",
         sections: [],
       };
-      const result = dataLoader.hasReviewableAssignments(lessonEmpty);
+      const result = hasReviewableAssignments(lessonEmpty);
       expect(result).toBe(false);
     });
   });

@@ -294,7 +294,6 @@ export interface Lesson {
 }
 
 export interface LessonReference {
-  guid: LessonId;
   path: LessonPath;
 }
 
@@ -305,6 +304,43 @@ export interface Unit {
   lessons: LessonReference[];
   image: string;
 }
+
+/**
+ * Unit manifest schema for unit.ts files.
+ * Contains unit metadata and lesson ordering with relative paths.
+ * All paths in the manifest are relative to the unit directory.
+ *
+ * Example unit.ts file:
+ * ```typescript
+ * import type { UnitManifest, UnitId } from "../../../types/data";
+ *
+ * const unitData: UnitManifest = {
+ *   id: "intro_python" as UnitId,
+ *   title: "Introduction to Python",
+ *   description: "Learn Python fundamentals...",
+ *   image: "images/unit_icon_intro.svg",
+ *   lessons: [
+ *     "lessons/00_intro_strings",
+ *     "lessons/01_intro_integers",
+ *   ],
+ * };
+ *
+ * export default unitData;
+ * ```
+ */
+export interface UnitManifest {
+  id: UnitId;
+  title: string;
+  description: string;
+  image: string; // Relative to unit directory (e.g., "images/unit_icon.svg")
+  lessons: string[]; // Relative paths to lessons (e.g., "lessons/00_intro_strings")
+}
+
+/**
+ * Internal type for unit directory discovery.
+ * Represents the directory name containing a unit.ts file.
+ */
+export type UnitDirectory = string & { readonly __brand: "UnitDirectory" };
 
 export interface UnitsData {
   units: Unit[];
