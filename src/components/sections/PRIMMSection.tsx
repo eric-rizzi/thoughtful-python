@@ -64,7 +64,17 @@ const PRIMMSection: React.FC<PRIMMSectionProps> = ({
       actions.setActualOutput("Turtle drawing was displayed.");
     } else {
       const result = await runPythonCode(section.example.initialCode);
-      actions.setActualOutput(result.output || result.error || "No output.");
+
+      // Format output with proper stream ordering
+      const parts: string[] = [];
+      if (result.stdout) parts.push(result.stdout.trim());
+      if (result.stderr) parts.push(result.stderr.trim());
+      if (!result.success && result.error) {
+        parts.push(`${result.error.type}: ${result.error.message}`);
+      }
+
+      const formattedOutput = parts.length > 0 ? parts.join("\n") : "No output.";
+      actions.setActualOutput(formattedOutput);
     }
 
     // Execution is finished

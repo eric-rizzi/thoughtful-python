@@ -97,9 +97,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should run coverage row and check correctness", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "5",
-        error: null,
+        success: true,
+        stdout: "5",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -127,9 +129,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should mark coverage row as incorrect when output doesn't match", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "6",
-        error: null,
+        success: true,
+        stdout: "6",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -152,9 +156,14 @@ describe("useInteractiveTableLogic", () => {
 
     it("should handle Python errors in coverage mode", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: null,
-        error: "NameError: name 'x' is not defined",
+        success: false,
+        stdout: "",
+        stderr: "",
         result: null,
+        error: {
+          type: "NameError",
+          message: "name 'x' is not defined",
+        },
       });
 
       const { result } = renderHook(() =>
@@ -193,9 +202,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should parse number inputs correctly", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "7",
-        error: null,
+        success: true,
+        stdout: "7",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -246,9 +257,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should run prediction row and check correctness", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "5",
-        error: null,
+        success: true,
+        stdout: "5",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -274,9 +287,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should mark prediction as incorrect when answer doesn't match", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "5",
-        error: null,
+        success: true,
+        stdout: "5",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -298,9 +313,14 @@ describe("useInteractiveTableLogic", () => {
 
     it("should handle Python errors in prediction mode", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: null,
-        error: "TypeError: unsupported operand type(s)",
+        success: false,
+        stdout: "",
+        stderr: "",
         result: null,
+        error: {
+          type: "TypeError",
+          message: "unsupported operand type(s)",
+        },
       });
 
       const { result } = renderHook(() =>
@@ -336,9 +356,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should trim whitespace when comparing predictions", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "  5  ",
-        error: null,
+        success: true,
+        stdout: "  5  ",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -359,9 +381,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should handle None output", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: null,
-        error: null,
+        success: true,
+        stdout: "",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -402,7 +426,7 @@ describe("useInteractiveTableLogic", () => {
       expect(result.current.runningStates[0]).toBe(true);
 
       await act(async () => {
-        resolvePromise({ output: "5", error: null, result: null });
+        resolvePromise({ success: true, stdout: "5", stderr: "", result: null, error: null });
         await promise;
       });
 
@@ -465,8 +489,8 @@ describe("useInteractiveTableLogic", () => {
 
     it("should handle multiple rows independently", async () => {
       mockRunPythonCode
-        .mockResolvedValueOnce({ output: "5", error: null, result: null })
-        .mockResolvedValueOnce({ output: "10", error: null, result: null });
+        .mockResolvedValueOnce({ success: true, stdout: "5", stderr: "", result: null, error: null })
+        .mockResolvedValueOnce({ success: true, stdout: "10", stderr: "", result: null, error: null });
 
       const { result } = renderHook(() =>
         useInteractiveTableLogic(predictionProps)
@@ -494,9 +518,11 @@ describe("useInteractiveTableLogic", () => {
 
     it("should handle empty function output", async () => {
       mockRunPythonCode.mockResolvedValue({
-        output: "",
-        error: null,
+        success: true,
+        stdout: "",
+        stderr: "",
         result: null,
+        error: null,
       });
 
       const { result } = renderHook(() =>
@@ -504,7 +530,7 @@ describe("useInteractiveTableLogic", () => {
       );
 
       act(() => {
-        result.current.handleUserInputChange(0, "");
+        result.current.handleUserInputChange(0, "None");
       });
 
       await act(async () => {
@@ -512,8 +538,8 @@ describe("useInteractiveTableLogic", () => {
       });
 
       const state = result.current.savedState as any;
-      // Empty string output gets trimmed to "", not "None"
-      expect(state.predictions[0].actualOutput).toBe("");
+      // Empty stdout gets converted to "None"
+      expect(state.predictions[0].actualOutput).toBe("None");
       expect(state.predictions[0].isCorrect).toBe(true);
     });
   });

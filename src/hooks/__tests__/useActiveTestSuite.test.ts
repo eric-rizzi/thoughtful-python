@@ -105,14 +105,23 @@ describe("useActiveTestSuite", () => {
       });
 
       // Mock a successful main code run
-      runPythonCodeMock.mockResolvedValueOnce({ output: "", error: null });
+      runPythonCodeMock.mockResolvedValueOnce({
+        success: true,
+        stdout: "",
+        stderr: "",
+        result: null,
+        error: null,
+      });
       // Mock a successful test run
       runPythonCodeMock.mockResolvedValueOnce({
-        output: `===PYTEST_SINGLE_RESULT_JSON===\n${JSON.stringify({
+        success: true,
+        stdout: `===PYTEST_SINGLE_RESULT_JSON===\n${JSON.stringify({
           name: "test_passing",
           status: "PASSED",
           output: "",
         })}\n===END_PYTEST_SINGLE_RESULT_JSON===`,
+        stderr: "",
+        result: null,
         error: null,
       });
 
@@ -134,13 +143,22 @@ describe("useActiveTestSuite", () => {
         result.current.addTestToSuite("def test_failing(): assert False");
       });
 
-      runPythonCodeMock.mockResolvedValueOnce({ output: "", error: null }); // Main code
       runPythonCodeMock.mockResolvedValueOnce({
-        output: `===PYTEST_SINGLE_RESULT_JSON===\n${JSON.stringify({
+        success: true,
+        stdout: "",
+        stderr: "",
+        result: null,
+        error: null,
+      }); // Main code
+      runPythonCodeMock.mockResolvedValueOnce({
+        success: true,
+        stdout: `===PYTEST_SINGLE_RESULT_JSON===\n${JSON.stringify({
           name: "test_failing",
           status: "FAILED",
           output: "AssertionError: assert False",
         })}\n===END_PYTEST_SINGLE_RESULT_JSON===`,
+        stderr: "",
+        result: null,
         error: null,
       });
 
@@ -162,8 +180,14 @@ describe("useActiveTestSuite", () => {
 
       // Mock a failed main code run
       runPythonCodeMock.mockResolvedValueOnce({
-        output: "",
-        error: "SyntaxError",
+        success: false,
+        stdout: "",
+        stderr: "",
+        result: null,
+        error: {
+          type: "SyntaxError",
+          message: "invalid syntax",
+        },
       });
 
       await act(async () => {

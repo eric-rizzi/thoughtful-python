@@ -125,11 +125,16 @@ export const useCoverageLogic = ({
         const pythonCode = `${assignments}\n\n${codeToRun}`;
         const result = await runPythonCode(pythonCode);
 
-        outputText = result.error
-          ? `Error: ${result.error}`
-          : (result.output?.trim() ?? "");
-        isCorrect =
-          !result.error && outputText === challenge.expectedOutput.trim();
+        // Format output based on execution result
+        if (result.success) {
+          outputText = result.stdout.trim();
+        } else {
+          // Show error message for failed execution
+          outputText = `Error: ${result.error?.message || "Unknown error"}`;
+        }
+
+        // Check correctness: must be successful execution and match expected output
+        isCorrect = result.success && outputText === challenge.expectedOutput.trim();
       } catch (err) {
         outputText =
           err instanceof Error

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { usePyodide } from "../contexts/PyodideContext";
+import { usePyodide, PythonExecutionResult } from "../contexts/PyodideContext";
 import type { UnitId, LessonId, SectionId } from "../types/data";
 import { useProgressStore, useProgressActions } from "../stores/progressStore";
 
@@ -9,6 +9,33 @@ interface UseInteractiveExampleProps {
   lessonId: LessonId;
   sectionId: SectionId;
   autoComplete?: boolean;
+}
+
+/**
+ * Helper function to format execution result for display.
+ * Combines stdout and error information in chronological order.
+ */
+function formatExecutionOutput(result: PythonExecutionResult): string {
+  const parts: string[] = [];
+
+  // Add stdout first (output that occurred before any error)
+  if (result.stdout) {
+    parts.push(result.stdout.trim());
+  }
+
+  // Add stderr if present
+  if (result.stderr) {
+    parts.push(result.stderr.trim());
+  }
+
+  // Add error message if execution failed
+  if (!result.success && result.error) {
+    // Format as Python would: "ErrorType: message"
+    const errorLine = `${result.error.type}: ${result.error.message}`;
+    parts.push(errorLine);
+  }
+
+  return parts.join("\n");
 }
 
 export const useInteractiveExample = ({
@@ -27,20 +54,29 @@ export const useInteractiveExample = ({
 
   const runCode = useCallback(
     async (code: string) => {
-      setOutput(""); // Reset to empty string instead of null
+      setOutput(""); // Reset to empty string
       const result = await runPythonCode(code);
-      const resultOutput = result.output || result.error || "";
-      setOutput(resultOutput);
 
-      // On a successful run (even with a Python error), mark the section as complete.
-      if (result && autoComplete) {
+      // Format output with proper stream ordering
+      const formattedOutput = formatExecutionOutput(result);
+      setOutput(formattedOutput);
+
+      // On any execution (success or error), mark the section as complete
+      if (autoComplete) {
         completeSection(unitId, lessonId, sectionId);
       }
 
-      // Return the result to satisfy the component's prop type
-      return { output: resultOutput, error: result.error };
+      // Return formatted result
+      return {
+        output: formattedOutput,
+        error: result.success
+          ? null
+          : result.error
+            ? `${result.error.type}: ${result.error.message}`
+            : null,
+      };
     },
-    [runPythonCode, completeSection, unitId, lessonId, sectionId]
+    [runPythonCode, completeSection, unitId, lessonId, sectionId, autoComplete]
   );
 
   const isSectionComplete = useProgressStore(

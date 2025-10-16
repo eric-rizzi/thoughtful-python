@@ -21,7 +21,11 @@ const InteractiveExampleDisplay: React.FC<InteractiveExampleDisplayProps> = ({
   error,
   isReadOnly,
 }) => {
-  const isPythonError = output.includes("Traceback (most recent call last):");
+  // Check if output contains Python error indicators
+  const isPythonError =
+    output.includes("Traceback (most recent call last):") ||
+    output.includes("Error:") ||
+    output.includes("Exception:");
 
   return (
     <div className={styles.interactiveExampleContainer}>

@@ -106,16 +106,19 @@ print(json.dumps(result))
 
             const testResult = await runPythonCode(testScript);
 
-            if (testResult.error) {
+            if (!testResult.success) {
+              const errorMsg = testResult.error
+                ? `${testResult.error.type}: ${testResult.error.message}`
+                : "Unknown error";
               results.push({
                 description: testCase.description,
                 passed: false,
-                actual: `Execution error: ${testResult.error}`,
+                actual: `Execution error: ${errorMsg}`,
                 expected: testCase.expected,
               });
             } else {
               try {
-                const parsedResult = JSON.parse(testResult.output);
+                const parsedResult = JSON.parse(testResult.stdout);
 
                 if (parsedResult.success) {
                   results.push({
@@ -136,7 +139,7 @@ print(json.dumps(result))
                 results.push({
                   description: testCase.description,
                   passed: false,
-                  actual: `Parse error: ${testResult.output}`,
+                  actual: `Parse error: ${testResult.stdout}`,
                   expected: testCase.expected,
                 });
               }
@@ -161,8 +164,11 @@ if '${functionToTest}' not in globals():
 `;
 
           const setupResult = await runPythonCode(setupScript);
-          if (setupResult.error) {
-            throw new Error(setupResult.error);
+          if (!setupResult.success) {
+            const errorMsg = setupResult.error
+              ? `${setupResult.error.type}: ${setupResult.error.message}`
+              : "Unknown error";
+            throw new Error(errorMsg);
           }
 
           // Now run each test case
@@ -217,17 +223,20 @@ print(json.dumps(result))
 
               const testResult = await runPythonCode(testScript);
 
-              if (testResult.error) {
+              if (!testResult.success) {
+                const errorMsg = testResult.error
+                  ? `${testResult.error.type}: ${testResult.error.message}`
+                  : "Unknown error";
                 results.push({
                   description: testCase.description,
                   passed: false,
-                  actual: `Execution error: ${testResult.error}`,
+                  actual: `Execution error: ${errorMsg}`,
                   expected: testCase.expected,
                   input: testCase.input,
                 });
               } else {
                 try {
-                  const parsedResult = JSON.parse(testResult.output);
+                  const parsedResult = JSON.parse(testResult.stdout);
 
                   if (parsedResult.success) {
                     results.push({
@@ -250,7 +259,7 @@ print(json.dumps(result))
                   results.push({
                     description: testCase.description,
                     passed: false,
-                    actual: `Parse error: ${testResult.output}`,
+                    actual: `Parse error: ${testResult.stdout}`,
                     expected: testCase.expected,
                     input: testCase.input,
                   });
@@ -305,17 +314,20 @@ print(json.dumps(result))
 
               const testResult = await runPythonCode(testScript);
 
-              if (testResult.error) {
+              if (!testResult.success) {
+                const errorMsg = testResult.error
+                  ? `${testResult.error.type}: ${testResult.error.message}`
+                  : "Unknown error";
                 results.push({
                   description: testCase.description,
                   passed: false,
-                  actual: `Execution error: ${testResult.error}`,
+                  actual: `Execution error: ${errorMsg}`,
                   expected: testCase.expected,
                   input: testCase.input,
                 });
               } else {
                 try {
-                  const parsedResult = JSON.parse(testResult.output);
+                  const parsedResult = JSON.parse(testResult.stdout);
 
                   if (parsedResult.success) {
                     results.push({
@@ -338,7 +350,7 @@ print(json.dumps(result))
                   results.push({
                     description: testCase.description,
                     passed: false,
-                    actual: `Parse error: ${testResult.output}`,
+                    actual: `Parse error: ${testResult.stdout}`,
                     expected: testCase.expected,
                     input: testCase.input,
                   });

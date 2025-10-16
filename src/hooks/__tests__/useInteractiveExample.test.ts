@@ -53,9 +53,11 @@ describe("useInteractiveExample", () => {
 
   it("should run Python code successfully", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "Hello, World!",
-      error: null,
+      success: true,
+      stdout: "Hello, World!",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -75,9 +77,11 @@ describe("useInteractiveExample", () => {
 
   it("should complete section after successful run with autoComplete=true", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "42",
-      error: null,
+      success: true,
+      stdout: "42",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -95,9 +99,11 @@ describe("useInteractiveExample", () => {
 
   it("should not complete section when autoComplete=false", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "42",
-      error: null,
+      success: true,
+      stdout: "42",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const { result } = renderHook(() =>
@@ -113,9 +119,14 @@ describe("useInteractiveExample", () => {
 
   it("should handle Python execution errors", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: "NameError: name 'undefined_var' is not defined",
+      success: false,
+      stdout: "",
+      stderr: "",
       result: null,
+      error: {
+        type: "NameError",
+        message: "name 'undefined_var' is not defined",
+      },
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -136,9 +147,14 @@ describe("useInteractiveExample", () => {
 
   it("should complete section even with Python errors when autoComplete=true", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: "SyntaxError: invalid syntax",
+      success: false,
+      stdout: "",
+      stderr: "",
       result: null,
+      error: {
+        type: "SyntaxError",
+        message: "invalid syntax",
+      },
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -157,14 +173,18 @@ describe("useInteractiveExample", () => {
   it("should reset output when running new code", async () => {
     mockRunPythonCode
       .mockResolvedValueOnce({
-        output: "First output",
-        error: null,
+        success: true,
+        stdout: "First output",
+        stderr: "",
         result: null,
+        error: null,
       })
       .mockResolvedValueOnce({
-        output: "Second output",
-        error: null,
+        success: true,
+        stdout: "Second output",
+        stderr: "",
         result: null,
+        error: null,
       });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -184,9 +204,11 @@ describe("useInteractiveExample", () => {
 
   it("should handle empty output", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "",
-      error: null,
+      success: true,
+      stdout: "",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -201,9 +223,11 @@ describe("useInteractiveExample", () => {
 
   it("should handle null output from Pyodide", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: null,
+      success: true,
+      stdout: "",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -267,9 +291,11 @@ describe("useInteractiveExample", () => {
 
   it("should handle both output and error being null", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: null,
+      success: true,
+      stdout: "",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -288,9 +314,14 @@ describe("useInteractiveExample", () => {
 
   it("should prefer error over output when both exist", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "Some output",
-      error: "Some error",
+      success: false,
+      stdout: "Some output",
+      stderr: "",
       result: null,
+      error: {
+        type: "RuntimeError",
+        message: "Some error",
+      },
     });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -299,26 +330,32 @@ describe("useInteractiveExample", () => {
       await result.current.runCode("print(x)");
     });
 
-    // When both exist, output takes precedence (output || error)
-    expect(result.current.output).toBe("Some output");
+    // When both stdout and error exist, both should be shown with error at the end
+    expect(result.current.output).toBe("Some output\nRuntimeError: Some error");
   });
 
   it("should handle rapid successive code executions", async () => {
     mockRunPythonCode
       .mockResolvedValueOnce({
-        output: "1",
-        error: null,
+        success: true,
+        stdout: "1",
+        stderr: "",
         result: null,
+        error: null,
       })
       .mockResolvedValueOnce({
-        output: "2",
-        error: null,
+        success: true,
+        stdout: "2",
+        stderr: "",
         result: null,
+        error: null,
       })
       .mockResolvedValueOnce({
-        output: "3",
-        error: null,
+        success: true,
+        stdout: "3",
+        stderr: "",
         result: null,
+        error: null,
       });
 
     const { result } = renderHook(() => useInteractiveExample(defaultProps));
@@ -335,9 +372,11 @@ describe("useInteractiveExample", () => {
 
   it("should work with different unit/lesson/section IDs", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "test",
-      error: null,
+      success: true,
+      stdout: "test",
+      stderr: "",
       result: null,
+      error: null,
     });
 
     const customProps = {

@@ -123,10 +123,17 @@ export const useInteractiveTableLogic = ({
         }
 
         const result = await runPythonCode(script);
-        actualOutput = result.error
-          ? `Error: ${result.error}`
-          : (result.output?.trim() ?? "None");
-        isCorrect = !result.error && actualOutput === userValue.trim();
+
+        // Format output based on execution result
+        if (result.success) {
+          actualOutput = result.stdout.trim() || "None";
+        } else {
+          // Show error message for failed execution
+          actualOutput = `Error: ${result.error?.message || "Unknown error"}`;
+        }
+
+        // Check correctness: must be successful execution and match user value
+        isCorrect = result.success && actualOutput === userValue.trim();
       } catch (err) {
         actualOutput =
           err instanceof Error

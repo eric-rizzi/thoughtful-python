@@ -109,8 +109,8 @@ export const useActiveTestSuite = (
 
       try {
         const mainCodeResult = await runPythonCode(mainCode);
-        if (mainCodeResult.error) {
-          throw new Error(`Error in main code: ${mainCodeResult.error}`);
+        if (!mainCodeResult.success && mainCodeResult.error) {
+          throw new Error(`Error in main code: ${mainCodeResult.error.type}: ${mainCodeResult.error.message}`);
         }
       } catch (e) {
         console.error("Error executing mainCode:", e);
@@ -184,16 +184,13 @@ print("===END_PYTEST_SINGLE_RESULT_JSON===")
           "Execution did not complete as expected.";
 
         try {
-          const {
-            output: pyodideOutputForThisTest,
-            error: pyodideErrorForThisTest,
-          } = await runPythonCode(singleTestExecutionScript);
+          const result = await runPythonCode(singleTestExecutionScript);
 
-          if (pyodideErrorForThisTest) {
+          if (!result.success && result.error) {
             testStatus = "error";
-            testOutputString = `Error executing test snippet: ${pyodideErrorForThisTest}`;
+            testOutputString = `${result.error.type}: ${result.error.message}`;
           } else {
-            const match = pyodideOutputForThisTest.match(
+            const match = result.stdout.match(
               /===PYTEST_SINGLE_RESULT_JSON===\s*([\s\S]*?)\s*===END_PYTEST_SINGLE_RESULT_JSON===/
             );
             if (match && match[1]) {
@@ -208,10 +205,10 @@ print("===END_PYTEST_SINGLE_RESULT_JSON===")
                   testOutputString = `Result name mismatch. Expected: ${testFunctionToCall}, Got: ${parsedResult.name}. Raw: ${parsedResult.output}`;
                 }
               } catch (parseError) {
-                testOutputString = `Failed to parse result for test '${currentTest.name}': ${parseError}\nRaw output:\n${pyodideOutputForThisTest}`;
+                testOutputString = `Failed to parse result for test '${currentTest.name}': ${parseError}\nRaw output:\n${result.stdout}`;
               }
             } else {
-              testOutputString = `Result format error for test '${currentTest.name}'.\nRaw output:\n${pyodideOutputForThisTest}`;
+              testOutputString = `Result format error for test '${currentTest.name}'.\nRaw output:\n${result.stdout}`;
             }
           }
         } catch (e) {

@@ -102,8 +102,10 @@ describe("usePredictionLogic", () => {
 
   it("should run prediction and mark correct answer", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "5",
-      error: null,
+      success: true,
+        stdout: "5",
+        stderr: "",
+        error: null,
       result: null,
     });
 
@@ -132,8 +134,10 @@ describe("usePredictionLogic", () => {
 
   it("should run prediction and mark incorrect answer", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "5",
-      error: null,
+      success: true,
+        stdout: "5",
+        stderr: "",
+        error: null,
       result: null,
     });
 
@@ -157,9 +161,13 @@ describe("usePredictionLogic", () => {
 
   it("should handle Python execution errors", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: "NameError: name 'x' is not defined",
-      result: null,
+      success: false,
+      stdout: "",
+      stderr: "",
+      error: {
+        type: "NameError",
+        message: "name 'x' is not defined",
+      },      result: null,
     });
 
     mockedUseSectionProgress.mockImplementation(((...args: any[]) => {
@@ -230,7 +238,7 @@ describe("usePredictionLogic", () => {
 
     // Resolve and finish
     await act(async () => {
-      resolvePromise({ output: "5", error: null, result: null });
+      resolvePromise({success: true, stdout: "5", stderr: "", result: null, error: null});
       await promise;
     });
 
@@ -274,8 +282,10 @@ describe("usePredictionLogic", () => {
 
   it("should handle empty user answer", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "5",
-      error: null,
+      success: true,
+        stdout: "5",
+        stderr: "",
+        error: null,
       result: null,
     });
 
@@ -299,8 +309,10 @@ describe("usePredictionLogic", () => {
 
   it("should trim whitespace when comparing predictions", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "  5  ",
-      error: null,
+      success: true,
+        stdout: "  5  ",
+        stderr: "",
+        error: null,
       result: null,
     });
 
@@ -323,13 +335,15 @@ describe("usePredictionLogic", () => {
 
   it("should handle Python output with None", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: null,
+      success: true,
+        stdout: "",
+        stderr: "",
+        error: null,
       result: null,
     });
 
     mockedUseSectionProgress.mockImplementation(((...args: any[]) => {
-      const state = { predictions: { 0: { userAnswer: "" } } };
+      const state = { predictions: { 0: { userAnswer: "None" } } };
       return [state, mockSetSavedState, false];
     }) as any);
 
@@ -340,8 +354,8 @@ describe("usePredictionLogic", () => {
     });
 
     const updater = mockSetSavedState.mock.calls[0][0];
-    const newState = updater({ predictions: { 0: { userAnswer: "" } } });
+    const newState = updater({ predictions: { 0: { userAnswer: "None" } } });
 
-    expect(newState.predictions[0].actualOutput).toBe("");
+    expect(newState.predictions[0].actualOutput).toBe("None");
   });
 });

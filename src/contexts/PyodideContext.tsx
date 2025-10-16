@@ -14,15 +14,26 @@ import React, {
 import type { PyodideInterface } from "../types/pyodide";
 import { PYODIDE_CONFIG } from "../config/constants";
 
+// Define the structure for Python execution results with proper stream separation
+export interface PythonExecutionResult {
+  success: boolean;
+  stdout: string; // Normal output stream (print statements)
+  stderr: string; // Error output stream
+  result: any; // Python return value (if success)
+  error: {
+    type: string; // Python exception name (e.g., "NameError", "TypeError")
+    message: string; // Human-readable error message
+    traceback?: string; // Full traceback if available
+  } | null;
+}
+
 // Define the shape of the context value that components will consume
 interface PyodideContextType {
   pyodide: PyodideInterface | null; // The loaded Pyodide instance
   isLoading: boolean; // True while initializing OR if not started
   isInitializing: boolean; // True only during the async initialization phase
   error: Error | null; // Holds any initialization error
-  runPythonCode: (
-    code: string
-  ) => Promise<{ output: string; error: string | null; result: any }>;
+  runPythonCode: (code: string) => Promise<PythonExecutionResult>;
   loadPackages: (packages: string[]) => Promise<void>; // Function to load packages
 }
 
@@ -161,21 +172,27 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
   }, [loadPyodideScript, pyodide, isInitializing]); // Include dependencies used inside effect
 
   const runPythonCode = useCallback(
-    async (
-      code: string
-    ): Promise<{ output: string; error: string | null; result: any }> => {
+    async (code: string): Promise<PythonExecutionResult> => {
       if (!pyodide || isInitializing) {
         const message = `Python environment is ${
           isInitializing ? "initializing" : "not ready"
         }. Please wait.`;
         console.warn(message);
-        return { output: "", error: message, result: null };
+        return {
+          success: false,
+          stdout: "",
+          stderr: "",
+          result: null,
+          error: {
+            type: "SystemError",
+            message: message,
+          },
+        };
       }
 
       // console.log("Running Python code via context...");
       let stdout = "";
       let stderr = "";
-      let fullError = null;
       let result: any = null;
 
       try {
@@ -200,15 +217,38 @@ export const PyodideProvider: React.FC<PyodideProviderProps> = ({
             resultProxy.destroy();
           }
         }
-      } catch (err) {
-        console.error("Error executing Python code:", err);
-        // Capture the execution error itself in addition to stderr
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        fullError = `${stderr}\nExecution Error: ${errorMessage}`;
-        stderr = "";
-      }
 
-      return { output: stdout, error: fullError, result };
+        // Success: code executed without exceptions
+        return {
+          success: true,
+          stdout: stdout,
+          stderr: stderr,
+          result: result,
+          error: null,
+        };
+      } catch (err: any) {
+        console.error("Error executing Python code:", err);
+
+        // Extract error information from Pyodide exception
+        const errorType = err.type || err.name || "PythonError";
+        const errorMessage = err.message || String(err);
+
+        // Build traceback from stderr if available, otherwise use error string
+        const traceback = stderr || err.toString();
+
+        // Return structured error with streams preserved
+        return {
+          success: false,
+          stdout: stdout, // Keep stdout that was generated before the error
+          stderr: stderr, // Keep stderr separate
+          result: null,
+          error: {
+            type: errorType,
+            message: errorMessage,
+            traceback: traceback,
+          },
+        };
+      }
     },
     [pyodide, isInitializing]
   );

@@ -123,8 +123,10 @@ describe("PRIMMSection", () => {
   it("locks prediction, runs code, and shows output when 'Run Code' is clicked", async () => {
     const user = userEvent.setup();
     mockRunPythonCode.mockResolvedValue({
-      output: "Hello, PRIMM!",
-      error: null,
+      success: true,
+        stdout: "Hello, PRIMM!",
+        stderr: "",
+        error: null,
     });
     vi.mocked(useEnhancedPRIMM).mockReturnValue({
       state: { ...mockPrimmState, userEnglishPrediction: "A prediction" },

@@ -88,7 +88,10 @@ describe("useCoverageLogic", () => {
     mockCurrentState.challengeStates.c1.inputs.x = "10";
 
     runPythonCodeMock.mockResolvedValue({
-      output: "Positive\n",
+      success: true,
+      stdout: "Positive\n",
+      stderr: "",
+      result: null,
       error: null,
     });
 
@@ -118,7 +121,10 @@ describe("useCoverageLogic", () => {
     mockCurrentState.challengeStates.c1.inputs.x = "-5";
 
     runPythonCodeMock.mockResolvedValue({
-      output: "Negative\n",
+      success: true,
+      stdout: "Negative\n",
+      stderr: "",
+      result: null,
       error: null,
     });
 

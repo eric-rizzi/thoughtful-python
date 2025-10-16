@@ -99,7 +99,7 @@ test.describe("ObservationSection tests", () => {
       .locator("#first-turtle")
       .getByRole("button", { name: "Run Code" })
       .click();
-    await expect(page.getByText("Execution Error: Traceback (")).toBeVisible();
+    await expect(page.getByText("SyntaxError: Traceback (")).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });

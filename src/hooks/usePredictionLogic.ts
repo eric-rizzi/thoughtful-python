@@ -109,19 +109,16 @@ export const usePredictionLogic = ({
 
         const result = await runPythonCode(script);
 
-        if (testMode === "procedure") {
-          // For procedures: compare against stdout
-          actualOutput = result.error
-            ? `Error: ${result.error}`
-            : (result.output?.trim() ?? "");
+        // Format output based on execution result
+        if (result.success) {
+          actualOutput = result.stdout.trim() || "None";
         } else {
-          // For functions: compare against return value (which appears in output)
-          actualOutput = result.error
-            ? `Error: ${result.error}`
-            : (result.output?.trim() ?? "");
+          // Show error message for failed execution
+          actualOutput = `Error: ${result.error?.message || "Unknown error"}`;
         }
 
-        isCorrect = !result.error && actualOutput === userPrediction.trim();
+        // Check correctness: must be successful execution and match prediction
+        isCorrect = result.success && actualOutput === userPrediction.trim();
       } catch (err) {
         actualOutput =
           err instanceof Error

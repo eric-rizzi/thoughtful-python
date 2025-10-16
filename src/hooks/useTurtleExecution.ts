@@ -180,18 +180,23 @@ json.dumps(_js_turtle_commands_)
         const result = await runPythonCode(fullPythonScript);
         console.log(result);
 
-        if (result.error) {
-          setError(result.error);
+        // Check if execution failed
+        if (!result.success) {
+          const errorMsg = result.error
+            ? `${result.error.type}: ${result.error.message}`
+            : "Unknown error";
+          setError(errorMsg);
           return [];
         }
 
+        // Check for errors in stdout (from our custom error handling)
         const errorMarker = "PYTHON_EXECUTION_ERROR::";
-        const markerIndex = result.output
-          ? result.output.indexOf(errorMarker)
+        const markerIndex = result.stdout
+          ? result.stdout.indexOf(errorMarker)
           : -1;
 
         if (markerIndex !== -1) {
-          const jsonString = result.output.substring(
+          const jsonString = result.stdout.substring(
             markerIndex + errorMarker.length
           );
           try {
@@ -204,6 +209,7 @@ json.dumps(_js_turtle_commands_)
           return [];
         }
 
+        // Parse turtle commands from result
         if (result.result) {
           parsedJsCommands = JSON.parse(result.result);
         }
