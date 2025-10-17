@@ -154,6 +154,7 @@ export interface SavedReflectionState {
 export interface ExecutableCode {
   initialCode: string;
   visualization: "console" | "turtle";
+  allowImageDownload?: boolean;
 }
 
 export interface ObservationSectionData extends LessonSection {
@@ -165,6 +166,7 @@ export interface TestCase {
   input: any[];
   expected: any;
   description: string;
+  referenceImage?: string; // Path to reference image for visual turtle tests (e.g., "data/07_loops_advanced/images/turtle-square-100.png")
 }
 
 export type TestMode = "procedure" | "function";
@@ -175,6 +177,7 @@ export interface TestingSectionData extends LessonSection {
   testMode: TestMode;
   functionToTest: string; // "__main__" for testing entire program output, function name for testing specific functions
   testCases: TestCase[];
+  visualThreshold?: number; // Similarity threshold (0.0-1.0) for visual turtle tests. Recommended: 0.95. Only used when testCases contain referenceImage
 }
 
 export interface DebuggerSectionData extends LessonSection {

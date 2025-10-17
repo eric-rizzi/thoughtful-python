@@ -6,6 +6,8 @@ import { render } from "../../../test-utils";
 import TestingSection from "../TestingSection";
 import { useInteractiveExample } from "../../../hooks/useInteractiveExample";
 import { useTestingLogic } from "../../../hooks/useTestingLogic";
+import { useTurtleExecution } from "../../../hooks/useTurtleExecution";
+import { useTurtleTesting } from "../../../hooks/useTurtleTesting";
 import type {
   TestingSectionData,
   UnitId,
@@ -16,6 +18,8 @@ import type {
 // Mock the hooks that provide the core logic
 vi.mock("../../../hooks/useInteractiveExample");
 vi.mock("../../../hooks/useTestingLogic");
+vi.mock("../../../hooks/useTurtleExecution");
+vi.mock("../../../hooks/useTurtleTesting");
 
 const mockSectionData: TestingSectionData = {
   kind: "Testing",
@@ -40,6 +44,8 @@ const mockSectionData: TestingSectionData = {
 describe("TestingSection", () => {
   const runCodeMock = vi.fn();
   const runTestsMock = vi.fn();
+  const runTurtleCodeMock = vi.fn();
+  const stopExecutionMock = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -52,6 +58,19 @@ describe("TestingSection", () => {
       error: null,
     });
     vi.mocked(useTestingLogic).mockReturnValue({
+      runTests: runTestsMock,
+      testResults: null,
+      isLoading: false,
+      error: null,
+    });
+    vi.mocked(useTurtleExecution).mockReturnValue({
+      runTurtleCode: runTurtleCodeMock,
+      stopExecution: stopExecutionMock,
+      isLoading: false,
+      error: null,
+      turtleInstance: null,
+    });
+    vi.mocked(useTurtleTesting).mockReturnValue({
       runTests: runTestsMock,
       testResults: null,
       isLoading: false,

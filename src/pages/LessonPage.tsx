@@ -191,6 +191,7 @@ const LessonPage: React.FC = () => {
             unitId={currentUnitGuid}
             lessonId={currentLessonGuid}
             section={sectionData}
+            lessonPath={lessonPath}
           />
         );
       case "Prediction":

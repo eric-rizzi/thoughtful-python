@@ -99,6 +99,7 @@ interface UseTurtleExecutionProps {
   lessonId: LessonId;
   sectionId: SectionId;
   autoCompleteOnRun?: boolean;
+  onTurtleInstanceReady?: (instance: RealTurtleInstance) => void;
 }
 
 export const useTurtleExecution = ({
@@ -107,6 +108,7 @@ export const useTurtleExecution = ({
   lessonId,
   sectionId,
   autoCompleteOnRun = true,
+  onTurtleInstanceReady,
 }: UseTurtleExecutionProps) => {
   const jsTurtleRef = useRef<RealTurtleInstance | null>(null);
   const stopRequestedRef = useRef(false);
@@ -122,16 +124,27 @@ export const useTurtleExecution = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isPyodideLoading && canvasRef.current && !jsTurtleRef.current) {
-      const container = canvasRef.current;
-      jsTurtleRef.current = setupJsTurtle(container);
+    // Only create turtle instance if we don't already have one
+    if (isPyodideLoading || !canvasRef.current || jsTurtleRef.current) {
+      return;
     }
+
+    const container = canvasRef.current;
+    const instance = setupJsTurtle(container);
+    jsTurtleRef.current = instance;
+
+    if (onTurtleInstanceReady) {
+      onTurtleInstanceReady(instance);
+    }
+
     return () => {
+      // Cleanup function - destroy the turtle instance
       if (jsTurtleRef.current) {
         jsTurtleRef.current.destroy();
         jsTurtleRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef, isPyodideLoading]);
 
   const runTurtleCode = useCallback(
@@ -254,5 +267,6 @@ json.dumps(_js_turtle_commands_)
     stopExecution,
     isLoading: isRunning || isPyodideLoading,
     error: error || pyodideError,
+    turtleInstance: jsTurtleRef.current,
   };
 };

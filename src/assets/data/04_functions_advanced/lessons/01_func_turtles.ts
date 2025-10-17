@@ -54,6 +54,7 @@ const lessonData: Lesson = {
         visualization: "turtle",
         initialCode:
           "import turtle\n\ndef make_T():\n  turtle.forward(100)\n  turtle.right(90)\n  turtle.forward(100)\n  turtle.left(180)\n  turtle.forward(200)\n\nmake_T()",
+        allowImageDownload: true,
       },
     } as ObservationSectionData,
     {

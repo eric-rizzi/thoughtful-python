@@ -14,10 +14,9 @@ import type {
 import unitDirectories from "../assets/data/units";
 
 // Use import.meta.glob to discover all unit.ts manifest files
-const unitManifestModules = import.meta.glob("../assets/data/*/unit.ts") as Record<
-  string,
-  () => Promise<{ default: UnitManifest }>
->;
+const unitManifestModules = import.meta.glob(
+  "../assets/data/*/unit.ts"
+) as Record<string, () => Promise<{ default: UnitManifest }>>;
 
 // This glob pattern finds all .ts files under src/assets/data/ that could be lessons.
 // Vite will handle the actual dynamic importing.
@@ -59,13 +58,18 @@ async function processUnitsData(): Promise<void> {
     console.log("Loading unit manifests from unit.ts files...");
 
     // Build a map of directory → manifest loader
-    const manifestLoaderMap = new Map<string, () => Promise<{ default: UnitManifest }>>();
+    const manifestLoaderMap = new Map<
+      string,
+      () => Promise<{ default: UnitManifest }>
+    >();
     for (const [manifestPath, loader] of Object.entries(unitManifestModules)) {
       const unitDir = extractUnitDirectory(manifestPath);
       if (unitDir) {
         manifestLoaderMap.set(unitDir, loader);
       } else {
-        console.warn(`Could not extract unit directory from path: ${manifestPath}`);
+        console.warn(
+          `Could not extract unit directory from path: ${manifestPath}`
+        );
       }
     }
 
@@ -78,7 +82,7 @@ async function processUnitsData(): Promise<void> {
       if (!loader) {
         console.error(
           `Unit directory "${unitDir}" specified in units.ts but no unit.ts manifest found. ` +
-          `Please create ${unitDir}/unit.ts`
+            `Please create ${unitDir}/unit.ts`
         );
         continue;
       }
@@ -88,10 +92,14 @@ async function processUnitsData(): Promise<void> {
         const manifest = module.default;
 
         // Validate manifest
-        if (!manifest.id || !manifest.title || !Array.isArray(manifest.lessons)) {
+        if (
+          !manifest.id ||
+          !manifest.title ||
+          !Array.isArray(manifest.lessons)
+        ) {
           console.error(
             `Invalid unit manifest in ${unitDir}/unit.ts. ` +
-            `Required fields: id, title, lessons (array)`
+              `Required fields: id, title, lessons (array)`
           );
           continue;
         }
@@ -115,7 +123,10 @@ async function processUnitsData(): Promise<void> {
 
         console.log(`Loaded unit: ${manifest.title} (${unitDir})`);
       } catch (error) {
-        console.error(`Error loading unit manifest from ${unitDir}/unit.ts:`, error);
+        console.error(
+          `Error loading unit manifest from ${unitDir}/unit.ts:`,
+          error
+        );
       }
     }
 

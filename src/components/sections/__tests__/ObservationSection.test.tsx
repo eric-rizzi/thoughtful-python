@@ -59,11 +59,14 @@ describe("ObservationSection", () => {
     // 3. Assert that the child component was called with the correct props
     expect(CodeExecutor).toHaveBeenCalledTimes(1);
     // Assert only on the props object (the first argument) to avoid issues with the 'ref' argument.
-    expect(vi.mocked(CodeExecutor).mock.calls[0][0]).toEqual({
+    const calledProps = vi.mocked(CodeExecutor).mock.calls[0][0];
+    expect(calledProps).toMatchObject({
       example: mockSectionData.example,
       unitId: unitId,
       lessonId: lessonId,
       sectionId: mockSectionData.id,
     });
+    // onTurtleInstanceReady should be a function
+    expect(typeof calledProps.onTurtleInstanceReady).toBe("function");
   });
 });

@@ -42,10 +42,15 @@ export interface RealTurtleInstance {
   reset: () => void;
   clear: () => void;
   destroy: () => void;
+  getCanvasDataURL: () => string | null;
 }
 
 // This function sets up p5.js and defines how to draw the turtle commands.
 export const setupJsTurtle = (container: HTMLElement): RealTurtleInstance => {
+  // Clean up any existing p5 canvases in this container
+  const existingCanvases = container.querySelectorAll("canvas");
+  existingCanvases.forEach((canvas) => canvas.remove());
+
   let sketch: p5 | null = null;
   let isDestroyed = false;
 
@@ -555,11 +560,19 @@ export const setupJsTurtle = (container: HTMLElement): RealTurtleInstance => {
 
   sketch = new p5(createSketch, container);
 
+  const getCanvasDataURL = (): string | null => {
+    if (!sketch || !sketch.canvas) {
+      return null;
+    }
+    return sketch.canvas.toDataURL("image/png");
+  };
+
   return {
     execute: executeAllCommands,
     stop: stopAnimation,
     reset: clearCanvas,
     clear: clearCanvas,
     destroy,
+    getCanvasDataURL,
   };
 };

@@ -5,6 +5,7 @@ import type {
   LessonId,
   SectionId,
 } from "../../types/data";
+import type { RealTurtleInstance } from "../../lib/turtleRenderer";
 import { useTurtleExecution } from "../../hooks/useTurtleExecution";
 import { useInteractiveExample } from "../../hooks/useInteractiveExample";
 import InteractiveExampleDisplay from "./InteractiveExampleDisplay";
@@ -16,6 +17,7 @@ interface CodeExecutorProps {
   unitId: UnitId;
   lessonId: LessonId;
   sectionId: SectionId;
+  onTurtleInstanceReady?: (instance: RealTurtleInstance) => void;
 }
 
 // A sub-component specifically for the Turtle visualization
@@ -24,6 +26,7 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
   unitId,
   lessonId,
   sectionId,
+  onTurtleInstanceReady,
 }) => {
   const [code, setCode] = useState(example.initialCode);
   const canvasRef = useRef<HTMLDivElement>(null); // 1. Add this back
@@ -33,6 +36,7 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
       unitId,
       lessonId,
       sectionId,
+      onTurtleInstanceReady,
     }
   );
 
@@ -52,11 +56,13 @@ const TurtleDisplay: React.FC<CodeExecutorProps> = ({
         >
           {isLoading ? "Executing..." : "Run Code"}
         </button>
-        {isLoading && (
-          <button onClick={stopExecution} className={`${styles.runButton}`}>
-            Stop
-          </button>
-        )}
+        <button
+          onClick={stopExecution}
+          disabled={!isLoading}
+          className={styles.runButton}
+        >
+          Stop
+        </button>
       </div>
       {error && (
         <div className={styles.errorFeedback}>

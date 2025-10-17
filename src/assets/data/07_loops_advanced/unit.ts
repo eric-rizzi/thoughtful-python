@@ -1,7 +1,7 @@
 import { UnitId, UnitManifest } from "../../../types/data";
 
 const unitManifest: UnitManifest = {
-  id: "loops" as UnitId,
+  id: "advanced_loops" as UnitId,
   title: "Advanced Loops",
   image: "images/unit_icon_loops_advanced.svg",
   description:
@@ -10,6 +10,7 @@ const unitManifest: UnitManifest = {
     "lessons/00_loops_and_vars",
     "lessons/01_loops_and_funcs",
     "lessons/02_loops_wrap_up",
+    "lessons/99_test_visual_turtle",
   ],
 };
 

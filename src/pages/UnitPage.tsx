@@ -151,10 +151,7 @@ const UnitPage: React.FC = () => {
               }
             }
           } catch (e) {
-            console.error(
-              `Error calculating status for ${lessonGuid}:`,
-              e
-            );
+            console.error(`Error calculating status for ${lessonGuid}:`, e);
             status = { text: "Status Error", class: "not-started" };
           }
         }
