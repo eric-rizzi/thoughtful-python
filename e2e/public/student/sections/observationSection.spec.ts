@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("ObservationSection tests", () => {
+test.describe("ObservationSection tests for regular code", () => {
   test("Test can click the `Run Code` button for regular code", async ({
     page,
   }) => {
@@ -22,6 +22,41 @@ test.describe("ObservationSection tests", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
+  test("Test can get a Syntax error when clicking `Run Code` for faulty code", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/thoughtful-python/lesson/xx_learning/lessons/00_learning_primm"
+    );
+
+    const sectionItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "Running Code" });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
+    await page
+      .locator("#running-code")
+      .getByText('print("Hello, World!")')
+      .click();
+    await page
+      .getByText(
+        'print("Hello, World!")print("Can I call myself a programmer?")'
+      )
+      .fill(
+        'print("Hello, World!")aaa\nprint("Can I call myself a programmer?")'
+      );
+
+    await page
+      .locator("#running-code")
+      .getByRole("button", { name: "Run Code" })
+      .click();
+    await expect(page.getByText("SyntaxError: Traceback")).toBeVisible();
+
+    await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
+  });
+});
+
+test.describe("ObservationSection tests for turtles code", () => {
   test("Test can click the `Run Code` button for Turtle", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/04_functions_advanced/lessons/01_func_turtles"

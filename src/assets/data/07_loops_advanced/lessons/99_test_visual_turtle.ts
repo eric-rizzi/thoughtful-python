@@ -1,4 +1,11 @@
-import type { Lesson, LessonId, SectionId } from "../../../../types/data";
+import type {
+  InformationSectionData,
+  Lesson,
+  LessonId,
+  ObservationSectionData,
+  SectionId,
+  TestingSectionData,
+} from "../../../../types/data";
 
 const lessonData: Lesson = {
   guid: "test-visual-turtle-lesson" as LessonId,
@@ -16,7 +23,7 @@ const lessonData: Lesson = {
             "This is a test lesson to verify the visual turtle testing feature works correctly.",
         },
       ],
-    },
+    } as InformationSectionData,
     {
       kind: "Observation",
       id: "create_reference" as SectionId,
@@ -30,7 +37,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "After downloading, save the file to: `src/assets/data/07_loops_advanced/images/test-square.png`",
+            "After downloading, save the file to: `src/assets/data/07_loops_advanced/images/turtle_square.png`",
         },
       ],
       example: {
@@ -46,7 +53,7 @@ for i in range(4):
         visualization: "turtle",
         allowImageDownload: true,
       },
-    },
+    } as ObservationSectionData,
     {
       kind: "Testing",
       id: "test_visual_square" as SectionId,
@@ -55,12 +62,7 @@ for i in range(4):
         {
           kind: "text",
           value:
-            "Write code that draws a square with side length 100. Your drawing must match the target image shown below.",
-        },
-        {
-          kind: "text",
-          value:
-            "**Note:** Make sure you've created the reference image from the previous section first!",
+            "Write code that draws a square with side length 100. Your drawing must match the target image shown below. **Note:** Make sure you've created the reference image from the previous section first!",
         },
       ],
       example: {
@@ -80,10 +82,10 @@ turtle.speed(0)
           description: "Square with side length 100",
           input: [],
           expected: null,
-          referenceImage: "images/test-square.png",
+          referenceImage: "images/turtle_square.png",
         },
       ],
-    },
+    } as TestingSectionData,
   ],
 };
 

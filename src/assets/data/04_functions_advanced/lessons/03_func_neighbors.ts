@@ -106,6 +106,9 @@ const lessonData: Lesson = {
         initialCode:
           "import turtle\nimport random\nt = turtle.Turtle()\nt.speed(0)\n\ndef draw_square(size):\n    for i in range(4):\n        turtle.forward(size)\n        turtle.right(90)\n\ndef draw_triangle(size):\n    for i in range(3):\n        turtle.forward(size)\n        turtle.left(120)\n\ndef draw_house(x, y, size, house_color, roof_color):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    \n    turtle.color(house_color)\n    turtle.begin_fill()\n    draw_square(size)\n    turtle.end_fill()\n    \n    turtle.color(roof_color)\n    turtle.begin_fill()\n    draw_triangle(size)\n    turtle.end_fill()\n\n# Draw three houses in a row\n# Your code here\n",
       },
+      testMode: "procedure",
+      functionToTest: "__main__",
+      visualThreshold: 0.999,
       testCases: [
         {
           input: [null],
@@ -113,8 +116,6 @@ const lessonData: Lesson = {
           description: "Test that three houses are drawn",
         },
       ],
-      testMode: "procedure",
-      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "MultipleSelection",
@@ -195,6 +196,9 @@ const lessonData: Lesson = {
         initialCode:
           'import turtle\nimport random\nt = turtle.Turtle()\nt.speed(0)\n\n# All the helper functions from before\ndef draw_square(size):\n    for i in range(4):\n        turtle.forward(size)\n        turtle.right(90)\n\ndef draw_triangle(size):\n    for i in range(3):\n        turtle.forward(size)\n        turtle.left(120)\n\ndef draw_rectangle(width, height):\n    for i in range(2):\n        turtle.forward(width)\n        turtle.right(90)\n        turtle.forward(height)\n        turtle.right(90)\n\ndef draw_house(x, y, size, house_color, roof_color):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    \n    turtle.color(house_color)\n    turtle.begin_fill()\n    draw_square(size)\n    turtle.end_fill()\n    \n    turtle.color(roof_color)\n    turtle.begin_fill()\n    draw_triangle(size)\n    turtle.end_fill()\n\ndef draw_tree(x, y, trunk_width, trunk_height, leaves_size):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    \n    turtle.color("brown")\n    turtle.begin_fill()\n    draw_rectangle(trunk_width, trunk_height)\n    turtle.end_fill()\n    \n    turtle.penup()\n    turtle.forward(trunk_width/2)\n    turtle.left(90)\n    turtle.forward(trunk_height)\n    turtle.right(90)\n    turtle.pendown()\n    \n    turtle.color("green")\n    turtle.begin_fill()\n    turtle.circle(leaves_size)\n    turtle.end_fill()\n\ndef draw_sun(x, y, size):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    turtle.color("yellow")\n    turtle.begin_fill()\n    turtle.circle(size)\n    turtle.end_fill()\n\ndef draw_cloud(x, y):\n    turtle.penup()\n    turtle.goto(x, y)\n    turtle.pendown()\n    turtle.color("lightgray")\n    for offset in [0, 15, 30]:\n        turtle.penup()\n        turtle.goto(x + offset, y)\n        turtle.pendown()\n        turtle.begin_fill()\n        turtle.circle(20)\n        turtle.end_fill()\n\n# Create your neighborhood here!\n# Start with a road, then add houses, trees, and sky elements\n',
       },
+      testMode: "procedure",
+      functionToTest: "__main__",
+      visualThreshold: 0.999,
       testCases: [
         {
           input: [null],
@@ -202,8 +206,6 @@ const lessonData: Lesson = {
           description: "Test that a complete neighborhood is drawn",
         },
       ],
-      testMode: "procedure",
-      functionToTest: "__main__",
     } as TestingSectionData,
     {
       kind: "Reflection",

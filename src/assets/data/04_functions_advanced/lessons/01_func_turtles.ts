@@ -138,15 +138,17 @@ const lessonData: Lesson = {
         initialCode:
           "import turtle\n\ndef make_triangle():\n  # Each side should be 100 pixels\n\nmake_triangle()",
       },
-      testCases: [
-        {
-          input: [null],
-          expected: "SHAPE:triangle",
-          description: "Test that a triangle is drawn",
-        },
-      ],
       testMode: "procedure",
       functionToTest: "__main__",
+      visualThreshold: 0.999,
+      testCases: [
+        {
+          description: "Triangle with side length 100",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_triangle.png",
+        },
+      ],
     } as TestingSectionData,
     {
       kind: "Reflection",

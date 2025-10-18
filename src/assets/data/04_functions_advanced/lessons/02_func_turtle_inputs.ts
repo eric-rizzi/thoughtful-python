@@ -122,20 +122,17 @@ const lessonData: Lesson = {
         initialCode:
           "import turtle\n\ndef draw_rectangle(width, height):\n  # Your code here\n  pass\n\n# Test your function\ndraw_rectangle(100, 50)\nturtle.penup()\nturtle.forward(120)\nturtle.pendown()\ndraw_rectangle(30, 80)",
       },
-      testCases: [
-        {
-          input: [100, 50],
-          expected: "SHAPE:rectangle[100,50]",
-          description: "Test rectangle with width 100 and height 50",
-        },
-        {
-          input: [30, 80],
-          expected: "SHAPE:rectangle[30,80]",
-          description: "Test rectangle with width 30 and height 80",
-        },
-      ],
       testMode: "procedure",
       functionToTest: "draw_rectangle",
+      visualThreshold: 0.999,
+      testCases: [
+        {
+          description: "Two rectangles",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_rectangles.png",
+        },
+      ],
     } as TestingSectionData,
     {
       kind: "PRIMM",
@@ -166,23 +163,25 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Time to start building a house! Create a function called `draw_house_base(size)` that:\n1. Draws a square for the house body using the given size\n2. Draws a triangle roof on top (also using the same size)\n\nThe roof should sit directly on top of the square. Test your function by calling it with size 100.",
+            "Time to start building a house of your own! Create a function called `draw_house_base(size)` that:\n1. Draws a square for the house body using the given size\n2. Draws a triangle roof on top (also using the same size)\n\nThe roof should sit directly on top of the square. Test your function by calling it with size 50.",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\nt = turtle.Turtle()\n\ndef draw_house_base(size):\n  # Draw the square base\n\n  # Draw the triangle roof\n  # Hint: The roof starts where the square ends\n\n  pass\n\n# Test your function\ndraw_house_base(100)",
+          "import turtle\n\ndef draw_house_base(size):\n  # Draw the square base\n\n  # Move to the top left of the house\n\n  # Draw the triangle roof\n  # Hint: The roof starts where the square ends\n\n  pass\n\n# Test your function\ndraw_house_base(50)",
       },
-      testCases: [
-        {
-          input: [100],
-          expected: "SHAPE:house_base",
-          description: "Test that a house with roof is drawn",
-        },
-      ],
       testMode: "procedure",
       functionToTest: "draw_house_base",
+      visualThreshold: 0.999,
+      testCases: [
+        {
+          description: "House with side length of 50",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_house.png",
+        },
+      ],
     } as TestingSectionData,
     {
       kind: "Information",
