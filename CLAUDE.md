@@ -99,6 +99,67 @@ npm run lint         # Run ESLint on the codebase
 **Turtle Graphics**: Custom turtle implementation using real-turtle library
 - `src/lib/turtleRenderer.ts`: Converts Python turtle commands to JavaScript
 - `src/hooks/useTurtleExecution.ts`: Handles turtle code execution with Pyodide
+- `src/hooks/useTurtleTesting.ts`: Handles visual comparison testing for turtle drawings
+- `src/lib/turtleComparison.ts`: Pixel-by-pixel image comparison using pixelmatch library
+
+**Visual Turtle Testing**: Testing sections can validate turtle drawings by comparing student output against reference images
+
+**How it works**:
+1. **Test Case Setup**: Each test case in a TestingSection can include a `referenceImage` path (e.g., `"images/turtle_square.png"`) pointing to a target drawing
+2. **Sequential Execution with Stop-on-Failure**: When "Run Tests" is clicked, tests execute sequentially. The first failing test stops execution (remaining tests don't run)
+3. **Progressive UI Updates**: As tests run, the UI updates in real-time:
+   - Side-by-side layout shows current test's reference image (left) and live turtle canvas (right)
+   - Test label shows "Test X of Y: [description]" to indicate progress
+   - Completed tests stack up below as collapsible cards (passing tests collapsed by default)
+4. **Smart Display Logic** (see `TurtleTestResults.tsx`):
+   - **Before tests**: Shows first test's reference image
+   - **During tests**: Updates to show each test's reference as it runs
+   - **After tests complete**:
+     - If failure: Shows failed test in side-by-side, passed tests in collapsed accordion below
+     - If all pass: Shows last test in side-by-side (proof of success), all tests in collapsed accordion below
+5. **Visual Comparison**: Uses `pixelmatch` library to compare student's canvas against reference image with configurable threshold (default 95%, can be set via `visualThreshold` property)
+6. **Key Implementation Details**:
+   - `useTurtleTesting.ts` executes tests sequentially, updating state after each test completion
+   - The displayed test is **never** shown in the accordion (no duplication)
+   - Final success/failure message only appears when `isRunningTests = false` to prevent premature "Great job!" messages
+   - Reference images are resolved relative to unit folder: `/thoughtful-python/data/{unitDir}/{imagePath}`
+
+**Creating Visual Turtle Tests**:
+```typescript
+{
+  kind: "Testing",
+  id: "draw-square" as SectionId,
+  title: "Draw a Square",
+  example: {
+    visualization: "turtle",
+    initialCode: "import turtle\n\n# Your code here",
+  },
+  testMode: "procedure",
+  functionToTest: "__main__",
+  visualThreshold: 0.999, // 99.9% similarity required
+  testCases: [
+    {
+      description: "Square with side length 50",
+      input: [],
+      expected: null,
+      referenceImage: "images/turtle_square_50.png",
+    },
+    {
+      description: "Square with side length 100",
+      input: [],
+      expected: null,
+      referenceImage: "images/turtle_square_100.png",
+    },
+  ],
+}
+```
+
+**Important Notes**:
+- Reference images should be stored in the unit's `images/` folder
+- Use ObservationSection with `allowImageDownload: true` to generate reference images
+- Tests stop on first failure - if Test 2 fails, Test 3 never runs
+- The accordion only shows completed tests, never the currently displayed test
+- Visual threshold of 0.999 is very strict; 0.95-0.98 may be more forgiving for minor rendering differences
 
 ### Component Architecture
 
