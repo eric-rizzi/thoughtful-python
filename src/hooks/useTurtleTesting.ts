@@ -22,6 +22,7 @@ interface UseTurtleTestingProps {
   visualThreshold?: number;
   turtleInstance: RealTurtleInstance | null;
   runTurtleCode: (code: string) => Promise<unknown>;
+  functionToTest?: string;
 }
 
 export const useTurtleTesting = ({
@@ -32,6 +33,7 @@ export const useTurtleTesting = ({
   visualThreshold = 0.95,
   turtleInstance,
   runTurtleCode,
+  functionToTest,
 }: UseTurtleTestingProps) => {
   const { completeSection } = useProgressActions();
   const [testResults, setTestResults] = useState<TurtleTestResult[] | null>(
@@ -60,6 +62,25 @@ export const useTurtleTesting = ({
           throw new Error("No visual test cases found");
         }
 
+        // If testing a function (not __main__), we need to define it once first
+        if (functionToTest && functionToTest !== "__main__") {
+          // Execute user code once to define the function
+          // This validates the function exists and is defined correctly
+          try {
+            await runTurtleCode(userCode);
+            // Clear the canvas after setup - we don't want the setup drawing
+            turtleInstance.reset();
+          } catch (setupError) {
+            throw new Error(
+              `Failed to define function '${functionToTest}': ${
+                setupError instanceof Error
+                  ? setupError.message
+                  : "Unknown error"
+              }`
+            );
+          }
+        }
+
         for (const testCase of visualTestCases) {
           if (!testCase.referenceImage) continue;
 
@@ -68,8 +89,29 @@ export const useTurtleTesting = ({
           setTestResults([...results]);
 
           try {
+            // Build code to execute for this test case
+            let codeToRun: string;
+
+            // If testing a function (not __main__) and test case has input,
+            // just call the function (it's already defined from setup)
+            if (
+              functionToTest &&
+              functionToTest !== "__main__" &&
+              testCase.input &&
+              testCase.input.length > 0
+            ) {
+              // Function is already defined, just call it with test inputs
+              const inputArgs = testCase.input
+                .map((arg) => JSON.stringify(arg))
+                .join(", ");
+              codeToRun = `${functionToTest}(${inputArgs})`;
+            } else {
+              // For __main__ mode or no inputs, run the entire code
+              codeToRun = userCode;
+            }
+
             // Run the turtle code
-            await runTurtleCode(userCode);
+            await runTurtleCode(codeToRun);
 
             // Get the student's canvas as data URL
             const studentImageDataURL = turtleInstance.getCanvasDataURL();

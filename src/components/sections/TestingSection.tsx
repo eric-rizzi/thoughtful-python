@@ -199,6 +199,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
     visualThreshold: section.visualThreshold,
     turtleInstance,
     runTurtleCode,
+    functionToTest: section.functionToTest,
   });
 
   // Hook for regular (console-based) tests
