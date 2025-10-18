@@ -106,6 +106,8 @@ print(json.dumps(result))
 
             const testResult = await runPythonCode(testScript);
 
+            let testPassed = false;
+
             if (!testResult.success) {
               const errorMsg = testResult.error
                 ? `${testResult.error.type}: ${testResult.error.message}`
@@ -116,6 +118,7 @@ print(json.dumps(result))
                 actual: `Execution error: ${errorMsg}`,
                 expected: testCase.expected,
               });
+              testPassed = false;
             } else {
               try {
                 const parsedResult = JSON.parse(testResult.stdout);
@@ -127,6 +130,7 @@ print(json.dumps(result))
                     actual: parsedResult.actual,
                     expected: parsedResult.expected,
                   });
+                  testPassed = parsedResult.passed;
                 } else {
                   results.push({
                     description: testCase.description,
@@ -134,6 +138,7 @@ print(json.dumps(result))
                     actual: `Error: ${parsedResult.error}`,
                     expected: parsedResult.expected,
                   });
+                  testPassed = false;
                 }
               } catch (e) {
                 results.push({
@@ -142,7 +147,13 @@ print(json.dumps(result))
                   actual: `Parse error: ${testResult.stdout}`,
                   expected: testCase.expected,
                 });
+                testPassed = false;
               }
+            }
+
+            // Stop on first failure
+            if (!testPassed) {
+              break;
             }
           }
         } else {
@@ -223,6 +234,8 @@ print(json.dumps(result))
 
               const testResult = await runPythonCode(testScript);
 
+              let testPassed = false;
+
               if (!testResult.success) {
                 const errorMsg = testResult.error
                   ? `${testResult.error.type}: ${testResult.error.message}`
@@ -234,6 +247,7 @@ print(json.dumps(result))
                   expected: testCase.expected,
                   input: testCase.input,
                 });
+                testPassed = false;
               } else {
                 try {
                   const parsedResult = JSON.parse(testResult.stdout);
@@ -246,6 +260,7 @@ print(json.dumps(result))
                       expected: parsedResult.expected,
                       input: parsedResult.input,
                     });
+                    testPassed = parsedResult.passed;
                   } else {
                     results.push({
                       description: testCase.description,
@@ -254,6 +269,7 @@ print(json.dumps(result))
                       expected: parsedResult.expected,
                       input: parsedResult.input,
                     });
+                    testPassed = false;
                   }
                 } catch (e) {
                   results.push({
@@ -263,7 +279,13 @@ print(json.dumps(result))
                     expected: testCase.expected,
                     input: testCase.input,
                   });
+                  testPassed = false;
                 }
+              }
+
+              // Stop on first failure
+              if (!testPassed) {
+                break;
               }
             } else {
               // testMode === "function": Capture return value
@@ -314,6 +336,8 @@ print(json.dumps(result))
 
               const testResult = await runPythonCode(testScript);
 
+              let testPassed = false;
+
               if (!testResult.success) {
                 const errorMsg = testResult.error
                   ? `${testResult.error.type}: ${testResult.error.message}`
@@ -325,6 +349,7 @@ print(json.dumps(result))
                   expected: testCase.expected,
                   input: testCase.input,
                 });
+                testPassed = false;
               } else {
                 try {
                   const parsedResult = JSON.parse(testResult.stdout);
@@ -337,6 +362,7 @@ print(json.dumps(result))
                       expected: parsedResult.expected,
                       input: parsedResult.input,
                     });
+                    testPassed = parsedResult.passed;
                   } else {
                     results.push({
                       description: testCase.description,
@@ -345,6 +371,7 @@ print(json.dumps(result))
                       expected: parsedResult.expected,
                       input: parsedResult.input,
                     });
+                    testPassed = false;
                   }
                 } catch (e) {
                   results.push({
@@ -354,7 +381,13 @@ print(json.dumps(result))
                     expected: testCase.expected,
                     input: testCase.input,
                   });
+                  testPassed = false;
                 }
+              }
+
+              // Stop on first failure
+              if (!testPassed) {
+                break;
               }
             }
           }

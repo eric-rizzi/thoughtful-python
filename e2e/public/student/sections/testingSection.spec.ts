@@ -55,7 +55,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
       .getByRole("button", { name: "Run Tests" })
       .click();
     await expect(
-      page.getByText("Your solution passed 0 out of 1 tests.")
+      page.getByText("Test 1 failed. Fix the issue and try again!")
     ).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
@@ -85,9 +85,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
       .locator("#problem1-task-grammatical-greeting")
       .getByRole("button", { name: "Run Tests" })
       .click();
-    await expect(
-      page.getByText("Your solution passed 1 out of 1 tests.")
-    ).toBeVisible();
+    await expect(page.getByText("All tests passed!")).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
@@ -118,8 +116,36 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
       .getByRole("button", { name: "Run Tests" })
       .click();
     await expect(
-      page.getByText("Your solution passed 0 out of 1 tests.")
+      page.getByText("Test 1 failed. Fix the issue and try again!")
     ).toBeVisible();
+
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+  });
+
+  test("Test that can have faulty program and get a SyntaxError", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/thoughtful-python/lesson/00_intro/lessons/00_intro_strings"
+    );
+
+    const sectionItem = page.getByRole("listitem").filter({
+      hasText: "Challenge: Who Goes There?",
+    });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
+    await page
+      .locator("div")
+      .filter({ hasText: /^912›print\(\)print\(\)$/ })
+      .nth(1)
+      .click();
+    await page.getByText("print()print()").press("ControlOrMeta+a");
+    await page.getByText("print()print()").fill("print(a)");
+    await page
+      .locator("#problem1-task-grammatical-greeting")
+      .getByRole("button", { name: "Run Tests" })
+      .click();
+    await expect(page.getByText("name 'a' is not defined")).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
@@ -154,9 +180,7 @@ test.describe("TestingSection `procedure` / `function_name` tests", () => {
       );
     await page.waitForTimeout(1000);
     await page.getByRole("button", { name: "Run Tests" }).click();
-    await expect(
-      page.getByText("Your solution passed 4 out of 4 tests.")
-    ).toBeVisible();
+    await expect(page.getByText("All tests passed!")).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
@@ -190,7 +214,7 @@ test.describe("TestingSection `procedure` / `function_name` tests", () => {
     await page.waitForTimeout(1000);
     await page.getByRole("button", { name: "Run Tests" }).click();
     await expect(
-      page.getByText("Your solution passed 2 out of 4 tests.")
+      page.getByText("Test 2 failed. Fix the issue and try again!")
     ).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
@@ -244,9 +268,7 @@ test.describe("TestingSection `function` / `function_name` tests", () => {
       );
     await page.waitForTimeout(1000);
     await page.getByRole("button", { name: "Run Tests" }).click();
-    await expect(
-      page.getByText("Your solution passed 4 out of 4 tests.")
-    ).toBeVisible();
+    await expect(page.getByText("All tests passed!")).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
@@ -280,7 +302,7 @@ test.describe("TestingSection `function` / `function_name` tests", () => {
     await page.waitForTimeout(1000);
     await page.getByRole("button", { name: "Run Tests" }).click();
     await expect(
-      page.getByText("Your solution passed 2 out of 4 tests.")
+      page.getByText("Test 2 failed. Fix the issue and try again!")
     ).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);

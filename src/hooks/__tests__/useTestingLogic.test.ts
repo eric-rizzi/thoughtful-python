@@ -122,20 +122,8 @@ describe("useTestingLogic", () => {
           stderr: "",
           error: null,
           result: null,
-        })
-        .mockResolvedValueOnce({
-          success: true,
-          stdout: JSON.stringify({
-            success: true,
-            actual: 50,
-            expected: 15,
-            input: [5, 10],
-            passed: false,
-          }),
-          stderr: "",
-          error: null,
-          result: null,
         });
+        // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(defaultProps));
 
@@ -143,7 +131,8 @@ describe("useTestingLogic", () => {
         await result.current.runTests("def add(a, b):\n    return a * b");
       });
 
-      expect(result.current.testResults).toHaveLength(2);
+      // Only first test runs due to stop-on-failure
+      expect(result.current.testResults).toHaveLength(1);
       expect(result.current.testResults![0].passed).toBe(false);
       expect(result.current.testResults![0].actual).toBe(6);
       expect(mockCompleteSection).not.toHaveBeenCalled();
@@ -190,19 +179,8 @@ describe("useTestingLogic", () => {
           stderr: "",
           error: null,
           result: null,
-        })
-        .mockResolvedValueOnce({
-          success: true,
-          stdout: JSON.stringify({
-            success: false,
-            error: "TypeError: unsupported operand type(s)",
-            input: [5, 10],
-            expected: 15,
-          }),
-          stderr: "",
-          error: null,
-          result: null,
         });
+        // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(defaultProps));
 
@@ -212,7 +190,8 @@ describe("useTestingLogic", () => {
         );
       });
 
-      expect(result.current.testResults).toHaveLength(2);
+      // Only first test runs due to stop-on-failure
+      expect(result.current.testResults).toHaveLength(1);
       expect(result.current.testResults![0].passed).toBe(false);
       expect(result.current.testResults![0].actual).toContain("Error:");
     });
@@ -308,20 +287,8 @@ describe("useTestingLogic", () => {
           stderr: "",
           error: null,
           result: null,
-        })
-        .mockResolvedValueOnce({
-          success: true,
-          stdout: JSON.stringify({
-            success: true,
-            actual: "Goodbye, Bob!",
-            expected: "Hello, Bob!",
-            input: ["Bob"],
-            passed: false,
-          }),
-          stderr: "",
-          error: null,
-          result: null,
         });
+        // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(procedureProps));
 
@@ -331,7 +298,8 @@ describe("useTestingLogic", () => {
         );
       });
 
-      expect(result.current.testResults).toHaveLength(2);
+      // Only first test runs due to stop-on-failure
+      expect(result.current.testResults).toHaveLength(1);
       expect(result.current.testResults![0].passed).toBe(false);
       expect(result.current.testResults![0].actual).toBe("Goodbye, Alice!");
       expect(mockCompleteSection).not.toHaveBeenCalled();
@@ -378,19 +346,8 @@ describe("useTestingLogic", () => {
           stderr: "",
           error: null,
           result: null,
-        })
-        .mockResolvedValueOnce({
-          success: true,
-          stdout: JSON.stringify({
-            success: false,
-            error: "TypeError: unsupported operand type(s)",
-            input: ["Bob"],
-            expected: "Hello, Bob!",
-          }),
-          stderr: "",
-          error: null,
-          result: null,
         });
+        // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(procedureProps));
 
@@ -400,7 +357,8 @@ describe("useTestingLogic", () => {
         );
       });
 
-      expect(result.current.testResults).toHaveLength(2);
+      // Only first test runs due to stop-on-failure
+      expect(result.current.testResults).toHaveLength(1);
       expect(result.current.testResults![0].passed).toBe(false);
       expect(result.current.testResults![0].actual).toContain("Error:");
     });
@@ -647,26 +605,15 @@ describe("useTestingLogic", () => {
           stderr: "",
           error: null,
           result: null,
-        })
-        .mockResolvedValueOnce({
-          success: true,
-          stdout: JSON.stringify({
-            success: true,
-            actual: 15,
-            expected: 15,
-            input: [5, 10],
-            passed: true,
-          }),
-          stderr: "",
-          error: null,
-          result: null,
         });
+        // Note: Second test is not mocked because stop-on-failure means it won't run
 
       await act(async () => {
         await result.current.runTests("def add(a, b):\n    return a + b");
       });
 
-      expect(result.current.testResults).toHaveLength(2);
+      // Only first test runs due to stop-on-failure
+      expect(result.current.testResults).toHaveLength(1);
       expect(result.current.testResults![0].passed).toBe(false);
     });
 

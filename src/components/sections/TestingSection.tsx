@@ -38,71 +38,97 @@ const resolveImagePath = (imagePath: string, lessonPath?: string): string => {
   return imagePath;
 };
 
-const TestResultsDisplay: React.FC<{ results: TestResult[] }> = ({
-  results,
-}) => {
-  const passedCount = results.filter((r) => r.passed).length;
-  const totalCount = results.length;
-  const allPassed = passedCount === totalCount;
-  const firstFailed = results.find((r) => !r.passed);
+const TestResultsDisplay: React.FC<{
+  results: TestResult[];
+  totalTestCases: number;
+}> = ({ results, totalTestCases }) => {
+  const allPassed = results.every((r) => r.passed);
+  const failedTest = results.find((r) => !r.passed);
 
   return (
     <div className={styles.resultsList}>
-      {allPassed ? (
-        <div className={styles.testSuccess}>
-          <h4>🎉 Great job! All tests passed!</h4>
-          <p>
-            Your solution passed {totalCount} out of {totalCount} tests.
-          </p>
-        </div>
-      ) : (
-        <div className={styles.testFailure}>
+      {/* Summary message for failures - shown at top */}
+      {!allPassed && (
+        <div className={styles.testFailure} style={{ marginBottom: "1rem" }}>
           <h4>Almost there!</h4>
-          <p>
-            Your solution passed {passedCount} out of {totalCount} tests.
-          </p>
-          {firstFailed && (
-            <>
-              <h5>First Failed Test:</h5>
-              <p>{firstFailed.description}</p>
-              <table className={styles.testResultsTable}>
-                <thead>
-                  <tr>
-                    {firstFailed.input && <th>Input</th>}
-                    <th>Expected</th>
-                    <th>Your Result</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {firstFailed.input && (
-                      <td>
-                        <code>{JSON.stringify(firstFailed.input)}</code>
-                      </td>
-                    )}
-                    <td>
-                      <code>
-                        {Array.isArray(firstFailed.expected)
-                          ? firstFailed.expected.join("\n")
-                          : typeof firstFailed.expected === "string"
-                            ? firstFailed.expected
-                            : JSON.stringify(firstFailed.expected)}
-                      </code>
-                    </td>
-                    <td>
-                      <code>
-                        {Array.isArray(firstFailed.actual)
-                          ? firstFailed.actual.join("\n")
-                          : typeof firstFailed.actual === "string"
-                            ? firstFailed.actual
-                            : JSON.stringify(firstFailed.actual)}
-                      </code>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </>
-          )}
+          <p>Test {results.length} failed. Fix the issue and try again!</p>
+        </div>
+      )}
+
+      {/* Test results table */}
+      <table className={styles.testResultsTable}>
+        <thead>
+          <tr>
+            <th style={{ width: "60px" }}>Test</th>
+            <th>Description</th>
+            <th style={{ width: "80px" }}>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {results.map((result, idx) => (
+            <React.Fragment key={idx}>
+              <tr className={result.passed ? styles.passedRow : styles.failedRow}>
+                <td style={{ textAlign: "center" }}>{idx + 1}</td>
+                <td>{result.description}</td>
+                <td style={{ textAlign: "center", fontSize: "1.2em" }}>
+                  {result.passed ? "✓" : "✗"}
+                </td>
+              </tr>
+              {/* Expanded details for failed test */}
+              {!result.passed && (
+                <tr className={styles.failedDetailsRow}>
+                  <td colSpan={3}>
+                    <div className={styles.failedDetails}>
+                      <table className={styles.failedDetailsTable}>
+                        <thead>
+                          <tr>
+                            {result.input && <th>Input</th>}
+                            <th>Expected</th>
+                            <th>Your Result</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            {result.input && (
+                              <td>
+                                <code>{JSON.stringify(result.input)}</code>
+                              </td>
+                            )}
+                            <td>
+                              <code>
+                                {Array.isArray(result.expected)
+                                  ? result.expected.join("\n")
+                                  : typeof result.expected === "string"
+                                    ? result.expected
+                                    : JSON.stringify(result.expected)}
+                              </code>
+                            </td>
+                            <td>
+                              <code>
+                                {Array.isArray(result.actual)
+                                  ? result.actual.join("\n")
+                                  : typeof result.actual === "string"
+                                    ? result.actual
+                                    : JSON.stringify(result.actual)}
+                              </code>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Success message - shown at bottom after table */}
+      {allPassed && (
+        <div className={styles.testSuccess} style={{ marginTop: "1rem" }}>
+          <h4>🎉 All tests passed!</h4>
+          <p>Your solution correctly handles all test cases.</p>
         </div>
       )}
     </div>
@@ -305,16 +331,10 @@ const TestingSection: React.FC<TestingSectionProps> = ({
           )}
 
           {lastAction === "test" && testResults && !isVisualTurtleTest && (
-            <TestResultsDisplay results={testResults as TestResult[]} />
-          )}
-
-          {testsHavePassed && !isVisualTurtleTest && (
-            <div
-              className={styles.completionMessage}
-              style={{ marginTop: "1rem" }}
-            >
-              🎉 All tests passed! Great work.
-            </div>
+            <TestResultsDisplay
+              results={testResults as TestResult[]}
+              totalTestCases={section.testCases.length}
+            />
           )}
         </div>
       </div>

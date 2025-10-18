@@ -196,7 +196,7 @@ describe("TestingSection", () => {
     // ASSERT
     expect(screen.getByText(/almost there/i)).toBeInTheDocument();
     expect(
-      screen.getByText("Your solution passed 0 out of 1 tests.")
+      screen.getByText("Test 1 failed. Fix the issue and try again!")
     ).toBeInTheDocument();
     expect(screen.getByRole("cell", { name: "6" })).toBeInTheDocument(); // Check for actual result
   });
@@ -232,13 +232,10 @@ describe("TestingSection", () => {
 
     // ASSERT
     expect(
-      screen.getByRole("heading", { name: /great job! all tests passed!/i })
+      screen.getByRole("heading", { name: /all tests passed!/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Your solution passed 1 out of 1 tests.")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/🎉 all tests passed! great work./i)
+      screen.getByText("Your solution correctly handles all test cases.")
     ).toBeInTheDocument();
   });
 });
