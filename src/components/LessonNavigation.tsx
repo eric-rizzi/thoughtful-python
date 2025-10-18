@@ -19,6 +19,11 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
   currentPosition,
   totalInUnit,
 }) => {
+  // Helper to scroll to top when navigating
+  const handleNavigation = () => {
+    window.scrollTo(0, 0);
+  };
+
   // Helper to get link classes (including disabled state)
   const getNavLinkClass = (isTargetAvailable: boolean): string => {
     let classes = styles.navLink;
@@ -41,6 +46,7 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
           to={`/lesson/${prevLessonPath}`}
           className={getNavLinkClass(true)}
           aria-label="Previous Lesson"
+          onClick={handleNavigation}
         >
           &larr; Previous
         </NavLink>
@@ -59,6 +65,7 @@ const LessonNavigation: React.FC<LessonNavigationProps> = ({
           to={`/lesson/${nextLessonPath}`}
           className={getNavLinkClass(true)}
           aria-label="Next Lesson"
+          onClick={handleNavigation}
         >
           Next &rarr;
         </NavLink>
