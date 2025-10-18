@@ -146,6 +146,12 @@ const lessonData: Lesson = {
           expected: null,
           referenceImage: "images/turtle_pentagon.png",
         },
+        {
+          description: "Pentagon with side length 100",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_pentagon.png",
+        },
       ],
     } as TestingSectionData,
     {

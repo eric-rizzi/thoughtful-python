@@ -1004,6 +1004,151 @@
 
 /* --- Styles for Turtle Section (Approach 3) --- */
 
+/* Side-by-side layout for visual turtle testing */
+.visualTestingContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  align-items: start;
+}
+
+.referenceImageColumn,
+.studentCanvasColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.referenceImageColumn h4,
+.studentCanvasColumn h4 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #306998;
+  font-size: 1.15em;
+}
+
+/* Responsive: stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .visualTestingContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Styles for collapsible test case results */
+.testCasesList {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.testCaseCard {
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.testCaseCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.testCaseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f8f9fa;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.testCaseHeader:hover {
+  background-color: #e9ecef;
+}
+
+.testCaseHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.testCaseHeaderRight {
+  display: flex;
+  align-items: center;
+}
+
+.testCaseIcon {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 24px;
+  text-align: center;
+}
+
+.testCaseTitle {
+  font-weight: 600;
+  color: #333;
+}
+
+.expandIcon {
+  color: #666;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.testCaseBody {
+  padding: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.testCaseImagesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.testCaseImageColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.testCaseImageColumn h5 {
+  margin: 0 0 0.5rem 0;
+  color: #306998;
+  font-size: 1rem;
+}
+
+.testCaseImage {
+  width: 100%;
+  max-width: 400px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  display: block;
+}
+
+.testCaseTips {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  color: #666;
+}
+
+.testCaseTips ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+/* Responsive: stack images vertically on smaller screens */
+@media (max-width: 768px) {
+  .testCaseImagesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .turtleInstructions,
 .turtleCommandsReference {
   margin-bottom: 1.5rem;

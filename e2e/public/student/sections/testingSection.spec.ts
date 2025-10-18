@@ -334,14 +334,14 @@ test.describe("TestingSection for turtles", () => {
       .locator("#hexagon-builder")
       .getByRole("button", { name: "Run Code" })
       .click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     await page
       .locator("#hexagon-builder")
       .getByRole("button", { name: "Run Tests" })
       .click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     await expect(
-      page.getByText("Your drawing matched 1 out of 1 target image(s).")
+      page.getByText("Your drawing matched the target!")
     ).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
@@ -382,7 +382,7 @@ test.describe("TestingSection for turtles", () => {
       .click();
     await page.waitForTimeout(1000);
     await expect(
-      page.getByText("Your drawing matched 0 out of 1 target image(s).")
+      page.getByText("Test 1 failed. Fix the issue above and try again!")
     ).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);

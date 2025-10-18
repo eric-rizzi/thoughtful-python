@@ -218,36 +218,6 @@ const TestingSection: React.FC<TestingSectionProps> = ({
         <ContentRenderer content={section.content} />
       </div>
 
-      {isVisualTurtleTest && (
-        <div className={styles.referenceImageContainer}>
-          <h4>Target Drawing:</h4>
-          <p style={{ marginBottom: "0.5rem", color: "#666" }}>
-            Make your turtle drawing look like this:
-          </p>
-          {section.testCases
-            .filter((tc) => tc.referenceImage)
-            .map((tc, idx) => (
-              <div key={idx} style={{ marginBottom: "1rem" }}>
-                {section.testCases.length > 1 && (
-                  <p style={{ fontWeight: "bold", marginBottom: "0.25rem" }}>
-                    {tc.description}
-                  </p>
-                )}
-                <img
-                  src={resolveImagePath(tc.referenceImage!, lessonPath)}
-                  alt={tc.description}
-                  style={{
-                    border: "2px solid #ccc",
-                    borderRadius: "4px",
-                    maxWidth: "400px",
-                    display: "block",
-                  }}
-                />
-              </div>
-            ))}
-        </div>
-      )}
-
       <div className={styles.exampleContainer}>
         <div className={styles.editorArea}>
           <h4>Your Solution:</h4>
@@ -294,18 +264,26 @@ const TestingSection: React.FC<TestingSectionProps> = ({
             <LoadingSpinner message="Executing..." />
           )}
 
-          {isVisualTurtleTest && (
-            <div>
-              <h4>Turtle Canvas:</h4>
-              <div
-                ref={turtleCanvasRef}
-                className={styles.turtleCanvasContainer}
-              >
-                {/* p5.js will inject its canvas here */}
-              </div>
+          {/* Error display for visual turtle tests - shown ABOVE canvas */}
+          {isVisualTurtleTest && (turtleRunError || testError) && (
+            <div className={styles.errorFeedback}>
+              <pre>{turtleRunError || testError}</pre>
             </div>
           )}
 
+          {/* Side-by-side layout for visual turtle tests */}
+          {isVisualTurtleTest && (
+            <TurtleTestResults
+              results={testResults as TurtleTestResult[] | null}
+              threshold={section.visualThreshold || 0.95}
+              testCases={resolvedTestCases}
+              turtleCanvasRef={turtleCanvasRef}
+              lessonPath={lessonPath}
+              isRunningTests={isRunningTests}
+            />
+          )}
+
+          {/* Regular console output for non-turtle tests */}
           {lastAction === "run" &&
             (runOutput || runError) &&
             !isVisualTurtleTest && (
@@ -320,13 +298,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
               </div>
             )}
 
-          {lastAction === "run" && turtleRunError && isVisualTurtleTest && (
-            <div className={styles.errorFeedback}>
-              <pre>{turtleRunError}</pre>
-            </div>
-          )}
-
-          {lastAction === "test" && testError && (
+          {lastAction === "test" && testError && !isVisualTurtleTest && (
             <div className={styles.errorFeedback}>
               <pre>{testError}</pre>
             </div>
@@ -336,14 +308,7 @@ const TestingSection: React.FC<TestingSectionProps> = ({
             <TestResultsDisplay results={testResults as TestResult[]} />
           )}
 
-          {lastAction === "test" && testResults && isVisualTurtleTest && (
-            <TurtleTestResults
-              results={testResults as TurtleTestResult[]}
-              threshold={section.visualThreshold || 0.95}
-            />
-          )}
-
-          {testsHavePassed && (
+          {testsHavePassed && !isVisualTurtleTest && (
             <div
               className={styles.completionMessage}
               style={{ marginTop: "1rem" }}

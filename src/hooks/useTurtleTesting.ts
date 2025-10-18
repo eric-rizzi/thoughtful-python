@@ -63,6 +63,10 @@ export const useTurtleTesting = ({
         for (const testCase of visualTestCases) {
           if (!testCase.referenceImage) continue;
 
+          // Update results to show we're about to run this test
+          // This will trigger the UI to show the current test's reference image
+          setTestResults([...results]);
+
           try {
             // Run the turtle code
             await runTurtleCode(userCode);
@@ -84,14 +88,24 @@ export const useTurtleTesting = ({
               }
             );
 
-            results.push({
+            const testResult = {
               description: testCase.description,
               passed: comparisonResult.passed,
               similarity: comparisonResult.similarity,
               referenceImage: testCase.referenceImage,
               studentImageDataURL,
               comparisonResult,
-            });
+            };
+
+            results.push(testResult);
+
+            // Update results after completing this test
+            setTestResults([...results]);
+
+            // Stop on first failure
+            if (!testResult.passed) {
+              break;
+            }
           } catch (testError) {
             const errorMsg =
               testError instanceof Error
@@ -106,6 +120,10 @@ export const useTurtleTesting = ({
               comparisonResult: undefined,
             });
             console.error(`Test failed: ${testCase.description}`, testError);
+            // Update results after error
+            setTestResults([...results]);
+            // Stop on error as well
+            break;
           }
         }
 
