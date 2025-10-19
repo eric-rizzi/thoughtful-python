@@ -78,7 +78,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            'Computes will execute Python programs up until they hit an error. This means that you can end up with a program that partially works, and then breaks in the middle.\n\nOrder the following lines of a program so that the program would print out `8`, `15` and then "raise" a `NameError`',
+            'Computers will execute Python programs up until they hit an error. This means that you can end up with a program that partially works, and then breaks in the middle.\n\nOrder the following lines of a program so that the program would print out `8`, `15` and then "raise" a `NameError`',
         },
       ],
       prompts: [

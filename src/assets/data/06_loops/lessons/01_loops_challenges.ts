@@ -3,39 +3,131 @@ import type {
   Lesson,
   LessonId,
   SectionId,
-  ObservationSectionData,
   PRIMMSectionData,
-  MultipleChoiceSectionData,
   TestingSectionData,
+  MultipleSelectionSectionData,
+  ObservationSectionData,
+  MultipleChoiceSectionData,
 } from "../../../../types/data";
 
 const lessonData: Lesson = {
-  title: "Buncha Shapes",
-  guid: "d8f3c921-4a56-4b72-9e15-2c8f7d4a3b91" as LessonId,
+  title: "Shapes and Patterns",
+  guid: "c10314ef-e785-48be-9f76-b23a57abe95c" as LessonId,
   description:
-    "Learn how loops eliminate repetition and discover the mathematical patterns behind creating shapes with code.",
+    "Continue to explore how loops create regular patterns and discover creative applications.",
   sections: [
     {
       kind: "Information",
-      id: "repetition-problem",
-      title: "The Repetition Problem",
+      id: "practice-intro",
+      title: "Building on Loops",
       content: [
         {
           kind: "text",
           value:
-            "At this point you've covered data types, variables, functions, and conditionals. There's only one more thing you need to learn to be considered a competent, beginner programmer: **loops**. Loops are a way of further compacting your ideas in code.\n\nRemember programming the turtle to draw a triangle? You wrote `forward(100)` and `right(120)` three separate times. For a triangle this gets repetitive, but imagine how annoying it would be if you wanted to draw a shape with 100 sides. That's where loops come in.\n\nLoops are powerful because they let you tell the computer to repeat actions without having to write the same code multiple times. They turn you from someone who types instructions into someone who describes patterns.",
+            "In the previous lesson, you learned how loops eliminate repetitive code. By identifying patterns, you can write more efficient programs. In this lesson, you'll practice creating different shapes, work with function inputs in loops, and discover some creative patterns.\n\nBy the end, you'll be ready to combine multiple loops to create complex designs.",
         },
       ],
     } as InformationSectionData,
     {
-      kind: "Observation",
-      id: "star-patterns" as SectionId,
-      title: "Beyond Basic Shapes: Stars",
+      kind: "MultipleSelection",
+      id: "riddled-with-errors" as SectionId,
+      title: "Debug the Triangle",
       content: [
         {
           kind: "text",
           value:
-            'Not all shapes follow the simple "multiplies to 360°" rule. Stars are special because the turtle actually does two complete rotates: 720 degrees. See if you can create a star like the image below.\n\nHint: the angle is greater than 120 degrees.',
+            "Before we start creating new shapes, let's test your understanding. The code below attempts to draw a triangle but has **three** errors. Select all the errors:",
+        },
+        {
+          kind: "code",
+          value:
+            "import turtle\n\ndef draw_shape():\n  for i range(4):\n  turtle.forward(100)\n  turtle.right(120)\n\ndraw_shape()",
+        },
+      ],
+      options: [
+        "The loop repeats 4 times but should repeat 3 times for a triangle",
+        "The `for` loop shouldn't be indented at all",
+        "There shouldn't be a `:` after the `for` statement",
+        "The two turtle statements need to be indented to be inside the loop",
+        "The `for` loop is missing the word `in`",
+      ],
+      correctAnswers: [0, 3, 4],
+      feedback: {
+        correct:
+          "Excellent! A triangle has 3 sides (not 4), the for loop needs `in` (`for i in range(3):`), and the turtle commands must be indented to be inside the loop.",
+      },
+    } as MultipleSelectionSectionData,
+    {
+      kind: "Testing",
+      id: "hexagon-builder" as SectionId,
+      title: "Challenge: Hexagon",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Now it's time to see if you can create a shape of your own without any hints! You goal is to a hexagon: a shape with 6 sides. To accomplish this goal, do the following:\n- Create a function called `make_hexagon()` that takes no inputs\n- Inside the function, use a loop to draw a six-sided figure that has **side length of 50**.",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\n\n# Create make_hexagon() function here\n\n\n# Call your function\n",
+      },
+      testMode: "procedure",
+      functionToTest: "__main__",
+      visualThreshold: 0.999,
+      testCases: [
+        {
+          description: "Hexagon with side length 50",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_hexagon.png",
+        },
+      ],
+    } as TestingSectionData,
+    {
+      kind: "Testing",
+      id: "octagon-builder" as SectionId,
+      title: "Challenge: Octagon with Input",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Now let's make your loops more flexible by using function inputs. Create an octagon (8-sided shape) that can be any size:\n- Create a function called `make_octagon(size)` that takes a single input: size\n- Inside the function, use a loop to draw an eight-sided figure where each side has length `size`\n- Call `make_octagon(55)` to test it",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\n\n# Create make_octagon(size) function here\n\n\n# Call your function with size 55\n",
+      },
+      testMode: "procedure",
+      functionToTest: "__main__",
+      visualThreshold: 0.999,
+      testCases: [
+        {
+          description: "Octagon with side length 55",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_octagon_55.png",
+        },
+        {
+          description: "Octagon with side length 10",
+          input: [],
+          expected: null,
+          referenceImage: "images/turtle_octagon_10.png",
+        },
+      ],
+    } as TestingSectionData,
+    {
+      kind: "Testing",
+      id: "star-builder" as SectionId,
+      title: "Challenge: Five-Pointed Star",
+      content: [
+        {
+          kind: "text",
+          value:
+            "See if you can create a star like the image below. To accomplish this goal, do the following:\n- Create a function called `make_star()` that takes a single input: size\n- Inside the function, use a loop to draw a five-sided figure\n-Call the `make_star()` function with an input of 55.\n\nHint: the angle is greater than 120 degrees.",
         },
         {
           kind: "image",
@@ -44,116 +136,122 @@ const lessonData: Lesson = {
       ],
       example: {
         visualization: "turtle",
-        initialCode: "import turtle\n\n# Five-pointed star",
-      },
-    } as ObservationSectionData,
-    {
-      kind: "PRIMM",
-      id: "four-lefts-primm" as SectionId,
-      title: "Four Lefts Make a Right",
-      content: [
-        {
-          kind: "text",
-          value:
-            "Let's start with a simple, repetitive program. Look at this code carefully and predict what it will draw.",
-        },
-      ],
-      example: {
-        visualization: "turtle",
         initialCode:
-          "import turtle\n\ndef make_shape():\n  turtle.forward(100)\n  turtle.left(90)\n  turtle.forward(100)\n  turtle.left(90)\n  turtle.forward(100)\n  turtle.left(90)\n  turtle.forward(100)\n  turtle.left(90)\n\nmake_shape()\n",
-      },
-      predictPrompt: "What shape will this draw?",
-      conclusion: "Four right angles add up to a square.",
-    } as PRIMMSectionData,
-    {
-      kind: "Testing",
-      id: "pentagon-builder" as SectionId,
-      title: "Challenge: Pentagon Builder",
-      content: [
-        {
-          kind: "text",
-          value:
-            "As stated, loops are a way of encoding patterns to avoid repetition. For example, the code below draws a pentagon in the least efficient way possible.",
-        },
-        {
-          kind: "code",
-          value:
-            "import turtle\n\ndef make_shape():\n  turtle.forward(80)\n  turtle.right(72)\n  turtle.forward(80)\n  turtle.right(72)\n  turtle.forward(80)\n  turtle.right(72)\n  turtle.forward(80)\n  turtle.right(72)\n  turtle.forward(80)\n  turtle.right(72)\n\nmake_shape()\n",
-        },
-        {
-          kind: "text",
-          value:
-            "See if you can use a loop to rewrite the program more efficiently. Your loop should draw the exact same pentagon but with only 3 lines additional lines of code (not including the `import`).",
-        },
-      ],
-      example: {
-        visualization: "turtle",
-        initialCode:
-          "import turtle\n\ndef make_shape():\n  # Your code here converting the code above to a loop\n\n\nmake_shape()",
+          "import turtle\n\n# Create make_star(size) function here\n\n\n# Call your function with size 55\n",
       },
       testMode: "procedure",
       functionToTest: "__main__",
       visualThreshold: 0.999,
       testCases: [
         {
-          description: "Pentagon with side length 100",
+          description: "Star with side length 55",
           input: [],
           expected: null,
-          referenceImage: "images/turtle_pentagon.png",
+          referenceImage: "images/turtle_star_55.png",
         },
-      ],
-    } as TestingSectionData,
-    {
-      kind: "Testing",
-      id: "shape-collection" as SectionId,
-      title: "Challenge: Shape Collection",
-      content: [
         {
-          kind: "text",
-          value:
-            "Time to create a shape of your own without any hints! You goal is to a hexagon: a shape with 6 sides. To accomplish this goal, do the following:\n- Create a function called `make_hexagon()` that takes a single input: size\n- Inside the function, use a loop to draw a six sided figure\n-Call the `make_hexagon()` function with an input of 55.",
-        },
-      ],
-      example: {
-        visualization: "turtle",
-        initialCode: "import turtle\n\n# Your code here",
-      },
-      testMode: "function",
-      functionToTest: "make_hexagon",
-      visualThreshold: 0.999,
-      testCases: [
-        {
-          description: "Hexagon with side length 55",
+          description: "Star with side length 10",
           input: [],
           expected: null,
-          referenceImage: "images/turtle_hexagon.png",
+          referenceImage: "images/turtle_star_10.png",
         },
       ],
     } as TestingSectionData,
     {
       kind: "MultipleChoice",
-      id: "loop-counting",
-      title: "Counting Loop Iterations",
+      id: "function-input-in-loop",
+      title: "Using Function Inputs",
       content: [
         {
           kind: "text",
           value:
-            "If there weren't loops in the program above, how many lines of code would be required to create the same shape?",
+            "In the octagon and star challenges, you used the `size` parameter inside your loop. Look at this code:",
+        },
+        {
+          kind: "code",
+          value:
+            "def make_octagon(size):\n  for i in range(8):\n    turtle.forward(size)\n    turtle.right(45)",
+        },
+        {
+          kind: "text",
+          value: "What happens when you call `make_octagon(100)`?",
         },
       ],
       options: [
-        "20 lines of code",
-        "36 lines lines of code",
-        "55 lines of code",
-        "72 lines of code",
+        "Each side is 100 pixels long",
+        "The octagon is drawn 100 times",
+        "The loop runs 100 times",
+        "The angle becomes 100°",
       ],
-      correctAnswer: 3,
+      correctAnswer: 0,
       feedback: {
         correct:
-          "Correct! The two lines of code inside the loop are run 36 times which means 72 lines of code.",
+          "Correct! The `size` parameter gets used inside the loop for EACH iteration. So `turtle.forward(size)` becomes `turtle.forward(100)` every time through the loop.",
       },
     } as MultipleChoiceSectionData,
+    {
+      kind: "PRIMM",
+      id: "sunburst-primm" as SectionId,
+      title: "Creative Patterns",
+      content: [
+        {
+          kind: "text",
+          value:
+            "Loops aren't just for closed shapes! Look at this code and predict what pattern it will create. Pay attention to the `forward` and `backward` commands:",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\n\ndef make_pattern():\n  for i in range(12):\n    turtle.forward(80)\n    turtle.backward(80)\n    turtle.right(30)\n\nmake_pattern()",
+      },
+      predictPrompt:
+        "The turtle moves forward 80, backward 80 (returning to center), then turns 30°. What will this create after 12 repetitions?",
+      conclusion:
+        "This creates a sunburst pattern! The turtle draws 12 lines radiating from the center. The pattern is: 12 repetitions × 30° = 360° (one complete rotation).",
+    } as PRIMMSectionData,
+    {
+      kind: "Observation",
+      id: "spiral-pattern" as SectionId,
+      title: "Spiraling Patterns",
+      content: [
+        {
+          kind: "text",
+          value:
+            "When you use larger numbers in `range()`, you can create more complex patterns. The code below creates a beautiful spiral by repeating 600 times with a carefully chosen angle. Run it and watch what happens:",
+        },
+      ],
+      example: {
+        visualization: "turtle",
+        initialCode:
+          "import turtle\n\nturtle.speed(0)  # Fastest speed\n\ndef make_spiral():\n  for i in range(600):\n    turtle.forward(i / 3)  # Distance increases each time\n    turtle.left(59)\n\nmake_spiral()",
+      },
+    } as ObservationSectionData,
+    {
+      kind: "MultipleSelection",
+      id: "loop-concepts",
+      title: "Loop Concepts Check",
+      content: [
+        {
+          kind: "text",
+          value:
+            "After creating various shapes and patterns, select all statements that are true about loops:",
+        },
+      ],
+      options: [
+        "`for i in range(5):` repeats exactly 5 times",
+        "The code inside a loop must be indented",
+        "Loops can only be used for drawing closed shapes",
+        "You can use function parameters (like `size`) inside loops",
+        "`range(360)` would repeat 361 times",
+        "The same loop can produce different outputs based on function inputs",
+      ],
+      correctAnswers: [0, 1, 3, 5],
+      feedback: {
+        correct:
+          "Perfect! Loops are flexible tools that work with any repetitive pattern. You can use function inputs inside loops to create variations, and loops aren't limited to closed shapes or graphics!",
+      },
+    } as MultipleSelectionSectionData,
     {
       kind: "Information",
       id: "loops-conclusion",
@@ -162,7 +260,7 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Fantastic work! You've transformed from writing repetitive code to describing patterns. You've learned:\n- How `for i in range(n):` repeats code n times\n- The 360÷sides pattern for regular polygons\n- That indentation shows what's \"inside\" the loop\n\nIn the next lesson, you'll have a chance to practice with some less regular shapes and inject a bit of color.",
+            "Excellent work! You've practiced creating various shapes, learned to use function parameters inside loops, and discovered creative patterns beyond simple polygons.\n\nYou've mastered:\n- Creating regular polygons using the 360° rule\n- Passing inputs to functions and using them in loops\n- Creating open patterns (like sunbursts) in addition to closed shapes\n- Understanding that the same loop structure can produce different results\n\nIn the next lesson, you'll take the final step: using multiple loops together to create complex, layered designs. Get ready to combine everything you've learned!",
         },
       ],
     } as InformationSectionData,

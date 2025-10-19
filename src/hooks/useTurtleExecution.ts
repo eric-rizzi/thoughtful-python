@@ -13,6 +13,7 @@ import { RealTurtleInstance, setupJsTurtle } from "../lib/turtleRenderer";
 const pythonCaptureModuleCode = `
 import sys
 import json
+import random
 
 _js_turtle_commands_ = []
 
@@ -50,6 +51,8 @@ class CaptureTurtle:
             r, g, b = args
             hex_color = '#{:02x}{:02x}{:02x}'.format(int(r*255) if r <= 1 else int(r), int(g*255) if g <= 1 else int(g), int(b*255) if b <= 1 else int(b))
             self._add_command({'type': 'setPenColor', 'color': hex_color})
+    def random_color(self):
+        self.color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
     def fillcolor(self, *args):
         if len(args) == 1:
             color_value = args[0]
