@@ -2,16 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/thoughtful-python/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="google-site-verification"
       content="J4_6nqSuvw_2NBoxXNol-8CJeZWHP5N5kricOBzEibQ"
     />
     <title>Thoughtful Python</title>
+    <style>
+      /* Simple loading style for 404 -> React transition */
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      #root:empty::before {
+        content: "Loading...";
+        color: #306998;
+        font-size: 1.2rem;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/thoughtful-python/src/main.tsx"></script>
   </body>
 </html>

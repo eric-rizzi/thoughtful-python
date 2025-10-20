@@ -35,6 +35,10 @@
       property="og:description"
       content="Learn Python programming through a thoughtful approach with PRIMM methodology. Interactive lessons covering Python fundamentals, variables, functions, and more."
     />
+    <meta
+      property="og:image"
+      content="https://eric-rizzi.github.io/thoughtful-python/images/python-logo.png"
+    />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -50,6 +54,10 @@
       property="twitter:description"
       content="Learn Python programming through a thoughtful approach with PRIMM methodology. Interactive lessons covering Python fundamentals, variables, functions, and more."
     />
+    <meta
+      property="twitter:image"
+      content="https://eric-rizzi.github.io/thoughtful-python/images/python-logo.png"
+    />
 
     <!-- Canonical URL -->
     <link
@@ -58,504 +66,80 @@
     />
 
     <style>
-      /* Reset and base styles */
-      :root {
+      /* Minimal styles for static SEO content */
+      body {
         font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-        line-height: 1.5;
-        font-weight: 400;
+        line-height: 1.6;
         color: #213547;
         background-color: #ffffff;
-        padding-left: 10%;
-        padding-right: 10%;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
         margin: 0;
-        min-width: 320px;
-        min-height: 100vh;
-        width: 100%;
-      }
-
-      /* Homepage specific styles */
-      .homePageContainer {
+        padding: 2rem;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 1rem;
       }
 
-      .welcome {
-        text-align: center;
-        padding: 1rem 0;
-        margin-bottom: 1rem;
-      }
-
-      .welcome h2 {
+      #static-content h1 {
         color: #306998;
-        margin-bottom: 1rem;
         font-size: 2rem;
-      }
-
-      .philosophySection {
-        background-color: #f9f9f9;
-        padding: 2rem;
-        margin: auto;
-        margin-bottom: 2.5rem;
-        width: 60%;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-      }
-
-      .philosophySection h3 {
-        color: #306998;
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        text-align: left;
-        font-size: 1.5rem;
-      }
-
-      .philosophySection ul {
-        list-style-type: disc;
-        margin-left: 1.5rem;
-        padding-left: 0.5rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .philosophySection li {
-        margin-bottom: 0.75rem;
-        line-height: 1.6;
-        color: #444;
-      }
-
-      .philosophySection p {
-        line-height: 1.6;
-        color: #444;
-        text-align: left;
-      }
-
-      .learningPaths {
-        margin-top: 2rem;
-      }
-
-      .learningPaths h2 {
-        color: #306998;
         margin-bottom: 1rem;
-        text-align: center;
-        font-size: 1.8rem;
       }
 
-      .learningPathsIntro {
-        text-align: center;
-        color: #666;
-        margin-bottom: 2rem;
-        font-size: 1.1rem;
-        line-height: 1.6;
+      #static-content p {
+        color: #444;
+        margin-bottom: 1.5rem;
       }
 
-      .unitsGrid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
+      #static-content nav ul {
+        list-style: none;
+        padding: 0;
       }
 
-      .unitCardLink {
+      #static-content nav li {
+        margin: 0.5rem 0;
+      }
+
+      #static-content nav a {
+        color: #4b8bbe;
         text-decoration: none;
-        color: inherit;
-        display: block;
+        font-size: 1.1rem;
       }
 
-      .unitCard {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .unitCard:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-      }
-
-      .unitImageContainer {
-        width: 100%;
-        height: 160px;
-        background-color: #f0f0f0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-
-      .unitImage {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-      }
-
-      .unitContent {
-        padding: 1.5rem;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .unitTitle {
-        font-size: 1.4rem;
+      #static-content nav a:hover {
         color: #306998;
-        margin-bottom: 0.75rem;
-        margin-top: 0;
-      }
-
-      .unitDescription {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: #666;
-        margin-bottom: 1rem;
-        flex-grow: 1;
-      }
-
-      .unitDetails {
-        margin-top: auto;
-      }
-
-      .unitLessons {
-        font-size: 0.9rem;
-        color: #777;
-        font-weight: 500;
-        margin-bottom: 1rem;
-      }
-
-      .unitButton {
-        display: inline-block;
-        width: 100%;
-        padding: 0.7rem 1.2rem;
-        background-color: #4b8bbe;
-        color: white;
-        border-radius: 4px;
-        font-weight: 600;
-        text-align: center;
-        transition: background-color 0.3s;
-        border: none;
-        cursor: pointer;
-      }
-
-      .unitButton:hover {
-        background-color: #306998;
-      }
-
-      /* Hide static content when React loads */
-      .react-loaded .static-content {
-        display: none;
-      }
-
-      /* Responsive design */
-      @media (max-width: 768px) {
-        :root {
-          padding-left: 5%;
-          padding-right: 5%;
-        }
-
-        .philosophySection {
-          width: 90%;
-        }
-
-        .unitsGrid {
-          grid-template-columns: 1fr;
-        }
+        text-decoration: underline;
       }
     </style>
   </head>
   <body>
-    <!-- Static content for SEO and no-JS browsers -->
-    <div id="static-content" class="static-content" style="display: block">
-      <div class="homePageContainer">
-        <section class="welcome">
-          <h1>A Thoughtful Approach to Learning Python</h1>
-        </section>
+    <!-- Minimal static content for SEO and no-JS browsers -->
+    <div id="static-content" style="display: block">
+      <h1>Thoughtful Python - Learn Python Programming</h1>
+      <p>
+        Learn Python programming through a thoughtful approach with PRIMM methodology.
+        Interactive lessons covering Python fundamentals, variables, functions, conditionals,
+        loops, lists, and more. Perfect for beginners looking to build a strong foundation
+        in programming.
+      </p>
+      <p>
+        This website offers a unique approach to learning Python that emphasizes understanding
+        through prediction, exploration, and reflection. All lessons run directly in your
+        browser with no installation required.
+      </p>
 
-        <section class="philosophySection">
-          <p>
-            This website can be viewed as the first step on your programming
-            journey. It will help you establish a strong foundation in Python
-            fundamentals and effective learning processes. Once you feel more
-            confident, you will be well-prepared to explore other, more powerful
-            tools.
-          </p>
-          <h3>Philosophy:</h3>
-          <ul>
-            <li>Anyone can learn Python.</li>
-            <li>
-              Python is a wonderful way to order your thoughts and accomplish
-              complex tasks.
-            </li>
-            <li>
-              Like any language, learning Python takes concentration and
-              practice.
-            </li>
-            <li>
-              The best way to learn a programming language is PRIMM: Predict,
-              Run, Investigate, Modify, Make.
-            </li>
-            <li>
-              The best way to solidify your knowledge is through reflection.
-            </li>
-            <li>
-              There are many powerful coding tools, but they are overwhelming
-              for first time learners.
-            </li>
-            <li>
-              Once you have a base understanding, it's easy to jump to more
-              powerful tools.
-            </li>
-          </ul>
-        </section>
-
-        <section class="learningPaths">
-          <h2>Learning Paths</h2>
-          <p class="learningPathsIntro">
-            Choose a learning path to begin your Python journey.
-          </p>
-
-          <div class="unitsGrid">
-            <a
-              href="/thoughtful-python/unit/learning_to_learn"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_xx_learning.svg"
-                    alt="Learning to Learn image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Learning to Learn</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Understand how this website differs from other "Learn
-                      Python" websites and learn a little bit about learning.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">3 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="/thoughtful-python/unit/intro_python" class="unitCardLink">
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_00_intro.svg"
-                    alt="Introduction to Python image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Introduction to Python</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Learn the fundamentals of Python programming through
-                      interactive lessons that run directly in your browser.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">4 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/thoughtful-python/unit/variables_debugging"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_01_variables.svg"
-                    alt="Variables and Debugging image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Variables and Debugging</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Learn how to store data and reuse it to make you programs
-                      more versatile.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">4 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/thoughtful-python/unit/intro_functions"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_02_functions.svg"
-                    alt="Functions image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Functions</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Learn how to use functions to help reduce the size of your
-                      code and make it more readable.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">4 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/thoughtful-python/unit/python_strings"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_04_strings.svg"
-                    alt="Python Strings Deep Dive image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Python Strings Deep Dive</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Explore string manipulation, f-strings, type casting, and
-                      create fun projects like Mad Libs.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">4 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/thoughtful-python/unit/python_conditionals"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_05_conditionals.svg"
-                    alt="Python Conditionals image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Python Conditionals (If/Else)</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Learn how to control the flow of your programs using
-                      <code>if</code>, <code>else</code>, and
-                      <code>elif</code> statements.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">5 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/thoughtful-python/unit/python_lists_intro"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_06_lists_intro.svg"
-                    alt="Python Lists Intro image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Python Lists (Intro)</h3>
-                  <div class="unitDescription">
-                    <p>
-                      This worksheet is intended to show you how lists work in
-                      Python and how they compare with strings.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">4 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="/thoughtful-python/unit/python_lists_advanced"
-              class="unitCardLink"
-            >
-              <div class="unitCard">
-                <div class="unitImageContainer">
-                  <img
-                    src="/thoughtful-python/images/unit_07_lists_advanced.svg"
-                    alt="Python Lists Advanced image"
-                    class="unitImage"
-                    onerror="this.src='/thoughtful-python/images/unit_icon_default.svg'"
-                  />
-                </div>
-                <div class="unitContent">
-                  <h3 class="unitTitle">Python Lists (Advanced)</h3>
-                  <div class="unitDescription">
-                    <p>
-                      Stretch your understand of lists with an ethical puzzle.
-                    </p>
-                  </div>
-                  <div class="unitDetails">
-                    <div class="unitLessons">2 lessons</div>
-                    <button class="unitButton">Start Learning</button>
-                  </div>
-                </div>
-              </div>
-            </a>
-          </div>
-        </section>
-      </div>
+      <nav aria-label="Python Learning Paths">
+        <h2>Learning Paths</h2>
+        <ul>
+          <li><a href="/thoughtful-python/unit/learning_to_learn">Learning to Learn</a> - Understand the PRIMM methodology and effective learning strategies</li>
+          <li><a href="/thoughtful-python/unit/intro_python">Introduction to Python</a> - Learn Python fundamentals through interactive lessons</li>
+          <li><a href="/thoughtful-python/unit/variables_debugging">Variables and Debugging</a> - Master data storage and debugging techniques</li>
+          <li><a href="/thoughtful-python/unit/intro_functions">Functions</a> - Create reusable code with Python functions</li>
+          <li><a href="/thoughtful-python/unit/python_strings">Python Strings</a> - String manipulation, f-strings, and type casting</li>
+          <li><a href="/thoughtful-python/unit/python_conditionals">Conditionals (If/Else)</a> - Control program flow with conditional statements</li>
+          <li><a href="/thoughtful-python/unit/python_loops">Loops</a> - Automate repetitive tasks with for and while loops</li>
+          <li><a href="/thoughtful-python/unit/python_lists_intro">Python Lists (Intro)</a> - Work with collections of data</li>
+          <li><a href="/thoughtful-python/unit/python_lists_advanced">Python Lists (Advanced)</a> - Advanced list operations and algorithms</li>
+        </ul>
+      </nav>
     </div>
 
     <!-- React app will be loaded here -->
@@ -564,15 +148,18 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      // Immediately hide static content for JavaScript users
+      // Hide static content once React has loaded and is ready to render
+      // This ensures search crawlers see the static content, while users see React
       (function () {
-        // Hide static content immediately for JS users
-        document.getElementById("static-content").style.display = "none";
+        // Wait for React to signal it's ready (happens after first render)
+        // Using a small delay ensures crawlers have time to see static content
+        setTimeout(function() {
+          var staticContent = document.getElementById("static-content");
+          var root = document.getElementById("root");
 
-        // Show the React root
-        document.getElementById("root").style.display = "block";
-
-        // Don't manually load the script - let Vite handle it with the script tag above
+          if (staticContent) staticContent.style.display = "none";
+          if (root) root.style.display = "block";
+        }, 100); // 100ms delay ensures crawlers capture static content
       })();
     </script>
 
