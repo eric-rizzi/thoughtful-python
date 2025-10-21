@@ -13,8 +13,8 @@
 }
 
 .welcome h2 {
-  color: #306998;
-  margin-bottom: 1rem;
+  color: var(--primary-dark-color);
+  margin-bottom: var(--spacing-lg);
   font-size: 2rem;
 }
 
@@ -26,20 +26,20 @@
 
 /* Styles for the new philosophy section */
 .philosophySection {
-  background-color: #f9f9f9; /* A light background to distinguish it */
-  padding: 2rem;
+  background-color: var(--card-background-color);
+  padding: var(--spacing-2xl);
   margin: auto;
-  margin-bottom: 2.5rem; /* Space before learning paths */
+  margin-bottom: 2.5rem;
   width: 60%;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--card-border-color);
 }
 
 .philosophySection h3 {
-  color: #306998; /* Match other heading colors */
+  color: var(--primary-dark-color);
   margin-top: 0;
-  margin-bottom: 1.5rem;
-  text-align: left; /* Align philosophy title to the left */
+  margin-bottom: var(--spacing-xl);
+  text-align: left;
   font-size: 1.5rem;
 }
 
@@ -66,22 +66,21 @@
 }
 
 .learningPaths {
-  margin-top: 2rem;
+  margin-top: var(--spacing-2xl);
 }
 
 .learningPaths h2 {
-  color: #306998;
-  margin-bottom: 1rem;
+  color: var(--primary-dark-color);
+  margin-bottom: var(--spacing-lg);
   text-align: center;
   font-size: 1.8rem;
 }
 
 .learningPathsIntro {
-  /* New class for the intro paragraph of learning paths */
-  text-align: center; /* Center this specific paragraph */
+  text-align: center;
   color: #666;
-  margin-bottom: 2rem;
-  font-size: 1.1rem; /* Match welcome paragraph size */
+  margin-bottom: var(--spacing-2xl);
+  font-size: 1.1rem;
   line-height: 1.6;
 }
 
@@ -96,15 +95,15 @@
 
 .featureCard {
   background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
   text-align: center;
 }
 
 .featureCard h3 {
-  color: #306998;
-  margin-bottom: 0.75rem;
+  color: var(--primary-dark-color);
+  margin-bottom: var(--spacing-md);
 }
 
 /* Learning Paths Section */
@@ -142,7 +141,7 @@
 
 .unitCard {
   background-color: white;
-  border-radius: 8px;
+  border-radius: var(--radius-xl);
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
   transition:
     transform 0.3s ease,
@@ -150,12 +149,12 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Make cards in a row equal height */
+  height: 100%;
 }
 
 .unitCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-xl);
 }
 
 .unitImageContainer {
@@ -175,17 +174,17 @@
 }
 
 .unitContent {
-  padding: 1.5rem;
-  flex-grow: 1; /* Allows content to fill space */
+  padding: var(--spacing-xl);
+  flex-grow: 1;
   display: flex;
-  flex-direction: column; /* Stack content vertically */
+  flex-direction: column;
 }
 
 .unitTitle {
   font-size: 1.4rem;
-  color: #306998;
-  margin-bottom: 0.75rem;
-  margin-top: 0; /* Reset margin */
+  color: var(--primary-dark-color);
+  margin-bottom: var(--spacing-md);
+  margin-top: 0;
 }
 
 .unitDescription {
@@ -209,20 +208,20 @@
 
 .unitButton {
   display: inline-block;
-  width: 100%; /* Make button fill width */
+  width: 100%;
   padding: 0.7rem 1.2rem;
-  background-color: #4b8bbe;
+  background-color: var(--primary-color);
   color: white;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   text-align: center;
   transition: background-color 0.3s;
-  border: none; /* Reset button border */
+  border: none;
   cursor: pointer;
 }
 
 .unitButton:hover {
-  background-color: #306998;
+  background-color: var(--primary-dark-color);
 }
 
 /* Error States */
@@ -234,8 +233,8 @@
 }
 
 .error {
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
+  color: var(--color-error);
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-xl);
 }

@@ -1,9 +1,9 @@
 /* src/components/LessonSidebar.module.css */
 .sidebar {
   background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
   /* Sticky positioning is handled by the parent grid layout in LessonPage.module.css */
 }
 
@@ -23,10 +23,10 @@
 }
 
 .sectionItem {
-  position: relative; /* For potential pseudo-elements */
-  margin-bottom: 0.5rem;
-  border-radius: 4px; /* Add border-radius to list item */
-  transition: background-color 0.2s ease-in-out; /* Smooth hover */
+  position: relative;
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease-in-out;
 }
 
 .sectionItem:hover {
@@ -34,17 +34,17 @@
 }
 
 .sectionLink {
-  color: #306998; /* Link color */
+  color: var(--primary-dark-color);
   text-decoration: none;
   transition: color 0.3s;
-  display: block; /* Make link fill the list item */
-  padding: 0.6rem 0.8rem; /* Adjust padding */
+  display: block;
+  padding: 0.6rem 0.8rem;
   font-weight: 500;
   font-size: 0.95rem;
 }
 
 .sectionLink:hover {
-  color: #4b8bbe; /* Slightly lighter blue on hover */
+  color: var(--primary-color);
 }
 
 /* Completed state styling */

@@ -24,13 +24,62 @@
   --button-text-color: #213547;
   --button-hover-border-color: #646cff;
 
+  /* Semantic colors */
+  --color-success: #28a745;
+  --color-success-dark: #218838;
+  --color-success-light: #d4edda;
+  --color-success-text: #155724;
+  --color-error: #dc3545;
+  --color-error-light: #f8d7da;
+  --color-error-text: #721c24;
+  --color-error-border: #f5c6cb;
+  --color-warning: #ffc107;
+  --color-warning-light: #fff3cd;
+  --color-warning-text: #856404;
+  --color-info: #007bff;
+  --color-info-dark: #0056b3;
+
+  /* Spacing scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1rem;
+  --spacing-xl: 1.5rem;
+  --spacing-2xl: 2rem;
+  --spacing-3xl: 3rem;
+
+  /* Border radius */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+  /* Typography */
+  --font-mono: "Menlo", "Consolas", "Courier New", monospace;
+
+  /* Font size scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
   /* Apply base colors */
   color: var(--text-color);
   background-color: var(--background-color);
 }
 
 /* --- DARK THEME OVERRIDES --- */
-/* This rule applies for the 'system' setting */
+/* Apply dark theme for both system preference and manual selection */
 @media (prefers-color-scheme: dark) {
   :root:not(.theme-light) {
     --background-color: #4d4d4d;
@@ -46,9 +95,8 @@
   }
 }
 
-/* This rule applies for the manual 'dark' theme selection */
 .theme-dark:root {
-  --background-color: #434343;
+  --background-color: #4d4d4d;
   --text-color: rgba(255, 255, 255, 0.87);
   --content-text-color: rgba(255, 255, 255, 0.8);
   --link-color: #58a6ff;

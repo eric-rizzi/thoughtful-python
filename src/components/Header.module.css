@@ -1,8 +1,8 @@
 /* src/components/Header.module.css */
 .header {
-  background-color: #4b8bbe;
+  background-color: var(--primary-color);
   color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   width: 100%;
   flex-shrink: 0;
 }
@@ -44,7 +44,7 @@
   color: white;
   text-decoration: none;
   padding: 0.5rem 0.75rem;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   transition:
     background-color 0.3s,
     opacity 0.3s;
@@ -133,7 +133,7 @@
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.5);
   padding: 0.4rem 0.8rem;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.3s;
@@ -160,14 +160,6 @@
 
 .settingsLink:hover {
   background-color: rgba(255, 255, 255, 0.15);
-}
-
-.profileImage {
-  width: 32px; /* Adjust size as needed */
-  height: 32px;
-  border-radius: 50%; /* Circular image */
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.5); /* Optional subtle border */
 }
 
 /* Adjustments for lessonNavigation if needed to ensure it doesn't collide */

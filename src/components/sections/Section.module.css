@@ -18,12 +18,12 @@
 }
 
 .title {
-  color: #306998; /* Dark blue for titles */
-  margin-top: 0; /* Important for anchor links */
-  margin-bottom: 1rem;
+  color: var(--primary-dark-color);
+  margin-top: 0;
+  margin-bottom: var(--spacing-lg);
   font-size: 1.8rem;
-  font-weight: 600; /* Make titles a bit bolder */
-  scroll-margin-top: 80px; /* Offset for sticky header when scrolling to ID */
+  font-weight: 600;
+  scroll-margin-top: 80px;
 }
 
 .content {
@@ -39,10 +39,10 @@
 .content h4,
 .content h5,
 .content h6 {
-  color: #306998; /* Example: Apply your brand color to headings */
-  margin-top: 1.5em; /* Add vertical spacing for headings */
+  color: var(--primary-dark-color);
+  margin-top: 1.5em;
   margin-bottom: 0.5em;
-  font-weight: 600; /* Make them bold */
+  font-weight: 600;
 }
 
 .content p {
@@ -66,19 +66,19 @@
   /* Inline code snippets */
   /* background-color: #f0f0f0; */
   padding: 0.2em 0.4em;
-  border-radius: 3px;
-  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
   font-size: 0.9em;
 }
 
 .content pre {
   /* Code blocks (```) */
-  background-color: #2e3440; /* Dark background for code blocks */
-  color: #d8dee9; /* Light text for dark background */
+  background-color: #2e3440;
+  color: #d8dee9;
   padding: 1em;
-  border-radius: 4px;
-  overflow-x: auto; /* Enable horizontal scrolling for long lines */
-  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  font-family: var(--font-mono);
   font-size: 0.9em;
   line-height: 1.5;
   margin-top: 1em;
@@ -102,19 +102,19 @@
      ========================================== */
 
 .exampleContainer {
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background-color: #fdfdfd; /* Slightly off-white background for examples */
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  background-color: #fdfdfd;
   border: 1px solid #eaeaea;
-  border-radius: 6px;
+  border-radius: var(--radius-lg);
 }
 
 .exampleContainer h4 {
   /* For "Code to Analyze" heading */
   margin-top: 0;
-  margin-bottom: 0.75rem;
-  color: #306998;
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-dark-color);
   font-size: 1.15em;
 }
 
@@ -150,11 +150,11 @@
 }
 
 .runButton {
-  background-color: #4b8bbe;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s;
@@ -162,7 +162,7 @@
 }
 
 .runButton:hover:not(:disabled) {
-  background-color: #306998;
+  background-color: var(--primary-dark-color);
 }
 
 .runButton:disabled {
@@ -185,19 +185,19 @@
 
 /* Code output area */
 .outputArea {
-  margin-top: 1rem;
-  background-color: #2e3440; /* Dark background (Nord theme like) */
-  color: #d8dee9; /* Light text */
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  font-family: "Menlo", "Consolas", "Courier New", monospace;
+  margin-top: var(--spacing-lg);
+  background-color: #2e3440;
+  color: #d8dee9;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   line-height: 1.5;
-  min-height: 40px; /* Minimum height even when empty */
-  max-height: 300px; /* Prevent excessive height */
-  overflow-y: auto; /* Allow scrolling */
-  white-space: pre-wrap; /* Wrap long lines */
-  border: 1px solid #444; /* Darker border */
+  min-height: 40px;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  border: 1px solid #444;
   width: 100%;
 }
 
@@ -219,20 +219,20 @@
      ===================================== */
 
 .testButton {
-  background-color: #28a745; /* Green */
+  background-color: var(--color-success);
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s;
   font-size: 0.9rem;
-  margin-left: 0.5rem; /* Space from run button */
+  margin-left: var(--spacing-sm);
 }
 
 .testButton:hover:not(:disabled) {
-  background-color: #218838; /* Darker green */
+  background-color: var(--color-success-dark);
 }
 
 .testButton:disabled {
@@ -249,14 +249,14 @@
 
 /* Test Success Box */
 .testSuccess {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-  border-left: 5px solid #28a745; /* Thick green border */
+  background-color: var(--color-success-light);
+  color: var(--color-success-text);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  border-left: 5px solid var(--color-success);
 }
 .testSuccess h4 {
-  color: #155724;
+  color: var(--color-success-text);
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
@@ -264,14 +264,14 @@
 
 /* Test Failure Box */
 .testFailure {
-  background-color: #fff3cd; /* Warning yellow */
-  color: #856404;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-  border-left: 5px solid #ffc107; /* Thick warning border */
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-text);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  border-left: 5px solid var(--color-warning);
 }
 .testFailure h4 {
-  color: #856404;
+  color: var(--color-warning-text);
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
@@ -286,14 +286,14 @@
 
 /* Test Error Box (e.g., code crashed, parsing failed) */
 .testError {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-  border-left: 5px solid #dc3545; /* Thick error border */
+  background-color: var(--color-error-light);
+  color: var(--color-error-text);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  border-left: 5px solid var(--color-error);
 }
 .testError h4 {
-  color: #721c24;
+  color: var(--color-error-text);
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
@@ -335,8 +335,8 @@
 .testResultsTable code {
   background-color: #f8f9fa;
   padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-family: "Courier New", monospace;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
   font-size: 0.9em;
 }
 
@@ -417,18 +417,18 @@
 
 .quizForm {
   background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin: 1.5rem 0 0; /* Add margin top only */
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-xl) 0 0;
   border: 1px solid #e1e4e8;
 }
 
 .quizOption {
-  display: block; /* Ensure options are block level */
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem; /* Add padding */
-  border-radius: 4px;
-  border: 1px solid transparent; /* Add border for hover effect */
+  display: block;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
   cursor: pointer;
   transition:
     background-color 0.2s,
@@ -468,20 +468,20 @@
 }
 
 .quizSubmitButton {
-  background-color: #4b8bbe;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: var(--spacing-lg);
   transition: background-color 0.3s;
   font-size: 1rem;
 }
 
 .quizSubmitButton:hover:not(:disabled) {
-  background-color: #306998;
+  background-color: var(--primary-dark-color);
 }
 
 .quizSubmitButton:disabled {
@@ -564,18 +564,18 @@
 }
 
 .correctFeedback {
-  composes: quizFeedback; /* Inherit base quizFeedback styles */
-  background-color: #d4edda;
-  color: #155724;
-  border-left: 5px solid #28a745;
+  composes: quizFeedback;
+  background-color: var(--color-success-light);
+  color: var(--color-success-text);
+  border-left: 5px solid var(--color-success);
   text-align: center;
 }
 
 .incorrectFeedback {
-  composes: quizFeedback; /* Inherit base quizFeedback styles */
-  background-color: #f8d7da;
-  color: #721c24;
-  border-left: 5px solid #dc3545;
+  composes: quizFeedback;
+  background-color: var(--color-error-light);
+  color: var(--color-error-text);
+  border-left: 5px solid var(--color-error);
   text-align: center;
 }
 
@@ -710,14 +710,11 @@
 /* Completion Message Area */
 .completionMessage {
   margin-top: 1.5rem;
-  /* Use existing testSuccess style */
-  composes: testSuccess from global; /* If testSuccess is global */
-  /* Or copy styles directly */
-  background-color: #d4edda;
-  color: #155724;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
-  border-left: 5px solid #28a745;
+  background-color: var(--color-success-light);
+  color: var(--color-success-text);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  border-left: 5px solid var(--color-success);
   font-weight: 500;
   text-align: center;
 }
@@ -845,11 +842,11 @@
 }
 
 .reflectionSubmitBtn {
-  background-color: #28a745; /* Original green */
+  background-color: var(--color-success);
   color: white;
 }
 .reflectionSubmitBtn:hover:not(:disabled) {
-  background-color: #218838; /* Original hover */
+  background-color: var(--color-success-dark);
 }
 
 .reflectionFeedbackBtn:disabled,
@@ -862,12 +859,12 @@
 }
 
 .apiError {
-  color: #dc3545; /* Bootstrap danger color */
-  margin-top: 1rem;
-  background-color: #f8d7da; /* Light red background */
-  border: 1px solid #f5c6cb; /* Red border */
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.25rem;
+  color: var(--color-error);
+  margin-top: var(--spacing-lg);
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
+  padding: var(--spacing-md) 1.25rem;
+  border-radius: var(--radius-sm);
 }
 
 .reflectionHistory {
@@ -930,10 +927,10 @@
 
 .submissionBadge {
   display: inline-block;
-  background-color: #28a745; /* Original green */
+  background-color: var(--color-success);
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -1288,13 +1285,12 @@
 /* Reuse feedback styles from quiz/testing */
 /* Ensure .quizFeedback, .correctFeedback, .incorrectFeedback, .errorFeedback exist */
 .errorFeedback {
-  /* Example error style */
-  background-color: #f8d7da;
-  color: #721c24;
-  border-left: 5px solid #dc3545;
-  padding: 1rem 1.5rem;
-  border-radius: 4px;
+  background-color: var(--color-error-light);
+  color: var(--color-error-text);
+  border-left: 5px solid var(--color-error);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
   font-weight: 500;
-  margin-top: 1rem;
-  white-space: pre-wrap; /* Show error tracebacks correctly */
+  margin-top: var(--spacing-lg);
+  white-space: pre-wrap;
 }

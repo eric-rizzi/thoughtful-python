@@ -6,8 +6,8 @@
 
 .backLink {
   display: inline-block;
-  margin-bottom: 2rem;
-  color: #4b8bbe;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
 }
@@ -17,18 +17,18 @@
 }
 
 .unitHeader {
-  margin-bottom: 3rem;
+  margin-bottom: var(--spacing-3xl);
   text-align: center;
-  padding: 2rem 1rem; /* Adjusted padding */
-  background-color: #f9f9f9;
-  border-radius: 8px;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  background-color: var(--card-background-color);
+  border-radius: var(--radius-xl);
 }
 
 .unitTitle {
   font-size: 2.2rem;
-  color: #306998;
+  color: var(--primary-dark-color);
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .unitDescription {
@@ -54,14 +54,14 @@
 
 .lessonCard {
   background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease,
     border-left-color 0.3s ease;
-  border-left: 4px solid #4b8bbe;
+  border-left: 4px solid var(--primary-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -69,7 +69,7 @@
 
 .lessonCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   border-left-color: #ffd43b;
 }
 
@@ -81,9 +81,9 @@
 }
 
 .lessonTitle {
-  color: #306998;
+  color: var(--primary-dark-color);
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
   font-size: 1.3rem;
 }
 
@@ -134,10 +134,10 @@
 }
 
 .error {
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
+  color: var(--color-error);
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-xl);
 }
 
 /* Responsive adjustments */

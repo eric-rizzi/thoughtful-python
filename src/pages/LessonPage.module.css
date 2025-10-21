@@ -18,14 +18,14 @@
 /* Style for the link back to unit */
 .backToUnitLink {
   display: block;
-  margin: 0 0 1rem 0; /* Adjust margin as needed */
-  padding: 0.5rem 1rem; /* Match sidebar padding? */
-  color: #4b8bbe;
+  margin: 0 0 var(--spacing-lg) 0;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9rem;
-  background-color: #f8f9fa; /* Give it a slight background */
-  border-radius: 4px;
+  background-color: #f8f9fa;
+  border-radius: var(--radius-md);
   border: 1px solid #eee;
 }
 .backToUnitLink:hover {
@@ -50,15 +50,14 @@
 }
 
 .lessonTitle {
-  color: #306998;
-  margin: 0; /* Remove default margins */
-  font-size: 2.2rem; /* Make title prominent */
+  color: var(--primary-dark-color);
+  margin: 0;
+  font-size: 2.2rem;
   font-weight: 600;
   line-height: 1.2;
-  /* Allow title to shrink if needed, but prioritize it */
   flex-grow: 1;
   flex-shrink: 1;
-  min-width: 200px; /* Prevent title from becoming too small */
+  min-width: 200px;
 }
 
 /* Optional: Ensure LessonNavigation component aligns well */
@@ -77,10 +76,10 @@
 }
 
 .error {
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
+  color: var(--color-error);
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-xl);
 }
 
 /* Responsive adjustments */

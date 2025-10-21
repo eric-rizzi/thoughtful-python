@@ -1,11 +1,11 @@
 /* src/components/CodeEditor.module.css */
 .editorWrapper {
   border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden; /* Ensures border-radius applies to CodeMirror */
-  margin: 1rem 0; /* Example spacing */
-  position: relative; /* For potential absolute positioned elements later */
-  font-size: 0.9rem; /* Match editor font size if needed */
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: var(--spacing-lg) 0;
+  position: relative;
+  font-size: 0.9rem;
 }
 
 /* Ensure CodeMirror takes up space */

@@ -1,11 +1,11 @@
 /* src/components/Footer.module.css */
 .footer {
-  background-color: #306998; /* Original footer blue */
+  background-color: var(--primary-dark-color);
   color: white;
-  padding: 1.5rem 0;
+  padding: var(--spacing-xl) 0;
   text-align: center;
-  margin-top: 2rem; /* Ensure space above footer */
-  flex-shrink: 0; /* Prevent footer from shrinking */
+  margin-top: var(--spacing-2xl);
+  flex-shrink: 0;
 }
 
 .container {
