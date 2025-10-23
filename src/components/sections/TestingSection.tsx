@@ -67,7 +67,9 @@ const TestResultsDisplay: React.FC<{
         <tbody>
           {results.map((result, idx) => (
             <React.Fragment key={idx}>
-              <tr className={result.passed ? styles.passedRow : styles.failedRow}>
+              <tr
+                className={result.passed ? styles.passedRow : styles.failedRow}
+              >
                 <td style={{ textAlign: "center" }}>{idx + 1}</td>
                 <td>{result.description}</td>
                 <td style={{ textAlign: "center", fontSize: "1.2em" }}>

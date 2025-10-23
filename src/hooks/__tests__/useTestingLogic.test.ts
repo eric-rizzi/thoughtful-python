@@ -123,7 +123,7 @@ describe("useTestingLogic", () => {
           error: null,
           result: null,
         });
-        // Note: Second test is not mocked because stop-on-failure means it won't run
+      // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(defaultProps));
 
@@ -180,7 +180,7 @@ describe("useTestingLogic", () => {
           error: null,
           result: null,
         });
-        // Note: Second test is not mocked because stop-on-failure means it won't run
+      // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(defaultProps));
 
@@ -288,7 +288,7 @@ describe("useTestingLogic", () => {
           error: null,
           result: null,
         });
-        // Note: Second test is not mocked because stop-on-failure means it won't run
+      // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(procedureProps));
 
@@ -347,7 +347,7 @@ describe("useTestingLogic", () => {
           error: null,
           result: null,
         });
-        // Note: Second test is not mocked because stop-on-failure means it won't run
+      // Note: Second test is not mocked because stop-on-failure means it won't run
 
       const { result } = renderHook(() => useTestingLogic(procedureProps));
 
@@ -606,7 +606,7 @@ describe("useTestingLogic", () => {
           error: null,
           result: null,
         });
-        // Note: Second test is not mocked because stop-on-failure means it won't run
+      // Note: Second test is not mocked because stop-on-failure means it won't run
 
       await act(async () => {
         await result.current.runTests("def add(a, b):\n    return a + b");

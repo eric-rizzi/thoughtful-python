@@ -27,9 +27,7 @@ const TestCaseHistoryItem: React.FC<TestCaseHistoryItemProps> = ({
     <div
       className={styles.testCaseCard}
       style={{
-        borderLeft: result.passed
-          ? "4px solid #4caf50"
-          : "4px solid #f44336",
+        borderLeft: result.passed ? "4px solid #4caf50" : "4px solid #f44336",
       }}
     >
       <div
@@ -55,9 +53,7 @@ const TestCaseHistoryItem: React.FC<TestCaseHistoryItemProps> = ({
           >
             {(result.similarity * 100).toFixed(1)}% match
           </span>
-          <span className={styles.expandIcon}>
-            {isExpanded ? "▼" : "▶"}
-          </span>
+          <span className={styles.expandIcon}>{isExpanded ? "▼" : "▶"}</span>
         </div>
       </div>
 
@@ -127,14 +123,12 @@ const TurtleTestResults: React.FC<TurtleTestResultsProps> = ({
   };
 
   // Determine which test to display in side-by-side and which index it is
-  const getDisplayedTestInfo = ():
-    | {
-        referenceImage: string;
-        description: string;
-        isResult: boolean;
-        resultIndex: number | null;
-      }
-    | null => {
+  const getDisplayedTestInfo = (): {
+    referenceImage: string;
+    description: string;
+    isResult: boolean;
+    resultIndex: number | null;
+  } | null => {
     const visualTestCases = testCases.filter((tc) => tc.referenceImage);
 
     if (!results || results.length === 0) {
@@ -196,7 +190,8 @@ const TurtleTestResults: React.FC<TurtleTestResultsProps> = ({
 
   // Check if all tests passed (only meaningful if tests are complete)
   const allTestsRan = results && results.length === visualTestCases.length;
-  const allPassed = testsComplete && allTestsRan && results.every((r) => r.passed);
+  const allPassed =
+    testsComplete && allTestsRan && results.every((r) => r.passed);
   const hasResults = results && results.length > 0;
 
   // Filter out the displayed test from the history
@@ -254,10 +249,7 @@ const TurtleTestResults: React.FC<TurtleTestResultsProps> = ({
         {/* Turtle canvas on the right */}
         <div className={styles.studentCanvasColumn}>
           <h4>Your Drawing:</h4>
-          <div
-            ref={turtleCanvasRef}
-            className={styles.turtleCanvasContainer}
-          >
+          <div ref={turtleCanvasRef} className={styles.turtleCanvasContainer}>
             {/* p5.js will inject its canvas here */}
           </div>
         </div>
