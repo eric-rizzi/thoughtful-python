@@ -182,7 +182,7 @@ except Exception as e:
     tb = traceback.extract_tb(e.__traceback__)
     user_code_frame = tb[-1] if tb else None
     line_num = user_code_frame.lineno - ${scriptPrefixLines} if user_code_frame else 'N/A'
-    error_info = { "type": type(_e).__name__, "message": str(_e), "line": line_num }
+    error_info = { "type": type(e).__name__, "message": str(e), "line": line_num }
     print(f"PYTHON_EXECUTION_ERROR:: {json.dumps(error_info)}")
     _js_turtle_commands_ = []
 finally:
