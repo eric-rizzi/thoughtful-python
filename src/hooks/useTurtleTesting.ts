@@ -45,7 +45,10 @@ const stripTrailingMainCode = (code: string): string => {
     // Check if this is a def/class line
     if (trimmed.startsWith("def ") || trimmed.startsWith("class ")) {
       lastDefLine = i;
-    } else if (lastDefLine >= 0 && (line.startsWith(" ") || line.startsWith("\t"))) {
+    } else if (
+      lastDefLine >= 0 &&
+      (line.startsWith(" ") || line.startsWith("\t"))
+    ) {
       // This is an indented line after a def/class, update lastDefLine
       lastDefLine = i;
     }
