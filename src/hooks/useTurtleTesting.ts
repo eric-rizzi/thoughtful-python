@@ -25,6 +25,41 @@ interface UseTurtleTestingProps {
   functionToTest?: string;
 }
 
+/**
+ * Removes trailing unindented executable code from the bottom of the user's code.
+ * Keeps imports, function/class definitions, but removes unindented statements at the end.
+ * This allows testing functions without executing module-level code that calls them.
+ */
+const stripTrailingMainCode = (code: string): string => {
+  const lines = code.split("\n");
+  let lastDefLine = -1;
+
+  // Find the last line that's part of a function/class definition
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Skip empty lines and comments
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    // Check if this is a def/class line
+    if (trimmed.startsWith("def ") || trimmed.startsWith("class ")) {
+      lastDefLine = i;
+    } else if (lastDefLine >= 0 && (line.startsWith(" ") || line.startsWith("\t"))) {
+      // This is an indented line after a def/class, update lastDefLine
+      lastDefLine = i;
+    }
+  }
+
+  // If we found function/class definitions, only include up to the last def line
+  if (lastDefLine >= 0) {
+    return lines.slice(0, lastDefLine + 1).join("\n");
+  }
+
+  // If no functions found, return original code (might be __main__ mode)
+  return code;
+};
+
 export const useTurtleTesting = ({
   unitId,
   lessonId,
@@ -62,25 +97,6 @@ export const useTurtleTesting = ({
           throw new Error("No visual test cases found");
         }
 
-        // If testing a function (not __main__), we need to define it once first
-        if (functionToTest && functionToTest !== "__main__") {
-          // Execute user code once to define the function
-          // This validates the function exists and is defined correctly
-          try {
-            await runTurtleCode(userCode);
-            // Clear the canvas after setup - we don't want the setup drawing
-            turtleInstance.reset();
-          } catch (setupError) {
-            throw new Error(
-              `Failed to define function '${functionToTest}': ${
-                setupError instanceof Error
-                  ? setupError.message
-                  : "Unknown error"
-              }`
-            );
-          }
-        }
-
         for (const testCase of visualTestCases) {
           if (!testCase.referenceImage) continue;
 
@@ -92,21 +108,17 @@ export const useTurtleTesting = ({
             // Build code to execute for this test case
             let codeToRun: string;
 
-            // If testing a function (not __main__) and test case has input,
-            // just call the function (it's already defined from setup)
-            if (
-              functionToTest &&
-              functionToTest !== "__main__" &&
-              testCase.input &&
-              testCase.input.length > 0
-            ) {
-              // Function is already defined, just call it with test inputs
+            // If testing a function (not __main__), strip trailing code and call the function
+            if (functionToTest && functionToTest !== "__main__") {
+              // Strip trailing unindented code to avoid executing module-level calls
+              const strippedCode = stripTrailingMainCode(userCode);
               const inputArgs = testCase.input
-                .map((arg) => JSON.stringify(arg))
-                .join(", ");
-              codeToRun = `${functionToTest}(${inputArgs})`;
+                ? testCase.input.map((arg) => JSON.stringify(arg)).join(", ")
+                : "";
+              // Define the function, then call it
+              codeToRun = `${strippedCode}\n${functionToTest}(${inputArgs})`;
             } else {
-              // For __main__ mode or no inputs, run the entire code
+              // For __main__ mode, run the entire code as-is
               codeToRun = userCode;
             }
 
