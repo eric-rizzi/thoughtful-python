@@ -15,13 +15,18 @@ interface TurtleTestResultsProps {
 interface TestCaseHistoryItemProps {
   result: TurtleTestResult;
   index: number;
+  forceExpanded?: boolean;
 }
 
 const TestCaseHistoryItem: React.FC<TestCaseHistoryItemProps> = ({
   result,
   index,
+  forceExpanded = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(!result.passed);
+
+  // Use forceExpanded if provided, otherwise use state
+  const expanded = forceExpanded || isExpanded;
 
   return (
     <div
@@ -32,8 +37,8 @@ const TestCaseHistoryItem: React.FC<TestCaseHistoryItemProps> = ({
     >
       <div
         className={styles.testCaseHeader}
-        onClick={() => setIsExpanded(!isExpanded)}
-        style={{ cursor: "pointer" }}
+        onClick={() => !forceExpanded && setIsExpanded(!isExpanded)}
+        style={{ cursor: forceExpanded ? "default" : "pointer" }}
       >
         <div className={styles.testCaseHeaderLeft}>
           <span className={styles.testCaseIcon}>
@@ -53,11 +58,13 @@ const TestCaseHistoryItem: React.FC<TestCaseHistoryItemProps> = ({
           >
             {(result.similarity * 100).toFixed(1)}% match
           </span>
-          <span className={styles.expandIcon}>{isExpanded ? "▼" : "▶"}</span>
+          {!forceExpanded && (
+            <span className={styles.expandIcon}>{expanded ? "▼" : "▶"}</span>
+          )}
         </div>
       </div>
 
-      {isExpanded && (
+      {expanded && (
         <div className={styles.testCaseBody}>
           <div className={styles.testCaseImagesGrid}>
             <div className={styles.testCaseImageColumn}>
@@ -194,39 +201,68 @@ const TurtleTestResults: React.FC<TurtleTestResultsProps> = ({
     testsComplete && allTestsRan && results.every((r) => r.passed);
   const hasResults = results && results.length > 0;
 
-  // Filter out the displayed test from the history
-  const historyResults =
-    results && displayedTestInfo?.resultIndex !== null
-      ? results.filter((_, idx) => idx !== displayedTestInfo.resultIndex)
-      : [];
+  // During tests: show all completed tests in accordion
+  // After tests complete: show ALL tests in accordion (final test expanded)
+  const showSideBySide = !testsComplete;
+  const accordionResults = results || [];
 
   return (
     <div>
-      {/* Side-by-side layout - always visible */}
-      <div className={styles.visualTestingContainer}>
-        {/* Reference image on the left */}
-        <div className={styles.referenceImageColumn}>
-          <h4>Target Drawing:</h4>
-          {displayedTestInfo ? (
-            <div>
-              {visualTestCases.length > 1 && (
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    marginBottom: "0.5rem",
-                    fontSize: "0.95em",
-                    color: "#306998",
-                  }}
-                >
-                  Test{" "}
-                  {displayedTestInfo.resultIndex !== null
-                    ? displayedTestInfo.resultIndex + 1
-                    : results
-                      ? results.length + 1
-                      : 1}{" "}
-                  of {visualTestCases.length}: {displayedTestInfo.description}
-                </p>
-              )}
+      {/* Accordion for tests - shown above during run, shows all after completion */}
+      {accordionResults && accordionResults.length > 0 && (
+        <div className={styles.testCasesList} style={{ marginBottom: "1rem" }}>
+          {accordionResults.map((result, idx) => {
+            // Last test in accordion should be expanded when tests are complete
+            const isLastTest = idx === accordionResults.length - 1;
+            const shouldExpand = testsComplete && isLastTest;
+            return (
+              <TestCaseHistoryItem
+                key={idx}
+                result={result}
+                index={idx}
+                forceExpanded={shouldExpand}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Side-by-side layout - only shown during test execution */}
+      <div style={{ display: showSideBySide ? "block" : "none" }}>
+        {/* Test description above the side-by-side */}
+        {displayedTestInfo && visualTestCases.length > 1 && (
+          <p
+            style={{
+              fontWeight: "bold",
+              marginBottom: "0.5rem",
+              fontSize: "0.95em",
+              color: "#306998",
+            }}
+          >
+            Test{" "}
+            {displayedTestInfo.resultIndex !== null
+              ? displayedTestInfo.resultIndex + 1
+              : results
+                ? results.length + 1
+                : 1}{" "}
+            of {visualTestCases.length}: {displayedTestInfo.description}
+          </p>
+        )}
+
+        {/* Headings row - side by side */}
+        <div style={{ display: "flex", gap: "1rem", marginBottom: "0.5rem" }}>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ margin: 0 }}>Target Drawing:</h4>
+          </div>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ margin: 0 }}>Your Drawing:</h4>
+          </div>
+        </div>
+
+        {/* Images row - side by side */}
+        <div className={styles.visualTestingContainer}>
+          <div className={styles.referenceImageColumn}>
+            {displayedTestInfo ? (
               <img
                 src={displayedTestInfo.referenceImage}
                 alt={displayedTestInfo.description}
@@ -238,41 +274,22 @@ const TurtleTestResults: React.FC<TurtleTestResultsProps> = ({
                   display: "block",
                 }}
               />
-            </div>
-          ) : (
-            <p style={{ color: "#999", fontStyle: "italic" }}>
-              No reference image available
-            </p>
-          )}
-        </div>
+            ) : (
+              <p style={{ color: "#999", fontStyle: "italic" }}>
+                No reference image available
+              </p>
+            )}
+          </div>
 
-        {/* Turtle canvas on the right */}
-        <div className={styles.studentCanvasColumn}>
-          <h4>Your Drawing:</h4>
-          <div ref={turtleCanvasRef} className={styles.turtleCanvasContainer}>
-            {/* p5.js will inject its canvas here */}
+          <div className={styles.studentCanvasColumn}>
+            <div ref={turtleCanvasRef} className={styles.turtleCanvasContainer}>
+              {/* p5.js will inject its canvas here */}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Test history - only show after tests have run and only for non-displayed tests */}
-      {hasResults && historyResults.length > 0 && (
-        <div className={styles.testCasesList}>
-          {historyResults.map((result, idx) => {
-            // Find the original index from results array
-            const originalIndex = results!.indexOf(result);
-            return (
-              <TestCaseHistoryItem
-                key={originalIndex}
-                result={result}
-                index={originalIndex}
-              />
-            );
-          })}
-        </div>
-      )}
-
-      {/* Final message - only show after tests complete (not during progressive updates) */}
+      {/* Final message - only show after tests complete, appears below accordion */}
       {testsComplete && (
         <div
           className={allPassed ? styles.testSuccess : styles.testFailure}

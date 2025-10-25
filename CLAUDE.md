@@ -107,21 +107,26 @@ npm run lint         # Run ESLint on the codebase
 **How it works**:
 1. **Test Case Setup**: Each test case in a TestingSection can include a `referenceImage` path (e.g., `"images/turtle_square.png"`) pointing to a target drawing
 2. **Sequential Execution with Stop-on-Failure**: When "Run Tests" is clicked, tests execute sequentially. The first failing test stops execution (remaining tests don't run)
-3. **Progressive UI Updates**: As tests run, the UI updates in real-time:
-   - Side-by-side layout shows current test's reference image (left) and live turtle canvas (right)
-   - Test label shows "Test X of Y: [description]" to indicate progress
-   - Completed tests stack up below as collapsible cards (passing tests collapsed by default)
-4. **Smart Display Logic** (see `TurtleTestResults.tsx`):
-   - **Before tests**: Shows first test's reference image
-   - **During tests**: Updates to show each test's reference as it runs
+3. **Progressive UI Updates** (see `TurtleTestResults.tsx`):
+   - **Before tests**: Shows first test's reference image in side-by-side view with headings above
+   - **During tests**:
+     - Each completed test immediately moves to a collapsed accordion **above** the currently running test
+     - Currently running test is shown in side-by-side view below the accordion
+     - Side-by-side layout has headings row ("Target Drawing" | "Your Drawing") and images row below
+     - Test label shows "Test X of Y: [description]" above the side-by-side layout
+     - Accordion grows progressively as tests complete, giving visual feedback of progress
    - **After tests complete**:
-     - If failure: Shows failed test in side-by-side, passed tests in collapsed accordion below
-     - If all pass: Shows last test in side-by-side (proof of success), all tests in collapsed accordion below
-5. **Visual Comparison**: Uses `pixelmatch` library to compare student's canvas against reference image with configurable threshold (default 95%, can be set via `visualThreshold` property)
-6. **Key Implementation Details**:
+     - Side-by-side view disappears
+     - All tests appear in accordion (collapsed except for the final test)
+     - Final test is expanded and has green border (if passed) or red border (if failed)
+     - Success/failure message appears below the accordion
+4. **Visual Comparison**: Uses `pixelmatch` library to compare student's canvas against reference image with configurable threshold (default 95%, can be set via `visualThreshold` property)
+5. **Key Implementation Details**:
    - `useTurtleTesting.ts` executes tests sequentially, updating state after each test completion
-   - The displayed test is **never** shown in the accordion (no duplication)
-   - Final success/failure message only appears when `isRunningTests = false` to prevent premature "Great job!" messages
+   - During execution: Accordion shows all completed tests, side-by-side shows currently running test
+   - After completion: Accordion shows all tests (final test expanded), side-by-side hidden
+   - Final test in accordion cannot be collapsed and has colored border matching pass/fail state
+   - Success/failure message only appears when `isRunningTests = false` and appears below the accordion
    - Reference images are resolved relative to unit folder: `/thoughtful-python/data/{unitDir}/{imagePath}`
 
 **Creating Visual Turtle Tests**:
@@ -158,8 +163,10 @@ npm run lint         # Run ESLint on the codebase
 - Reference images should be stored in the unit's `images/` folder
 - Use ObservationSection with `allowImageDownload: true` to generate reference images
 - Tests stop on first failure - if Test 2 fails, Test 3 never runs
-- The accordion only shows completed tests, never the currently displayed test
+- During execution: accordion shows completed tests, side-by-side shows currently running test
+- After completion: all tests in accordion, final test expanded with colored border, side-by-side hidden
 - Visual threshold of 0.999 is very strict; 0.95-0.98 may be more forgiving for minor rendering differences
+- **Function Testing**: When `functionToTest` is set to a function name (not `"__main__"`), the system automatically strips trailing unindented code from the student's solution before testing. This prevents module-level function calls from executing during tests while preserving imports and function definitions.
 
 ### Component Architecture
 
