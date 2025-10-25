@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("TestingSection `procedure` / `__main__` output tests", () => {
-  test("Test that can click the `Run Code` button", async ({ page }) => {
+  test("Test can click `Run Code` button", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/00_intro/lessons/00_intro_strings"
     );
@@ -33,7 +33,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button (without actually doing anything) and get a failure", async ({
+  test("Test can click `Run Tests` button (w/o doing anything) and get failure", async ({
     page,
   }) => {
     await page.goto(
@@ -61,9 +61,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a pass", async ({
-    page,
-  }) => {
+  test("Test can click `Run Tests` button and get pass", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/00_intro/lessons/00_intro_strings"
     );
@@ -90,7 +88,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a failure", async ({
+  test("Test can click `Run Tests` button and get failure", async ({
     page,
   }) => {
     await page.goto(
@@ -122,9 +120,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can have faulty program and get a SyntaxError", async ({
-    page,
-  }) => {
+  test("Test can have faulty program and get SyntaxError", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/00_intro/lessons/00_intro_strings"
     );
@@ -152,9 +148,7 @@ test.describe("TestingSection `procedure` / `__main__` output tests", () => {
 });
 
 test.describe("TestingSection `procedure` / `function_name` tests", () => {
-  test("Test that can click the `Run Tests` button and get a pass", async ({
-    page,
-  }) => {
+  test("Test can click `Run Tests` button and get pass", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/03_functions/lessons/03_func_wrap_up"
     );
@@ -185,9 +179,7 @@ test.describe("TestingSection `procedure` / `function_name` tests", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a fail", async ({
-    page,
-  }) => {
+  test("Test can click `Run Tests` button and get fail", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/03_functions/lessons/03_func_wrap_up"
     );
@@ -220,7 +212,7 @@ test.describe("TestingSection `procedure` / `function_name` tests", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button without doing anything and get a fail", async ({
+  test("Test can click the `Run Tests` button (w/o doing anything) and get fail", async ({
     page,
   }) => {
     await page.goto(
@@ -273,9 +265,7 @@ test.describe("TestingSection `function` / `function_name` tests", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a fail", async ({
-    page,
-  }) => {
+  test("Test can click `Run Tests` button and get fail", async ({ page }) => {
     await page.goto(
       "/thoughtful-python/lesson/10_functions_return/lessons/00_return_intro"
     );
@@ -308,7 +298,7 @@ test.describe("TestingSection `function` / `function_name` tests", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button without doing anything and get a fail", async ({
+  test("Test can click `Run Tests` button (w/o doing anything) and get fail", async ({
     page,
   }) => {
     await page.goto(
@@ -328,7 +318,7 @@ test.describe("TestingSection `function` / `function_name` tests", () => {
 });
 
 test.describe("TestingSection for turtles", () => {
-  test("Test that can click the `Run Tests` button and get a pass for turtles for __main__ procedures", async ({
+  test("Test can click `Run Tests` button and get pass for turtles for __main__ procedures @flaky", async ({
     page,
   }) => {
     await page.goto(
@@ -369,7 +359,7 @@ test.describe("TestingSection for turtles", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a fail for turtles for __main__ procedures", async ({
+  test("Test that can click `Run Tests` button and get fail for turtles for __main__ procedures", async ({
     page,
   }) => {
     await page.goto(
@@ -410,7 +400,7 @@ test.describe("TestingSection for turtles", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that an error in the program shows up with `Run Button` is clicked ", async ({
+  test("Test that an error in the program shows up when `Run Button` clicked ", async ({
     page,
   }) => {
     await page.goto(
@@ -444,7 +434,7 @@ test.describe("TestingSection for turtles", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that an error in the program shows up with `Run Tests` is clicked ", async ({
+  test("Test that an error in the program shows up when `Run Tests` clicked ", async ({
     page,
   }) => {
     await page.goto(
@@ -478,7 +468,7 @@ test.describe("TestingSection for turtles", () => {
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a pass for turtles for non-__main__ procedures", async ({
+  test("Test can click `Run Tests` button and get pass for turtles for non-__main__ procedures @flaky", async ({
     page,
   }) => {
     await page.goto(
@@ -519,7 +509,7 @@ test.describe("TestingSection for turtles", () => {
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a fail for turtles for non-__main__ procedures", async ({
+  test("Test can click `Run Tests` button and get fail for turtles for non-__main__ procedures @flaky", async ({
     page,
   }) => {
     await page.goto(

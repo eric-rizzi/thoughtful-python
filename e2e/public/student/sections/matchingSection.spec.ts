@@ -1,9 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("MatchingSection tests @flaky", () => {
-  // All matching sections tests get 5 retries
-  test.describe.configure({ retries: 5 });
-
+test.describe("MatchingSection tests", () => {
   test("Test can get a right answer from the MatchingSection", async ({
     page,
   }) => {
@@ -35,16 +32,21 @@ test.describe("MatchingSection tests @flaky", () => {
     const dropZone = () =>
       page.locator("div").filter({ hasText: /^Drop here$/ });
 
-    await makeBlock.dragTo(dropZone().nth(4));
-    await page.waitForTimeout(100);
-    await modifyBlock.dragTo(dropZone().nth(3));
-    await page.waitForTimeout(100);
-    await interpretBlock.dragTo(dropZone().nth(2));
-    await page.waitForTimeout(100);
-    await runBlock.dragTo(dropZone().nth(1));
-    await page.waitForTimeout(100);
-    await predictBlock.dragTo(dropZone().nth(0));
-    await page.waitForTimeout(100);
+    // Use tap-to-select instead of drag-and-drop for reliability
+    await makeBlock.click();
+    await dropZone().nth(4).click();
+
+    await modifyBlock.click();
+    await dropZone().nth(3).click();
+
+    await interpretBlock.click();
+    await dropZone().nth(2).click();
+
+    await runBlock.click();
+    await dropZone().nth(1).click();
+
+    await predictBlock.click();
+    await dropZone().nth(0).click();
 
     await expect(page.getByText("Correct!")).toBeVisible();
 
@@ -82,16 +84,22 @@ test.describe("MatchingSection tests @flaky", () => {
     const dropZone = () =>
       page.locator("div").filter({ hasText: /^Drop here$/ });
 
-    await makeBlock.dragTo(dropZone().nth(4));
-    await page.waitForTimeout(100);
-    await modifyBlock.dragTo(dropZone().nth(3));
-    await page.waitForTimeout(100);
-    await interpretBlock.dragTo(dropZone().nth(2));
-    await page.waitForTimeout(100);
-    await predictBlock.dragTo(dropZone().nth(1));
-    await page.waitForTimeout(100);
-    await runBlock.dragTo(dropZone().nth(0));
-    await page.waitForTimeout(100);
+    // Use tap-to-select instead of drag-and-drop for reliability
+    // Place items in wrong order
+    await makeBlock.click();
+    await dropZone().nth(4).click();
+
+    await modifyBlock.click();
+    await dropZone().nth(3).click();
+
+    await interpretBlock.click();
+    await dropZone().nth(2).click();
+
+    await predictBlock.click();
+    await dropZone().nth(1).click();
+
+    await runBlock.click();
+    await dropZone().nth(0).click();
 
     await expect(
       page.getByText(
