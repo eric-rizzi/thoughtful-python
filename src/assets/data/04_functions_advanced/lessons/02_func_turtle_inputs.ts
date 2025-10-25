@@ -114,20 +114,20 @@ const lessonData: Lesson = {
         {
           kind: "text",
           value:
-            "Create a function called `draw_rectangle(width, height)` that draws a rectangle with the given width and height.\n\nThen use your function to draw:\n1. A rectangle that's 100 pixels wide and 50 pixels tall\n2. A rectangle that's 30 pixels wide and 80 pixels tall\n\nHint: A rectangle has two sides of one length and two sides of another length.",
+            "Create a function called `draw_rectangle(width, height)` that draws a rectangle with the given width and height.\n\nThen use your function to draw:\n1. A rectangle that's 100 pixels wide and 50 pixels tall\n2. A rectangle that's 30 pixels wide and 20 pixels tall\n3. A rectangle that's 75 pixels wide and 100 pixels tall\n\nHint: Since the turtle is facing up, our should move `height` first.",
         },
       ],
       example: {
         visualization: "turtle",
         initialCode:
-          "import turtle\n\ndef draw_rectangle(width, height):\n  # Your code here\n  pass\n\n# Test your function\ndraw_rectangle(100, 50)\nturtle.penup()\nturtle.forward(120)\nturtle.pendown()\ndraw_rectangle(30, 80)",
+          "import turtle\n\ndef draw_rectangle(width, height):\n  # Your code here\n  pass\n\n# Test your function\ndraw_rectangle(100, 50)\ndraw_rectangle(30, 20)\ndraw_rectangle(75, 100)",
       },
       testMode: "procedure",
-      functionToTest: "draw_rectangle",
+      functionToTest: "__main__",
       visualThreshold: 0.999,
       testCases: [
         {
-          description: "Two rectangles",
+          description: "Three rectangles",
           input: [],
           expected: null,
           referenceImage: "images/turtle_rectangles.png",
@@ -136,7 +136,7 @@ const lessonData: Lesson = {
     } as TestingSectionData,
     {
       kind: "PRIMM",
-      id: "house-parts-primm" as SectionId,
+      id: "house-parts-pimm" as SectionId,
       title: "Building House Parts",
       content: [
         {
@@ -148,7 +148,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "turtle",
         initialCode:
-          'import turtle\n\ndef draw_rectangle(width, height):\n  turtle.forward(width)\n  turtle.right(90)\n  turtle.forward(height)\n  turtle.right(90)\n  turtle.forward(width)\n  turtle.right(90)\n  turtle.forward(height)\n  turtle.right(90)\n\ndef draw_door(width, height, color):\n  turtle.color(color)\n  draw_rectangle(width, height)\n  turtle.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nt.penup()\nt.goto(60, 0)\nt.pendown()\ndraw_rectangle(40, 40)',
+          'import turtle\n\ndef draw_rectangle(width, height):\n  turtle.forward(width)\n  turtle.right(90)\n  turtle.forward(height)\n  turtle.right(90)\n  turtle.forward(width)\n  turtle.right(90)\n  turtle.forward(height)\n  turtle.right(90)\n\ndef draw_door(width, height, color):\n  turtle.color(color)\n  draw_rectangle(width, height)\n  turtle.color("black")  # Reset color\n\n# Draw a door\ndraw_door(30, 60, "brown")\n\n# Move and draw a window\nturtle.penup()\nturtle.goto(60, 0)\nturtle.pendown()\ndraw_rectangle(40, 40)',
       },
       predictPrompt:
         "What two shapes will be drawn? What will be different about them?",
@@ -177,9 +177,15 @@ const lessonData: Lesson = {
       testCases: [
         {
           description: "House with side length of 50",
-          input: [],
+          input: [50],
           expected: null,
-          referenceImage: "images/turtle_house.png",
+          referenceImage: "images/turtle_house_50.png",
+        },
+        {
+          description: "House with side length of 75",
+          input: [75],
+          expected: null,
+          referenceImage: "images/turtle_house_75.png",
         },
       ],
     } as TestingSectionData,

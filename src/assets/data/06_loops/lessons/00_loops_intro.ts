@@ -141,10 +141,10 @@ const lessonData: Lesson = {
       visualThreshold: 0.999,
       testCases: [
         {
-          description: "Pentagon with side length 100",
+          description: "Pentagon with side length 80",
           input: [],
           expected: null,
-          referenceImage: "images/turtle_pentagon.png",
+          referenceImage: "images/turtle_pentagon_80.png",
         },
       ],
     } as TestingSectionData,

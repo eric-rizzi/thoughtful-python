@@ -139,7 +139,7 @@ const lessonData: Lesson = {
           "import turtle\n\ndef make_triangle():\n  # Each side should be 100 pixels\n\nmake_triangle()",
       },
       testMode: "procedure",
-      functionToTest: "__main__",
+      functionToTest: "make_triangle",
       visualThreshold: 0.999,
       testCases: [
         {
