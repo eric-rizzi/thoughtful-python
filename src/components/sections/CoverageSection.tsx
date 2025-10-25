@@ -29,6 +29,7 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
   const {
     savedState,
     runningStates,
+    rowReadyStates,
     isLoading,
     pyodideError,
     handleUserInputChange,
@@ -186,7 +187,12 @@ const CoverageSection: React.FC<CoverageSectionProps> = ({
                       <td className={coverageStyles.actionCell}>
                         <button
                           onClick={() => runRow(rowIndex)}
-                          disabled={isRunning || isLoading || !!pyodideError}
+                          disabled={
+                            isRunning ||
+                            isLoading ||
+                            !!pyodideError ||
+                            !rowReadyStates[rowIndex]
+                          }
                           className={coverageStyles.coverageRunButton}
                         >
                           {isRunning ? "Running..." : "Run"}

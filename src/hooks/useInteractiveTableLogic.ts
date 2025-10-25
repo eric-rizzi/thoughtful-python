@@ -269,12 +269,53 @@ export const useInteractiveTableLogic = ({
         return currentState;
       });
     },
-    [mode, setState, initialState]
+    [mode, setState, initialState, rows]
   );
+
+  // Validation: Check if each row is ready to run
+  const rowReadyStates = useMemo(() => {
+    const readyStates: { [rowIndex: number]: boolean } = {};
+
+    rows.forEach((row, rowIndex) => {
+      if (mode === "coverage") {
+        const challengeState = (state as SavedCoverageState).challengeStates?.[
+          rowIndex
+        ];
+        if (!challengeState) {
+          readyStates[rowIndex] = false;
+          return;
+        }
+
+        // Check all non-fixed inputs have values
+        const coverageRow = row as CoverageTableRow;
+        const allInputsFilled = columns.every((param) => {
+          // If it's a fixed input, skip validation (it's always filled)
+          if (coverageRow.fixedInputs[param.variableName] !== undefined) {
+            return true;
+          }
+          // Check if the input has a non-empty value
+          const value = challengeState.inputs?.[param.variableName];
+          return value !== undefined && value !== null && value.trim() !== "";
+        });
+
+        readyStates[rowIndex] = allInputsFilled;
+      } else {
+        // Prediction mode: check if user has entered a prediction
+        const prediction = (state as SavedPredictionState).predictions?.[
+          rowIndex
+        ];
+        const userAnswer = prediction?.userAnswer ?? "";
+        readyStates[rowIndex] = userAnswer.trim() !== "";
+      }
+    });
+
+    return readyStates;
+  }, [mode, state, rows, columns]);
 
   return {
     savedState: state, // Renamed for consistency in consuming components
     runningStates,
+    rowReadyStates, // New: validation states for each row
     isLoading: isPyodideLoading,
     pyodideError,
     handleUserInputChange,

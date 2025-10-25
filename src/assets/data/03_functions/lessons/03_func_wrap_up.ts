@@ -69,7 +69,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
         '"It\'s a beautiful day"',
         '"She said "hello" to me"',
         "'Hello, World'",
-        '\'""""\'',
+        '\' " " " " \'',
       ],
       correctAnswer: 1,
       feedback: {
@@ -89,7 +89,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'\n\`\`\``,
       example: {
         visualization: "console",
         initialCode:
-          "def do_math(x):\n    y = x + x\n    z = y + y\n    print(z)\n\n",
+          "def do_math(x):\n  y = x + x\n  z = y + y\n  print(z)\n\n",
       },
       testMode: "procedure",
       functionToTest: "do_math",

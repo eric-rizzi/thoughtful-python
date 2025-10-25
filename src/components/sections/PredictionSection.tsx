@@ -28,6 +28,7 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
   const {
     savedState,
     runningStates,
+    rowReadyStates,
     isLoading,
     pyodideError,
     handleUserInputChange,
@@ -138,7 +139,12 @@ const PredictionSection: React.FC<PredictionSectionProps> = ({
                       <td className={predictionStyles.actionCell}>
                         <button
                           onClick={() => runRow(rowIndex)}
-                          disabled={isRunning || isLoading || !!pyodideError}
+                          disabled={
+                            isRunning ||
+                            isLoading ||
+                            !!pyodideError ||
+                            !rowReadyStates[rowIndex]
+                          }
                           className={predictionStyles.coverageRunButton}
                         >
                           {isRunning ? "Running..." : "Run"}

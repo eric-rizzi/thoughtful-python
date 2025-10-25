@@ -62,6 +62,7 @@
   border: 1px solid #ccc;
   border-radius: var(--radius-md);
   font-size: 0.9rem;
+  box-sizing: border-box; /* Include padding and border in width calculation */
 }
 
 .coverageInput.fixedInput {
@@ -112,12 +113,22 @@
   composes: runButton from global; /* Reuse run button style */
   padding: 0.5rem 1rem; /* Adjust padding if needed */
   font-size: 0.85rem;
+  background-color: #007bff; /* Blue button - stands out more */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.coverageRunButton:hover:not(:disabled) {
+  background-color: #0056b3; /* Darker blue on hover */
 }
 
 .coverageRunButton:disabled {
-  /* Instead of composes: runButton:disabled ... */
-  background-color: #a8c7e0; /* Copied from .runButton:disabled style */
-  cursor: not-allowed; /* Copied from .runButton:disabled style */
+  background-color: #cccccc; /* Light grey when disabled */
+  color: #666666;
+  cursor: not-allowed;
 }
 
 .hintButton {
