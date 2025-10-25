@@ -300,8 +300,7 @@ const TurtleTestResults: React.FC<TurtleTestResultsProps> = ({
               <h4>🎉 Great job!</h4>
               <p>
                 Your drawing matched the target! All {visualTestCases.length}{" "}
-                test
-                {visualTestCases.length > 1 ? "s" : ""} passed.
+                tests passed.
               </p>
             </>
           ) : (

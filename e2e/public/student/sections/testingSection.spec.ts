@@ -328,29 +328,29 @@ test.describe("TestingSection `function` / `function_name` tests", () => {
 });
 
 test.describe("TestingSection for turtles", () => {
-  test("Test that can click the `Run Tests` button and get a pass for turtles", async ({
+  test("Test that can click the `Run Tests` button and get a pass for turtles for __main__ procedures", async ({
     page,
   }) => {
     await page.goto(
-      "/thoughtful-python/lesson/06_loops/lessons/00_loops_intro"
+      "/thoughtful-python/lesson/06_loops/lessons/01_loops_challenges"
     );
 
     const sectionItem = page.getByRole("listitem").filter({
-      hasText: "Challenge: Hexagon Builder",
+      hasText: "Challenge: Hexagon",
     });
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .locator("div")
       .nth(1)
       .click();
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .fill(
-        "import turtle\n\nturtle.speed(0)\ndef make_hexagon(size):\n  # Your code here converting the code above to a loop\n  for i in range(6):\n    turtle.forward(size)\n    turtle.right(60)\n\n\nmake_hexagon(55)"
+        "import turtle\n\nturtle.speed(0)\ndef make_hexagon():\n  # Your code here converting the code above to a loop\n  for i in range(6):\n    turtle.forward(50)\n    turtle.right(60)\n\n\nmake_hexagon()"
       );
     await page
       .locator("#hexagon-builder")
@@ -363,35 +363,35 @@ test.describe("TestingSection for turtles", () => {
       .click();
     await page.waitForTimeout(2000);
     await expect(
-      page.getByText("Your drawing matched the target!")
+      page.getByText("Your drawing matched the target! All 1 tests passed.")
     ).toBeVisible();
 
     await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
   });
 
-  test("Test that can click the `Run Tests` button and get a fail for turtles", async ({
+  test("Test that can click the `Run Tests` button and get a fail for turtles for __main__ procedures", async ({
     page,
   }) => {
     await page.goto(
-      "/thoughtful-python/lesson/06_loops/lessons/00_loops_intro"
+      "/thoughtful-python/lesson/06_loops/lessons/01_loops_challenges"
     );
 
     const sectionItem = page.getByRole("listitem").filter({
-      hasText: "Challenge: Hexagon Builder",
+      hasText: "Challenge: Hexagon",
     });
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .locator("div")
       .nth(1)
       .click();
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .fill(
-        "import turtle\n\nturtle.speed(0)\ndef make_hexagon(size):\n  # Your code here converting the code above to a loop\n  for i in range(6):\n    turtle.forward(size)\n    turtle.right(61)\n\n\nmake_hexagon(55)"
+        "import turtle\n\nturtle.speed(0)\ndef make_hexagon():\n  # Your code here converting the code above to a loop\n  for i in range(6):\n    turtle.forward(50)\n    turtle.right(61)\n\n\nmake_hexagon()"
       );
     await page
       .locator("#hexagon-builder")
@@ -414,23 +414,23 @@ test.describe("TestingSection for turtles", () => {
     page,
   }) => {
     await page.goto(
-      "/thoughtful-python/lesson/06_loops/lessons/00_loops_intro"
+      "/thoughtful-python/lesson/06_loops/lessons/01_loops_challenges"
     );
 
     const sectionItem = page.getByRole("listitem").filter({
-      hasText: "Challenge: Hexagon Builder",
+      hasText: "Challenge: Hexagon",
     });
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .locator("div")
       .nth(1)
       .click();
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .fill(
         "import turtle\n\nturtle.speed(0)\ndef make_hexagon(size)\n  # Your code here converting the code above to a loop\n  for i in range(6):\n    turtle.forward(size)\n    turtle.right(61)\n\n\nmake_hexagon(55)"
       );
@@ -448,23 +448,23 @@ test.describe("TestingSection for turtles", () => {
     page,
   }) => {
     await page.goto(
-      "/thoughtful-python/lesson/06_loops/lessons/00_loops_intro"
+      "/thoughtful-python/lesson/06_loops/lessons/01_loops_challenges"
     );
 
     const sectionItem = page.getByRole("listitem").filter({
-      hasText: "Challenge: Hexagon Builder",
+      hasText: "Challenge: Hexagon",
     });
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
 
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .locator("div")
       .nth(1)
       .click();
     await page
       .getByRole("textbox")
-      .filter({ hasText: "# Your hexagon code here" })
+      .filter({ hasText: "# Create make_hexagon() function here" })
       .fill(
         "import turtle\n\nturtle.speed(0)\ndef make_hexagon(size)\n  # Your code here converting the code above to a loop\n  for i in range(6):\n    turtle.forward(size)\n    turtle.right(61)\n\n\nmake_hexagon(55)"
       );
@@ -474,6 +474,88 @@ test.describe("TestingSection for turtles", () => {
       .click();
     await page.waitForTimeout(1000);
     await expect(page.getByText("SyntaxError")).toBeVisible();
+
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+  });
+
+  test("Test that can click the `Run Tests` button and get a pass for turtles for non-__main__ procedures", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/thoughtful-python/lesson/06_loops/lessons/01_loops_challenges"
+    );
+
+    const sectionItem = page.getByRole("listitem").filter({
+      hasText: "Challenge: Octagon with Input",
+    });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
+    await page
+      .getByRole("textbox")
+      .filter({ hasText: "# Create make_octagon(size) function here" })
+      .locator("div")
+      .nth(1)
+      .click();
+    await page
+      .getByRole("textbox")
+      .filter({ hasText: "# Create make_octagon(size) function here" })
+      .fill(
+        "import turtle\n\nturtle.speed(0)\ndef make_octagon(size):\n  # Your code here converting the code above to a loop\n  for i in range(8):\n    turtle.forward(size)\n    turtle.right(45)\n\n\nmake_octagon(55)"
+      );
+    await page
+      .locator("#octagon-builder")
+      .getByRole("button", { name: "Run Code" })
+      .click();
+    await page.waitForTimeout(2000);
+    await page
+      .locator("#octagon-builder")
+      .getByRole("button", { name: "Run Tests" })
+      .click();
+    await page.waitForTimeout(2000);
+    await expect(
+      page.getByText("Your drawing matched the target! All 2 tests passed.")
+    ).toBeVisible();
+
+    await expect(sectionItem).toHaveClass(/sectionItemCompleted/);
+  });
+
+  test("Test that can click the `Run Tests` button and get a fail for turtles for non-__main__ procedures", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/thoughtful-python/lesson/06_loops/lessons/01_loops_challenges"
+    );
+
+    const sectionItem = page.getByRole("listitem").filter({
+      hasText: "Challenge: Octagon with Input",
+    });
+    await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
+
+    await page
+      .getByRole("textbox")
+      .filter({ hasText: "# Create make_octagon(size) function here" })
+      .locator("div")
+      .nth(1)
+      .click();
+    await page
+      .getByRole("textbox")
+      .filter({ hasText: "# Create make_octagon(size) function here" })
+      .fill(
+        "import turtle\n\nturtle.speed(0)\ndef make_octagon(size):\n  # Your code here converting the code above to a loop\n  for i in range(8):\n    turtle.forward(55)\n    turtle.right(45)\n\n\nmake_octagon(55)"
+      );
+    await page
+      .locator("#octagon-builder")
+      .getByRole("button", { name: "Run Code" })
+      .click();
+    await page.waitForTimeout(2000);
+    await page
+      .locator("#octagon-builder")
+      .getByRole("button", { name: "Run Tests" })
+      .click();
+    await page.waitForTimeout(2000);
+    await expect(
+      page.getByText("Test 2 failed. Fix the issue above and try again!")
+    ).toBeVisible();
 
     await expect(sectionItem).not.toHaveClass(/sectionItemCompleted/);
   });
