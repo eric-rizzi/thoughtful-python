@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import type { MatchingSectionData, UnitId, LessonId } from "../../types/data";
 import { useSectionProgress } from "../../hooks/useSectionProgress";
+import { useMatchingInteraction } from "../../hooks/useMatchingInteraction";
 import styles from "./MatchingSection.module.css";
 import sectionStyles from "./Section.module.css";
 import ContentRenderer from "../content_blocks/ContentRenderer";
@@ -20,12 +21,6 @@ interface DraggableOption {
 // The state now maps a prompt text to the unique ID of the matched option
 interface SavedMatchingState {
   userMatches: { [promptText: string]: string | null };
-}
-
-// Data transferred during drag-and-drop
-interface DragData {
-  optionId: string;
-  sourcePrompt?: string;
 }
 
 const MatchingSection: React.FC<MatchingSectionProps> = ({
@@ -99,60 +94,28 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
     );
   }, [prompts, savedState.userMatches]);
 
-  // --- Drag and Drop Handlers ---
-  const handleDragStart = (
-    e: React.DragEvent<HTMLDivElement>,
-    dragData: DragData
-  ) => {
-    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
-    e.currentTarget.classList.add(styles.dragging);
-  };
-
-  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
-    e.currentTarget.classList.remove(styles.dragging);
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.currentTarget.classList.add(styles.dropZoneHover);
-  };
-
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.currentTarget.classList.remove(styles.dropZoneHover);
-  };
-
-  const handleDrop = (
-    e: React.DragEvent<HTMLDivElement>,
-    targetPromptText: string
-  ) => {
-    e.preventDefault();
-    e.currentTarget.classList.remove(styles.dropZoneHover);
-
-    try {
-      const data = JSON.parse(
-        e.dataTransfer.getData("application/json")
-      ) as DragData;
-      const { optionId, sourcePrompt } = data;
-
-      if (!optionId) return;
-
-      setSavedState((prevState) => {
-        const newUserMatches = { ...prevState.userMatches };
-
-        // If the item was dragged from another prompt, clear its original spot.
-        if (sourcePrompt) {
-          newUserMatches[sourcePrompt] = null;
-        }
-
-        // Place the new match. This will overwrite any existing item.
-        newUserMatches[targetPromptText] = optionId;
-
-        return { userMatches: newUserMatches };
-      });
-    } catch (error) {
-      console.error("Failed to parse drag data:", error);
-    }
-  };
+  // --- Interaction Logic (Drag, Tap-to-Select, Long-Press) ---
+  const {
+    draggingOptionId,
+    hoveredPromptId,
+    selectedOptionId,
+    selectedSourcePrompt,
+    handleDragStart,
+    handleDragEnd,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    handleOptionClick,
+    handlePromptClick,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+  } = useMatchingInteraction({
+    allOptions,
+    prompts,
+    savedState,
+    setSavedState,
+  });
 
   // --- Rendering Logic ---
   const unmatchedOptions = useMemo(() => {
@@ -182,18 +145,41 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
                 <div className={styles.promptItem}>{promptText}</div>
                 <div
                   className={`${styles.dropZone} ${
-                    isSectionComplete ? styles.correct : ""
-                  } ${
+                    hoveredPromptId === promptText ? styles.dropZoneHover : ""
+                  } ${isSectionComplete ? styles.correct : ""} ${
                     isFullyMatched && !isSectionComplete ? styles.incorrect : ""
                   }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
+                  data-prompt-id={promptText}
+                  onClick={() => handlePromptClick(promptText)}
+                  onDragOver={(e) => handleDragOver(e, promptText)}
+                  onDragLeave={() => handleDragLeave(promptText)}
                   onDrop={(e) => handleDrop(e, promptText)}
                 >
                   {matchedOption ? (
                     <div
-                      className={styles.matchedOption}
+                      className={`${styles.matchedOption} ${
+                        draggingOptionId === matchedOption.id
+                          ? styles.dragging
+                          : ""
+                      } ${
+                        selectedOptionId === matchedOption.id
+                          ? styles.selected
+                          : ""
+                      }`}
                       draggable
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering drop zone click
+                        // If another option is already selected, place it here (swap/move)
+                        if (
+                          selectedOptionId &&
+                          selectedOptionId !== matchedOption.id
+                        ) {
+                          handlePromptClick(promptText);
+                        } else {
+                          // Otherwise, select this option
+                          handleOptionClick(matchedOption.id, promptText);
+                        }
+                      }}
                       onDragStart={(e) =>
                         handleDragStart(e, {
                           optionId: matchedOption.id,
@@ -201,6 +187,11 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
                         })
                       }
                       onDragEnd={handleDragEnd}
+                      onTouchStart={(e) =>
+                        handleTouchStart(e, matchedOption.id, promptText)
+                      }
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
                     >
                       {matchedOption.text}
                     </div>
@@ -216,14 +207,20 @@ const MatchingSection: React.FC<MatchingSectionProps> = ({
         </div>
 
         <div className={styles.optionsPool}>
-          <h4>Drag an option from here...</h4>
+          <h4>Tap or drag an option...</h4>
           {unmatchedOptions.map((option) => (
             <div
               key={option.id}
-              className={styles.draggableOption}
+              className={`${styles.draggableOption} ${
+                draggingOptionId === option.id ? styles.dragging : ""
+              } ${selectedOptionId === option.id ? styles.selected : ""}`}
               draggable
+              onClick={() => handleOptionClick(option.id)}
               onDragStart={(e) => handleDragStart(e, { optionId: option.id })}
               onDragEnd={handleDragEnd}
+              onTouchStart={(e) => handleTouchStart(e, option.id)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               {option.text}
             </div>

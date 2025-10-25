@@ -37,13 +37,17 @@
   padding: 0.35rem;
   border: 2px dashed #ced4da;
   border-radius: 4px;
-  min-height: 30px;
+  min-height: 44px; /* Better touch target for mobile */
   display: flex;
   align-items: center;
   justify-content: center;
   transition:
     background-color 0.2s,
     border-color 0.2s;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dropZoneHover {
@@ -84,7 +88,15 @@
   font-family: "Menlo", "Consolas", monospace;
   font-size: 0.9em;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s;
+  transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Larger touch targets for mobile */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .draggableOption:hover {
@@ -96,9 +108,16 @@
   background-color: #f0f0f0;
 }
 
+.selected {
+  border: 2px solid #007bff;
+  background-color: #e7f3ff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+  transform: scale(1.05);
+}
+
 .matchedOption {
-  cursor: default;
-  background-color: #e2e3e5;
+  cursor: pointer; /* Now clickable like draggable options */
+  background-color: white; /* Same as draggable options */
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -123,4 +142,31 @@
   border-left: 5px solid #dc3545;
   font-weight: 500;
   text-align: center;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  .matchRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .promptItem {
+    text-align: left;
+    width: 100%;
+  }
+
+  .dropZone {
+    width: 100%;
+  }
+
+  .optionsPool {
+    justify-content: center;
+  }
+
+  .optionsPool h4 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
 }
