@@ -23,9 +23,7 @@ const TurtleFinalMessage: React.FC<TurtleFinalMessageProps> = ({
       {allPassed ? (
         <>
           <h4>🎉 Great job!</h4>
-          <p>
-            Your drawing matched the target! All {totalTests} tests passed.
-          </p>
+          <p>Your drawing matched the target! All {totalTests} tests passed.</p>
         </>
       ) : (
         <>

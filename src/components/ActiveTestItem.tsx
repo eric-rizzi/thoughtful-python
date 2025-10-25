@@ -1,7 +1,7 @@
 // src/components/ActiveTestItem.tsx
 import React from "react";
 import CodeEditor from "./CodeEditor"; // Import the CodeEditor component
-import styles from "../pages/CodeEditorPage.module.css";
+import styles from "../pages/student/CodeEditorPage.module.css";
 
 export type TestStatus = "pending" | "passed" | "failed" | "error";
 

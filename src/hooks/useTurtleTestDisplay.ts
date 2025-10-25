@@ -57,8 +57,10 @@ export const useTurtleTestDisplay = ({
   );
 
   // Determine test completion state
-  const testsComplete = !isRunningTests && results !== null && results.length > 0;
-  const allTestsRan = results !== null && results.length === visualTestCases.length;
+  const testsComplete =
+    !isRunningTests && results !== null && results.length > 0;
+  const allTestsRan =
+    results !== null && results.length === visualTestCases.length;
   const allPassed =
     testsComplete && allTestsRan && results.every((r) => r.passed);
 
@@ -69,7 +71,10 @@ export const useTurtleTestDisplay = ({
       const firstTest = visualTestCases[0];
       if (firstTest && firstTest.referenceImage) {
         return {
-          referenceImage: resolveImagePath(firstTest.referenceImage, lessonPath),
+          referenceImage: resolveImagePath(
+            firstTest.referenceImage,
+            lessonPath
+          ),
           description: firstTest.description,
           isResult: false,
           resultIndex: null,

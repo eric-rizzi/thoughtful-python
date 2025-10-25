@@ -1,14 +1,14 @@
 // src/pages/ConfigurationPage.tsx
 import React, { useState, useEffect, FormEvent } from "react";
 import styles from "./ConfigurationPage.module.css";
-import { useAuthStore } from "../stores/authStore";
-import { useThemeStore, Theme } from "../stores/themeStore";
+import { useAuthStore } from "../../stores/authStore";
+import { useThemeStore, Theme } from "../../stores/themeStore";
 import {
   saveProgress as saveToLocalStorage,
   loadProgress as loadFromLocalStorage,
   ANONYMOUS_USER_ID_PLACEHOLDER,
-} from "../lib/localStorageUtils";
-import { UI_CONFIG } from "../config/constants";
+} from "../../lib/localStorageUtils";
+import { UI_CONFIG } from "../../config/constants";
 
 const USER_PROFILE_STORAGE_KEY = "userProfileSettings";
 

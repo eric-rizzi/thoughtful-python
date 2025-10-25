@@ -5,11 +5,11 @@ import {
   fetchUnitsData,
   fetchLessonData,
   getRequiredSectionsForLesson,
-} from "../lib/dataLoader";
-import { useAllCompletions } from "../stores/progressStore";
-import type { Lesson, LessonId, LessonPath, UnitId } from "../types/data";
+} from "../../lib/dataLoader";
+import { useAllCompletions } from "../../stores/progressStore";
+import type { Lesson, LessonId, LessonPath, UnitId } from "../../types/data";
 import styles from "./ProgressPage.module.css";
-import LoadingSpinner from "../components/LoadingSpinner";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 interface LessonCompletionStatus {
   lessonId: LessonId;

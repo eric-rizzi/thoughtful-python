@@ -7,7 +7,7 @@ import {
   fetchLessonData,
   fetchUnitsData,
   getLessonGuidByPath,
-} from "../lib/dataLoader";
+} from "../../lib/dataLoader";
 import type {
   Lesson,
   AnyLessonSectionData,
@@ -16,26 +16,26 @@ import type {
   LessonPath,
   LessonId,
   SectionId,
-} from "../types/data";
+} from "../../types/data";
 
-import InformationSection from "../components/sections/InformationSection";
-import ObservationSection from "../components/sections/ObservationSection";
-import TestingSection from "../components/sections/TestingSection";
-import PredictionSection from "../components/sections/PredictionSection";
-import MultipleChoiceSection from "../components/sections/MultipleChoiceSection";
-import MultipleSelectionSection from "../components/sections/MultipleSelectionSection";
-import ReflectionSection from "../components/sections/ReflectionSection";
-import CoverageSection from "../components/sections/CoverageSection";
-import PRIMMSection from "../components/sections/PRIMMSection";
-import DebuggerSection from "../components/sections/DebuggerSection";
+import InformationSection from "../../components/sections/InformationSection";
+import ObservationSection from "../../components/sections/ObservationSection";
+import TestingSection from "../../components/sections/TestingSection";
+import PredictionSection from "../../components/sections/PredictionSection";
+import MultipleChoiceSection from "../../components/sections/MultipleChoiceSection";
+import MultipleSelectionSection from "../../components/sections/MultipleSelectionSection";
+import ReflectionSection from "../../components/sections/ReflectionSection";
+import CoverageSection from "../../components/sections/CoverageSection";
+import PRIMMSection from "../../components/sections/PRIMMSection";
+import DebuggerSection from "../../components/sections/DebuggerSection";
 
-import LessonNavigation from "../components/LessonNavigation";
-import LessonSidebar from "../components/LessonSidebar";
-import LoadingSpinner from "../components/LoadingSpinner";
+import LessonNavigation from "../../components/LessonNavigation";
+import LessonSidebar from "../../components/LessonSidebar";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 import styles from "./LessonPage.module.css";
-import { useCompletedSectionsForLesson } from "../stores/progressStore";
-import MatchingSection from "../components/sections/MatchingSection";
+import { useCompletedSectionsForLesson } from "../../stores/progressStore";
+import MatchingSection from "../../components/sections/MatchingSection";
 
 const LessonPage: React.FC = () => {
   const params = useParams();

@@ -1,14 +1,14 @@
 // src/pages/CodeEditorPage.tsx
 import React, { useState, useEffect, useMemo } from "react"; // Added useMemo
-import CodeEditor from "../components/CodeEditor";
-import ActiveTestItem from "../components/ActiveTestItem";
-import { useActiveTestSuite } from "../hooks/useActiveTestSuite";
+import CodeEditor from "../../components/CodeEditor";
+import ActiveTestItem from "../../components/ActiveTestItem";
+import { useActiveTestSuite } from "../../hooks/useActiveTestSuite";
 import {
   loadProgress,
   saveProgress,
   ANONYMOUS_USER_ID_PLACEHOLDER,
-} from "../lib/localStorageUtils";
-import { useAuthStore } from "../stores/authStore"; // Import useAuthStore
+} from "../../lib/localStorageUtils";
+import { useAuthStore } from "../../stores/authStore"; // Import useAuthStore
 import styles from "./CodeEditorPage.module.css";
 
 const MAIN_CODE_STORAGE_KEY = "codeEditorPage_mainCode_v2";

@@ -6,25 +6,22 @@ import {
   googleLogout,
 } from "@react-oauth/google";
 
-import * as apiService from "../lib/apiService";
-import { useAuthStore, useAuthActions } from "../stores/authStore";
-import { API_GATEWAY_BASE_URL, BASE_PATH } from "../config";
-import type {
-  AuthToken,
-  InstructorStudentInfo,
-} from "../types/apiServiceTypes";
-import type { Unit } from "../types/data";
-import { fetchUnitsData } from "../lib/dataLoader";
+import * as apiService from "../../lib/apiService";
+import { useAuthStore, useAuthActions } from "../../stores/authStore";
+import { API_GATEWAY_BASE_URL, BASE_PATH } from "../../config";
+import type { InstructorStudentInfo } from "../../types/apiServiceTypes";
+import type { Unit } from "../../types/data";
+import { fetchUnitsData } from "../../lib/dataLoader";
 
 // Import the page/view components
-import ReviewClassProgressView from "../components/instructor/ReviewClassProgressView";
-import ReviewByAssignmentView from "../components/instructor/ReviewByAssignmentView";
-import ReviewStudentDetailView from "../components/instructor/shared/ReviewStudentDetailView";
-import LoadingSpinner from "../components/LoadingSpinner";
-import Footer from "../components/Footer";
-import ReviewByStudentView from "../components/instructor/ReviewByStudentView";
+import ReviewClassProgressView from "../../components/instructor/ReviewClassProgressView";
+import ReviewByAssignmentView from "../../components/instructor/ReviewByAssignmentView";
+import ReviewStudentDetailView from "../../components/instructor/shared/ReviewStudentDetailView";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import Footer from "../../components/Footer";
+import ReviewByStudentView from "../../components/instructor/ReviewByStudentView";
 import styles from "./InstructorDashboardPage.module.css";
-import ReviewLearningEntriesView from "../components/instructor/ReviewLearningEntriesView";
+import ReviewLearningEntriesView from "../../components/instructor/ReviewLearningEntriesView";
 
 const navLinks = [
   { path: "/instructor-dashboard/progress", label: "Class Progress" },

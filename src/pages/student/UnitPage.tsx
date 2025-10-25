@@ -7,11 +7,11 @@ import {
   fetchUnitById,
   fetchLessonData,
   getRequiredSectionsForLesson,
-} from "../lib/dataLoader";
-import type { Unit, Lesson, UnitId, LessonId } from "../types/data";
+} from "../../lib/dataLoader";
+import type { Unit, Lesson, UnitId, LessonId } from "../../types/data";
 import styles from "./UnitPage.module.css";
-import { useAllCompletions } from "../stores/progressStore";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { useAllCompletions } from "../../stores/progressStore";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 type CompletionStatus = {
   text: string;

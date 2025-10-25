@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import UnitPage from "./pages/UnitPage";
-import LessonPage from "./pages/LessonPage";
-import CodeEditorPage from "./pages/CodeEditorPage";
-import ProgressPage from "./pages/ProgressPage";
-import LearningEntriesPage from "./pages/LearningEntriesPage";
-import ConfigurationPage from "./pages/ConfigurationPage";
-import InstructorDashboardPage from "./pages/InstructorDashboardPage";
+import UnitPage from "./pages/student/UnitPage";
+import LessonPage from "./pages/student/LessonPage";
+import CodeEditorPage from "./pages/student/CodeEditorPage";
+import ProgressPage from "./pages/student/ProgressPage";
+import LearningEntriesPage from "./pages/student/LearningEntriesPage";
+import ConfigurationPage from "./pages/student/ConfigurationPage";
+import InstructorDashboardPage from "./pages/instructor/InstructorDashboardPage";
+import PrivacyPolicyPage from "./pages/static/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/static/TermsOfServicePage";
+import FAQPage from "./pages/static/FAQPage";
 import Layout from "./components/Layout";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import { useThemeStore } from "./stores/themeStore";
@@ -77,6 +80,9 @@ function App() {
             <Route path="editor" element={<CodeEditorPage />} />
             <Route path="learning-entries" element={<LearningEntriesPage />} />
             <Route path="configure" element={<ConfigurationPage />} />
+            <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="terms-of-service" element={<TermsOfServicePage />} />
+            <Route path="faq" element={<FAQPage />} />
             <Route
               path="progress"
               element={

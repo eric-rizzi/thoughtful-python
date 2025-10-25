@@ -1,12 +1,12 @@
 // src/pages/LearningEntriesPage.tsx
 import React, { useState, useEffect } from "react";
 import styles from "./LearningEntriesPage.module.css";
-import { useAuthStore } from "../stores/authStore";
-import * as apiService from "../lib/apiService";
-import { ReflectionVersionItem } from "../types/apiServiceTypes";
-import { API_GATEWAY_BASE_URL } from "../config";
-import LoadingSpinner from "../components/LoadingSpinner";
-import RenderFinalLearningEntry from "../components/instructor/shared/RenderFinalLearningEntry";
+import { useAuthStore } from "../../stores/authStore";
+import * as apiService from "../../lib/apiService";
+import { ReflectionVersionItem } from "../../types/apiServiceTypes";
+import { API_GATEWAY_BASE_URL } from "../../config";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import RenderFinalLearningEntry from "../../components/instructor/shared/RenderFinalLearningEntry";
 
 const LearningEntriesPage: React.FC = () => {
   const [finalEntries, setFinalEntries] = useState<ReflectionVersionItem[]>([]);
