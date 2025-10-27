@@ -54,6 +54,7 @@ describe("PredictionSection", () => {
       savedState: mockSavedState,
       isSectionComplete: false,
       runningStates: {},
+      rowReadyStates: { 0: true, 1: true },
       isLoading: false,
       pyodideError: null,
       handleUserInputChange: handleUserInputChangeMock,
@@ -134,6 +135,7 @@ describe("PredictionSection", () => {
       savedState: newState,
       isSectionComplete: false,
       runningStates: {},
+      rowReadyStates: { 0: true, 1: true },
       isLoading: false,
       pyodideError: null,
       handleUserInputChange: handleUserInputChangeMock,
@@ -173,6 +175,7 @@ describe("PredictionSection", () => {
       savedState: completeState,
       isSectionComplete: true, // Tell the component it's complete
       runningStates: {},
+      rowReadyStates: { 0: true, 1: true },
       isLoading: false,
       pyodideError: null,
       handleUserInputChange: vi.fn(),

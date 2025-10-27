@@ -54,6 +54,7 @@ describe("CoverageSection", () => {
       savedState: mockSavedState,
       isSectionComplete: false,
       runningStates: {},
+      rowReadyStates: { 0: true, 1: true },
       isLoading: false,
       pyodideError: null,
       handleUserInputChange: handleUserInputChangeMock,
@@ -139,6 +140,7 @@ describe("CoverageSection", () => {
       savedState: newState,
       isSectionComplete: false,
       runningStates: {},
+      rowReadyStates: { 0: true, 1: true },
       isLoading: false,
       pyodideError: null,
       handleUserInputChange: handleUserInputChangeMock,
@@ -173,6 +175,7 @@ describe("CoverageSection", () => {
       savedState: completeState,
       isSectionComplete: true, // Tell the component it's complete
       runningStates: {},
+      rowReadyStates: { 0: true, 1: true },
       isLoading: false,
       pyodideError: null,
       handleUserInputChange: vi.fn(),
@@ -238,6 +241,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithBoolean,
         runningStates: {},
+        rowReadyStates: { 0: true },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: vi.fn(),
@@ -283,6 +287,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithBoolean,
         runningStates: {},
+        rowReadyStates: { 0: false },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: handleUserInputChangeMock,
@@ -327,6 +332,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithBoolean,
         runningStates: {},
+        rowReadyStates: { 0: true },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: vi.fn(),
@@ -365,6 +371,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithBoolean,
         runningStates: { 0: true },
+        rowReadyStates: { 0: true },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: vi.fn(),
@@ -431,6 +438,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithFixed,
         runningStates: {},
+        rowReadyStates: { 0: true },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: vi.fn(),
@@ -480,6 +488,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithFixed,
         runningStates: {},
+        rowReadyStates: { 0: true },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: vi.fn(),
@@ -520,6 +529,7 @@ describe("CoverageSection", () => {
       vi.mocked(useInteractiveTableLogic).mockReturnValue({
         savedState: stateWithFixed,
         runningStates: {},
+        rowReadyStates: { 0: false },
         isLoading: false,
         pyodideError: null,
         handleUserInputChange: handleUserInputChangeMock,

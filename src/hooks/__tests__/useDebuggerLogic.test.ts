@@ -15,8 +15,10 @@ describe("useDebuggerLogic", () => {
     vi.clearAllMocks();
 
     mockedUsePyodide.mockReturnValue({
+      pyodide: {} as any,
       runPythonCode: mockRunPythonCode,
       isLoading: false,
+      isInitializing: false,
       error: null,
       loadPackages: vi.fn(),
     });
@@ -63,7 +65,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValue({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
@@ -99,7 +103,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValue({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
@@ -119,8 +125,13 @@ describe("useDebuggerLogic", () => {
 
   it("should handle Pyodide execution errors", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: null,
-      error: "Pyodide internal error",
+      success: false,
+      stdout: "",
+      stderr: "",
+      error: {
+        type: "SystemError",
+        message: "Pyodide internal error",
+      },
       result: null,
     });
 
@@ -137,7 +148,9 @@ describe("useDebuggerLogic", () => {
 
   it("should handle missing trace markers in output", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output: "Some output without trace markers",
+      success: true,
+      stdout: "Some output without trace markers",
+      stderr: "",
       error: null,
       result: null,
     });
@@ -156,8 +169,10 @@ describe("useDebuggerLogic", () => {
 
   it("should handle JSON parse errors", async () => {
     mockRunPythonCode.mockResolvedValue({
-      output:
+      success: true,
+      stdout:
         "---DEBUGGER_TRACE_START---\n{invalid json}\n---DEBUGGER_TRACE_END---",
+      stderr: "",
       error: null,
       result: null,
     });
@@ -191,7 +206,9 @@ describe("useDebuggerLogic", () => {
 
     await act(async () => {
       resolvePromise({
-        output: `---DEBUGGER_TRACE_START---\n${JSON.stringify({ success: true, steps: [], output: "" })}\n---DEBUGGER_TRACE_END---`,
+        success: true,
+        stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify({ success: true, steps: [], output: "" })}\n---DEBUGGER_TRACE_END---`,
+        stderr: "",
         error: null,
         result: null,
       });
@@ -218,7 +235,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValueOnce({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(firstTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(firstTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
@@ -234,8 +253,13 @@ describe("useDebuggerLogic", () => {
 
     // Run again with error
     mockRunPythonCode.mockResolvedValueOnce({
-      output: null,
-      error: "New error",
+      success: false,
+      stdout: "",
+      stderr: "",
+      error: {
+        type: "Error",
+        message: "New error",
+      },
       result: null,
     });
 
@@ -249,8 +273,10 @@ describe("useDebuggerLogic", () => {
 
   it("should handle Pyodide hook loading state", () => {
     mockedUsePyodide.mockReturnValue({
+      pyodide: {} as any,
       runPythonCode: mockRunPythonCode,
       isLoading: true,
+      isInitializing: false,
       error: null,
       loadPackages: vi.fn(),
     });
@@ -262,8 +288,10 @@ describe("useDebuggerLogic", () => {
 
   it("should handle Pyodide hook error", () => {
     mockedUsePyodide.mockReturnValue({
+      pyodide: {} as any,
       runPythonCode: mockRunPythonCode,
       isLoading: false,
+      isInitializing: false,
       error: new Error("Pyodide failed to load"),
       loadPackages: vi.fn(),
     });
@@ -314,7 +342,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValue({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
@@ -356,7 +386,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValue({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
@@ -412,7 +444,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValue({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
@@ -446,7 +480,9 @@ describe("useDebuggerLogic", () => {
     };
 
     mockRunPythonCode.mockResolvedValue({
-      output: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      success: true,
+      stdout: `---DEBUGGER_TRACE_START---\n${JSON.stringify(mockTrace)}\n---DEBUGGER_TRACE_END---`,
+      stderr: "",
       error: null,
       result: null,
     });
