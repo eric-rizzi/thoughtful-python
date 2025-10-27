@@ -188,13 +188,13 @@ export const useDebuggerLogic = () => {
         "{user_code}",
         userCode
       );
-      const { output, error: runError } = await runPythonCode(scriptToRun);
+      const { stdout, error: runError } = await runPythonCode(scriptToRun);
 
       let resultPayload: PythonExecutionPayload | null = null;
       if (runError) {
-        setError(`Error during Python execution: ${runError}`);
+        setError(`Error during Python execution: ${runError.message}`);
       } else {
-        const traceJsonMatch = output.match(
+        const traceJsonMatch = stdout.match(
           /---DEBUGGER_TRACE_START---([\s\S]*?)---DEBUGGER_TRACE_END---/
         );
         if (traceJsonMatch?.[1]) {
