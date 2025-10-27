@@ -193,7 +193,7 @@
   font-weight: bold;
   padding: 2px 4px;
   border-radius: 3px;
-  display: inline-block;
+  display: inline;
   transition: background-color 0.5s ease;
 }
 
