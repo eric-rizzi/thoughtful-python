@@ -88,7 +88,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "console",
         initialCode:
-          'def check_access(age, has_id):\n    if age >= 21 and has_id:\n        print("Enter")\n    else:\n        print("Access denied")',
+          'def check_access(age, has_id):\n  if age >= 21 and has_id:\n    print("Enter")\n  else:\n    print("Access denied")',
       },
       testMode: "procedure",
       functionToTest: "check_access",

@@ -174,7 +174,7 @@ const lessonData: Lesson = {
       example: {
         visualization: "console",
         initialCode:
-          'def do_something(password):\n  for character in password:\n    if character == "!":\n      print("Clearly exciting data")\n\ndo_something("Who\'s excited!? I\'m, excited!")',
+          'def do_something(password):\n  for character in password:\n    if character == "!":\n      print("Clearly exciting data")\n\ndo_something("Who\'s excited!? I\'m excited!")',
       },
       predictPrompt:
         "The loop checks EVERY character. Some will match the `if` condition, others won't. What will be printed by the program?",
