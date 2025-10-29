@@ -31,6 +31,14 @@ const Footer: React.FC = () => {
               <Link to="/instructor-dashboard" className={styles.link}>
                 Teacher Portal
               </Link>
+              <a
+                href="https://github.com/eric-rizzi/ucls-hs-intro-to-cs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.link}
+              >
+                Curriculum
+              </a>
             </div>
 
             <div className={styles.linkColumn}>
