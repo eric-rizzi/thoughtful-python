@@ -41,7 +41,10 @@
 .lessonsList {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  row-gap: 4rem;
+  column-gap: 2rem;
+  grid-auto-rows: auto;
+  margin-bottom: 4rem;
 }
 
 /* Reusing lesson card styles, potentially move to a shared component/CSS later */
