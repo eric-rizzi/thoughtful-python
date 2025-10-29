@@ -10,6 +10,8 @@ const unitManifest: UnitManifest = {
     "lessons/00_loops_intro",
     "lessons/01_loops_challenges",
     "lessons/02_loops_nesting",
+    "lessons/03_loops_grab_bag",
+    "lessons/04_loops_wrap_up",
   ],
 };
 
