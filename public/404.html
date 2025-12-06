@@ -2,33 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/thoughtful-python/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="google-site-verification"
-      content="J4_6nqSuvw_2NBoxXNol-8CJeZWHP5N5kricOBzEibQ"
-    />
-    <title>Thoughtful Python</title>
+    <meta http-equiv="refresh" content="0; url=https://thoughtful-coding.github.io/" />
+    <title>Redirecting...</title>
     <style>
-      /* Simple loading style for 404 -> React transition */
       body {
-        font-family: system-ui, sans-serif;
-        margin: 0;
-        padding: 2rem;
+        font-family: system-ui, -apple-system, sans-serif;
         display: flex;
-        justify-content: center;
         align-items: center;
-        min-height: 100vh;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
       }
-      #root:empty::before {
-        content: "Loading...";
-        color: #306998;
-        font-size: 1.2rem;
+      .redirect-message {
+        text-align: center;
+        padding: 2rem;
+      }
+      a {
+        color: #4b8bbe;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
       }
     </style>
+    <script>
+      // Immediate redirect
+      window.location.href = "https://thoughtful-coding.github.io/";
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/thoughtful-python/src/main.tsx"></script>
+    <div class="redirect-message">
+      <h1>Redirecting...</h1>
+      <p>
+        This site has moved to
+        <a href="https://thoughtful-coding.github.io/">thoughtful-coding.github.io</a>
+      </p>
+      <p>
+        If you are not redirected automatically,
+        <a href="https://thoughtful-coding.github.io/">click here</a>.
+      </p>
+    </div>
   </body>
 </html>

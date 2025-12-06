@@ -2,199 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="google-site-verification"
-      content="J4_6nqSuvw_2NBoxXNol-8CJeZWHP5N5kricOBzEibQ"
-    />
-
-    <!-- SEO Meta Tags -->
-    <title>Thoughtful Python - A Thoughtful Approach to Learning Python</title>
-    <meta
-      name="description"
-      content="Learn Python programming through a thoughtful approach with PRIMM methodology. Interactive lessons covering Python fundamentals, variables, functions, and more."
-    />
-    <meta
-      name="keywords"
-      content="Python, programming, PRIMM, learn Python, Python fundamentals, variables, functions, interactive lessons, programming tutorial, beginner Python"
-    />
-    <meta name="author" content="Eric Rizzi" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:url"
-      content="https://eric-rizzi.github.io/thoughtful-python/"
-    />
-    <meta
-      property="og:title"
-      content="Thoughtful Python - A Thoughtful Approach to Learning Python"
-    />
-    <meta
-      property="og:description"
-      content="Learn Python programming through a thoughtful approach with PRIMM methodology. Interactive lessons covering Python fundamentals, variables, functions, and more."
-    />
-    <meta
-      property="og:image"
-      content="https://eric-rizzi.github.io/thoughtful-python/images/python-logo.png"
-    />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta
-      property="twitter:url"
-      content="https://eric-rizzi.github.io/thoughtful-python/"
-    />
-    <meta
-      property="twitter:title"
-      content="Thoughtful Python - A Thoughtful Approach to Learning Python"
-    />
-    <meta
-      property="twitter:description"
-      content="Learn Python programming through a thoughtful approach with PRIMM methodology. Interactive lessons covering Python fundamentals, variables, functions, and more."
-    />
-    <meta
-      property="twitter:image"
-      content="https://eric-rizzi.github.io/thoughtful-python/images/python-logo.png"
-    />
-
-    <!-- Canonical URL -->
-    <link
-      rel="canonical"
-      href="https://eric-rizzi.github.io/thoughtful-python/"
-    />
-
+    <meta http-equiv="refresh" content="0; url=https://thoughtful-coding.github.io/" />
+    <title>Redirecting...</title>
     <style>
-      /* Minimal styles for static SEO content */
       body {
-        font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-        line-height: 1.6;
-        color: #213547;
-        background-color: #ffffff;
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
         margin: 0;
+        background-color: #f5f5f5;
+      }
+      .redirect-message {
+        text-align: center;
         padding: 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
       }
-
-      #static-content h1 {
-        color: #306998;
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-
-      #static-content p {
-        color: #444;
-        margin-bottom: 1.5rem;
-      }
-
-      #static-content nav ul {
-        list-style: none;
-        padding: 0;
-      }
-
-      #static-content nav li {
-        margin: 0.5rem 0;
-      }
-
-      #static-content nav a {
+      a {
         color: #4b8bbe;
         text-decoration: none;
-        font-size: 1.1rem;
       }
-
-      #static-content nav a:hover {
-        color: #306998;
+      a:hover {
         text-decoration: underline;
       }
     </style>
+    <script>
+      // Immediate redirect
+      window.location.href = "https://thoughtful-coding.github.io/";
+    </script>
   </head>
   <body>
-    <!-- Minimal static content for SEO and no-JS browsers -->
-    <div id="static-content" style="display: block">
-      <h1>Thoughtful Python - Learn Python Programming</h1>
+    <div class="redirect-message">
+      <h1>Redirecting...</h1>
       <p>
-        Learn Python programming through a thoughtful approach with PRIMM methodology.
-        Interactive lessons covering Python fundamentals, variables, functions, conditionals,
-        loops, lists, and more. Perfect for beginners looking to build a strong foundation
-        in programming.
+        This site has moved to
+        <a href="https://thoughtful-coding.github.io/">thoughtful-coding.github.io</a>
       </p>
       <p>
-        This website offers a unique approach to learning Python that emphasizes understanding
-        through prediction, exploration, and reflection. All lessons run directly in your
-        browser with no installation required.
+        If you are not redirected automatically,
+        <a href="https://thoughtful-coding.github.io/">click here</a>.
       </p>
-
-      <nav aria-label="Python Learning Paths">
-        <h2>Learning Paths</h2>
-        <ul>
-          <li><a href="/thoughtful-python/unit/learning_to_learn">Learning to Learn</a> - Understand the PRIMM methodology and effective learning strategies</li>
-          <li><a href="/thoughtful-python/unit/intro_python">Introduction to Python</a> - Learn Python fundamentals through interactive lessons</li>
-          <li><a href="/thoughtful-python/unit/variables_debugging">Variables and Debugging</a> - Master data storage and debugging techniques</li>
-          <li><a href="/thoughtful-python/unit/intro_functions">Functions</a> - Create reusable code with Python functions</li>
-          <li><a href="/thoughtful-python/unit/python_strings">Python Strings</a> - String manipulation, f-strings, and type casting</li>
-          <li><a href="/thoughtful-python/unit/python_conditionals">Conditionals (If/Else)</a> - Control program flow with conditional statements</li>
-          <li><a href="/thoughtful-python/unit/python_loops">Loops</a> - Automate repetitive tasks with for and while loops</li>
-          <li><a href="/thoughtful-python/unit/python_lists_intro">Python Lists (Intro)</a> - Work with collections of data</li>
-          <li><a href="/thoughtful-python/unit/python_lists_advanced">Python Lists (Advanced)</a> - Advanced list operations and algorithms</li>
-        </ul>
-      </nav>
     </div>
-
-    <!-- React app will be loaded here -->
-    <div id="root" style="display: none"></div>
-
-    <script type="module" src="/src/main.tsx"></script>
-
-    <script>
-      // Hide static content once React has loaded and is ready to render
-      // This ensures search crawlers see the static content, while users see React
-      (function () {
-        // Wait for React to signal it's ready (happens after first render)
-        // Using a small delay ensures crawlers have time to see static content
-        setTimeout(function() {
-          var staticContent = document.getElementById("static-content");
-          var root = document.getElementById("root");
-
-          if (staticContent) staticContent.style.display = "none";
-          if (root) root.style.display = "block";
-        }, 100); // 100ms delay ensures crawlers capture static content
-      })();
-    </script>
-
-    <noscript>
-      <!-- Show static content for search engines and no-JS browsers -->
-      <style>
-        #static-content {
-          display: block !important;
-        }
-        #root {
-          display: none !important;
-        }
-      </style>
-    </noscript>
-
-    <!-- Structured Data for SEO -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "Thoughtful Python",
-        "description": "Learn Python programming through a thoughtful approach with PRIMM methodology",
-        "url": "https://eric-rizzi.github.io/thoughtful-python/",
-        "courseMode": "online",
-        "educationalLevel": "Beginner",
-        "teaches": [
-          "Python Programming",
-          "PRIMM Methodology",
-          "Programming Fundamentals",
-          "Variables",
-          "Functions",
-          "Debugging"
-        ],
-        "learningResourceType": "Interactive Course"
-      }
-    </script>
   </body>
 </html>
